@@ -19,6 +19,15 @@ public class ExportGeoJsonFieldModel {
         this.points= new ArrayList<>();
         this.points.addAll(points);
     }
+    public ExportGeoJsonFieldModel(String title,
+                                   String key,
+                                   List<List<Double>> points
+    ){
+        this.title = title;
+        this.key = key;
+        this.points= new ArrayList<>();
+        this.points.addAll(points);
+    }
 
     public void setTitle(String title) {
         this.title = title;
