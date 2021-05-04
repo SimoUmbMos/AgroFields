@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.util.file.geojson.helper;
+package com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.helper;
 
 import com.google.android.gms.maps.model.LatLng;
 

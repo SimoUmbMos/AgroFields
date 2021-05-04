@@ -1,9 +1,9 @@
-package com.mosc.simo.ptuxiaki3741.util.file.geojson.async;
+package com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.async;
 
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.mosc.simo.ptuxiaki3741.util.file.geojson.model.FeatureCollection;
+import com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.model.FeatureCollection;
 
 import java.util.concurrent.Callable;
 

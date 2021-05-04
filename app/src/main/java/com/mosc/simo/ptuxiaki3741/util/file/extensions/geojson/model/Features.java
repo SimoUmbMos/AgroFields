@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.util.file.geojson.model;
+package com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
