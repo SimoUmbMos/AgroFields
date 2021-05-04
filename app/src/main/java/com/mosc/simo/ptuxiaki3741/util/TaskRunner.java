@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 public class TaskRunner {
     private static final String TAG = "TaskRunner Class";
-    private final Executor executor = Executors.newSingleThreadExecutor(); // change according to your requirements
+    private final Executor executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     public interface Callback<R> {
