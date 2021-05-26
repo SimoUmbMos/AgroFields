@@ -1,15 +1,15 @@
-package com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson;
+package com.mosc.simo.ptuxiaki3741.util.file.helper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExportGeoJsonFieldModel {
+public class ExportFieldModel {
     private String title;
     private String key;
-    private final List<List<Double>> points;
+    private final List<List<List<Double>>> points;
 
-    public ExportGeoJsonFieldModel(String title,
-                                   List<List<Double>> points
+    public ExportFieldModel(String title,
+                            List<List<List<Double>>> points
     ){
         this.title = title;
         this.key = randomStringWithSize(6)+"-"+
@@ -19,9 +19,9 @@ public class ExportGeoJsonFieldModel {
         this.points= new ArrayList<>();
         this.points.addAll(points);
     }
-    public ExportGeoJsonFieldModel(String title,
-                                   String key,
-                                   List<List<Double>> points
+    public ExportFieldModel(String title,
+                            String key,
+                            List<List<List<Double>>> points
     ){
         this.title = title;
         this.key = key;
@@ -35,7 +35,7 @@ public class ExportGeoJsonFieldModel {
     public void setKey(String key) {
         this.key = key;
     }
-    public void setPoints(List<List<Double>> points) {
+    public void setPointsList(List<List<List<Double>>> points) {
         this.points.clear();
         this.points.addAll(points);
     }
@@ -46,7 +46,7 @@ public class ExportGeoJsonFieldModel {
     public String getKey() {
         return key;
     }
-    public List<List<Double>> getPoints(){
+    public List<List<List<Double>>> getPointsList(){
         return points;
     }
 

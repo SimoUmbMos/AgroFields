@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">Ptuxiaki3741</string>
+
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="open_menu">Open Menu</string>
+    <string name="land_actions_group_title">Land Actions</string>
+    <string name="fab_create_point">Add Point</string>
+    <string name="fab_create_between">Add Between</string>
+    <string name="fab_menu_edit_label">Edit</string>
+    <string name="fab_menu_delete_label">Delete</string>
+    <string name="reset">Reset</string>
+    <string name="clean">Clean</string>
+    <string name="img_actions_group_title">Overlay Image</string>
+    <string name="add_img">add overlay image</string>
+    <string name="remove_img">remove overlay image</string>
+    <string name="move_img">Move Image</string>
+    <string name="zoom_img">Zoom Image</string>
+    <string name="rotate_img">Rotate Image</string>
+    <string name="opacity_img">Change Opacity</string>
+    <string name="file_actions_group_title">File Actions</string>
+    <string name="import_action_title">Import</string>
+    <string name="export_action_title">Export</string>
+    <string name="lock_map">lock_map</string>
 </resources>

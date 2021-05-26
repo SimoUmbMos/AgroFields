@@ -1,7 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
-import android.util.Log;
-
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.PointCollection;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapHelper {
-    private static final String TAG = "ERSIMapHelper";
     public static List<LatLng> intersection(Polygon p1, Polygon p2) {
         List<LatLng> polygon3Borders = new ArrayList<>();
         try{
@@ -45,7 +42,7 @@ public class MapHelper {
                 }
             }
         }catch (Exception e){
-            Log.e(TAG, "intersection: ", e );
+            e.printStackTrace();
         }
         return polygon3Borders;
     }
@@ -82,7 +79,7 @@ public class MapHelper {
                 }
             }
         }catch (Exception e){
-            Log.e(TAG, "intersection: ", e );
+            e.printStackTrace();
         }
         return intersectionsList;
     }
