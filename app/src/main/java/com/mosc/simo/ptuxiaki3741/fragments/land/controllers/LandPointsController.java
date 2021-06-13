@@ -1,65 +1,71 @@
-package com.mosc.simo.ptuxiaki3741.fragments.helpers;
+package com.mosc.simo.ptuxiaki3741.fragments.land.controllers;
 
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.fragments.land.helpers.LandPointsState;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapPointsController {
+public class LandPointsController {
     public static final double DefaultDistanceToAction = 150000;
-    public static final int FlagDisable = 0,
-            FlagAddEnd=1,
-            FlagAddBetween=2,
-            FlagEdit=3,
-            FlagDelete=4;
+
     private double distanceToAction;
-    private int flag;
-    private final List<LatLng> points;
+    private LandPointsState state;
+    private List<LatLng> points;
     private final List<List<LatLng>> undoList;
 
-    private int index1=-1,index2=-1,index3=-1;
+    private int index1=-1,index2=-1,index3=-1,editIndex=-1;
 
-    public MapPointsController(){
+    public LandPointsController(){
         distanceToAction = DefaultDistanceToAction;
-        flag =FlagDisable;
+        state = LandPointsState.Disable;
         points=new ArrayList<>();
         undoList=new ArrayList<>();
     }
 
-    public int getFlag() {
-        return flag;
+    public LandPointsState getFlag() {
+        return state;
+    }
+    public int getEditIndex() {
+        return editIndex;
     }
     public List<LatLng> getPoints() {
         return points;
     }
+    public void setPoints(List<LatLng> latLng) {
+        points = new ArrayList<>(latLng);
+        clearUndo();
+        resetAddBetweenStatus();
+        resetEditStatus();
+    }
 
-    public void setFlag(int flag) {
-        if(flag != FlagAddBetween){
+    public void setFlag(LandPointsState state) {
+        if(this.state != state){
             resetAddBetweenStatus();
-        }else if(this.flag != flag){
-            resetAddBetweenStatus();
+            resetEditStatus();
         }
-        this.flag = flag;
+        this.state = state;
     }
 
     public boolean isActive() {
-        return flag == FlagAddEnd ||
-                flag == FlagAddBetween ||
-                flag == FlagEdit ||
-                flag == FlagDelete;
-    }
-    public boolean isOnEditMode() {
-        return flag == FlagEdit ||
-                flag == FlagDelete||
-                ( flag == FlagAddBetween && ( index1 == -1 || index2 == -1) );
+        switch (state){
+            case AddEnd:
+            case AddBetween:
+            case Edit:
+            case Delete:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public void clearList() {
         points.clear();
         undoList.clear();
         resetAddBetweenStatus();
+        resetEditStatus();
     }
 
     private void addToUndo() {
@@ -76,39 +82,50 @@ public class MapPointsController {
     public void clearUndo() {
         undoList.clear();
         resetAddBetweenStatus();
+        resetEditStatus();
     }
     public void undo() {
         if(undoList.size()>0){
-            points.clear();
-            points.addAll(undoList.get(undoList.size()-1));
-            undoList.remove(undoList.size()-1);
+            switch (state){
+                case AddBetween:
+                    points.clear();
+                    points.addAll(undoList.get(undoList.size()-1));
+                    resetAddBetweenStatus();
+                    break;
+                case Edit:
+                    points.clear();
+                    points.addAll(undoList.get(undoList.size()-1));
+                    resetEditStatus();
+                    break;
+                default:
+                    points.clear();
+                    points.addAll(undoList.get(undoList.size()-1));
+                    undoList.remove(undoList.size()-1);
+            }
         }
     }
 
-    public List<LatLng> processClick(LatLng latLng) {
-        switch (flag){
-            case (FlagAddEnd):
+    public void processClick(LatLng latLng) {
+        switch (state){
+            case AddEnd:
                 addToUndo();
                 addEndPoint(latLng);
                 break;
-            case (FlagAddBetween):
+            case AddBetween:
                 if(points.size()>=2){
-                    if(!isOnEditMode()){
-                        addToUndo();
-                    }
                     addBetweenPoint(latLng);
                 }
                 break;
-            case (FlagEdit):
+            case Edit:
                 addToUndo();
                 editPoint(latLng);
                 break;
-            case (FlagDelete):
+            case Delete:
                 addToUndo();
                 deletePoint(latLng);
                 break;
+            default:
         }
-        return points;
     }
 
     private void addEndPoint(LatLng latLng) {
@@ -121,10 +138,15 @@ public class MapPointsController {
         }
     }
     private void editPoint(LatLng latLng) {
-        LatLng closestPoint = findClosestPoint(latLng);
-        if(distanceBetween(closestPoint,latLng)<=distanceToAction){
-            int index = points.indexOf(closestPoint);
-            points.set(index,latLng);
+        if(editIndex == -1){
+            undoList.clear();
+            addToUndo();
+            LatLng closestPoint = findClosestPoint(latLng);
+            if(distanceBetween(closestPoint,latLng)<=(distanceToAction*2.5)){
+                editIndex = points.indexOf(closestPoint);
+            }
+        }else{
+            points.set(editIndex,latLng);
         }
     }
 
@@ -145,6 +167,8 @@ public class MapPointsController {
         }
     }
     private void selectFirstPointForBetween(LatLng latLng) {
+        undoList.clear();
+        addToUndo();
         LatLng between1 = findClosestPoint(latLng);
         index1 = points.indexOf(between1);
         if(distanceBetween(latLng,between1) > distanceToAction){
@@ -206,6 +230,9 @@ public class MapPointsController {
         index2=-1;
         index3=-1;
     }
+    private void resetEditStatus(){
+        editIndex=-1;
+    }
     public int getAddBetweenStatus() {
         int ans;
         if(index1 == -1){
@@ -244,8 +271,13 @@ public class MapPointsController {
     public void setDistanceToAction(double distanceToAction) {
         this.distanceToAction = distanceToAction;
     }
-    public void resetDistanceToAction() {
-        this.distanceToAction = DefaultDistanceToAction;
-    }
 
+    public void addAll(List<LatLng> points) {
+        clearList();
+        clearUndo();
+        resetAddBetweenStatus();
+        resetEditStatus();
+        state = LandPointsState.Disable;
+        this.points.addAll(points);
+    }
 }

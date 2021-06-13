@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "54233b8d26a6e1afe54a3d91dd763acc",
+    "identityHash": "fadcbe15ff4ebdf59f1506081fbc9ae0",
     "entities": [
       {
         "tableName": "Users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Key` INTEGER NOT NULL, `Username` TEXT, `Password` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Key` INTEGER NOT NULL, `Username` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,12 +25,6 @@
             "columnName": "Username",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "password",
-            "columnName": "Password",
-            "affinity": "TEXT",
-            "notNull": false
           }
         ],
         "primaryKey": {
@@ -44,7 +38,7 @@
       },
       {
         "tableName": "Lands",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `CreatorId` INTEGER NOT NULL, `Title` TEXT, `Lat` REAL NOT NULL, `Lng` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `CreatorId` INTEGER NOT NULL, `Title` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -63,18 +57,6 @@
             "columnName": "Title",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "lat",
-            "columnName": "Lat",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lng",
-            "columnName": "Lng",
-            "affinity": "REAL",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -131,8 +113,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "LandOwners",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Lid` INTEGER NOT NULL, `Uid` INTEGER NOT NULL)",
+        "tableName": "LandRecords",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LandId` INTEGER NOT NULL, `UserId` INTEGER NOT NULL, `ActionID` INTEGER NOT NULL, `Date` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -141,15 +123,71 @@
             "notNull": true
           },
           {
-            "fieldPath": "lid",
-            "columnName": "Lid",
+            "fieldPath": "landID",
+            "columnName": "LandId",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "uid",
-            "columnName": "Uid",
+            "fieldPath": "userID",
+            "columnName": "UserId",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actionID",
+            "columnName": "ActionID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "Date",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LandPointsRecord",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LRid` INTEGER NOT NULL, `Position` INTEGER NOT NULL, `Lat` REAL NOT NULL, `Lng` REAL NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "landRecordID",
+            "columnName": "LRid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "Position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lat",
+            "columnName": "Lat",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lng",
+            "columnName": "Lng",
+            "affinity": "REAL",
             "notNull": true
           }
         ],
@@ -166,7 +204,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '54233b8d26a6e1afe54a3d91dd763acc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fadcbe15ff4ebdf59f1506081fbc9ae0')"
     ]
   }
 }

@@ -1,15 +1,13 @@
-package com.mosc.simo.ptuxiaki3741.fragments.helpers;
+package com.mosc.simo.ptuxiaki3741.fragments.land.controllers;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import java.io.File;
+import com.mosc.simo.ptuxiaki3741.fragments.land.helpers.LandImgState;
 
-public class MapImgController {
+public class LandImgController {
     private static final int animationDuration = 0;
     private static final float stepOpacity = 0.03f,
             stepRotate = 1f,
@@ -17,41 +15,20 @@ public class MapImgController {
             maxZoom = 7f,
             minZoom = 0.1f;
 
-    public static final int FlagDisable = 0,
-            FlagMove = 1,
-            FlagZoom = 2,
-            FlagRotate = 3,
-            FlagAlpha = 4;
-
     private final ImageView imageView;
 
     private float zoom = 1f;
     private float dx, dy, x, y;
-    private int flag;
+    private LandImgState state;
     private boolean isImgVisible=false;
 
-    public MapImgController(ImageView imageView){
-        flag = FlagDisable;
+    public LandImgController(ImageView imageView){
+        state = LandImgState.Disable;
         this.imageView = imageView;
     }
 
-    public static boolean isCorrectFlag(int imgTouchActionFlag){
-        return imgTouchActionFlag == FlagDisable ||
-                imgTouchActionFlag == FlagAlpha ||
-                imgTouchActionFlag == FlagMove ||
-                imgTouchActionFlag == FlagZoom ||
-                imgTouchActionFlag == FlagRotate;
-    }
-
-    public void setFlag(int imgTouchActionFlag){
-        if(isCorrectFlag(imgTouchActionFlag)){
-            this.flag = imgTouchActionFlag;
-        }else{
-            this.flag = FlagDisable;
-        }
-    }
-    public int getFlag(){
-        return flag;
+    public void setFlag(LandImgState state){
+        this.state = state;
     }
     public boolean getImgVisible(){
         return isImgVisible;
@@ -105,31 +82,31 @@ public class MapImgController {
         }
     }
     public void resetImg(){
-        switch (flag){
-            case(FlagMove):
+        switch (state){
+            case Move:
                 imageView.animate()
                         .translationX(0)
                         .translationY(0)
                         .setDuration(animationDuration).start();
                 break;
-            case(FlagZoom):
+            case Zoom:
                 zoom=1f;
                 imageView.animate()
                         .scaleX(1f)
                         .scaleY(1f)
                         .setDuration(animationDuration).start();
                 break;
-            case(FlagRotate):
+            case Rotate:
                 imageView.animate()
                         .rotation(0)
                         .setDuration(animationDuration).start();
                 break;
-            case(FlagAlpha):
+            case Alpha:
                 imageView.animate()
                         .alpha(0.5f)
                         .setDuration(animationDuration).start();
                 break;
-            case(FlagDisable):
+            case Disable:
                 zoom=1f;
                 imageView.animate()
                         .alpha(0.5f)
@@ -145,14 +122,14 @@ public class MapImgController {
 
     public void doAction(boolean isHigher) {
         if(isImgVisible){
-            switch (flag){
-                case (FlagZoom):
+            switch (state){
+                case Zoom:
                     zoomImg(isHigher);
                     break;
-                case (FlagRotate):
+                case Rotate:
                     rotateImg(isHigher);
                     break;
-                case (FlagAlpha):
+                case Alpha:
                     opacityImg(isHigher);
                     break;
             }
@@ -169,13 +146,13 @@ public class MapImgController {
         float v = dy - ev.getY();
         x -= h;
         y -= v;
-        if( flag == FlagMove && isImgVisible){
+        if( state == LandImgState.Move && isImgVisible){
             moveImg(x, y);
         }
         initImgValues(ev);
     }
     public void initImgTouch(MotionEvent ev) {
-        if( flag == FlagMove ){
+        if( state == LandImgState.Move ){
             initImgValues(ev);
         }
     }
@@ -192,14 +169,6 @@ public class MapImgController {
         imageView.setVisibility(View.GONE);
     }
 
-    public void showImage(File file){
-        if (file.exists()) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap selectDrawable = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-            imageView.setImageBitmap(selectDrawable);
-        }
-    }
     public void showImage(Uri uri){
         imageView.setImageURI(uri);
     }

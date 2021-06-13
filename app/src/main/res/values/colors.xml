@@ -3,13 +3,11 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="common_border_color">#EFE8E8</color>
     <color name="shrine_pink_100">#FFCDD2</color>
     <color name="shrine_pink_900">#880E4F</color>
     <color name="night_colorPrimary">#6200EE</color>
     <color name="night_colorPrimaryDark">#3700B3</color>
     <color name="night_colorAccent">#03DAC5</color>
-    <color name="night_common_border_color">#EFE8E8</color>
     <color name="night_shrine_pink_100">#FFCDD2</color>
     <color name="night_shrine_pink_900">#880E4F</color>
     <color name="colorTabPrimary">#FFFFFF</color>

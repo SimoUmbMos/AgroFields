@@ -1,21 +1,33 @@
 package com.mosc.simo.ptuxiaki3741.database.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Lands")
-public class Land {
+public class Land implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "CreatorId")
     private long creator_id;
     @ColumnInfo(name = "Title")
     private String title;
-    @ColumnInfo(name = "Lat")
-    private double lat;
-    @ColumnInfo(name = "Lng")
-    private double lng;
+
+    @Ignore
+    public Land(long creator_id, String title) {
+        this.creator_id = creator_id;
+        this.title = title;
+    }
+
+    public Land(long id, long creator_id, String title) {
+        this.id = id;
+        this.creator_id = creator_id;
+        this.title = title;
+    }
 
     public long getId() {
         return id;
@@ -41,19 +53,34 @@ public class Land {
         this.title = title;
     }
 
-    public double getLat() {
-        return lat;
+    public static final Creator<Land> CREATOR = new Creator<Land>() {
+        @Override
+        public Land createFromParcel(Parcel in) {
+            return new Land(in);
+        }
+
+        @Override
+        public Land[] newArray(int size) {
+            return new Land[size];
+        }
+    };
+
+    @Ignore
+    protected Land(Parcel in) {
+        id = in.readLong();
+        creator_id = in.readLong();
+        title = in.readString();
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeLong(creator_id);
+        dest.writeString(title);
     }
 }

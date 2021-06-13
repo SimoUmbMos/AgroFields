@@ -1,26 +1,23 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.room.Room;
 
-import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.mosc.simo.ptuxiaki3741.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.interfaces.OnPermissionResult;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentBackPress fragmentBackPress;
+    private User user = null;
 
     public static AppDatabase getDb(Context context){
         return Room.databaseBuilder(context,
@@ -43,14 +40,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setToolbarTitle(String title) {
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle(title);
+    public void setOnBackPressed(FragmentBackPress fragmentBackPress){
+        this.fragmentBackPress = fragmentBackPress;
+    }
+
+    public User getUser() {
+        if(user != null)
+            return user;
+        else
+            return getUserFromMemory();
+    }
+
+    public void setUser(User user) {
+        storeUser(user);
+        this.user = user;
+    }
+    public void setUser(long userID) {
+        storeUser(userID);
+        if (userID != -1) {
+            AppDatabase db = getDb(this);
+            user = db.userDao().getUserById(userID);
+            db.close();
+        }else{
+            user = null;
         }
     }
 
-    public void setOnBackPressed(FragmentBackPress fragmentBackPress){
-        this.fragmentBackPress = fragmentBackPress;
+    private void storeUser(User user){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong("currUser", user.getId());
+        editor.apply();
+    }
+    private void storeUser(long userID){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong("currUser", userID);
+        editor.apply();
+    }
+    private User getUserFromMemory() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        long userID = sharedPref.getLong("currUser", -1);
+        if (userID != -1){
+            AppDatabase db = getDb(this);
+            user = db.userDao().getUserById(userID);
+            db.close();
+            return user;
+        }
+        return null;
     }
 
     @Override
