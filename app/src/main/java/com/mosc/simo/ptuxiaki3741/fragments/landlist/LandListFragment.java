@@ -176,7 +176,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         }
     }
     private void initHolders(View view) {
-        nav = new LandListNavigator(NavHostFragment.findNavController(this),user);
+        nav = new LandListNavigator(NavHostFragment.findNavController(this));
         viewHolder = new LandListViewHolder(view, lands, selectedLands, this::landClick, this::landLongClick);
         menuHolder = new LandListMenuHolder(this::OnNavigate,this::OnUpdateState,this::onAction);
     }
@@ -198,7 +198,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
 
     private void OnNavigate(LandListNavigateStates state){
         if(state == LandListNavigateStates.ToCreate){
-            nav.toCreateLand();
+            nav.toCreateLand(user);
         }
     }
     private void OnUpdateState(LandListMenuState state) {

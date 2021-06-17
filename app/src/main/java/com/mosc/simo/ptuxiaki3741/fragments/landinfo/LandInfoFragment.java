@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
+import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
 import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.fragments.landinfo.holders.LandInfoHolder;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListMenuState;
@@ -27,7 +28,9 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     private static final String TAG = "LandInfoFragment";
     private LandInfoHolder landInfoHolder;
     private Land land;
+    private LandPoint[] landPoints;
     private User user;
+    private boolean isNew = false;
 
     @Nullable
     @Override
@@ -60,11 +63,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     }
 
     private void init(View view, Bundle arguments) {
-        user = LandInfoFragmentArgs.fromBundle(arguments).getUser();
-        land = LandInfoFragmentArgs.fromBundle(arguments).getLand();
-        if(land.getId() == -1 && land.getCreator_id() == -1 && land.getTitle().equals("")){
-            land = null;
-        }
+        initData(arguments);
         MainActivity activity = (MainActivity) getActivity();
         ActionBar actionBar = null;
         if (activity != null) {
@@ -76,7 +75,18 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
         }
         initHolders(view);
     }
+    private void initData(Bundle arguments) {
+        user = LandInfoFragmentArgs.fromBundle(arguments).getUser();
+        land = LandInfoFragmentArgs.fromBundle(arguments).getLand();
+        landPoints = LandInfoFragmentArgs.fromBundle(arguments).getLandPoints();
 
+        if(land.getId() != -1 && land.getCreator_id() != -1 && (!land.getTitle().equals(""))){
+            isNew = false;
+        }else{
+            land = null;
+            isNew = true;
+        }
+    }
     private void initHolders(View view) {
         landInfoHolder = new LandInfoHolder(view, getResources(), land, this);
     }
@@ -87,7 +97,11 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
                 "[^a-zA-Z0-9]", " ");
         landName = landName.trim().replaceAll(" +", " ");
         if(!landName.isEmpty()){
-            submit(landName.trim());
+            if(isNew){
+                submitAdd(landName);
+            }else{
+                submitEdit(landName);
+            }
         }
     }
 
@@ -96,14 +110,16 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
         finish();
     }
 
-    private void submit(String landName) {
-        if(land != null){
-            land.setTitle(landName);
-        }else{
-            land = new Land(user.getId(),landName);
-        }
+    private void submitAdd(String landName) {
+        land = new Land(user.getId(),landName);
         debugData(land);
-        finish();
+        // nav farmAdded
+    }
+
+    private void submitEdit(String landName) {
+        land.setTitle(landName);
+        debugData(land);
+        // nav farmEdited
     }
 
     private void debugData(Land land) {

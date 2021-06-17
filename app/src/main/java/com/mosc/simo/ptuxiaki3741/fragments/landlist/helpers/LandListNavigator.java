@@ -13,11 +13,9 @@ import java.util.List;
 
 public class LandListNavigator {
     private final NavController navController;
-    private final User user;
 
-    public LandListNavigator(NavController navController, User user){
+    public LandListNavigator(NavController navController){
         this.navController = navController;
-        this.user = user;
     }
 
     private void navigate(NavDirections action){
@@ -43,18 +41,17 @@ public class LandListNavigator {
         NavDirections action = getEditLandAction(land, new ArrayList<>());
         if(action != null){
             navigate(action);
-        }else{
-            toCreateLand();
         }
     }
 
-    public void toCreateLand(){
+    public void toCreateLand(User user){
+        LandPoint[] points = null;
         Land land = new Land(-1,-1,"");
-        NavDirections action = LandListFragmentDirections.createLand(land,user);
+        NavDirections action = LandListFragmentDirections.createLand(land,user,points);
         navigate(action);
     }
-    public void toEditLandInfo(Land land){
-        NavDirections action = LandListFragmentDirections.createLand(land,user);
+    public void toEditLandInfo(Land land, User user, LandPoint[] points){
+        NavDirections action = LandListFragmentDirections.createLand(land,user,points);
         navigate(action);
     }
 
