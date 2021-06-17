@@ -26,4 +26,10 @@
     <string name="iv_check_box_desc">check box</string>
     <string name="title_activity_dev_maps">Map</string>
     <string name="select_all">Select All</string>
+    <string name="land_name">Land Name</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="land_info_title">Land Info</string>
+    <string name="create_land_label">Set Land Name</string>
+    <string name="edit_land_label">Edit Land Name</string>
 </resources>

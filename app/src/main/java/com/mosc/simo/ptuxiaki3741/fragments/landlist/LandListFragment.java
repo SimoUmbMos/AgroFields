@@ -19,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
+import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListActionState;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListNavigateStates;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandListFragment  extends Fragment implements FragmentBackPress {
+    private User user;
     private List<Land> lands;
     private List<Integer> selectedLands;
     private LandListViewHolder viewHolder;
@@ -143,13 +145,19 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         ActionBar actionBar = null;
         if (activity != null) {
             activity.setOnBackPressed(this);
+            //todo get real user
+            getMockUser();
             actionBar = activity.getSupportActionBar();
         }
-        if(actionBar != null){
-            actionBar.setTitle("");
+        if(user != null){
+            if(actionBar != null){
+                actionBar.setTitle("");
+            }
+            initLists();
+            initHolders(view);
+        }else{
+            finish();
         }
-        initLists();
-        initHolders(view);
     }
     private void initLists() {
         if(lands == null){
@@ -159,7 +167,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         }
         //todo read db
         for(int i = 1; i < 6 ;i++){
-            lands.add(new Land(i,"test "+i));
+            lands.add(new Land(user.getId(),"test "+i));
         }
         if(selectedLands == null){
             selectedLands = new ArrayList<>();
@@ -168,7 +176,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         }
     }
     private void initHolders(View view) {
-        nav = new LandListNavigator(NavHostFragment.findNavController(this));
+        nav = new LandListNavigator(NavHostFragment.findNavController(this),user);
         viewHolder = new LandListViewHolder(view, lands, selectedLands, this::landClick, this::landLongClick);
         menuHolder = new LandListMenuHolder(this::OnNavigate,this::OnUpdateState,this::onAction);
     }
@@ -256,5 +264,14 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
             selectedLands.add(position);
         }
         viewHolder.notifyItemChanged(position);
+    }
+
+    private void finish() {
+        if(getActivity() != null)
+            getActivity().onBackPressed();
+    }
+
+    private void getMockUser() {
+        user = new User(420,423,"makos");
     }
 }

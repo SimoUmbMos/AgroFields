@@ -12,6 +12,9 @@
         <action
             android:id="@+id/editLand"
             app:destination="@id/landMapFragment" />
+        <action
+            android:id="@+id/createLand"
+            app:destination="@id/landInfoFragment" />
     </fragment>
 
     <fragment
@@ -35,5 +38,19 @@
         <argument
             android:name="isNewLand"
             app:argType="boolean" />
+        <action
+            android:id="@+id/editLandInfo"
+            app:destination="@id/landInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/landInfoFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.landinfo.LandInfoFragment"
+        android:label="fragment_land_info"
+        tools:layout="@layout/fragment_land_info" >
+        <argument android:name="Land"
+            app:argType="com.mosc.simo.ptuxiaki3741.database.model.Land" />
+        <argument
+            android:name="user"
+            app:argType="com.mosc.simo.ptuxiaki3741.database.model.User" />
     </fragment>
 </navigation>

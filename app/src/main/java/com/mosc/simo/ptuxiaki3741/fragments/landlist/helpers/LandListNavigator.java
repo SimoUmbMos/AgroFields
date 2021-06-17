@@ -5,6 +5,7 @@ import androidx.navigation.NavDirections;
 
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
 import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
+import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.LandListFragmentDirections;
 
 import java.util.ArrayList;
@@ -12,9 +13,11 @@ import java.util.List;
 
 public class LandListNavigator {
     private final NavController navController;
+    private final User user;
 
-    public LandListNavigator(NavController navController){
+    public LandListNavigator(NavController navController, User user){
         this.navController = navController;
+        this.user = user;
     }
 
     private void navigate(NavDirections action){
@@ -36,13 +39,6 @@ public class LandListNavigator {
             return null;
         }
     }
-
-    public void toCreateLand(){
-
-    }
-    public void toLandExport(List<Land> lands){
-
-    }
     public void toEditLand(Land land){
         NavDirections action = getEditLandAction(land, new ArrayList<>());
         if(action != null){
@@ -50,5 +46,19 @@ public class LandListNavigator {
         }else{
             toCreateLand();
         }
+    }
+
+    public void toCreateLand(){
+        Land land = new Land(-1,-1,"");
+        NavDirections action = LandListFragmentDirections.createLand(land,user);
+        navigate(action);
+    }
+    public void toEditLandInfo(Land land){
+        NavDirections action = LandListFragmentDirections.createLand(land,user);
+        navigate(action);
+    }
+
+    public void toLandExport(List<Land> lands){
+
     }
 }
