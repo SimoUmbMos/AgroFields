@@ -1,11 +1,15 @@
 package com.mosc.simo.ptuxiaki3741.fragments.landinfo;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -25,8 +30,6 @@ import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 
 public class LandInfoFragment extends Fragment implements FragmentBackPress, LandInfoHolder.LandInfoHolderActions {
-    private static final String TAG = "LandInfoFragment";
-    private LandInfoHolder landInfoHolder;
     private Land land;
     private LandPoint[] landPoints;
     private User user;
@@ -62,21 +65,27 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
         return true;
     }
 
+    private void getMockUser() {
+        user = new User(420,423,"makos");
+    }
+
     private void init(View view, Bundle arguments) {
         initData(arguments);
         MainActivity activity = (MainActivity) getActivity();
         ActionBar actionBar = null;
         if (activity != null) {
             activity.setOnBackPressed(this);
+            //todo get real user
+            getMockUser();
             actionBar = activity.getSupportActionBar();
         }
         if(actionBar != null){
             actionBar.setTitle("");
+            actionBar.hide();
         }
         initHolders(view);
     }
     private void initData(Bundle arguments) {
-        user = LandInfoFragmentArgs.fromBundle(arguments).getUser();
         land = LandInfoFragmentArgs.fromBundle(arguments).getLand();
         landPoints = LandInfoFragmentArgs.fromBundle(arguments).getLandPoints();
 
@@ -84,15 +93,17 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
             isNew = false;
         }else{
             land = null;
+            landPoints = new LandPoint[0];
             isNew = true;
         }
     }
     private void initHolders(View view) {
-        landInfoHolder = new LandInfoHolder(view, getResources(), land, this);
+        LandInfoHolder landInfoHolder = new LandInfoHolder(view, getResources(), land, this);
     }
 
     @Override
     public void onSubmit(String landName) {
+        closeKeyboard();
         landName = landName.replaceAll(
                 "[^a-zA-Z0-9]", " ");
         landName = landName.trim().replaceAll(" +", " ");
@@ -107,28 +118,39 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
 
     @Override
     public void onCancel() {
+        closeKeyboard();
         finish();
+    }
+
+    private void closeKeyboard() {
+        if(getActivity() != null){
+            InputMethodManager inputManager = (InputMethodManager)
+                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private void submitAdd(String landName) {
         land = new Land(user.getId(),landName);
-        debugData(land);
-        // nav farmAdded
+        navigate(toMap(land,landPoints));
     }
-
     private void submitEdit(String landName) {
         land.setTitle(landName);
-        debugData(land);
-        // nav farmEdited
-    }
-
-    private void debugData(Land land) {
-        Log.d(TAG, "debug land data: creator_id = " + land.getCreator_id());
-        Log.d(TAG, "debug land data: land_name = " + land.getTitle());
+        navigate(toMap(land,landPoints));
     }
 
     private void finish() {
         if(getActivity() != null)
             getActivity().onBackPressed();
+    }
+
+    private void navigate(NavDirections action){
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(action);
+    }
+
+    private NavDirections toMap(Land land,LandPoint[] landPoints){
+        return  LandInfoFragmentDirections.farmEdited(land,landPoints);
     }
 }

@@ -70,17 +70,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="74dp" />
+        app:layout_constraintGuide_begin="56dp" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#673AB7"
+        android:background="@color/colorPrimary"
+        android:fontFamily="sans-serif-light"
         android:gravity="center|center_horizontal|center_vertical"
         android:text="@string/land_info_title"
         android:textAlignment="center"
-        android:textColor="#C0C0C0"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

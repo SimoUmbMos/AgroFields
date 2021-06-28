@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.android.gms.maps.model.LatLng;
+
 @Entity(tableName = "LandPointsRecord")
 public class LandPointRecord {
     @PrimaryKey(autoGenerate = true)
@@ -13,32 +15,28 @@ public class LandPointRecord {
     private long landRecordID;
     @ColumnInfo(name = "Position")
     private long position;
-    @ColumnInfo(name = "Lat")
-    private double lat;
-    @ColumnInfo(name = "Lng")
-    private double lng;
+    @ColumnInfo(name = "LatLng")
+    private final LatLng latLng;
 
     @Ignore
-    public LandPointRecord(long landRecordID, long position, double lat, double lng) {
+    public LandPointRecord(long landRecordID, long position, LatLng latLng) {
         this.landRecordID = landRecordID;
         this.position = position;
-        this.lat = lat;
-        this.lng = lng;
+        this.latLng = latLng;
     }
 
-    public LandPointRecord(long id, long landRecordID, long position, double lat, double lng) {
+    public LandPointRecord(long id, long landRecordID, long position, LatLng latLng) {
         this.id = id;
         this.landRecordID = landRecordID;
         this.position = position;
-        this.lat = lat;
-        this.lng = lng;
+        this.latLng = latLng;
     }
+
     @Ignore
     public LandPointRecord(LandRecord landRecord, LandPoint landPointRecord) {
         this.landRecordID = landRecord.getId();
         this.position = landPointRecord.getPosition();
-        this.lat = landPointRecord.getLat();
-        this.lng = landPointRecord.getLng();
+        this.latLng = landPointRecord.getLatLng();
     }
 
     public long getId() {
@@ -65,19 +63,7 @@ public class LandPointRecord {
         this.position = position;
     }
 
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
+    public LatLng getLatLng() {
+        return latLng;
     }
 }

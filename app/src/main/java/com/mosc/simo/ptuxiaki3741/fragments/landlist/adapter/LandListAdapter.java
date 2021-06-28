@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
+import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 
 import java.util.List;
 
@@ -23,8 +24,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     private final OnLandLongClick onLandLongClick;
 
     public LandListAdapter(List<Land> lands,
-                           List<Integer> selectedLands,
-                           OnLandClick onLandClick,
+                           List<Integer> selectedLands, OnLandClick onLandClick,
                            OnLandLongClick onLandLongClick){
         this.lands = lands;
         this.selectedLands = selectedLands;

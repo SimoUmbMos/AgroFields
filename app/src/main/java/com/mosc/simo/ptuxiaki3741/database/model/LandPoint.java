@@ -11,40 +11,28 @@ import androidx.room.PrimaryKey;
 import com.google.android.gms.maps.model.LatLng;
 
 @Entity(tableName = "LandPoints")
-public class LandPoint implements Parcelable,Comparable<LandPoint> {
+public class LandPoint implements Parcelable,Comparable<LandPoint>{
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "Lid")
     private long lid;
     @ColumnInfo(name = "Position")
     private long position;
-    @ColumnInfo(name = "Lat")
-    private double lat;
-    @ColumnInfo(name = "Lng")
-    private double lng;
+    @ColumnInfo(name = "LatLng")
+    private final LatLng latLng;
 
     @Ignore
     public LandPoint(long lid, long position, LatLng latLng) {
         this.lid = lid;
         this.position = position;
-        this.lat = latLng.latitude;
-        this.lng = latLng.longitude;
+        this.latLng = latLng;
     }
-    @Ignore
+
     public LandPoint(long id, long lid, long position, LatLng latLng) {
         this.id = id;
         this.lid = lid;
         this.position = position;
-        this.lat = latLng.latitude;
-        this.lng = latLng.longitude;
-    }
-
-    public LandPoint(long id, long lid, long position, double lat, double lng) {
-        this.id = id;
-        this.lid = lid;
-        this.position = position;
-        this.lat = lat;
-        this.lng = lng;
+        this.latLng = latLng;
     }
 
     public long getId() {
@@ -71,21 +59,10 @@ public class LandPoint implements Parcelable,Comparable<LandPoint> {
         this.position = position;
     }
 
-    public double getLat() {
-        return lat;
+    public LatLng getLatLng() {
+        return latLng;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
 
     public static final Creator<LandPoint> CREATOR = new Creator<LandPoint>() {
         @Override
@@ -103,13 +80,15 @@ public class LandPoint implements Parcelable,Comparable<LandPoint> {
         id = in.readLong();
         lid = in.readLong();
         position = in.readLong();
-        lat = in.readDouble();
-        lng = in.readDouble();
+        latLng = in.readParcelable(LatLng.class.getClassLoader());
     }
 
     @Override
     public int describeContents() {
-        return 0;
+        if(latLng != null)
+            return latLng.describeContents();
+        else
+            return 0;
     }
 
     @Override
@@ -117,16 +96,11 @@ public class LandPoint implements Parcelable,Comparable<LandPoint> {
         dest.writeLong(id);
         dest.writeLong(lid);
         dest.writeLong(position);
-        dest.writeDouble(lat);
-        dest.writeDouble(lng);
+        dest.writeParcelable(latLng,flags);
     }
 
     @Override
     public int compareTo(LandPoint arg) {
         return Long.compare(this.position, arg.position);
-    }
-
-    public LatLng toLatLng() {
-        return new LatLng(this.lat,this.lng);
     }
 }

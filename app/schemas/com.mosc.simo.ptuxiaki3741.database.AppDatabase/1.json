@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fadcbe15ff4ebdf59f1506081fbc9ae0",
+    "identityHash": "37474627ca5bf5e1906e7a12cf123f7c",
     "entities": [
       {
         "tableName": "Users",
@@ -70,7 +70,7 @@
       },
       {
         "tableName": "LandPoints",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Lid` INTEGER NOT NULL, `Position` INTEGER NOT NULL, `Lat` REAL NOT NULL, `Lng` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Lid` INTEGER NOT NULL, `Position` INTEGER NOT NULL, `LatLng` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -91,16 +91,10 @@
             "notNull": true
           },
           {
-            "fieldPath": "lat",
-            "columnName": "Lat",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lng",
-            "columnName": "Lng",
-            "affinity": "REAL",
-            "notNull": true
+            "fieldPath": "latLng",
+            "columnName": "LatLng",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -114,7 +108,7 @@
       },
       {
         "tableName": "LandRecords",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LandId` INTEGER NOT NULL, `UserId` INTEGER NOT NULL, `ActionID` INTEGER NOT NULL, `Date` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LandId` INTEGER NOT NULL, `CreatorId` INTEGER NOT NULL, `LandTitle` TEXT, `UserId` INTEGER NOT NULL, `ActionID` INTEGER, `Date` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -129,6 +123,18 @@
             "notNull": true
           },
           {
+            "fieldPath": "landCreatorID",
+            "columnName": "CreatorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "landTitle",
+            "columnName": "LandTitle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "userID",
             "columnName": "UserId",
             "affinity": "INTEGER",
@@ -138,7 +144,7 @@
             "fieldPath": "actionID",
             "columnName": "ActionID",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "date",
@@ -158,7 +164,7 @@
       },
       {
         "tableName": "LandPointsRecord",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LRid` INTEGER NOT NULL, `Position` INTEGER NOT NULL, `Lat` REAL NOT NULL, `Lng` REAL NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LRid` INTEGER NOT NULL, `Position` INTEGER NOT NULL, `LatLng` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -179,16 +185,10 @@
             "notNull": true
           },
           {
-            "fieldPath": "lat",
-            "columnName": "Lat",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lng",
-            "columnName": "Lng",
-            "affinity": "REAL",
-            "notNull": true
+            "fieldPath": "latLng",
+            "columnName": "LatLng",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -204,7 +204,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fadcbe15ff4ebdf59f1506081fbc9ae0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37474627ca5bf5e1906e7a12cf123f7c')"
     ]
   }
 }

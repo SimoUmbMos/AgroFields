@@ -32,4 +32,7 @@
     <string name="land_info_title">Land Info</string>
     <string name="create_land_label">Set Land Name</string>
     <string name="edit_land_label">Edit Land Name</string>
+    <string name="undo_land_delete_snackbar_text">Undo Land Delete</string>
+    <string name="undo_land_delete_successful_snackbar_text">Undo successful</string>
+    <string name="double_tap_exit">Tap again to exit</string>
 </resources>

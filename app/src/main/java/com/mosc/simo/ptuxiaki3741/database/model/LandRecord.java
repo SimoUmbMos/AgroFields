@@ -5,34 +5,42 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.mosc.simo.ptuxiaki3741.database.enums.DBAction;
+
 import java.util.Date;
 
 @Entity(tableName = "LandRecords")
-public class LandRecord {
+public class LandRecord{
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "LandId")
     private long landID;
+    @ColumnInfo(name = "CreatorId")
+    private long landCreatorID;
+    @ColumnInfo(name = "LandTitle")
+    private String landTitle;
     @ColumnInfo(name = "UserId")
     private long userID;
     @ColumnInfo(name = "ActionID")
-    private int actionID;
+    private DBAction actionID;
     @ColumnInfo(name = "Date")
     private Date date;
 
-    /**
-     * @param actionID Flag for action: 1 created, 2 edit, 3 restore, 4 delete
-     */
     @Ignore
-    public LandRecord(Land land, User user, int actionID,Date date) {
+    public LandRecord(Land land, User user, DBAction actionID,Date date) {
         this.landID = land.getId();
+        this.landCreatorID = land.getCreator_id();
+        this.landTitle = land.getTitle();
         this.userID = user.getId();
         this.actionID = actionID;
         this.date = date;
     }
-    public LandRecord(long id,long landID,long userID,int actionID,Date date) {
+
+    public LandRecord(long id, long landID, long landCreatorID, String landTitle, long userID, DBAction actionID, Date date) {
         this.id = id;
         this.landID = landID;
+        this.landCreatorID = landCreatorID;
+        this.landTitle = landTitle;
         this.userID = userID;
         this.actionID = actionID;
         this.date = date;
@@ -54,8 +62,20 @@ public class LandRecord {
         this.landID = landID;
     }
 
-    public void setLandID(Land land) {
-        this.landID = land.getId();
+    public long getLandCreatorID() {
+        return landCreatorID;
+    }
+
+    public void setLandCreatorID(long landCreatorID) {
+        this.landCreatorID = landCreatorID;
+    }
+
+    public String getLandTitle() {
+        return landTitle;
+    }
+
+    public void setLandTitle(String landTitle) {
+        this.landTitle = landTitle;
     }
 
     public long getUserID() {
@@ -66,15 +86,11 @@ public class LandRecord {
         this.userID = userID;
     }
 
-    public void setUserID(User user) {
-        this.userID = user.getId();
-    }
-
-    public int getActionID() {
+    public DBAction getActionID() {
         return actionID;
     }
 
-    public void setActionID(int actionID) {
+    public void setActionID(DBAction actionID) {
         this.actionID = actionID;
     }
 

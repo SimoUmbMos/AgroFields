@@ -1,9 +1,10 @@
-package com.mosc.simo.ptuxiaki3741.database.helpers;
+package com.mosc.simo.ptuxiaki3741.database.repositorys;
 
 import android.content.Context;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.database.enums.DBAction;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
 import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
 import com.mosc.simo.ptuxiaki3741.database.model.LandPointRecord;
@@ -14,22 +15,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class LandHistoryHelper {
+public class LandHistoryRepository {
 
     private final AppDatabase db;
 
-    public LandHistoryHelper(Context context){
+    public LandHistoryRepository(Context context){
         db = MainActivity.getDb(context);
     }
 
-    public void putLandToLandHistory(Land land, User user, int actionID, Date date,
-                                            List<LandPoint> landPoints){
+    public void putLandToLandHistory(Land land, User user, DBAction actionID, Date date){
+        List<LandPoint> landPoints = db.landPointDao().getAllLandPointsByLid(land.getId());
+
         LandRecord landRecord = new LandRecord(land,user,actionID,date);
-        LandPointRecord temp;
-        for (LandPoint landPointRecord: landPoints) {
-            temp = new LandPointRecord(landRecord,landPointRecord);
+        List<LandPointRecord> landPointRecords = new ArrayList<>();
+        for(LandPoint landPoint : landPoints){
+            landPointRecords.add(new LandPointRecord(landRecord,landPoint));
         }
-        //todo add landRecord with LandPoints to db
+
+        db.landHistoryDao().insert(landRecord);
+        db.landPointHistoryDao().insertAll(landPointRecords);
     }
 
     public List<LandRecord> getLandHistory(Land land){
@@ -37,7 +41,7 @@ public class LandHistoryHelper {
         return new ArrayList<>();
     }
 
-    public void restoreLandFromLandHistory(Land land,LandRecord landRecord){
+    public void restoreLandFromLandHistory(LandRecord landRecord){
         //todo delete all landPoint from land and replace with landPointRecord of landRecord
     }
 }

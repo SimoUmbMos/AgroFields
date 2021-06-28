@@ -1,14 +1,15 @@
 package com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers;
 
+import android.app.Activity;
+
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 
+import com.mosc.simo.ptuxiaki3741.database.repositorys.LandRepository;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
 import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
-import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.LandListFragmentDirections;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LandListNavigator {
@@ -29,30 +30,24 @@ public class LandListNavigator {
             if(landPoints != null){
                 LandPoint[] landPointArray = new LandPoint[landPoints.size()];
                 for(int i = 0; i < landPoints.size(); i++) landPointArray[i] = landPoints.get(i);
-                return LandListFragmentDirections.editLand(land,landPointArray,false);
+                return LandListFragmentDirections.editLand(land,landPointArray);
             }else{
-                return LandListFragmentDirections.editLand(land,null,false);
+                return LandListFragmentDirections.editLand(land,null);
             }
         }else{
             return null;
         }
     }
-    public void toEditLand(Land land){
-        NavDirections action = getEditLandAction(land, new ArrayList<>());
-        if(action != null){
-            navigate(action);
-        }
+    public void toEditLand(Activity activity, Land land, LandRepository landRepository){
+        List<LandPoint> landPoints = landRepository.getLandPoints(land.getId());
+        NavDirections action = getEditLandAction(land,landPoints);
+        activity.runOnUiThread(()->navigate(action));
     }
 
-    public void toCreateLand(User user){
-        LandPoint[] points = null;
+    public void toCreateLand(Activity activity){
         Land land = new Land(-1,-1,"");
-        NavDirections action = LandListFragmentDirections.createLand(land,user,points);
-        navigate(action);
-    }
-    public void toEditLandInfo(Land land, User user, LandPoint[] points){
-        NavDirections action = LandListFragmentDirections.createLand(land,user,points);
-        navigate(action);
+        NavDirections action = LandListFragmentDirections.createLand(land,null);
+        activity.runOnUiThread(()->navigate(action));
     }
 
     public void toLandExport(List<Land> lands){

@@ -6,18 +6,18 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.database.model.Land;
+import com.mosc.simo.ptuxiaki3741.database.model.LandRecord;
 
 import java.util.List;
 
 @Dao
-public interface LandDao {
-    @Query("SELECT * FROM `Lands` WHERE `CreatorId` = :uid")
-    List<Land> getLandByCreatorId(long uid);
+public interface LandHistoryDao {
+    @Query("SELECT * FROM `LandRecords` Where `UserId` = :uid")
+    List<LandRecord> getLandsHistoryByUserId(long uid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(Land land);
+    long insert(LandRecord landRecord);
 
     @Delete
-    int delete(Land land);
+    int delete(LandRecord landRecord);
 }

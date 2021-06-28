@@ -35,9 +35,6 @@
             android:name="landPoints"
             app:argType="com.mosc.simo.ptuxiaki3741.database.model.LandPoint[]"
             app:nullable="true" />
-        <argument
-            android:name="isNewLand"
-            app:argType="boolean" />
         <action
             android:id="@+id/editLandInfo"
             app:destination="@id/landInfoFragment" />
@@ -49,18 +46,10 @@
         tools:layout="@layout/fragment_land_info" >
         <argument android:name="Land"
             app:argType="com.mosc.simo.ptuxiaki3741.database.model.Land" />
-        <argument
-            android:name="user"
-            app:argType="com.mosc.simo.ptuxiaki3741.database.model.User" />
-        <action
-            android:id="@+id/farmAdded"
-            app:destination="@id/landMapFragment"
-            app:popUpTo="@id/landListFragment"
-            app:popUpToInclusive="true" />
         <action
             android:id="@+id/farmEdited"
             app:destination="@id/landMapFragment"
-            app:popUpTo="@id/landListFragment"
+            app:popUpTo="@id/landInfoFragment"
             app:popUpToInclusive="true" />
         <argument
             android:name="LandPoints"

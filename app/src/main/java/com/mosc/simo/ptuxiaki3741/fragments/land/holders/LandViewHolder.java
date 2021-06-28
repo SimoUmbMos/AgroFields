@@ -80,6 +80,7 @@ public class LandViewHolder implements View.OnTouchListener {
             View.OnClickListener btnSave,
             View.OnClickListener btnCancel
     ){
+        this.btnSave.setVisibility(View.GONE);
         clImgTab.setVisibility(View.VISIBLE);
         fabPlus.setVisibility(View.GONE);
         fabMinus.setVisibility(View.GONE);
@@ -94,6 +95,7 @@ public class LandViewHolder implements View.OnTouchListener {
             View.OnClickListener btnSave,
             View.OnClickListener btnCancel
     ){
+        this.btnSave.setVisibility(View.GONE);
         clImgTab.setVisibility(View.VISIBLE);
         fabPlus.setVisibility(View.VISIBLE);
         fabMinus.setVisibility(View.VISIBLE);
@@ -104,6 +106,7 @@ public class LandViewHolder implements View.OnTouchListener {
         tvImgAction.setText(title);
     }
     public void closeTabMenu(){
+        btnSave.setVisibility(View.VISIBLE);
         clImgTab.setVisibility(View.GONE);
         touchLayer.setVisibility(View.GONE);
         fabPlus.setOnClickListener(null);

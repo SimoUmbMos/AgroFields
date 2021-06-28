@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.fragments.land;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,9 +30,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.database.helpers.LandHelper;
+import com.mosc.simo.ptuxiaki3741.database.repositorys.LandRepository;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
 import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
+import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.fragments.land.controllers.LandFileController;
 import com.mosc.simo.ptuxiaki3741.fragments.land.controllers.LandImgController;
 import com.mosc.simo.ptuxiaki3741.fragments.land.controllers.LandPointsController;
@@ -56,6 +58,7 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     private LandFileController fileController;
     private LandPointsController pointsController;
     private Land currLand = null;
+    private User user;
 
     private final ActivityResultLauncher<Intent> fileResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -107,12 +110,21 @@ public class LandFragment extends Fragment implements FragmentBackPress {
         return true;
     }
 
+    private void getMockUser() {
+        user = new User(420,423,"makos");
+    }
+
     private void init(View view) {
         MainActivity activity = (MainActivity) getActivity();
         ActionBar actionBar = null;
         if (activity != null) {
             activity.setOnBackPressed(this);
+            //todo get real user
+            getMockUser();
             actionBar = activity.getSupportActionBar();
+            if(actionBar != null){
+                actionBar.show();
+            }
         }
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -125,10 +137,9 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     }
 
     private void initValues() {
-        Land land = LandFragmentArgs.fromBundle(getArguments()).getSelectedLand();
-        if(land != null){
+        currLand = LandFragmentArgs.fromBundle(getArguments()).getSelectedLand();
+        if(currLand != null){
             Log.i(TAG, "initValues: land not null");
-            currLand = land;
             viewHolder.setTitle(currLand.getTitle());
             LandPoint[] tempLandPoints = LandFragmentArgs.fromBundle(getArguments()).getLandPoints();
             if(tempLandPoints != null){
@@ -137,14 +148,10 @@ public class LandFragment extends Fragment implements FragmentBackPress {
                 Collections.sort(landPointsList);
                 List<LatLng> landPoints = new ArrayList<>();
                 for(LandPoint landPoint : landPointsList){
-                    landPoints.add(landPoint.toLatLng());
+                    landPoints.add(landPoint.getLatLng());
                 }
                 pointsController.setPoints(landPoints);
-            }else{
-                Log.i(TAG, "initValues: LandPoints null");
             }
-        }else{
-            Log.i(TAG, "initValues: land null");
         }
     }
 
@@ -174,36 +181,30 @@ public class LandFragment extends Fragment implements FragmentBackPress {
 
     private void save(View v) {
         Context ctx = getContext();
-        if(ctx != null &&
-                (pointsController.getPoints().size() > 2 && viewHolder.getTitle().length() != 0)
-        ){
-            LandHelper landHelper = new LandHelper(ctx);
-            Land land = landHelper.saveLand(-1,"test");
-            List<LandPoint> landPoints = new ArrayList<>();
-            for(LatLng latLng : pointsController.getPoints()){
-                landPoints.add(landHelper.saveLandPoint(
-                        land,
-                        pointsController.getPoints().indexOf(latLng),
-                        latLng
-                ));
-            }
-            debugSaveData(land,landPoints);
-            //todo save db
+        if(isValidToSave(ctx)){
+            saveToDB(ctx);
+            navigate(toLandMenu());
         }
-        navigate(toLandMenu());
     }
 
-    private void debugSaveData(Land land, List<LandPoint> landPoints) {
-        Log.i(TAG, "debugSaveData land: {\n\"ID\":\""+land.getId()+
-                "\",\n\"Creator\":\""+land.getCreator_id()+
-                "\",\n\"Title\":\""+land.getTitle()+"\"\n}");
-        for(LandPoint landPoint : landPoints){
-            Log.i(TAG, "debugSaveData landPoint: {\n\"ID\":\""+landPoint.getId()+
-                    "\",\n\"Land ID\":\""+landPoint.getLid()+
-                    "\",\n\"Position\":\""+landPoint.getPosition()+
-                    "\",\n\"Lat\":\""+landPoint.getLat()+
-                    "\",\n\"Lng\":\""+landPoint.getLng()+"\"\n}");
-        }
+    private boolean isValidToSave(Context ctx) {
+        return pointsController.getPoints().size() > 2 &&
+                viewHolder.getTitle().length() != 0 &&
+                ctx != null;
+    }
+
+    private void saveToDB(Context ctx) {
+        LandRepository landRepository = new LandRepository(ctx);
+        AsyncTask.execute(() -> {
+            if(currLand != null){
+                currLand.setTitle(viewHolder.getTitle());
+                currLand = landRepository.updateLand(currLand);
+            }else{
+                    currLand = landRepository.saveLand(user.getId(),viewHolder.getTitle());
+            }
+            landRepository.removeAllPointsByLID(currLand.getId());
+            landRepository.addAllPoints(currLand.getId(),pointsController.getPoints());
+        });
     }
 
     private void FileResult(ActivityResult result) {
