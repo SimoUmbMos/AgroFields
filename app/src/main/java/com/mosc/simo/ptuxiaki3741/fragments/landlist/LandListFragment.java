@@ -1,6 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.fragments.landlist;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,17 +19,19 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
+import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.database.repositorys.LandRepository;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListActionState;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListMenuState;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListNavigateStates;
+import com.mosc.simo.ptuxiaki3741.fragments.landlist.enums.LandListActionState;
+import com.mosc.simo.ptuxiaki3741.fragments.landlist.enums.LandListMenuState;
+import com.mosc.simo.ptuxiaki3741.fragments.landlist.enums.LandListNavigateStates;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListNavigator;
 import com.mosc.simo.ptuxiaki3741.fragments.landlist.holders.LandListMenuHolder;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.holders.LandListViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.landlist.holders.LandListRecycleViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LandListFragment  extends Fragment implements FragmentBackPress {
@@ -39,10 +40,12 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     private LandViewModel vmLands;
     private UserViewModel vmUsers;
 
-    private LandListViewHolder viewHolder;
+    private LandListRecycleViewHolder viewHolder;
     private LandListMenuHolder menuHolder;
     private LandListNavigator nav;
     private Menu menu;
+    private ActionBar actionBar;
+    private int mockID = 1;
 
     @Nullable
     @Override
@@ -90,33 +93,38 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
 
     private void init(View view) {
         MainActivity activity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
+        actionBar = null;
         if (activity != null) {
-            getViewModels(activity);
-            activity.setOnBackPressed(this);
             actionBar = activity.getSupportActionBar();
+            activity.setOnBackPressed(this);
+            changeActionBarTitle("");
+            getViewModels(activity);
+            initObservers();
+            initHolders(view);
         }
-        if(vmUsers != null){
-            if(vmUsers.isInit()){
-                if( actionBar != null ){
-                    actionBar.setTitle("");
-                    actionBar.show();
-                }
-                initHolders(view);
-                return;
-            }
-        }
-        finish();
     }
-
+    private void changeActionBarTitle(String title) {
+        if( actionBar != null ){
+            actionBar.setTitle(title);
+            actionBar.show();
+        }
+    }
     private void getViewModels(MainActivity activity) {
         vmLands = new ViewModelProvider(activity).get(LandViewModel.class);
         vmUsers = new ViewModelProvider(activity).get(UserViewModel.class);
     }
-
+    private void initObservers() {
+        if(vmUsers != null){
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
+        }
+        if(vmLands != null){
+            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandListUpdate);
+            vmLands.getSelectedLands().observe(getViewLifecycleOwner(),this::onSelectedLandUpdate);
+        }
+    }
     private void initHolders(View view) {
         nav = new LandListNavigator(NavHostFragment.findNavController(this));
-        viewHolder = new LandListViewHolder(view, vmLands, this::landClick, this::landLongClick);
+        viewHolder = new LandListRecycleViewHolder(view, vmLands, this::landClick, this::landLongClick);
         menuHolder = new LandListMenuHolder(this::OnNavigate,this::OnUpdateState,this::onAction);
 
         if(menu != null){
@@ -126,15 +134,44 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         }
     }
 
-    private void OnNavigate(LandListNavigateStates state){
-        if(state == LandListNavigateStates.ToCreate && getActivity() != null){
-            nav.toCreateLand(getActivity());
+    private void onCurrUserUpdate(User currUser) {
+        if( currUser != null) {
+            changeActionBarTitle(currUser.getUsername()+"'s Land's");
+            LandRepository landRepository = new LandRepository(MainActivity.getDb(getContext()));
+            vmLands.init(currUser,landRepository);
         }
     }
+    private void onSelectedLandUpdate(List<Integer> integers) {
+        viewHolder.notifyItemsChanged();
+    }
+    private void onLandListUpdate(List<Land> lands) {
+        viewHolder.notifyItemsChanged();
+    }
+
+    private void OnNavigate(LandListNavigateStates state){
+        if(state == LandListNavigateStates.ToCreate && getActivity() != null){
+            addMockLand();
+//            todo OnNavigate
+//            nav.toCreateLand(getActivity());
+        }
+    }
+
+    private void addMockLand() {
+        if(vmLands.isInit()){
+            Log.d(TAG, "OnNavigate: vmLands is init");
+            vmLands.addLand(new Land(mockID,420,"test "+mockID),new ArrayList<>());
+            mockID++;
+
+            Log.d(TAG, "OnNavigate: vmLands size "+ vmLands.landSize());
+        }else{
+            Log.d(TAG, "OnNavigate: vmLands is not init");
+        }
+    }
+
     private void OnUpdateState(LandListMenuState state) {
         menuHolder.setupMenu(state);
         if(menuHolder.getState() == LandListMenuState.NormalState)
-            deselectAll();
+            vmLands.deselectAllLands();
     }
     private void onAction(LandListActionState action) {
         switch (action){
@@ -153,69 +190,50 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
 
     private void landClick(int position) {
-//        todo land Click
-//        if(menuHolder.getState() == LandListMenuState.NormalState) {
+        if(menuHolder.getState() == LandListMenuState.NormalState) {
+//            todo land Click
 //            if(getActivity() != null){
 //                List<Land> lands = vmLands.getLands().getValue();
 //                if(lands != null)
-//                    nav.toEditLand(getActivity(),lands.get(position))
+//                    nav.toEditLand(getActivity(),vmLands,position);
 //            }
-//        }else{
-//            toggleSelected(position);
-//        }
+        }else{
+            vmLands.toggleSelectOnPosition(position);
+        }
     }
     private boolean landLongClick(int position) {
-//        todo land Long Click
-//        if (menuHolder.getState() == LandListMenuState.NormalState){
-//            menuHolder.setState(LandListMenuState.MultiSelectState);
-//            toggleSelected(position);
-//        }else
-//            landClick(position);
+        if (menuHolder.getState() == LandListMenuState.NormalState){
+            menuHolder.setState(LandListMenuState.MultiSelectState);
+            vmLands.toggleSelectOnPosition(position);
+        }else
+            landClick(position);
         return true;
     }
 
     private void deleteAction() {
-//        todo delete Action
-//        Log.d(TAG, "deleteAction: "+selectedLands.size()+" lands");
-//        for(int index:selectedLands){
-//            Log.d(TAG, "deleteAction: delete "+index);
-//            viewHolder.notifyItemRemoved(index);
-//        }
-//        selectedLands.clear();
+        List<Integer> selectedLands = vmLands.getSelectedLands().getValue();
+        if(selectedLands != null){
+            vmLands.removeSelectedLands();
+            for(int index:selectedLands){
+                viewHolder.notifyItemRemoved(index);
+            }
+            vmLands.deselectAllLands();
+        }
     }
     private void exportAction() {
-//        todo export action
-//        Log.d(TAG, "exportAction: "+selectedLands.size()+" lands");
-//        for(int index:selectedLands){
-//            Log.d(TAG, "exportAction: export "+index);
-//        }
-//        selectedLands.clear();
-//        viewHolder.notifyItemsChanged();
+        List<Integer> selectedLands = vmLands.getSelectedLands().getValue();
+        if(selectedLands != null){
+            List<Land> lands = vmLands.returnSelectedLands();
+//          todo export action
+            vmLands.deselectAllLands();
+        }
     }
-    private void selectAllAction() {
-//        todo select All Action
-//        if(selectedLands.size() == lands.size()){
-//            selectedLands.clear();
-//        }else{
-//            selectedLands.clear();
-//            for(int i = 0; i <lands.size();i++)
-//                selectedLands.add(i);
-//        }
-//        viewHolder.notifyItemsChanged();
-    }
-    private void deselectAll() {
-//        todo deselect All Action
-//        selectedLands.clear();
-//        viewHolder.notifyItemsChanged();
-    }
-    private void toggleSelected(int position) {
-//        todo toggle Select Action
-//        if(selectedLands.contains(position)){
-//            selectedLands.remove(position);
-//        }else{
-//            selectedLands.add(position);
-//        }
-//        viewHolder.notifyItemChanged(position);
+    private void selectAllAction(){
+        if(vmLands.isAllSelected()){
+            vmLands.deselectAllLands();
+        }else{
+            vmLands.selectAllLands();
+        }
     }
 
     private void finish() {

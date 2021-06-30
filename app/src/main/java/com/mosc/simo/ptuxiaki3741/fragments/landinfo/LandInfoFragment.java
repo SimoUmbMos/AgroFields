@@ -11,7 +11,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +25,6 @@ import com.mosc.simo.ptuxiaki3741.database.model.Land;
 import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
 import com.mosc.simo.ptuxiaki3741.database.model.User;
 import com.mosc.simo.ptuxiaki3741.fragments.landinfo.holders.LandInfoHolder;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 
 public class LandInfoFragment extends Fragment implements FragmentBackPress, LandInfoHolder.LandInfoHolderActions {

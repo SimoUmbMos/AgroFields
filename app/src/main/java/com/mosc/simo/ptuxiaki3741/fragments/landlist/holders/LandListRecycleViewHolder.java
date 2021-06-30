@@ -13,7 +13,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 
 import java.util.List;
 
-public class LandListViewHolder {
+public class LandListRecycleViewHolder {
 
     public RecyclerView recyclerView;
     public ConstraintLayout root;
@@ -21,13 +21,13 @@ public class LandListViewHolder {
     private final LandViewModel vmLands;
     private final LandListAdapter adapter;
 
-    public LandListViewHolder(View view, LandViewModel vmLands,
-                              LandListAdapter.OnLandClick onLandClick,
-                              LandListAdapter.OnLandLongClick onLandLongClick) {
+    public LandListRecycleViewHolder(View view, LandViewModel vmLands,
+                                     LandListAdapter.OnLandClick onLandClick,
+                                     LandListAdapter.OnLandLongClick onLandLongClick) {
         this.vmLands = vmLands;
         root = view.findViewById(R.id.root);
         recyclerView = view.findViewById(R.id.rvLandList);
-        adapter = new LandListAdapter(vmLands.getLands().getValue(), vmLands.getSelectedLands().getValue(), onLandClick,onLandLongClick);
+        adapter = new LandListAdapter(vmLands.getLands(), vmLands.getSelectedLands(), onLandClick,onLandLongClick);
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                         view.getContext(),
                         LinearLayoutManager.VERTICAL,
@@ -44,13 +44,13 @@ public class LandListViewHolder {
     }
     public void notifyItemInserted(int position) {
         adapter.notifyItemInserted(position);
-        adapter.notifyItemRangeChanged(position,vmLands.size());
+        adapter.notifyItemRangeChanged(position,vmLands.landSize());
     }
     public void notifyItemChanged(int position) {
         adapter.notifyItemChanged(position);
     }
     public void notifyItemRemoved(int position) {
         adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position,vmLands.size());
+        adapter.notifyItemRangeChanged(position,vmLands.landSize());
     }
 }

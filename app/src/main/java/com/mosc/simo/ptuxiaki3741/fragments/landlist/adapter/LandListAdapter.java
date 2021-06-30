@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
@@ -18,13 +19,13 @@ import java.util.List;
 
 public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandListAdapterViewHolder>{
 
-    private final List<Land> lands;
-    private final List<Integer> selectedLands;
+    private final LiveData<List<Land>> lands;
+    private final LiveData<List<Integer>> selectedLands;
     private final OnLandClick onLandClick;
     private final OnLandLongClick onLandLongClick;
 
-    public LandListAdapter(List<Land> lands,
-                           List<Integer> selectedLands, OnLandClick onLandClick,
+    public LandListAdapter(LiveData<List<Land>> lands,
+                           LiveData<List<Integer>> selectedLands, OnLandClick onLandClick,
                            OnLandLongClick onLandLongClick){
         this.lands = lands;
         this.selectedLands = selectedLands;
@@ -44,17 +45,25 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     public void onBindViewHolder(@NonNull LandListAdapterViewHolder holder, int position) {
         holder.llContainer.setOnClickListener(v -> onLandClick.onLandClick(position));
         holder.llContainer.setOnLongClickListener(v -> onLandLongClick.onLandLongClick(position));
-        holder.tvLandTitle.setText(lands.get(position).getTitle());
-        if(selectedLands.contains(position)){
-            holder.ivCheckBox.setVisibility(View.VISIBLE);
-        }else{
-            holder.ivCheckBox.setVisibility(View.GONE);
+        List<Land> mLands = lands.getValue();
+        List<Integer> mSelectedLands = selectedLands.getValue();
+        if( mSelectedLands != null && mLands != null){
+            holder.tvLandTitle.setText(mLands.get(position).getTitle());
+            if(mSelectedLands.contains(position)){
+                holder.ivCheckBox.setVisibility(View.VISIBLE);
+            }else{
+                holder.ivCheckBox.setVisibility(View.GONE);
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return lands.size();
+        List<Land> mLands = lands.getValue();
+        if(mLands != null)
+            return mLands.size();
+        else
+            return 0;
     }
 
     public interface OnLandClick{

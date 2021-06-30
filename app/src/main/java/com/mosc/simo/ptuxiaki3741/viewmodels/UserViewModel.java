@@ -134,12 +134,12 @@ public class UserViewModel extends ViewModel {
         userList.add(new User(420,"makos"));
     }
     private User loadCurrUser() {
-        long uid = getCurrUserIDFromMemory();
-        /*if(uid == -1){
+        /*long uid = getCurrUserIDFromMemory();
+        if(uid == -1){
             return null;
         }else{
             //todo load currUser from db
         }*/
-        return new User(uid,420,"makos");
+        return new User(1,420,"makos");
     }
 }

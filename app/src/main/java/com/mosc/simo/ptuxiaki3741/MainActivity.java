@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -45,24 +46,16 @@ public class MainActivity extends AppCompatActivity {
         snackbar.setBackgroundTint(getResources().getColor(R.color.colorPrimary, getTheme()));
         View view = snackbar.getView();
         TextView tv = view.findViewById(com.google.android.material.R.id.snackbar_text);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        } else {
-            tv.setGravity(Gravity.CENTER_HORIZONTAL);
-        }
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         snackbar.show();
     }
 
     private void initViewModels() {
-        LandViewModel landViewModel = new ViewModelProvider(this).get(LandViewModel.class);
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         userViewModel.init(sharedPref);
-        if(userViewModel.getCurrUser().getValue() != null) {
-            LandRepository landRepository = new LandRepository(this);
-            landViewModel.init(userViewModel.getCurrUser().getValue(),landRepository);
-        }
     }
+
     private void init() {
         fragmentBackPress = new FragmentBackPress(){
             @Override

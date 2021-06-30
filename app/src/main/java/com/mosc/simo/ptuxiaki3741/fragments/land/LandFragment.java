@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.database.AppDatabase;
 import com.mosc.simo.ptuxiaki3741.database.repositorys.LandRepository;
 import com.mosc.simo.ptuxiaki3741.database.model.Land;
 import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
@@ -182,7 +183,7 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     private void save(View v) {
         Context ctx = getContext();
         if(isValidToSave(ctx)){
-            saveToDB(ctx);
+            saveToDB(MainActivity.getDb(ctx));
             navigate(toLandMenu());
         }
     }
@@ -193,8 +194,8 @@ public class LandFragment extends Fragment implements FragmentBackPress {
                 ctx != null;
     }
 
-    private void saveToDB(Context ctx) {
-        LandRepository landRepository = new LandRepository(ctx);
+    private void saveToDB(AppDatabase db) {
+        LandRepository landRepository = new LandRepository(db);
         AsyncTask.execute(() -> {
             if(currLand != null){
                 currLand.setTitle(viewHolder.getTitle());

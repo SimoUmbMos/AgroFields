@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers;
+package com.mosc.simo.ptuxiaki3741.fragments.landlist.enums;
 
 public enum LandListActionState {
     DeleteAction,

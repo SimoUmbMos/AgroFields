@@ -4,9 +4,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListActionState;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListMenuState;
-import com.mosc.simo.ptuxiaki3741.fragments.landlist.helpers.LandListNavigateStates;
+import com.mosc.simo.ptuxiaki3741.fragments.landlist.enums.LandListActionState;
+import com.mosc.simo.ptuxiaki3741.fragments.landlist.enums.LandListMenuState;
+import com.mosc.simo.ptuxiaki3741.fragments.landlist.enums.LandListNavigateStates;
 
 public class LandListMenuHolder {
     private final OnNavigate onNavigate;

@@ -14,8 +14,8 @@ import java.util.List;
 public class LandRepository {
     private final AppDatabase db;
 
-    public LandRepository(Context context){
-        db = MainActivity.getDb(context);
+    public LandRepository(AppDatabase db){
+        this.db = db;
     }
 
     public Land saveLand(long user_id, String title){
