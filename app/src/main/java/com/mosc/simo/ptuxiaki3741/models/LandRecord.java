@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.mosc.simo.ptuxiaki3741.database.enums.DBAction;
+import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 
 import java.util.Date;
 
@@ -22,12 +22,12 @@ public class LandRecord{
     @ColumnInfo(name = "UserId")
     private long userID;
     @ColumnInfo(name = "ActionID")
-    private DBAction actionID;
+    private LandDBAction actionID;
     @ColumnInfo(name = "Date")
     private Date date;
 
     @Ignore
-    public LandRecord(LandData land, User user, DBAction actionID, Date date) {
+    public LandRecord(LandData land, User user, LandDBAction actionID, Date date) {
         this.landID = land.getId();
         this.landCreatorID = land.getCreator_id();
         this.landTitle = land.getTitle();
@@ -36,7 +36,7 @@ public class LandRecord{
         this.date = date;
     }
 
-    public LandRecord(long id, long landID, long landCreatorID, String landTitle, long userID, DBAction actionID, Date date) {
+    public LandRecord(long id, long landID, long landCreatorID, String landTitle, long userID, LandDBAction actionID, Date date) {
         this.id = id;
         this.landID = landID;
         this.landCreatorID = landCreatorID;
@@ -86,11 +86,11 @@ public class LandRecord{
         this.userID = userID;
     }
 
-    public DBAction getActionID() {
+    public LandDBAction getActionID() {
         return actionID;
     }
 
-    public void setActionID(DBAction actionID) {
+    public void setActionID(LandDBAction actionID) {
         this.actionID = actionID;
     }
 

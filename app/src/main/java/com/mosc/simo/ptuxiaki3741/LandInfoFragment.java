@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments;
+package com.mosc.simo.ptuxiaki3741;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -59,14 +59,26 @@ public class LandViewModel extends AndroidViewModel {
         return lands;
     }
     public Land addLand(Land newLand){
-        //TODO: ADD LAND TO LIST + DB
+        List<Land> lands = getLandsList();
+        //TODO: SAVE LAND TO DB
+        lands.add(newLand);
+        this.lands.postValue(lands);
         return newLand;
     }
     public void editLand(Land editedLand) {
         //TODO: EDIT LAND TO LIST + DB
     }
     public void removeLand(Land removeLand) {
-        //TODO: DELETE LAND TO LIST + DB
+        List<Land> lands = getLandsList();
+        //TODO: REMOVE LAND FROM DB
+        lands.remove(removeLand);
+        this.lands.postValue(lands);
+    }
+    public void removeLands(List<Land> removeLandList) {
+        List<Land> lands = getLandsList();
+        //TODO: REMOVE LANDS FROM DB
+        lands.removeAll(removeLandList);
+        this.lands.postValue(lands);
     }
 
     public LiveData<List<Integer>> getSelectedLands() {
@@ -143,10 +155,7 @@ public class LandViewModel extends AndroidViewModel {
     public void removeSelectedLands() {
         List<Land> landList = lands.getValue();
         if(landList != null){
-            List<Land> selectedLands = returnSelectedLands();
-            for(Land land : selectedLands){
-                removeLand(land);
-            }
+            removeLands(returnSelectedLands());
         }
     }
 }

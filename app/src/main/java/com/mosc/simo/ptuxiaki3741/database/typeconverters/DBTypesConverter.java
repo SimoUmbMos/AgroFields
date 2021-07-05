@@ -3,17 +3,17 @@ package com.mosc.simo.ptuxiaki3741.database.typeconverters;
 import androidx.room.TypeConverter;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.database.enums.DBAction;
+import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 
 import java.util.Date;
 
 public class DBTypesConverter {
     @TypeConverter
-    public static DBAction actionValueToAction(int ordinal) {
-        return DBAction.values()[ordinal];
+    public static LandDBAction actionValueToAction(int ordinal) {
+        return LandDBAction.values()[ordinal];
     }
     @TypeConverter
-    public static int actionToActionValue(DBAction action) {
+    public static int actionToActionValue(LandDBAction action) {
         return action.ordinal();
     }
     @TypeConverter

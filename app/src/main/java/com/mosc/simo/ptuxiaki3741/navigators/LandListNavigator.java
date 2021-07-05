@@ -5,7 +5,7 @@ import android.app.Activity;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 
-import com.mosc.simo.ptuxiaki3741.fragments.LandListFragmentDirections;
+import com.mosc.simo.ptuxiaki3741.LandListFragmentDirections;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 
 import java.util.List;

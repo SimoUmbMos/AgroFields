@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/landListFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandListFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.LandListFragment"
         android:label="LandListFragment" >
         <action
             android:id="@+id/editLand"
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/landMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.LandFragment"
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
         <action
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/landInfoFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandInfoFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.LandInfoFragment"
         android:label="fragment_land_info"
         tools:layout="@layout/fragment_land_info" >
         <action
