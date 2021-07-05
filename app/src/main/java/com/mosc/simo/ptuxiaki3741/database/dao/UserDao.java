@@ -6,9 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.database.model.User;
-
-import java.util.List;
+import com.mosc.simo.ptuxiaki3741.models.User;
 
 @Dao
 public interface UserDao {

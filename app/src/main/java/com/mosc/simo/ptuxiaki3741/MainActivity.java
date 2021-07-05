@@ -20,11 +20,7 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.database.AppDatabase;
-import com.mosc.simo.ptuxiaki3741.database.model.User;
-import com.mosc.simo.ptuxiaki3741.database.repositorys.LandRepository;
-import com.mosc.simo.ptuxiaki3741.exception.NonLoadedViewModelException;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {

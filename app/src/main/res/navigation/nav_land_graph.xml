@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/landListFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.landlist.LandListFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandListFragment"
         android:label="LandListFragment" >
         <action
             android:id="@+id/editLand"
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/landMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.land.LandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandFragment"
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
         <action
@@ -27,33 +27,25 @@
             app:destination="@id/landListFragment"
             app:popUpTo="@id/landListFragment"
             app:popUpToInclusive="true" />
-        <argument
-            android:name="selectedLand"
-            app:argType="com.mosc.simo.ptuxiaki3741.database.model.Land"
-            app:nullable="true" />
-        <argument
-            android:name="landPoints"
-            app:argType="com.mosc.simo.ptuxiaki3741.database.model.LandPoint[]"
-            app:nullable="true" />
         <action
             android:id="@+id/editLandInfo"
             app:destination="@id/landInfoFragment" />
+        <argument
+            android:name="land"
+            app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />
     </fragment>
     <fragment
         android:id="@+id/landInfoFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.landinfo.LandInfoFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandInfoFragment"
         android:label="fragment_land_info"
         tools:layout="@layout/fragment_land_info" >
-        <argument android:name="Land"
-            app:argType="com.mosc.simo.ptuxiaki3741.database.model.Land" />
         <action
             android:id="@+id/farmEdited"
             app:destination="@id/landMapFragment"
             app:popUpTo="@id/landInfoFragment"
             app:popUpToInclusive="true" />
         <argument
-            android:name="LandPoints"
-            app:argType="com.mosc.simo.ptuxiaki3741.database.model.LandPoint[]"
-            app:nullable="true" />
+            android:name="land"
+            app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />
     </fragment>
 </navigation>

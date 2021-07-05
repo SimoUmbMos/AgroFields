@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
+import com.mosc.simo.ptuxiaki3741.models.LandPoint;
 
 import java.util.List;
 

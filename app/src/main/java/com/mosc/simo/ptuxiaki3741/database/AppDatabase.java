@@ -9,16 +9,16 @@ import com.mosc.simo.ptuxiaki3741.database.dao.LandHistoryDao;
 import com.mosc.simo.ptuxiaki3741.database.dao.LandPointDao;
 import com.mosc.simo.ptuxiaki3741.database.dao.LandPointHistoryDao;
 import com.mosc.simo.ptuxiaki3741.database.dao.UserDao;
-import com.mosc.simo.ptuxiaki3741.database.model.Land;
-import com.mosc.simo.ptuxiaki3741.database.model.LandPoint;
-import com.mosc.simo.ptuxiaki3741.database.model.LandPointRecord;
-import com.mosc.simo.ptuxiaki3741.database.model.LandRecord;
-import com.mosc.simo.ptuxiaki3741.database.model.User;
+import com.mosc.simo.ptuxiaki3741.models.LandData;
+import com.mosc.simo.ptuxiaki3741.models.LandPoint;
+import com.mosc.simo.ptuxiaki3741.models.LandPointRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.models.User;
 import com.mosc.simo.ptuxiaki3741.database.typeconverters.DBTypesConverter;
 
 @Database(entities = {
         User.class,
-        Land.class,
+        LandData.class,
         LandPoint.class,
         LandRecord.class,
         LandPointRecord.class

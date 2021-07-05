@@ -1,22 +1,31 @@
 package com.mosc.simo.ptuxiaki3741.viewmodels;
 
+import android.app.Application;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.mosc.simo.ptuxiaki3741.database.model.Land;
-import com.mosc.simo.ptuxiaki3741.database.model.User;
+import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.repositorys.UserRepositoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserViewModel extends ViewModel {
+public class UserViewModel extends AndroidViewModel {
     private final MutableLiveData<List<User>> users = new MutableLiveData<>();
     private final MutableLiveData<User> currUser = new MutableLiveData<>();
+    private final UserRepositoryImpl userRepository;
     private SharedPreferences sharedPref;
     private boolean isInit = false;
+
+    public UserViewModel(@NonNull Application application) {
+        super(application);
+        userRepository = new UserRepositoryImpl(MainActivity.getDb(application));
+    }
 
     public boolean isInit() {
         return isInit;
@@ -130,16 +139,16 @@ public class UserViewModel extends ViewModel {
         currUser.postValue(user);
     }
     private void loadUsers(List<User> userList) {
-        //todo load users from db
-        userList.add(new User(420,"makos"));
+        //TODO: load users from db
+        userList.add(new User("4200","makos"));
     }
     private User loadCurrUser() {
         /*long uid = getCurrUserIDFromMemory();
         if(uid == -1){
             return null;
         }else{
-            //todo load currUser from db
+            //TODO: load currUser from db
         }*/
-        return new User(1,420,"makos");
+        return new User(1,"4200","makos");
     }
 }
