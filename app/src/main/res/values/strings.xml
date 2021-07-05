@@ -1,38 +1,38 @@
 <resources>
-    <string name="app_name">Ptuxiaki3741</string>
+    <string name="app_name">Land Declaration</string>
 
-    <string name="open_menu">Open Menu</string>
-    <string name="land_actions_group_title">Land Actions</string>
-    <string name="fab_create_point">Add Point</string>
-    <string name="fab_create_between">Add Between</string>
-    <string name="fab_menu_edit_label">Edit</string>
-    <string name="fab_menu_delete_label">Delete</string>
-    <string name="clean">Clean</string>
-    <string name="img_actions_group_title">Overlay Image</string>
-    <string name="add_img">add overlay image</string>
-    <string name="remove_img">remove overlay image</string>
-    <string name="move_img">Move Image</string>
-    <string name="zoom_img">Zoom Image</string>
-    <string name="rotate_img">Rotate Image</string>
-    <string name="opacity_img">Change Opacity</string>
-    <string name="file_actions_group_title">File Actions</string>
-    <string name="import_action_title">Import</string>
-    <string name="lock_map">lock_map</string>
     <string name="title_activity_import">Map</string>
-    <string name="export">export</string>
-    <string name="delete">delete</string>
-    <string name="add">add</string>
-    <string name="save">Save</string>
     <string name="iv_check_box_desc">check box</string>
-    <string name="title_activity_dev_maps">Map</string>
-    <string name="select_all">Select All</string>
     <string name="land_name">Land Name</string>
-    <string name="submit">Submit</string>
-    <string name="cancel">Cancel</string>
     <string name="land_info_title">Land Info</string>
     <string name="create_land_label">Set Land Name</string>
     <string name="edit_land_label">Edit Land Name</string>
-    <string name="undo_land_delete_snackbar_text">Undo Land Delete</string>
-    <string name="undo_land_delete_successful_snackbar_text">Undo successful</string>
+
     <string name="double_tap_exit">Tap again to exit</string>
+
+    <string name="land_actions_group_title">Land Actions</string>
+    <string name="file_actions_group_title">File Actions</string>
+    <string name="img_actions_group_title">Overlay Image</string>
+
+    <string name="open_menu">Open Menu</string>
+    <string name="fab_create_point">Add Point</string>
+    <string name="fab_create_between">Add Between Points</string>
+    <string name="lock_map">Lock map</string>
+    <string name="add_img">Add overlay image</string>
+    <string name="remove_img">Remove overlay image</string>
+    <string name="zoom_img">Zoom Image</string>
+    <string name="move_img">Move Image</string>
+    <string name="rotate_img">Rotate Image</string>
+    <string name="opacity_img">Change Opacity</string>
+    <string name="select_all">Select All</string>
+
+    <string name="inport">Import</string>
+    <string name="export">Export</string>
+    <string name="add">Add</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="clean">Clean</string>
 </resources>

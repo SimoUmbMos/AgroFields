@@ -1,4 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ptuxiaki3741</string>
+    <string name="app_name">Διακήρυξη Χωραφιών</string>
+    <string name="land_actions_group_title">Ενέργειες χωραφιών</string>
+    <string name="open_menu">Ανοίξτε το μενού</string>
+    <string name="fab_create_point">Προσθήκη σημείου</string>
+    <string name="fab_create_between">Προσθήκη μεταξύ σημείων</string>
+    <string name="img_actions_group_title">Επικάλυψη εικόνας</string>
+    <string name="add_img">Προσθήκη εικόνας επικάλυψης</string>
+    <string name="remove_img">Αφαιρέστε την εικόνα επικάλυψης</string>
+    <string name="move_img">Μετακίνηση εικόνας</string>
+    <string name="zoom_img">Μεγέθυνση εικόνας</string>
+    <string name="rotate_img">Περιστροφή εικόνας</string>
+    <string name="opacity_img">Αλλαγή αδιαφάνειας</string>
+    <string name="file_actions_group_title">Ενέργειες αρχείων</string>
+    <string name="lock_map">Κλείδωμα χάρτη</string>
+    <string name="title_activity_import">Χάρτης</string>
+    <string name="delete">Διαγραφή</string>
+    <string name="edit">Επεξεργασία</string>
+    <string name="clean">Καθαρισμός</string>
+    <string name="export">Εξαγωγή</string>
+    <string name="inport">Εισαγωγή</string>
+    <string name="add">Προσθήκη</string>
+    <string name="save">Αποθήκευσης</string>
+    <string name="iv_check_box_desc">πλαίσιο ελέγχου</string>
+    <string name="select_all">Επιλογή όλων</string>
+    <string name="land_name">Όνομα χωραφιού</string>
+    <string name="double_tap_exit">Πατήστε ξανά για έξοδο</string>
+    <string name="submit">Υποβολή</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="land_info_title">Πληροφορίες χωραφιού</string>
+    <string name="create_land_label">Ορισμός ονόματος χωραφιού</string>
+    <string name="edit_land_label">Επεξεργασία ονόματος χωραφιού</string>
 </resources>

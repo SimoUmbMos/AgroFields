@@ -20,13 +20,13 @@
                 android:id="@+id/toolbar_action_edit"
                 android:icon="@drawable/menu_ic_edit"
                 android:orderInCategory="3"
-                android:title="@string/fab_menu_edit_label"
+                android:title="@string/edit"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_delete"
                 android:icon="@drawable/menu_ic_delete"
                 android:orderInCategory="4"
-                android:title="@string/fab_menu_delete_label"
+                android:title="@string/delete"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_clean"
@@ -84,7 +84,7 @@
                 android:id="@+id/toolbar_action_import"
                 android:icon="@drawable/menu_ic_import"
                 android:orderInCategory="1"
-                android:title="@string/import_action_title"
+                android:title="@string/inport"
                 app:showAsAction="collapseActionView" />
         </menu>
     </item>
