@@ -1,11 +1,10 @@
 package com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson;
 
 
+import android.os.AsyncTask;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
-import com.mosc.simo.ptuxiaki3741.util.TaskRunner;
-import com.mosc.simo.ptuxiaki3741.util.file.helper.JsonToStringTask;
-import com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.async.GeoJsonAsyncTask;
 import com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.helper.CoordinatesConverter;
 import com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.model.FeatureCollection;
 import com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.model.Features;
@@ -22,21 +21,18 @@ public class GeoJsonReader {
         void onGeoJsonResult(List<List<LatLng>> listPoints);
     }
 
-    public static void execBackground(InputStream inputStream,GeoJsonInterface geoJsonInterface){
-        TaskRunner taskRunner = new TaskRunner();
-        taskRunner.executeAsync(new JsonToStringTask(inputStream), str ->
-                stringToDTO(str,geoJsonInterface)
-        );
+    public static void execBackground(InputStream in,GeoJsonInterface geoJsonInterface){
+        AsyncTask.execute(()-> geoJsonInterface.onGeoJsonResult(exec(in)));
     }
-    public static void execBackground(String json,GeoJsonInterface geoJsonInterface){
-        stringToDTO(json,geoJsonInterface);
+    public static void execBackground(String in,GeoJsonInterface geoJsonInterface){
+        AsyncTask.execute(()-> geoJsonInterface.onGeoJsonResult(exec(in)));
     }
-    public static List<List<LatLng>> execOnMainThread(InputStream inputStream){
+    public static List<List<LatLng>> exec(InputStream inputStream){
         String json = getStringFromInputStream(inputStream);
         FeatureCollection featureCollection = new Gson().fromJson(json, FeatureCollection.class);
         return onFeatureCollectionGet(featureCollection);
     }
-    public static List<List<LatLng>> execOnMainThread(String json){
+    public static List<List<LatLng>> exec(String json){
         FeatureCollection featureCollection = new Gson().fromJson(json, FeatureCollection.class);
         return onFeatureCollectionGet(featureCollection);
     }
@@ -56,20 +52,6 @@ public class GeoJsonReader {
         return sb.toString();
     }
 
-    private static void stringToDTO(String json,GeoJsonInterface geoJsonInterface){
-        if(json!=null){
-            if(!json.equals("")){
-                TaskRunner taskRunner = new TaskRunner();
-                taskRunner.executeAsync(new GeoJsonAsyncTask(json), fc ->
-                        onFeatureCollectionGet(fc,geoJsonInterface)
-                );
-            }
-        }
-    }
-
-    private static void onFeatureCollectionGet(FeatureCollection featureCollection, GeoJsonInterface geoJsonInterface) {
-        geoJsonInterface.onGeoJsonResult(getListsForFeatureCollection(featureCollection));
-    }
     private static List<List<LatLng>> onFeatureCollectionGet(FeatureCollection featureCollection) {
         return getListsForFeatureCollection(featureCollection);
     }

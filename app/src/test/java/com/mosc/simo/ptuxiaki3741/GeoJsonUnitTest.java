@@ -41,7 +41,7 @@ public class GeoJsonUnitTest {
 
     @Test
     public void testGeoJsonImport(){
-        List<List<LatLng>> pointsLists = GeoJsonReader.execOnMainThread(mockGeoJson());
+        List<List<LatLng>> pointsLists = GeoJsonReader.exec(mockGeoJson());
         assertEquals(15, pointsLists.get(0).size());
     }
 

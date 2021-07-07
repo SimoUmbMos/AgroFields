@@ -1,8 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.util.file.extensions.kml;
 
+import android.os.AsyncTask;
+
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.util.TaskRunner;
-import com.mosc.simo.ptuxiaki3741.util.file.extensions.kml.async.KmlParserTask;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -23,17 +23,15 @@ public class KmlFileReader {
         void onKmlResult(List<List<LatLng>> result);
     }
     public static void execBackground(InputStream is,KmlInterface kmlInterface) {
-        TaskRunner taskRunner = new TaskRunner();
-        taskRunner.executeAsync(new KmlParserTask(is), kmlInterface::onKmlResult);
+        AsyncTask.execute(()-> kmlInterface.onKmlResult(exec(is)));
     }
     public static void execBackground(String is,KmlInterface kmlInterface) {
-        TaskRunner taskRunner = new TaskRunner();
-        taskRunner.executeAsync(new KmlParserTask(is), kmlInterface::onKmlResult);
+        AsyncTask.execute(()-> kmlInterface.onKmlResult(exec(is)));
     }
-    public static List<List<LatLng>> execOnMainThread(InputStream is) {
+    public static List<List<LatLng>> exec(InputStream is) {
         return kmlParse(is);
     }
-    public static List<List<LatLng>> execOnMainThread(String is) {
+    public static List<List<LatLng>> exec(String is) {
         return kmlParse(is);
     }
 

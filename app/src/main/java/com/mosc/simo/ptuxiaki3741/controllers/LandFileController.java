@@ -132,7 +132,7 @@ public class LandFileController {
 
     private List<List<LatLng>> handleKml(Uri uri) {
         try{
-            return KmlFileReader.execOnMainThread(activity.getContentResolver().openInputStream(uri));
+            return KmlFileReader.exec(activity.getContentResolver().openInputStream(uri));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -140,7 +140,7 @@ public class LandFileController {
     }
     private List<List<LatLng>> handleJson(Uri uri) {
         try{
-            return GeoJsonReader.execOnMainThread(activity.getContentResolver().openInputStream(uri));
+            return GeoJsonReader.exec(activity.getContentResolver().openInputStream(uri));
         }catch (Exception e){
             e.printStackTrace();
         }
