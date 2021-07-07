@@ -27,7 +27,7 @@ import com.mosc.simo.ptuxiaki3741.database.typeconverters.DBTypesConverter;
         DBTypesConverter.class
 })
 public abstract class AppDatabase extends RoomDatabase {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public abstract UserDao userDao();
     public abstract LandDao landDao();
     public abstract LandHistoryDao landHistoryDao();

@@ -39,6 +39,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
 
     private LandViewModel vmLands;
     private UserViewModel vmUsers;
+    private User currUser;
 
     private LandListRecycleViewHolder viewHolder;
     private LandListMenuHolder menuHolder;
@@ -114,12 +115,16 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         vmUsers = new ViewModelProvider(activity).get(UserViewModel.class);
     }
     private void initObservers() {
-        if(vmUsers != null){
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-        }
         if(vmLands != null){
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandListUpdate);
             vmLands.getSelectedLands().observe(getViewLifecycleOwner(),this::onSelectedLandUpdate);
+        }
+        if(vmUsers != null){
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
+            if(vmUsers.getCurrUser().getValue() != null){
+                currUser = vmUsers.getCurrUser().getValue();
+                vmLands.init(currUser);
+            }
         }
     }
     private void initHolders(View view) {
@@ -134,7 +139,8 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         }
     }
 
-    private void onCurrUserUpdate(User currUser) {
+    private void onCurrUserUpdate(User newLoginUser) {
+        this.currUser = newLoginUser;
         if( currUser != null) {
             changeActionBarTitle(currUser.getUsername()+"'s Land's");
             vmLands.init(currUser);
@@ -149,25 +155,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
 
     private void OnNavigate(LandListNavigateStates state){
         if(state == LandListNavigateStates.ToCreate && getActivity() != null){
-            addMockLand();
-            //TODO: OnNavigate
-            //nav.toCreateLand(getActivity());
-        }
-    }
-
-    //TODO: remove addMockLand()
-    private void addMockLand() {
-        if(vmLands.isInit()){
-            Log.d(TAG, "OnNavigate: vmLands is init");
-            Land mockLand = new Land(
-                    new LandData(mockID,420,"test "+mockID),
-                    new ArrayList<>()
-            );
-            vmLands.addLand(mockLand);
-            mockID++;
-            Log.d(TAG, "OnNavigate: vmLands size "+ vmLands.landSize());
-        }else{
-            Log.d(TAG, "OnNavigate: vmLands is not init");
+            nav.toCreateLand(getActivity());
         }
     }
 
@@ -196,12 +184,12 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         if(menuHolder.getState() != LandListMenuState.NormalState) {
             vmLands.toggleSelectOnPosition(position);
         }else{
-            //TODO: land Click
-            //if(getActivity() != null){
-            //  List<Land> lands = vmLands.getLands().getValue();
-            //  if(lands != null)
-            //      nav.toEditLand(getActivity(),vmLands,position);
-            //}
+            if(getActivity() != null){
+                Land land = vmLands.getLand(position);
+                if(land != null){
+                    nav.toEditLand(getActivity(),land);
+                }
+            }
         }
     }
     private boolean landLongClick(int position) {

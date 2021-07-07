@@ -10,6 +10,24 @@ public class Land implements Parcelable {
     private LandData landData;
     private final List<LandPoint> landPoints;
 
+    public static boolean equals(Land land1,Land land2){
+        if(land1 == null && land2 == null){
+            return true;
+        }else if(land1 == null || land2 == null){
+            return false;
+        }else{
+            LandData landData1 = land1.getLandData(),
+                    landData2 = land2.getLandData();
+            if(landData1 == null && landData2 == null){
+                return true;
+            }else if(landData1 == null || landData2 == null){
+                return false;
+            }else{
+                return landData1.getId() == landData2.getId() ;
+            }
+        }
+    }
+
     public Land(){
         this.landData = null;
         this.landPoints = new ArrayList<>();

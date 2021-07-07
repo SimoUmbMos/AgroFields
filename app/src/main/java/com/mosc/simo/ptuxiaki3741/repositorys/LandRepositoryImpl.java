@@ -18,14 +18,7 @@ public class LandRepositoryImpl implements LandRepository {
     }
 
     @Override
-    public Land getLand(long lid) {
-        LandData landData = db.landDao().getLandData(lid);
-        List<LandPoint> landPoints = db.landPointDao().getAllLandPointsByLid(lid);
-        return new Land(landData,landPoints);
-    }
-
-    @Override
-    public List<Land> getLandsByUser(User user) {
+    public List<Land> searchLandsByUser(User user) {
         List<Land> userLands = new ArrayList<>();
         long uid = user.getId();
 
@@ -40,6 +33,12 @@ public class LandRepositoryImpl implements LandRepository {
         return userLands;
     }
 
+    @Override
+    public Land getLand(long lid) {
+        LandData landData = db.landDao().getLandData(lid);
+        List<LandPoint> landPoints = db.landPointDao().getAllLandPointsByLid(lid);
+        return new Land(landData,landPoints);
+    }
     @Override
     public Land saveLand(Land land){
         LandData landData = land.getLandData();
@@ -56,7 +55,6 @@ public class LandRepositoryImpl implements LandRepository {
         }
         return land;
     }
-
     @Override
     public void deleteLand(Land land) {
         LandData landData = land.getLandData();

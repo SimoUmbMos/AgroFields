@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LandRepository {
     Land getLand(long lid);
-    List<Land> getLandsByUser(User user);
+    List<Land> searchLandsByUser(User user);
     Land saveLand(Land land);
     void deleteLand(Land land);
 }

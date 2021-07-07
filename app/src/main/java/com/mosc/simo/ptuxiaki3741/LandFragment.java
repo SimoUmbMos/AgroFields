@@ -44,6 +44,7 @@ import com.mosc.simo.ptuxiaki3741.holders.LandViewHolder;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
+import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     private LandMenuHolder menuHolder;
     private LandFileController fileController;
     private LandPointsController pointsController;
-    private Land currLand = null;
+    private long currLandID = -1;
     private User currUser;
 
     private final ActivityResultLauncher<Intent> fileResultLauncher = registerForActivityResult(
@@ -145,6 +146,9 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     }
     private void initValues() {
         Land currLand = LandFragmentArgs.fromBundle(getArguments()).getLand();
+        if(!Land.equals(currLand,new Land())){
+            currLandID = currLand.getLandData().getId();
+        }
         viewHolder.setTitle(currLand.getLandData().getTitle());
         List<LandPoint> landPointsList = new ArrayList<>(currLand.getLandPoints());
         Collections.sort(landPointsList);
@@ -168,25 +172,27 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     }
 
     private void save(View v) {
-        Context ctx = getContext();
-        if(isValidToSave(ctx)){
+        if(isValidToSave()){
             saveToVM();
             navigate(toLandMenu());
         }
     }
 
-    private boolean isValidToSave(Context ctx) {
-        return pointsController.getPoints().size() > 2 &&
-                viewHolder.getTitle().length() != 0 &&
-                ctx != null;
+    private boolean isValidToSave() {
+        return getLandPoints().size() > 2 &&
+                viewHolder.getTitle().length() != 0;
     }
 
     private void saveToVM() {
-        //TODO: save currLand To VM
-        if(currLand != null){
-            currLand.getLandData().setTitle(viewHolder.getTitle());
+        Land currLand;
+        if(currLandID >= 0){
+            currLand = new Land(new LandData(currLandID,currUser.getId(),viewHolder.getTitle()),getLandPoints());
         }else{
             currLand = new Land(new LandData(currUser.getId(),viewHolder.getTitle()),getLandPoints());
+        }
+        if(getActivity() != null){
+            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands.saveLand(currLand);
         }
     }
 

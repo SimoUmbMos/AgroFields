@@ -20,30 +20,26 @@ public class LandViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
     private final MutableLiveData<List<Integer>> selectedList = new MutableLiveData<>();
     private final LandRepositoryImpl landRepository;
-    private boolean isInit = false;
     private boolean isAllSelected = false;
 
     public LandViewModel(@NonNull Application application) {
         super(application);
-        landRepository = new LandRepositoryImpl(MainActivity.getDb(application));
+        landRepository = new LandRepositoryImpl(
+                MainActivity.getDb(application.getApplicationContext())
+        );
     }
 
-    public boolean isInit() {
-        return isInit;
-    }
     public boolean isAllSelected() {
         return isAllSelected;
     }
 
     public void init(User user){
-        isInit = true;
         loadLands(user);
         initSelectedList();
     }
     private void loadLands(User user) {
-        final List<Land> landList = new ArrayList<>();
-        AsyncTask.execute(() -> {
-            //TODO: LOAD ALL LAND
+        AsyncTask.execute(()->{
+            List<Land> landList = landRepository.searchLandsByUser(user);
             lands.postValue(landList);
         });
     }
@@ -58,27 +54,36 @@ public class LandViewModel extends AndroidViewModel {
     public LiveData<List<Land>> getLands(){
         return lands;
     }
-    public Land addLand(Land newLand){
-        List<Land> lands = getLandsList();
-        //TODO: SAVE LAND TO DB
-        lands.add(newLand);
-        this.lands.postValue(lands);
-        return newLand;
-    }
-    public void editLand(Land editedLand) {
-        //TODO: EDIT LAND TO LIST + DB
+    public void saveLand(Land land){
+        AsyncTask.execute(()->{
+            List<Land> lands = getLandsList();
+            Land newLand = landRepository.saveLand(land);
+            int index = indexOfLand(newLand);
+            if(index < 0){
+                lands.add(newLand);
+            }else{
+                lands.set(index,newLand);
+            }
+            this.lands.postValue(lands);
+        });
     }
     public void removeLand(Land removeLand) {
-        List<Land> lands = getLandsList();
-        //TODO: REMOVE LAND FROM DB
-        lands.remove(removeLand);
-        this.lands.postValue(lands);
+        AsyncTask.execute(()-> {
+            List<Land> lands = getLandsList();
+            landRepository.deleteLand(removeLand);
+            lands.remove(removeLand);
+            this.lands.postValue(lands);
+        });
     }
     public void removeLands(List<Land> removeLandList) {
-        List<Land> lands = getLandsList();
-        //TODO: REMOVE LANDS FROM DB
-        lands.removeAll(removeLandList);
-        this.lands.postValue(lands);
+        AsyncTask.execute(()-> {
+            List<Land> lands = getLandsList();
+            for(Land removeLand:removeLandList){
+                landRepository.deleteLand(removeLand);
+            }
+            lands.removeAll(removeLandList);
+            this.lands.postValue(lands);
+        });
     }
 
     public LiveData<List<Integer>> getSelectedLands() {
@@ -156,6 +161,24 @@ public class LandViewModel extends AndroidViewModel {
         List<Land> landList = lands.getValue();
         if(landList != null){
             removeLands(returnSelectedLands());
+        }
+    }
+    private int indexOfLand(Land land) {
+        List<Land> lands = getLandsList();
+        for(int i = 0; i < lands.size();i++){
+            if(Land.equals(lands.get(i),land)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public Land getLand(int position) {
+        List<Land> lands = getLandsList();
+        if(lands.size() > position && position > -1){
+            return lands.get(position);
+        }else{
+            return null;
         }
     }
 }

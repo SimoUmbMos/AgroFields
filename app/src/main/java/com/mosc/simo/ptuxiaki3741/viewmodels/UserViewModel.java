@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.viewmodels;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,146 +10,101 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.interfaces.LandRepository;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.repositorys.UserRepositoryImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
-    private final MutableLiveData<List<User>> users = new MutableLiveData<>();
+    private static final String sharedPreferenceKey = "currUser";
+    private static final long sharedPreferenceDefault = -1;
     private final MutableLiveData<User> currUser = new MutableLiveData<>();
     private final UserRepositoryImpl userRepository;
+    private final LandRepository landRepository;
     private SharedPreferences sharedPref;
-    private boolean isInit = false;
 
     public UserViewModel(@NonNull Application application) {
         super(application);
-        userRepository = new UserRepositoryImpl(MainActivity.getDb(application));
+        AppDatabase db = MainActivity.getDb(application.getApplicationContext());
+        userRepository = new UserRepositoryImpl(db);
+        landRepository = new LandRepositoryImpl(db);
     }
-
-    public boolean isInit() {
-        return isInit;
+    public void saveUser(User user){
+        AsyncTask.execute(()->userRepository.saveUser(user));
     }
-
-    public LiveData<List<User>> getUsers(){
-        return users;
-    }
-    public void addUser(User user){
-        List<User> userList = users.getValue();
-        if(userList != null){
-            add(user, userList);
-        }
-    }
-    public void editUser(User user){
-        List<User> userList = users.getValue();
-        if(userList != null){
-            edit(user, userList);
-        }
+    public void saveUserAndLogin(User user){
+        AsyncTask.execute(()->{
+            User newUser = userRepository.saveUser(user);
+            singIn(newUser.getId());
+        });
     }
     public void removeUser(User user){
-        List<User> userList = users.getValue();
-        if(userList != null){
-            remove(user, userList);
-        }
+        AsyncTask.execute(()->{
+            List<Land> lands = landRepository.searchLandsByUser(user);
+            for(Land land:lands){
+                landRepository.deleteLand(land);
+            }
+            userRepository.deleteUser(user);
+        });
     }
 
     public LiveData<User> getCurrUser(){
         return currUser;
     }
-    public void singIn(long userID) {
-        if(users.getValue() != null){
-            User user = null;
-            for(User tempUser:users.getValue()){
-                if(tempUser.getId() == userID){
-                    user = tempUser;
-                    break;
-                }
-            }
-            currUser.postValue(user);
-            storeCurrUserToMemory();
+    public void singIn(long uid) {
+        User user = userRepository.searchUserByID(uid);
+        if(user != null){
+            putUidToMemory(uid);
         }
+        currUser.postValue(user);
     }
     public void logout() {
         currUser.postValue(null);
     }
 
-    private void storeCurrUserToMemory(){
+    private void clearUidFromMemory(){
         SharedPreferences.Editor editor = sharedPref.edit();
-        long userID = -1;
-        if(currUser.getValue() != null){
-            userID = currUser.getValue().getId();
-        }
-        editor.putLong("currUser", userID);
+        editor.remove(sharedPreferenceKey);
         editor.apply();
     }
-    private long getCurrUserIDFromMemory() {
-        return sharedPref.getLong("currUser", -1);
+    private long getUidFromMemory() {
+        return sharedPref.getLong(sharedPreferenceKey, sharedPreferenceDefault);
     }
-
-    private void add(User user, List<User> userList) {
-        userList.add(user);
-        users.postValue(userList);
-    }
-    private void edit(User user, List<User> userList) {
-        int index = -1;
-        for(User tempUser : userList){
-            if(tempUser.getId() == user.getId()){
-                index = userList.indexOf(tempUser);
-            }
-        }
-        if(index != -1){
-            userList.set(index,user);
-            users.postValue(userList);
-        }
-    }
-    private void remove(User user, List<User> userList) {
-        if(userList.contains(user)){
-            userList.remove(user);
-            users.postValue(userList);
-        }else{
-            int index = -1;
-            for(User tempUser : userList){
-                if(tempUser.getId() == user.getId()){
-                    index = userList.indexOf(tempUser);
-                }
-            }
-            if(index != -1){
-                userList.remove(index);
-                users.postValue(userList);
-            }
-        }
+    private void putUidToMemory(long id){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(sharedPreferenceKey, id);
+        editor.apply();
     }
 
     public void init(SharedPreferences sharedPref){
-        isInit = true;
         this.sharedPref = sharedPref;
-        initUsers();
-        initCurrUser();
-    }
-    private void initUsers() {
-        List<User> userList = users.getValue();
-        if(userList == null){
-            userList = new ArrayList<>();
-        }
-        loadUsers(userList);
-        users.postValue(userList);
+        AsyncTask.execute(this::initCurrUser);
     }
     private void initCurrUser() {
-        User user = loadCurrUser();
-        currUser.postValue(user);
-    }
-    private void loadUsers(List<User> userList) {
-        //TODO: load users from db
-        userList.add(new User("4200","makos"));
+        currUser.postValue(loadCurrUser());
     }
     private User loadCurrUser() {
-        /*long uid = getCurrUserIDFromMemory();
-        if(uid == -1){
-            return null;
-        }else{
-            //TODO: load currUser from db
-        }*/
+        long uid = getUidFromMemory();
+        User user = null;
+        if(uid != sharedPreferenceDefault){
+            user = userRepository.searchUserByID(uid);
+            if(user == null){
+                clearUidFromMemory();
+            }
+        }
+        //TODO: TO REMOVE
+        user = getMockUser();
+        return user;
+    }
+
+    //TODO: TO REMOVE
+    private User getMockUser() {
         return new User(1,"4200","makos");
     }
+
+
 }
