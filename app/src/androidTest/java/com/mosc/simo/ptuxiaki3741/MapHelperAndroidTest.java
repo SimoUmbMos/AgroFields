@@ -3,7 +3,7 @@ package com.mosc.simo.ptuxiaki3741;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.util.MapHelper;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.helper.MapHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

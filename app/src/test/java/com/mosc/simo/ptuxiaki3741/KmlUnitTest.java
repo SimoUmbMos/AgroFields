@@ -1,7 +1,7 @@
 package com.mosc.simo.ptuxiaki3741;
 
-import com.mosc.simo.ptuxiaki3741.util.file.extensions.kml.KmlFileExporter;
-import com.mosc.simo.ptuxiaki3741.util.file.helper.ExportFieldModel;
+import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter;
+import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
 
 import org.jdom2.Document;
 import org.jdom2.output.Format;
@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mosc.simo.ptuxiaki3741.util.file.extensions.kml.KmlFileExporter.XMLOUTPUT;
+import static com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter.XMLOUTPUT;
 import static org.junit.Assert.assertEquals;
 
 public class KmlUnitTest {

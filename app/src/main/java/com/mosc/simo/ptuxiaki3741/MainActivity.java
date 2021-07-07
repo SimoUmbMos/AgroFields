@@ -10,18 +10,15 @@ import androidx.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.mosc.simo.ptuxiaki3741.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private static final int doubleTapBack = 2750;

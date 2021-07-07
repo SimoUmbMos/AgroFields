@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,25 +26,22 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.ImportActivity;
-import com.mosc.simo.ptuxiaki3741.MainActivity;
-import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandData;
 import com.mosc.simo.ptuxiaki3741.models.LandPoint;
 import com.mosc.simo.ptuxiaki3741.models.User;
-import com.mosc.simo.ptuxiaki3741.controllers.LandFileController;
-import com.mosc.simo.ptuxiaki3741.controllers.LandImgController;
-import com.mosc.simo.ptuxiaki3741.controllers.LandPointsController;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandFileController;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandImgController;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandPointsController;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
-import com.mosc.simo.ptuxiaki3741.holders.LandMapHolder;
-import com.mosc.simo.ptuxiaki3741.holders.LandMenuHolder;
-import com.mosc.simo.ptuxiaki3741.holders.LandViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandMapHolder;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandMenuHolder;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandViewHolder;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;

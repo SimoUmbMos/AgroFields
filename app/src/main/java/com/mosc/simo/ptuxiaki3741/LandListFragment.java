@@ -16,22 +16,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.mosc.simo.ptuxiaki3741.MainActivity;
-import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.LandData;
 import com.mosc.simo.ptuxiaki3741.models.User;
 import com.mosc.simo.ptuxiaki3741.enums.LandListActionState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListNavigateStates;
-import com.mosc.simo.ptuxiaki3741.navigators.LandListNavigator;
-import com.mosc.simo.ptuxiaki3741.holders.LandListMenuHolder;
-import com.mosc.simo.ptuxiaki3741.holders.LandListRecycleViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.navigators.LandListNavigator;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandListMenuHolder;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandListRecycleViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LandListFragment  extends Fragment implements FragmentBackPress {

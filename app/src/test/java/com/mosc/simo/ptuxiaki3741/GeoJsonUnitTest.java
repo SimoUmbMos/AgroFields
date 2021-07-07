@@ -1,9 +1,9 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.util.file.helper.ExportFieldModel;
-import com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.GeoJsonExporter;
-import com.mosc.simo.ptuxiaki3741.util.file.extensions.geojson.GeoJsonReader;
+import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
+import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonExporter;
+import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonReader;
 
 import org.json.JSONObject;
 import org.junit.Test;
