@@ -1,16 +1,19 @@
 package com.mosc.simo.ptuxiaki3741.fragmentrelated.navigators;
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 
 import com.mosc.simo.ptuxiaki3741.LandListFragmentDirections;
+import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 
 import java.util.List;
 
 public class LandListNavigator {
+    public static final String TAG = "LandListNavigator";
     private final NavController navController;
 
     public LandListNavigator(NavController navController){
@@ -31,7 +34,8 @@ public class LandListNavigator {
 
     private void navigate(NavDirections action){
         if(action != null){
-            navController.navigate(action);
+            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landListFragment)
+                navController.navigate(action);
         }
     }
     private NavDirections getEditLandAction(Land land){

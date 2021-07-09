@@ -12,6 +12,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 
 public class LandInfoFragment extends Fragment implements FragmentBackPress, LandInfoHolder.LandInfoHolderActions {
+    public static final String TAG = "LandInfoFragment";
     private Land land;
     private User currUser;
     private boolean isNew = false;
@@ -138,7 +140,8 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     }
     private void navigate(NavDirections action){
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(action);
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landInfoFragment)
+            navController.navigate(action);
     }
     private NavDirections toMap(Land land){
         return  LandInfoFragmentDirections.farmEdited(land);

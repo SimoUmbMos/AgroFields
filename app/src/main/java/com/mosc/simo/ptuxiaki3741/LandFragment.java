@@ -282,7 +282,8 @@ public class LandFragment extends Fragment implements FragmentBackPress {
 
     private void navigate(NavDirections action){
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(action);
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landMapFragment)
+            navController.navigate(action);
     }
     private NavDirections toLandMenu(){
         return LandFragmentDirections.toMenu();
