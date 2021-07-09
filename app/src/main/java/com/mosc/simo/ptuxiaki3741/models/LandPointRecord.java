@@ -33,7 +33,7 @@ public class LandPointRecord {
     }
 
     @Ignore
-    public LandPointRecord(LandRecord landRecord, LandPoint landPointRecord) {
+    public LandPointRecord(LandDataRecord landRecord, LandPoint landPointRecord) {
         this.landRecordID = landRecord.getId();
         this.position = landPointRecord.getPosition();
         this.latLng = landPointRecord.getLatLng();

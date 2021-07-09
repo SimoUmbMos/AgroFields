@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="@string/app_actions_group_title"
+        android:id="@+id/group_map_app_actions">
+        <menu>
+            <item
+                android:id="@+id/toolbar_action_save_land"
+                android:icon="@drawable/menu_ic_save"
+                android:orderInCategory="1"
+                android:title="@string/save"
+                app:showAsAction="collapseActionView" />
+            <item
+                android:id="@+id/toolbar_action_edit_land_info"
+                android:icon="@drawable/menu_ic_edit"
+                android:orderInCategory="2"
+                android:title="@string/edit"
+                app:showAsAction="collapseActionView" />
+        </menu>
+    </item>
     <item android:title="@string/land_actions_group_title"
         android:id="@+id/group_map_menu_core_actions">
         <menu>

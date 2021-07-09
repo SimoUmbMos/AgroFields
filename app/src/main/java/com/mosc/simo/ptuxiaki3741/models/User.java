@@ -13,7 +13,7 @@ public class User implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "Key")
-    private String key;
+    private final String key;
     @ColumnInfo(name = "Username")
     private String username;
 
@@ -44,10 +44,6 @@ public class User implements Parcelable {
 
     public String getKey() {
         return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getUsername() {

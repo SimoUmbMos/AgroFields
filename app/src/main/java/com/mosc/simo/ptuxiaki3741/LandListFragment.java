@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,9 +41,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     private LandListRecycleViewHolder viewHolder;
     private LandListMenuHolder menuHolder;
     private LandListNavigator nav;
-    private Menu menu;
     private ActionBar actionBar;
-    private int mockID = 1;
 
     @Nullable
     @Override
@@ -59,7 +58,6 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        this.menu = menu;
         inflater.inflate(R.menu.list_menu, menu);
         if(menuHolder != null){
             Log.d(TAG, "onCreateOptionsMenu: menuHolder.initMenu");
@@ -127,12 +125,6 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         nav = new LandListNavigator(NavHostFragment.findNavController(this));
         viewHolder = new LandListRecycleViewHolder(view, vmLands, this::landClick, this::landLongClick);
         menuHolder = new LandListMenuHolder(this::OnNavigate,this::OnUpdateState,this::onAction);
-
-        if(menu != null){
-            Log.d(TAG, "initHolders: menuHolder.initMenu");
-            menuHolder.initMenu(menu);
-            menuHolder.setupMenu(LandListMenuState.NormalState);
-        }
     }
 
     private void onCurrUserUpdate(User newLoginUser) {
@@ -146,6 +138,11 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         viewHolder.notifyItemsChanged();
     }
     private void onLandListUpdate(List<Land> lands) {
+        if(lands.size() == 0){
+            
+        }else{
+
+        }
         viewHolder.notifyItemsChanged();
     }
 
@@ -192,13 +189,14 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         if (menuHolder.getState() == LandListMenuState.NormalState){
             menuHolder.setState(LandListMenuState.MultiSelectState);
             vmLands.toggleSelectOnPosition(position);
-        }else
+        }else{
             landClick(position);
+        }
         return true;
     }
 
     private void deleteAction() {
-        vmLands.removeSelectedLands();
+        vmLands.removeSelectedLands(currUser);
         vmLands.deselectAllLands();
         viewHolder.notifyItemsChanged();
     }

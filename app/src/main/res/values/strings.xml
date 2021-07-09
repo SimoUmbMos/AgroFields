@@ -10,6 +10,7 @@
 
     <string name="double_tap_exit">Tap again to exit</string>
 
+    <string name="app_actions_group_title">Land Info Actions</string>
     <string name="land_actions_group_title">Land Actions</string>
     <string name="file_actions_group_title">File Actions</string>
     <string name="img_actions_group_title">Overlay Image</string>

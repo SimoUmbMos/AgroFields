@@ -19,14 +19,24 @@ public class LandMenuHolder implements NavigationView.OnNavigationItemSelectedLi
     private final LandFileController fileController;
     private final LandPointsController pointsController;
     private final LandImgController imgController;
+    private final OnSave onSave;
+    private final OnEdit onEdit;
 
-    public LandMenuHolder(LandViewHolder viewHolder, LandMapHolder mapHolder,
-                          LandFileController file,LandPointsController point,LandImgController img){
+    public LandMenuHolder(LandViewHolder viewHolder,
+                          LandMapHolder mapHolder,
+                          LandFileController file,
+                          LandPointsController point,
+                          LandImgController img,
+                          OnSave onSave,
+                          OnEdit onEdit
+    ){
         this.viewHolder = viewHolder;
         this.mapHolder = mapHolder;
         this.fileController = file;
         this.pointsController = point;
         this.imgController = img;
+        this.onSave = onSave;
+        this.onEdit = onEdit;
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -42,6 +52,12 @@ public class LandMenuHolder implements NavigationView.OnNavigationItemSelectedLi
                 return true;
             case (R.id.menu_item_toggle_map_lock):
                 mapHolder.toggleMapLock();
+                return true;
+            case (R.id.toolbar_action_save_land):
+                onSave.save();
+                return true;
+            case (R.id.toolbar_action_edit_land_info):
+                onEdit.edit();
                 return true;
             case(R.id.toolbar_action_add_on_end):
                 mapHolder.onPointActionClick(LandPointsState.AddEnd);
@@ -116,5 +132,12 @@ public class LandMenuHolder implements NavigationView.OnNavigationItemSelectedLi
     }
     private void removeOverlayButtonMenu(){
         viewHolder.removeOverlayImg();
+    }
+
+    public interface OnSave{
+        void save();
+    }
+    public interface OnEdit{
+        void edit();
     }
 }

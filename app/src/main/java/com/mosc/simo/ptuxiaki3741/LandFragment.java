@@ -122,22 +122,30 @@ public class LandFragment extends Fragment implements FragmentBackPress {
         }
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        controllersAndHandlersInit(view, actionBar, mapFragment);
+        controllersAndHandlersInit(view, actionBar);
         initValues();
         viewHolderConfig();
         if (mapFragment != null) {
             mapFragment.getMapAsync(mapHolder);
         }
     }
-    private void controllersAndHandlersInit(View view, ActionBar actionBar, SupportMapFragment mapFragment) {
+    private void controllersAndHandlersInit(View view, ActionBar actionBar) {
         Log.i(TAG, "controllersAndHandlersInit: start");
         pointsController = new LandPointsController();
         LandImgController imgController = new LandImgController(view.findViewById(R.id.imageView));
         fileController = new LandFileController(getActivity(), permissionResultLauncher,
                 imgResultLauncher, fileResultLauncher);
-        viewHolder= new LandViewHolder(view, mapFragment, actionBar, imgController);
+        viewHolder= new LandViewHolder(view, actionBar, imgController);
         mapHolder = new LandMapHolder(viewHolder,pointsController);
-        menuHolder = new LandMenuHolder(viewHolder,mapHolder,fileController,pointsController, imgController);
+        menuHolder = new LandMenuHolder(
+                viewHolder,
+                mapHolder,
+                fileController,
+                pointsController,
+                imgController,
+                this::save,
+                this::edit
+        );
         Log.i(TAG, "controllersAndHandlersInit: end");
     }
     private void initValues() {
@@ -155,7 +163,6 @@ public class LandFragment extends Fragment implements FragmentBackPress {
         pointsController.setPoints(landPoints);
     }
     private void viewHolderConfig() {
-        viewHolder.btnSave.setOnClickListener(this::save);
         viewHolder.navDrawer.setNavigationItemSelectedListener(menuHolder);
         viewHolder.closeTabMenu();
         viewHolder.hideImgView();
@@ -167,11 +174,14 @@ public class LandFragment extends Fragment implements FragmentBackPress {
         });
     }
 
-    private void save(View v) {
+    private void save() {
         if(isValidToSave()){
             saveToVM();
             navigate(toLandMenu());
         }
+    }
+    private void edit() {
+        navigate(toLandInfo());
     }
 
     private boolean isValidToSave() {
@@ -180,16 +190,21 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     }
 
     private void saveToVM() {
+        Land currLand = getLand();
+        if(getActivity() != null){
+            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands.saveLand(currLand,currUser);
+        }
+    }
+
+    private Land getLand() {
         Land currLand;
         if(currLandID >= 0){
             currLand = new Land(new LandData(currLandID,currUser.getId(),viewHolder.getTitle()),getLandPoints());
         }else{
             currLand = new Land(new LandData(currUser.getId(),viewHolder.getTitle()),getLandPoints());
         }
-        if(getActivity() != null){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-            vmLands.saveLand(currLand);
-        }
+        return currLand;
     }
 
     private List<LandPoint> getLandPoints() {
@@ -271,5 +286,9 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     }
     private NavDirections toLandMenu(){
         return LandFragmentDirections.toMenu();
+    }
+    private NavDirections toLandInfo(){
+        Land currLand = getLand();
+        return LandFragmentDirections.editLandInfo(currLand);
     }
 }

@@ -20,12 +20,12 @@
         <item android:id="@+id/menu_delete_action"
             android:orderInCategory="400"
             android:title="@string/delete"
-            app:actionLayout="@layout/menu_view_delete_action"
+            app:actionLayout="@layout/menu_view_delete"
             app:showAsAction="ifRoom" />
         <item android:id="@+id/menu_export_action"
             android:orderInCategory="500"
             android:title="@string/export"
-            app:actionLayout="@layout/menu_view_export_action"
+            app:actionLayout="@layout/menu_view_export"
             app:showAsAction="ifRoom" />
         <item android:id="@+id/menu_select_all_action"
             android:orderInCategory="600"

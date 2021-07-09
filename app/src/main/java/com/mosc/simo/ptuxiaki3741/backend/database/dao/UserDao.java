@@ -34,5 +34,5 @@ public interface UserDao {
     long insert(User user);
 
     @Delete
-    int delete(User user);
+    void delete(User user);
 }

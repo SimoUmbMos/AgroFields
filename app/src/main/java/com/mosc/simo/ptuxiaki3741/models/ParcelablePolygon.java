@@ -21,8 +21,8 @@ public class ParcelablePolygon implements Parcelable {
             return new ParcelablePolygon[size];
         }
     };
-    private double[] lats;
-    private double[] lngs;
+    private final double[] lats;
+    private final double[] lngs;
 
     public ParcelablePolygon(List<LatLng> points){
         List<Double> mLats = new ArrayList<>();

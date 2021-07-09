@@ -1,7 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
-import com.mosc.simo.ptuxiaki3741.interfaces.UserRepository;
+import com.mosc.simo.ptuxiaki3741.backend.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.models.User;
 
 import java.util.List;

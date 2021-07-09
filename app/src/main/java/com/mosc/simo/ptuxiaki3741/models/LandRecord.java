@@ -1,104 +1,47 @@
 package com.mosc.simo.ptuxiaki3741.models;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-@Entity(tableName = "LandRecords")
-public class LandRecord{
-    @PrimaryKey(autoGenerate = true)
-    private long id;
-    @ColumnInfo(name = "LandId")
-    private long landID;
-    @ColumnInfo(name = "CreatorId")
-    private long landCreatorID;
-    @ColumnInfo(name = "LandTitle")
-    private String landTitle;
-    @ColumnInfo(name = "UserId")
-    private long userID;
-    @ColumnInfo(name = "ActionID")
-    private LandDBAction actionID;
-    @ColumnInfo(name = "Date")
-    private Date date;
+public class LandRecord {
+    private LandDataRecord landData;
+    private final List<LandPointRecord> landPoints;
 
-    @Ignore
-    public LandRecord(LandData land, User user, LandDBAction actionID, Date date) {
-        this.landID = land.getId();
-        this.landCreatorID = land.getCreator_id();
-        this.landTitle = land.getTitle();
-        this.userID = user.getId();
-        this.actionID = actionID;
-        this.date = date;
+    public LandRecord(Land land, User user, LandDBAction actionID, Date date){
+        landPoints = new ArrayList<>();
+        landData = new LandDataRecord(land.getLandData(),user,actionID,date);
+        for(LandPoint landPoint : land.getLandPoints()){
+            landPoints.add(new LandPointRecord(landData,landPoint));
+        }
     }
 
-    public LandRecord(long id, long landID, long landCreatorID, String landTitle, long userID, LandDBAction actionID, Date date) {
-        this.id = id;
-        this.landID = landID;
-        this.landCreatorID = landCreatorID;
-        this.landTitle = landTitle;
-        this.userID = userID;
-        this.actionID = actionID;
-        this.date = date;
+    public LandRecord(LandData landData, List<LandPoint>  landPoints, User user, LandDBAction actionID, Date date){
+        this.landPoints = new ArrayList<>();
+        this.landData = new LandDataRecord(landData,user,actionID,date);
+        for(LandPoint landPoint : landPoints){
+            this.landPoints.add(new LandPointRecord(this.landData,landPoint));
+        }
     }
 
-    public long getId() {
-        return id;
+    public LandRecord(LandDataRecord landData,List<LandPointRecord> landPoints){
+        this.landData = landData;
+        this.landPoints = new ArrayList<>(landPoints);
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public LandDataRecord getLandData() {
+        return landData;
     }
-
-    public long getLandID() {
-        return landID;
+    public void setLandData(LandDataRecord landData) {
+        this.landData = landData;
     }
-
-    public void setLandID(long landID) {
-        this.landID = landID;
+    public List<LandPointRecord> getLandPoints() {
+        return landPoints;
     }
-
-    public long getLandCreatorID() {
-        return landCreatorID;
-    }
-
-    public void setLandCreatorID(long landCreatorID) {
-        this.landCreatorID = landCreatorID;
-    }
-
-    public String getLandTitle() {
-        return landTitle;
-    }
-
-    public void setLandTitle(String landTitle) {
-        this.landTitle = landTitle;
-    }
-
-    public long getUserID() {
-        return userID;
-    }
-
-    public void setUserID(long userID) {
-        this.userID = userID;
-    }
-
-    public LandDBAction getActionID() {
-        return actionID;
-    }
-
-    public void setActionID(LandDBAction actionID) {
-        this.actionID = actionID;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
+    public void setLandPoints(List<LandPointRecord> landPoints) {
+        this.landPoints.clear();
+        this.landPoints.addAll(landPoints);
     }
 }

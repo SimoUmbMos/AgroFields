@@ -22,5 +22,5 @@ public interface LandDao {
     long insert(LandData land);
 
     @Delete
-    int delete(LandData land);
+    void delete(LandData land);
 }

@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.interfaces;
+package com.mosc.simo.ptuxiaki3741.backend.interfaces;
 
 import com.mosc.simo.ptuxiaki3741.models.User;
 

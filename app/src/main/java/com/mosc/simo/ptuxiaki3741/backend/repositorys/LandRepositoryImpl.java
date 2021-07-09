@@ -1,7 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
-import com.mosc.simo.ptuxiaki3741.interfaces.LandRepository;
+import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandRepository;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandData;
 import com.mosc.simo.ptuxiaki3741.models.LandPoint;
@@ -44,12 +44,10 @@ public class LandRepositoryImpl implements LandRepository {
         LandData landData = land.getLandData();
         List<LandPoint> landPoints = land.getLandPoints();
         if(landData != null){
-            landData = saveLandData(landData);
+            saveLandData(landData);
             land.setLandData(landData);
-
             if(landPoints.size()>0){
-                landPoints = initLandPoints(landData,landPoints);
-                landPoints = saveLandPoints(landPoints);
+                saveLandPoints(landData,landPoints);
                 land.setLandPoints(landPoints);
             }
         }
@@ -58,31 +56,21 @@ public class LandRepositoryImpl implements LandRepository {
     @Override
     public void deleteLand(Land land) {
         LandData landData = land.getLandData();
-        db.landPointDao().deleteByLID(landData.getId());
+        db.landPointDao().deleteAllByLID(landData.getId());
         db.landDao().delete(landData);
     }
 
-    private LandData saveLandData(LandData landData){
+    private void saveLandData(LandData landData){
         long id = db.landDao().insert(landData);
         landData.setId(id);
-        return landData;
     }
-    private List<LandPoint> initLandPoints(LandData landData, List<LandPoint> landPoints) {
-        db.landPointDao().deleteByLID(landData.getId());
-        List<LandPoint> result = new ArrayList<>();
+    private void saveLandPoints(LandData landData,List<LandPoint> landPoints){
+        long pID;
+        db.landPointDao().deleteAllByLID(landData.getId());
         for(LandPoint landPoint:landPoints){
             landPoint.setLid(landData.getId());
-            result.add(landPoint);
+            pID = db.landPointDao().insert(landPoint);
+            landPoint.setId(pID);
         }
-        return result;
-    }
-    private List<LandPoint> saveLandPoints(List<LandPoint> landPoints){
-        long[] pIDs = db.landPointDao().insertAll(landPoints);
-        if(landPoints.size() == pIDs.length){
-            for(int i = 0; i<landPoints.size(); i++){
-                landPoints.get(i).setId(pIDs[i]);
-            }
-        }
-        return landPoints;
     }
 }

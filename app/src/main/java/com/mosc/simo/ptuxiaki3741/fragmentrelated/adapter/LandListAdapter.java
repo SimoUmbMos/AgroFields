@@ -67,9 +67,9 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
         boolean onLandLongClick(int pos);
     }
     protected static class LandListAdapterViewHolder  extends RecyclerView.ViewHolder {
-        public LinearLayout llContainer;
-        public TextView tvLandTitle;
-        public ImageView ivCheckBox;
+        public final LinearLayout llContainer;
+        public final TextView tvLandTitle;
+        public final ImageView ivCheckBox;
         public LandListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             llContainer = itemView.findViewById(R.id.llContainer);

@@ -17,7 +17,7 @@ public class LandPoint implements Parcelable,Comparable<LandPoint>{
     @ColumnInfo(name = "Lid")
     private long lid;
     @ColumnInfo(name = "Position")
-    private long position;
+    private final long position;
     @ColumnInfo(name = "LatLng")
     private final LatLng latLng;
 
@@ -52,10 +52,6 @@ public class LandPoint implements Parcelable,Comparable<LandPoint>{
 
     public long getPosition() {
         return position;
-    }
-
-    public void setPosition(long position) {
-        this.position = position;
     }
 
     public LatLng getLatLng() {

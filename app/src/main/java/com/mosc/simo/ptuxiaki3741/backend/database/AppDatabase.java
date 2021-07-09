@@ -12,7 +12,7 @@ import com.mosc.simo.ptuxiaki3741.backend.database.dao.UserDao;
 import com.mosc.simo.ptuxiaki3741.models.LandData;
 import com.mosc.simo.ptuxiaki3741.models.LandPoint;
 import com.mosc.simo.ptuxiaki3741.models.LandPointRecord;
-import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.User;
 import com.mosc.simo.ptuxiaki3741.backend.database.typeconverters.DBTypesConverter;
 
@@ -20,14 +20,14 @@ import com.mosc.simo.ptuxiaki3741.backend.database.typeconverters.DBTypesConvert
         User.class,
         LandData.class,
         LandPoint.class,
-        LandRecord.class,
+        LandDataRecord.class,
         LandPointRecord.class
 }, version = AppDatabase.DATABASE_VERSION)
 @TypeConverters({
         DBTypesConverter.class
 })
 public abstract class AppDatabase extends RoomDatabase {
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public abstract UserDao userDao();
     public abstract LandDao landDao();
     public abstract LandHistoryDao landHistoryDao();

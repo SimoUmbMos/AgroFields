@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -26,28 +24,23 @@ import com.mosc.simo.ptuxiaki3741.enums.LandImgState;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
 
 public class LandViewHolder implements View.OnTouchListener {
-    public final View view;
-    public final SupportMapFragment mapFragment;
     public final ActionBar actionBar;
     private final LandImgController imgController;
 
-    public DrawerLayout drawer;
-    public NavigationView navDrawer;
-    public ConstraintLayout clImgTab;
-    public TextView tvImgAction;
-    public ImageView imageView;
-    public FrameLayout touchLayer;
-    public FloatingActionButton fabSave,fabReset,fabPlus,fabMinus;
+    public final DrawerLayout drawer;
+    public final NavigationView navDrawer;
+    public final ConstraintLayout clImgTab;
+    public final TextView tvImgAction;
+    public final ImageView imageView;
+    public final FrameLayout touchLayer;
+    public final FloatingActionButton fabSave,fabReset,fabPlus,fabMinus;
     public MenuItem miLock;
-    public Button btnSave;
 
     private OnAction onClose;
 
     @SuppressLint("ClickableViewAccessibility")
-    public LandViewHolder(View view, SupportMapFragment mapFragment, ActionBar actionBar, LandImgController imgController) {
+    public LandViewHolder(View view, ActionBar actionBar, LandImgController imgController) {
         this.imgController = imgController;
-        this.view = view;
-        this.mapFragment = mapFragment;
         this.actionBar = actionBar;
 
         touchLayer = view.findViewById(R.id.map_touch_layer);
@@ -60,7 +53,6 @@ public class LandViewHolder implements View.OnTouchListener {
         imageView = view.findViewById(R.id.imageView);
         drawer = view.findViewById(R.id.drawer_layout);
         navDrawer = view.findViewById(R.id.nav_view);
-        btnSave = view.findViewById(R.id.btnSave);
 
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, navDrawer);
 
@@ -80,7 +72,6 @@ public class LandViewHolder implements View.OnTouchListener {
             View.OnClickListener btnSave,
             View.OnClickListener btnCancel
     ){
-        this.btnSave.setVisibility(View.GONE);
         clImgTab.setVisibility(View.VISIBLE);
         fabPlus.setVisibility(View.GONE);
         fabMinus.setVisibility(View.GONE);
@@ -95,7 +86,6 @@ public class LandViewHolder implements View.OnTouchListener {
             View.OnClickListener btnSave,
             View.OnClickListener btnCancel
     ){
-        this.btnSave.setVisibility(View.GONE);
         clImgTab.setVisibility(View.VISIBLE);
         fabPlus.setVisibility(View.VISIBLE);
         fabMinus.setVisibility(View.VISIBLE);
@@ -106,7 +96,6 @@ public class LandViewHolder implements View.OnTouchListener {
         tvImgAction.setText(title);
     }
     public void closeTabMenu(){
-        btnSave.setVisibility(View.VISIBLE);
         clImgTab.setVisibility(View.GONE);
         touchLayer.setVisibility(View.GONE);
         fabPlus.setOnClickListener(null);
@@ -262,9 +251,6 @@ public class LandViewHolder implements View.OnTouchListener {
             if(imageView.getVisibility() == View.VISIBLE){
                 Log.d("debug", "onTouch: "+debugMotionEvent(event));
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_UP:
-                        v.performClick();
-                        break;
                     case MotionEvent.ACTION_MOVE:
                         if (event.getPointerCount() == 1) {
                             imgController.imgTouchMove(event);
@@ -280,6 +266,7 @@ public class LandViewHolder implements View.OnTouchListener {
                         }
                         break;
                     default:
+                        v.performClick();
                         break;
                 }
             }

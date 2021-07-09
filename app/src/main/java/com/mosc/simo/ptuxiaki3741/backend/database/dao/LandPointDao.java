@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.database.dao;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -17,14 +16,8 @@ public interface LandPointDao {
     List<LandPoint> getAllLandPointsByLid(long lid);
 
     @Query("DELETE FROM `LandPoints` Where `lid` = :lid")
-    int deleteByLID(long lid);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long[] insertAll(List<LandPoint> landPoint);
+    void deleteAllByLID(long lid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandPoint landPoint);
-
-    @Delete
-    int delete(LandPoint landPoint);
 }

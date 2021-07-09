@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Διακήρυξη Χωραφιών</string>
-    <string name="land_actions_group_title">Ενέργειες χωραφιών</string>
+    <string name="land_actions_group_title">Ενέργειες χωραφιού</string>
     <string name="open_menu">Ανοίξτε το μενού</string>
     <string name="fab_create_point">Προσθήκη σημείου</string>
     <string name="fab_create_between">Προσθήκη μεταξύ σημείων</string>
@@ -31,4 +31,5 @@
     <string name="land_info_title">Πληροφορίες χωραφιού</string>
     <string name="create_land_label">Ορισμός ονόματος χωραφιού</string>
     <string name="edit_land_label">Επεξεργασία ονόματος χωραφιού</string>
+    <string name="app_actions_group_title">Ενέργειες δεδομένων χωραφιού</string>
 </resources>
