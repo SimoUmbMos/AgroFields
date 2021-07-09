@@ -117,11 +117,12 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     }
 
     private void closeKeyboard() {
-        if(getActivity() != null){
+        if(getActivity() != null && getActivity().getCurrentFocus() != null){
             InputMethodManager inputManager = (InputMethodManager)
                     getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
+            if(inputManager != null)
+                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
     private void submitAdd(String landName) {
