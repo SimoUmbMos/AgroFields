@@ -16,7 +16,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.restserver.RestDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 
@@ -26,9 +27,13 @@ public class MainActivity extends AppCompatActivity {
     private NavHostFragment navHostFragment;
     private boolean doubleBackToExitPressedOnce = false;
 
-    public static AppDatabase getDb(Context context){
+    public static RoomDatabase getRoomDb(Context context){
         return Room.databaseBuilder(context,
-                AppDatabase.class, "Main_db").fallbackToDestructiveMigration().build();
+                RoomDatabase.class, "Main_db").fallbackToDestructiveMigration().build();
+    }
+
+    public static RestDatabase getRestDb(){
+        return new RestDatabase();
     }
 
     public void showSnackBar(CharSequence text) {

@@ -54,6 +54,8 @@ public class LandViewHolder implements View.OnTouchListener {
         drawer = view.findViewById(R.id.drawer_layout);
         navDrawer = view.findViewById(R.id.nav_view);
 
+        miLock = navDrawer.getMenu().findItem(R.id.toolbar_action_toggle_map_lock);
+
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, navDrawer);
 
         onClose= new OnAction(){};

@@ -8,6 +8,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName = "LandData")
 public class LandData implements Parcelable {
     @PrimaryKey(autoGenerate = true)
@@ -82,5 +84,10 @@ public class LandData implements Parcelable {
         dest.writeLong(id);
         dest.writeLong(creator_id);
         dest.writeString(title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id, this.creator_id, this.title);
     }
 }

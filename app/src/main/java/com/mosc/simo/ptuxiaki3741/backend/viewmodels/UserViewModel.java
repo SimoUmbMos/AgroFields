@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
-import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandRepository;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.User;
@@ -29,7 +29,7 @@ public class UserViewModel extends AndroidViewModel {
 
     public UserViewModel(@NonNull Application application) {
         super(application);
-        AppDatabase db = MainActivity.getDb(application.getApplicationContext());
+        RoomDatabase db = MainActivity.getRoomDb(application.getApplicationContext());
         userRepository = new UserRepositoryImpl(db);
         landRepository = new LandRepositoryImpl(db);
     }

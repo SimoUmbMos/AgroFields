@@ -1,7 +1,9 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.helper;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ExportFieldModel {
     private String title;
@@ -12,10 +14,10 @@ public class ExportFieldModel {
                             List<List<List<Double>>> points
     ){
         this.title = title;
-        this.key = randomStringWithSize(6)+"-"+
-                randomStringWithSize(6)+"-"+
-                randomStringWithSize(6)+"-"+
-                randomStringWithSize(6);
+        this.key = getRandomHexString()+"-"+
+                getRandomHexString()+"-"+
+                getRandomHexString()+"-"+
+                getRandomHexString();
         this.points= new ArrayList<>();
         this.points.addAll(points);
     }
@@ -50,17 +52,9 @@ public class ExportFieldModel {
         return points;
     }
 
-    static String randomStringWithSize(int n) {
-        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                + "0123456789"
-                + "abcdefghijklmnopqrstuvxyz";
-        StringBuilder sb = new StringBuilder(n);
-        for (int i = 0; i < n; i++) {
-            int index = (int)(AlphaNumericString.length()
-                    * Math.random());
-            sb.append(AlphaNumericString
-                    .charAt(index));
-        }
-        return sb.toString();
+    private String getRandomHexString(){
+        SecureRandom random = new SecureRandom();
+        int num = random.nextInt(0x1000000);
+        return String.format("%06x", num);
     }
 }

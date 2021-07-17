@@ -50,11 +50,11 @@ public class LandMenuHolder implements NavigationView.OnNavigationItemSelectedLi
             case (R.id.menu_item_toggle_drawer):
                 viewHolder.openDrawer();
                 return true;
-            case (R.id.menu_item_toggle_map_lock):
-                mapHolder.toggleMapLock();
-                return true;
-            case (R.id.toolbar_action_save_land):
+            case (R.id.menu_item_save_land):
                 onSave.save();
+                return true;
+            case (R.id.toolbar_action_toggle_map_lock):
+                mapHolder.toggleMapLock();
                 return true;
             case (R.id.toolbar_action_edit_land_info):
                 onEdit.edit();

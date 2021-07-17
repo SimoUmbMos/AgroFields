@@ -1,6 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandRepository;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandData;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandRepositoryImpl implements LandRepository {
-    private final AppDatabase db;
+    private final RoomDatabase db;
 
-    public LandRepositoryImpl(AppDatabase db){
+    public LandRepositoryImpl(RoomDatabase db){
         this.db = db;
     }
 

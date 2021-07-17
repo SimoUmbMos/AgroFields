@@ -2,7 +2,6 @@ package com.mosc.simo.ptuxiaki3741.backend.viewmodels;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -32,10 +31,10 @@ public class LandViewModel extends AndroidViewModel {
     public LandViewModel(@NonNull Application application) {
         super(application);
         landRepository = new LandRepositoryImpl(
-                MainActivity.getDb(application.getApplicationContext())
+                MainActivity.getRoomDb(application.getApplicationContext())
         );
         landHistoryRepository = new LandHistoryRepositoryImpl(
-                MainActivity.getDb(application.getApplicationContext())
+                MainActivity.getRoomDb(application.getApplicationContext())
         );
     }
 

@@ -4,16 +4,16 @@
     <group
         android:id="@+id/group_map_menu_undo_redo_actions">
         <item
-            android:id="@+id/menu_item_toggle_map_lock"
-            android:orderInCategory="2"
-            android:icon="@drawable/menu_ic_unlocked"
-            android:title="@string/lock_map"
-            app:showAsAction="ifRoom" />
-        <item
             android:id="@+id/menu_item_toggle_drawer"
             android:orderInCategory="3"
             android:icon="@drawable/menu_ic_menu"
             android:title="@string/open_menu"
             app:showAsAction="always" />
+        <item
+            android:id="@+id/menu_item_save_land"
+            android:icon="@drawable/menu_ic_save"
+            android:orderInCategory="2"
+            android:title="@string/save"
+            app:showAsAction="ifRoom" />
     </group>
 </menu>

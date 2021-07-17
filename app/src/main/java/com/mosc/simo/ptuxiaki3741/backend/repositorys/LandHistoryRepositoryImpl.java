@@ -1,8 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
-import android.util.Log;
-
-import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandHistoryRepository;
 import com.mosc.simo.ptuxiaki3741.models.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.LandPointRecord;
@@ -12,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandHistoryRepositoryImpl implements LandHistoryRepository {
-    private final AppDatabase db;
-    public LandHistoryRepositoryImpl(AppDatabase db){
+    private final RoomDatabase db;
+    public LandHistoryRepositoryImpl(RoomDatabase db){
         this.db = db;
     }
 

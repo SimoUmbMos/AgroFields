@@ -1,15 +1,15 @@
 package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.AppDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.models.User;
 
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
-    private final AppDatabase db;
+    private final RoomDatabase db;
 
-    public UserRepositoryImpl(AppDatabase db) {
+    public UserRepositoryImpl(RoomDatabase db) {
         this.db = db;
     }
 

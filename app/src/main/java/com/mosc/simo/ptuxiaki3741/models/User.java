@@ -8,8 +8,22 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName = "Users")
 public class User implements Parcelable {
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "Key")
@@ -54,18 +68,6 @@ public class User implements Parcelable {
         this.username = username;
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
     @Override
     public int describeContents() {
         return 0;
@@ -76,5 +78,10 @@ public class User implements Parcelable {
         dest.writeLong(id);
         dest.writeString(key);
         dest.writeString(username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id, this.key, this.username);
     }
 }

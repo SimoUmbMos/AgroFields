@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/map_view_actions_group_title"
+        android:id="@+id/group_map_view_actions">
+        <menu>
+            <item
+                android:id="@+id/toolbar_action_toggle_map_lock"
+                android:orderInCategory="1"
+                android:icon="@drawable/menu_ic_unlocked"
+                android:title="@string/lock_map"
+                app:showAsAction="ifRoom|withText" />
+        </menu>
+    </item>
     <item android:title="@string/app_actions_group_title"
         android:id="@+id/group_map_app_actions">
         <menu>
             <item
-                android:id="@+id/toolbar_action_save_land"
-                android:icon="@drawable/menu_ic_save"
-                android:orderInCategory="1"
-                android:title="@string/save"
-                app:showAsAction="collapseActionView" />
-            <item
                 android:id="@+id/toolbar_action_edit_land_info"
                 android:icon="@drawable/menu_ic_edit"
-                android:orderInCategory="2"
+                android:orderInCategory="1"
                 android:title="@string/edit"
-                app:showAsAction="collapseActionView" />
+                app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
     <item android:title="@string/land_actions_group_title"
@@ -50,7 +56,7 @@
                 android:icon="@drawable/menu_ic_layer_clear"
                 android:orderInCategory="6"
                 android:title="@string/clean"
-                app:showAsAction="collapseActionView" />
+                app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
     <item android:title="@string/img_actions_group_title"
@@ -102,7 +108,7 @@
                 android:icon="@drawable/menu_ic_import"
                 android:orderInCategory="1"
                 android:title="@string/inport"
-                app:showAsAction="collapseActionView" />
+                app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
 </menu>

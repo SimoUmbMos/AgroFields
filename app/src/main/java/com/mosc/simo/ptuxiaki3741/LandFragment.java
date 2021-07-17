@@ -90,7 +90,6 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.map_menu, menu);
-        viewHolder.miLock = menu.findItem(R.id.menu_item_toggle_map_lock);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override
