@@ -21,6 +21,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
+import com.mosc.simo.ptuxiaki3741.enums.FileType;
+import com.mosc.simo.ptuxiaki3741.fragmentrelated.helper.FileHelper;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandPoint;
 import com.mosc.simo.ptuxiaki3741.models.User;
@@ -155,9 +157,9 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
     private void onLandListUpdate(List<Land> lands) {
         if(lands.size() == 0){
-            
+            //TODO: SHOW NO LANDS tvLabel
         }else{
-
+            //TODO: SHOW LANDS rcvLandList
         }
         viewHolder.notifyItemsChanged();
     }
@@ -220,87 +222,50 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         List<Integer> selectedLands = vmLands.getSelectedLands().getValue();
         if(selectedLands != null){
             List<Land> lands = vmLands.returnSelectedLands();
-            writeOnFile(lands);
+            //TODO: REMOVE MOCK KML WITH REAL ACTION
+            writeOnFile(lands,FileType.KML);
             vmLands.deselectAllLands();
         }
     }
 
-    private void writeOnFile(List<Land> lands) {
+    private void writeOnFile(List<Land> lands, FileType action) {
         if(lands.size()>0){
             String fileName = currUser.hashCode()+"_"+(System.currentTimeMillis()/1000)+"_"+lands.size();
             try{
                 File path = Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_DOCUMENTS);
                 path.mkdirs();
-                String output;
-                //TODO SWITCH BASED ON SELECTION + remove mock code
-                output = landsToKmlString(lands);
-                fileName = fileName+".kml";
-                /*
+                String output="";
+                boolean doAction = true;
                 switch(action){
-                    case (kml):
-                        output = landsToKmlString(lands);
+                    case KML:
+                        output = FileHelper.landsToKmlString(lands,currUser);
                         fileName = fileName+".kml";
                         break;
-                    case (geoJson):
-                        output = landsToGeoJsonString(lands);
+                    case GEOJSON:
+                        output = FileHelper.landsToGeoJsonString(lands);
                         fileName = fileName+".json";
                         break;
+                    case GML:
+                        //TODO: GML
                     default:
-                        output = "";
+                        doAction = false;
                         break;
-                    }
-                */
-                File gpxfile = new File(path, fileName);
-                FileWriter writer = new FileWriter(gpxfile);
-                writer.append(output);
-                writer.flush();
-                writer.close();
-                Toast.makeText(getContext(), "File created", Toast.LENGTH_SHORT).show();
+                }
+                if(doAction){
+                    File mFile = new File(path, fileName);
+                    FileWriter writer = new FileWriter(mFile);
+                    writer.append(output);
+                    writer.flush();
+                    writer.close();
+                    Toast.makeText(getContext(), "File created", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getContext(), "File not created", Toast.LENGTH_SHORT).show();
+                }
             } catch (IOException e) {
                 Log.e(TAG, "writeOnFile: ", e);
             }
         }
-    }
-
-    private void landToExportModel(List<Land> lands, List<ExportFieldModel> exportFieldModels) {
-        List<Double> latLng = new ArrayList<>();
-        List<List<Double>> points = new ArrayList<>();
-        List<List<List<Double>>> points2 = new ArrayList<>();
-        for(Land land : lands){
-            points.clear();
-            points2.clear();
-            for(LandPoint landPoint: land.getLandPoints()){
-                latLng.clear();
-                latLng.add(landPoint.getLatLng().longitude);
-                latLng.add(landPoint.getLatLng().latitude);
-                points.add(new ArrayList<>(latLng));
-            }
-            points2.add(new ArrayList<>(points));
-            exportFieldModels.add(new ExportFieldModel(
-                    land.getLandData().getTitle(),
-                    String.valueOf(land.getLandData().hashCode()),
-                    points2
-            ));
-        }
-    }
-
-    private String landsToKmlString(List<Land> lands) {
-        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
-        landToExportModel(lands, exportFieldModels);
-        Document document = KmlFileExporter.kmlFileExporter(
-                String.valueOf(currUser.hashCode()),
-                exportFieldModels);
-        XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
-        String output = xmOut.outputString(document);
-        return xmOut.outputString(document);
-    }
-
-    private String landsToGeoJsonString(List<Land> lands) {
-        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
-        landToExportModel(lands, exportFieldModels);
-        JSONObject export = GeoJsonExporter.geoJsonExport(exportFieldModels);;
-        return export.toString();
     }
 
     private void selectAllAction(){
