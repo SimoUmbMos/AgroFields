@@ -247,12 +247,7 @@ public class LandFragment extends Fragment implements FragmentBackPress {
         Intent intent = null;
         if(fileController.fileIsValid(result)){
             intent = new Intent(getContext(), ImportActivity.class);
-            List<List<LatLng>> pointsList = fileController.handleFile(result);
-            if(pointsList.size() > 0){
-                intent.putParcelableArrayListExtra(ImportActivity.argName,convertToParcelable(pointsList));
-            }else{
-                intent = null;
-            }
+            intent.setData(result.getData());
         }
         return intent;
     }

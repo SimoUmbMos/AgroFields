@@ -33,4 +33,5 @@
     <string name="edit_land_label">Επεξεργασία ονόματος χωραφιού</string>
     <string name="app_actions_group_title">Ενέργειες δεδομένων χωραφιού</string>
     <string name="map_view_actions_group_title">Ενέργειες χάρτι</string>
+    <string name="not_login_error">Not Logged</string>
 </resources>

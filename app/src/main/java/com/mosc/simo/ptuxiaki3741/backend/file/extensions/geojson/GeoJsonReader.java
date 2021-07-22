@@ -177,7 +177,7 @@ public class GeoJsonReader {
         List<LatLng> result= new ArrayList<>();
         for(List<List<Double>> points :polygon){
             for(List<Double> point :points){
-                result.add(coordinatesConverter.convertEPSG(point.get(0),point.get(1)));
+                result.add(coordinatesConverter.convertEPSG(point.get(1),point.get(0)));
             }
         }
         return result;
@@ -192,7 +192,7 @@ public class GeoJsonReader {
     private static List<LatLng> toLineString(List<List<Double>> lineString, CoordinatesConverter coordinatesConverter) {
         List<LatLng> result= new ArrayList<>();
         for(List<Double> point :lineString){
-            result.add(coordinatesConverter.convertEPSG(point.get(0),point.get(1)));
+            result.add(coordinatesConverter.convertEPSG(point.get(1),point.get(0)));
         }
         return result;
     }
@@ -205,7 +205,7 @@ public class GeoJsonReader {
     }
     private static List<LatLng> toPoint(List<Double> point,CoordinatesConverter coordinatesConverter) {
         List<LatLng> result= new ArrayList<>();
-        result.add(coordinatesConverter.convertEPSG(point.get(0),point.get(1)));
+        result.add(coordinatesConverter.convertEPSG(point.get(1),point.get(0)));
         return result;
     }
     private static List<List<LatLng>> toMultiPoint(List<List<Double>> multiPoint,CoordinatesConverter coordinatesConverter) {
@@ -221,7 +221,7 @@ public class GeoJsonReader {
         List<LatLng> result= new ArrayList<>();
         for(List<List<Double>> points :polygon){
             for(List<Double> point :points){
-                result.add(new LatLng(point.get(0),point.get(1)));
+                result.add(new LatLng(point.get(1),point.get(0)));
             }
         }
         return result;
@@ -236,7 +236,7 @@ public class GeoJsonReader {
     private static List<LatLng> toLineString(List<List<Double>> lineString) {
         List<LatLng> result= new ArrayList<>();
         for(List<Double> point :lineString){
-            result.add(new LatLng(point.get(0),point.get(1)));
+            result.add(new LatLng(point.get(1),point.get(0)));
         }
         return result;
     }
@@ -249,7 +249,7 @@ public class GeoJsonReader {
     }
     private static List<LatLng> toPoint(List<Double> point) {
         List<LatLng> result= new ArrayList<>();
-        result.add(new LatLng(point.get(0),point.get(1)));
+        result.add(new LatLng(point.get(1),point.get(0)));
         return result;
     }
     private static List<List<LatLng>> toMultiPoint(List<List<Double>> multiPoint) {

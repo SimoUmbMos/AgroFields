@@ -37,4 +37,5 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="clean">Clean</string>
+    <string name="not_login_error">No Loged In</string>
 </resources>

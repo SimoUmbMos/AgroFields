@@ -1,5 +1,8 @@
 package com.mosc.simo.ptuxiaki3741;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,25 +10,38 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.backend.database.restserver.RestDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final int doubleTapBack = 2750;
+    private static final String TAG = "MainActivity";
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
     private boolean doubleBackToExitPressedOnce = false;
+
+    private final ActivityResultLauncher<Intent> fileImportResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            this::importResult
+    );
 
     public static RoomDatabase getRoomDb(Context context){
         return Room.databaseBuilder(context,
@@ -68,10 +84,35 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setTitle(null);
         }
+        checkIfCalledByFile();
+    }
+
+    private void checkIfCalledByFile() {
+        Intent intent = getIntent();
+        if(intent != null){
+            if(intent.getData() != null){
+                Intent newIntent = new Intent(getApplicationContext(),ImportActivity.class);
+                newIntent.setData(intent.getData());
+                fileImportResult.launch(newIntent);
+            }
+        }
     }
 
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){
         this.fragmentBackPress = fragmentBackPress;
+    }
+
+    private void importResult(ActivityResult result) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            if(result.getData() != null){
+                Log.d(TAG, "importResult: ResultCode == RESULT_OK && Data != null");
+            }else{
+                Log.d(TAG, "importResult: ResultCode == RESULT_OK && Data == null");
+            }
+        }else{
+            Log.d(TAG, "importResult: ResultCode == RESULT_CANCELED");
+        }
+        finish();
     }
 
     @Override
@@ -98,13 +139,5 @@ public class MainActivity extends AppCompatActivity {
                 super.onBackPressed();
             }
         }
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
