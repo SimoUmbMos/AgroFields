@@ -42,4 +42,5 @@
     <string name="confirm_email_hint">Επιβεβαίωση Email</string>
     <string name="confirm_password_hint">Επιβεβαίωση Password</string>
     <string name="username_or_email_hint">Username ή Email</string>
+    <string name="phone_hint">Τηλέφωνο</string>
 </resources>
