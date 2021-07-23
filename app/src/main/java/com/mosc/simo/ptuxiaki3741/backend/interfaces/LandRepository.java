@@ -10,4 +10,5 @@ public interface LandRepository {
     List<Land> searchLandsByUser(User user);
     Land saveLand(Land land);
     void deleteLand(Land land);
+    void deleteLandsByUser(User user);
 }

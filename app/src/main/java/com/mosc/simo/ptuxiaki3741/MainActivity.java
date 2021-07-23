@@ -3,7 +3,6 @@ package com.mosc.simo.ptuxiaki3741;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
@@ -14,29 +13,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.backend.database.restserver.RestDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
-import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
-
-import java.util.List;
+import com.mosc.simo.ptuxiaki3741.models.User;
 
 public class MainActivity extends AppCompatActivity {
     private static final int doubleTapBack = 2750;
     private static final String TAG = "MainActivity";
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
-    private boolean doubleBackToExitPressedOnce = false;
+    private boolean doubleBackToExitPressedOnce = false,
+                        closeAfterImport = false;
 
     private final ActivityResultLauncher<Intent> fileImportResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -64,12 +60,6 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    private void initViewModels() {
-        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        userViewModel.init(sharedPref);
-    }
-
     private void init() {
         fragmentBackPress = new FragmentBackPress(){
             @Override
@@ -84,22 +74,32 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setTitle(null);
         }
-        checkIfCalledByFile();
     }
 
-    private void checkIfCalledByFile() {
-        Intent intent = getIntent();
-        if(intent != null){
-            if(intent.getData() != null){
-                Intent newIntent = new Intent(getApplicationContext(),ImportActivity.class);
-                newIntent.setData(intent.getData());
-                fileImportResult.launch(newIntent);
+    private void initViewModels() {
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        userViewModel.init(sharedPref);
+        userViewModel.getCurrUser().observe(this,this::onUserUpdate);
+    }
+
+    private void onUserUpdate(User user) {
+        if (user != null) {
+            if(checkIfCalledByFile()){
+                closeAfterImport = true;
+                goToImport();
             }
         }
     }
 
-    public void setOnBackPressed(FragmentBackPress fragmentBackPress){
-        this.fragmentBackPress = fragmentBackPress;
+    private void goToImport() {
+        Intent newIntent = new Intent(getApplicationContext(),ImportActivity.class);
+        newIntent.setData(getIntent().getData());
+        fileImportResult.launch(newIntent);
+    }
+
+    private boolean checkIfCalledByFile() {
+        return getIntent().getData() != null;
     }
 
     private void importResult(ActivityResult result) {
@@ -112,7 +112,12 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Log.d(TAG, "importResult: ResultCode == RESULT_CANCELED");
         }
-        finish();
+        if(closeAfterImport)
+            finish();
+    }
+
+    public void setOnBackPressed(FragmentBackPress fragmentBackPress){
+        this.fragmentBackPress = fragmentBackPress;
     }
 
     @Override
@@ -121,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.nav_host_fragment);
-        initViewModels();
         init();
+        initViewModels();
     }
     @Override
     public void onBackPressed() {

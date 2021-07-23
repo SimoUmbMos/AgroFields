@@ -60,6 +60,11 @@ public class LandRepositoryImpl implements LandRepository {
         db.landDao().delete(landData);
     }
 
+    @Override
+    public void deleteLandsByUser(User user) {
+        db.landDao().deleteByUID(user.getId());
+    }
+
     private void saveLandData(LandData landData){
         long id = db.landDao().insert(landData);
         landData.setId(id);

@@ -34,4 +34,12 @@
     <string name="app_actions_group_title">Ενέργειες δεδομένων χωραφιού</string>
     <string name="map_view_actions_group_title">Ενέργειες χάρτι</string>
     <string name="not_login_error">Not Logged</string>
+    <string name="login">Σύνδεση</string>
+    <string name="login_label">Σύνδεση Χρήστη</string>
+    <string name="register_label">Εγγραφή Νέου Χρήστη</string>
+    <string name="register_button">Κάντε Κλικ Εδώ Για Εγγραφή</string>
+    <string name="register_invalid_data_error">register_invalid_data_error</string>
+    <string name="confirm_email_hint">Επιβεβαίωση Email</string>
+    <string name="confirm_password_hint">Επιβεβαίωση Password</string>
+    <string name="username_or_email_hint">Username ή Email</string>
 </resources>

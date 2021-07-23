@@ -22,9 +22,11 @@ import java.util.List;
 public class UserViewModel extends AndroidViewModel {
     private static final String sharedPreferenceKey = "currUser";
     private static final long sharedPreferenceDefault = -1;
+
     private final MutableLiveData<User> currUser = new MutableLiveData<>();
+
     private final UserRepositoryImpl userRepository;
-    private final LandRepository landRepository;
+    private final LandRepositoryImpl landRepository;
     private SharedPreferences sharedPref;
 
     public UserViewModel(@NonNull Application application) {
@@ -36,18 +38,9 @@ public class UserViewModel extends AndroidViewModel {
     public void saveUser(User user){
         AsyncTask.execute(()->userRepository.saveUser(user));
     }
-    public void saveUserAndLogin(User user){
+    public void deleteUser(User user){
         AsyncTask.execute(()->{
-            User newUser = userRepository.saveUser(user);
-            singIn(newUser.getId());
-        });
-    }
-    public void removeUser(User user){
-        AsyncTask.execute(()->{
-            List<Land> lands = landRepository.searchLandsByUser(user);
-            for(Land land:lands){
-                landRepository.deleteLand(land);
-            }
+            landRepository.deleteLandsByUser(user);
             userRepository.deleteUser(user);
         });
     }
@@ -63,6 +56,7 @@ public class UserViewModel extends AndroidViewModel {
         currUser.postValue(user);
     }
     public void logout() {
+        clearUidFromMemory();
         currUser.postValue(null);
     }
 
@@ -89,19 +83,17 @@ public class UserViewModel extends AndroidViewModel {
     }
     private User loadCurrUser() {
         long uid = getUidFromMemory();
-        User user = null;
+        //TODO: remove mock user
+        User user = getMockUser();
         if(uid != sharedPreferenceDefault){
             user = userRepository.searchUserByID(uid);
             if(user == null){
                 clearUidFromMemory();
             }
         }
-        //TODO: TO REMOVE
-        user = getMockUser();
         return user;
     }
 
-    //TODO: TO REMOVE
     private User getMockUser() {
         return new User(1,"4200","makos");
     }
