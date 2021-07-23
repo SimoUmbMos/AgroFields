@@ -12,8 +12,8 @@ public class LandRecord {
 
     public LandRecord(Land land, User user, LandDBAction actionID, Date date){
         landPoints = new ArrayList<>();
-        landData = new LandDataRecord(land.getLandData(),user,actionID,date);
-        for(LandPoint landPoint : land.getLandPoints()){
+        landData = new LandDataRecord(land.getData(),user,actionID,date);
+        for(LandPoint landPoint : land.getBorder()){
             landPoints.add(new LandPointRecord(landData,landPoint));
         }
     }

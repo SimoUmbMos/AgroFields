@@ -150,6 +150,8 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         if( currUser != null) {
             changeActionBarTitle(currUser.getUsername()+"'s Land's");
             vmLands.init(currUser);
+        }else if(getActivity() != null){
+            nav.toLogin(getActivity());
         }
     }
     private void onSelectedLandUpdate(List<Integer> integers) {

@@ -84,10 +84,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onUserUpdate(User user) {
-        if (user != null) {
-            if(checkIfCalledByFile()){
+        if(checkIfCalledByFile()){
+            if (user != null) {
                 closeAfterImport = true;
                 goToImport();
+            }else{
+                finish();
             }
         }
     }

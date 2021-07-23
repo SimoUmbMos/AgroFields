@@ -52,7 +52,7 @@ public class FileHelper {
         for(Land land : lands){
             points.clear();
             points2.clear();
-            for(LandPoint landPoint: land.getLandPoints()){
+            for(LandPoint landPoint: land.getBorder()){
                 latLng.clear();
                 latLng.add(landPoint.getLatLng().longitude);
                 latLng.add(landPoint.getLatLng().latitude);
@@ -60,8 +60,8 @@ public class FileHelper {
             }
             points2.add(new ArrayList<>(points));
             exportFieldModels.add(new ExportFieldModel(
-                    land.getLandData().getTitle(),
-                    String.valueOf(land.getLandData().hashCode()),
+                    land.getData().getTitle(),
+                    String.valueOf(land.getData().hashCode()),
                     points2
             ));
         }

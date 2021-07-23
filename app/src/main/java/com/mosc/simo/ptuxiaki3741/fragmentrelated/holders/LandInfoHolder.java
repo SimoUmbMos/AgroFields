@@ -42,7 +42,7 @@ public class LandInfoHolder {
             landLabel = resources.getString(R.string.create_land_label);
         }else{
             landLabel = resources.getString(R.string.edit_land_label);
-            etLandName.setText(land.getLandData().getTitle());
+            etLandName.setText(land.getData().getTitle());
         }
         tvLandNameLabel.setText(landLabel);
     }

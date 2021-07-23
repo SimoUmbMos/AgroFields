@@ -44,8 +44,8 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
         List<Land> mLands = landViewModel.getLandsList();
         List<Integer> mSelectedLands = landViewModel.getSelectedIndexes();
         if( mSelectedLands != null && mLands != null){
-            if(mLands.get(position).getLandData() != null){
-                holder.tvLandTitle.setText(mLands.get(position).getLandData().getTitle());
+            if(mLands.get(position).getData() != null){
+                holder.tvLandTitle.setText(mLands.get(position).getData().getTitle());
             }
             if(mSelectedLands.contains(position)){
                 holder.ivCheckBox.setVisibility(View.VISIBLE);

@@ -12,7 +12,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -132,7 +131,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
         }
     }
     private void submitEdit(String landName) {
-        land.getLandData().setTitle(landName);
+        land.getData().setTitle(landName);
         navigate(toMap(land));
     }
     private void finish() {

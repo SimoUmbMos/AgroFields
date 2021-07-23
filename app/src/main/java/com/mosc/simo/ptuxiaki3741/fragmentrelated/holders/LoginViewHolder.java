@@ -10,9 +10,9 @@ import com.mosc.simo.ptuxiaki3741.R;
 public class LoginViewHolder {
     public View root;
     public TextView tvLoginLabel, tvToRegister;
-    public EditText etUserNameEmail, etUserName,
+    public EditText etUserNameEmailPhone, etUserName,
             etMainPassword, etSecondaryPassword,
-            etMainEmail, etSecondaryEmail;
+            etPhone, etMainEmail, etSecondaryEmail;
     public Button btnLoginCancel, btnLoginSubmit, btnLoginButton;
     private boolean isRegister;
 
@@ -27,10 +27,11 @@ public class LoginViewHolder {
         tvToRegister = view.findViewById(R.id.tvToRegister);
         tvToRegister.setOnClickListener(registerClick);
 
-        etUserNameEmail = view.findViewById(R.id.etUserNameEmail);
+        etUserNameEmailPhone = view.findViewById(R.id.etUserNameEmailPhone);
         etUserName = view.findViewById(R.id.etUserName);
         etMainPassword = view.findViewById(R.id.etMainPassword);
         etSecondaryPassword = view.findViewById(R.id.etSecondaryPassword);
+        etPhone = view.findViewById(R.id.etPhone);
         etMainEmail = view.findViewById(R.id.etMainEmail);
         etSecondaryEmail = view.findViewById(R.id.etSecondaryEmail);
 
@@ -49,10 +50,11 @@ public class LoginViewHolder {
         tvLoginLabel.setText(R.string.login_label);
 
         tvToRegister.setVisibility(View.VISIBLE);
-        etUserNameEmail.setVisibility(View.VISIBLE);
+        etUserNameEmailPhone.setVisibility(View.VISIBLE);
         btnLoginButton.setVisibility(View.VISIBLE);
         etMainPassword.setVisibility(View.VISIBLE);
 
+        etPhone.setVisibility(View.GONE);
         etUserName.setVisibility(View.GONE);
         etMainEmail.setVisibility(View.GONE);
         btnLoginSubmit.setVisibility(View.GONE);
@@ -64,6 +66,7 @@ public class LoginViewHolder {
         isRegister = true;
         tvLoginLabel.setText(R.string.register_label);
 
+        etPhone.setVisibility(View.VISIBLE);
         etUserName.setVisibility(View.VISIBLE);
         etMainEmail.setVisibility(View.VISIBLE);
         btnLoginSubmit.setVisibility(View.VISIBLE);
@@ -73,15 +76,20 @@ public class LoginViewHolder {
         etSecondaryPassword.setVisibility(View.VISIBLE);
 
         tvToRegister.setVisibility(View.GONE);
-        etUserNameEmail.setVisibility(View.GONE);
+        etUserNameEmailPhone.setVisibility(View.GONE);
         btnLoginButton.setVisibility(View.GONE);
     }
     public void clear(){
-        etUserNameEmail.setText("");
+        etPhone.setText("");
         etUserName.setText("");
-        etMainPassword.setText("");
-        etSecondaryPassword.setText("");
         etMainEmail.setText("");
+        etMainPassword.setText("");
         etSecondaryEmail.setText("");
+        etSecondaryPassword.setText("");
+        etUserNameEmailPhone.setText("");
+    }
+
+    public boolean isRegisterMode(){
+        return isRegister;
     }
 }

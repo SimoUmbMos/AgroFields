@@ -150,10 +150,10 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     private void initValues() {
         Land currLand = LandFragmentArgs.fromBundle(getArguments()).getLand();
         if(!Land.equals(currLand,new Land())){
-            currLandID = currLand.getLandData().getId();
+            currLandID = currLand.getData().getId();
         }
-        viewHolder.setTitle(currLand.getLandData().getTitle());
-        List<LandPoint> landPointsList = new ArrayList<>(currLand.getLandPoints());
+        viewHolder.setTitle(currLand.getData().getTitle());
+        List<LandPoint> landPointsList = new ArrayList<>(currLand.getBorder());
         Collections.sort(landPointsList);
         List<LatLng> landPoints = new ArrayList<>();
         for(LandPoint landPoint : landPointsList){

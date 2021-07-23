@@ -95,6 +95,6 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     private User getMockUser() {
-        return new User(1,"4200","makos");
+        return new User(1,"4200","makos","69********","*******@*****.**");
     }
 }

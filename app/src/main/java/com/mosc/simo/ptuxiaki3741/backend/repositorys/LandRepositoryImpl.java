@@ -41,21 +41,21 @@ public class LandRepositoryImpl implements LandRepository {
     }
     @Override
     public Land saveLand(Land land){
-        LandData landData = land.getLandData();
-        List<LandPoint> landPoints = land.getLandPoints();
+        LandData landData = land.getData();
+        List<LandPoint> landPoints = land.getBorder();
         if(landData != null){
             saveLandData(landData);
-            land.setLandData(landData);
+            land.setData(landData);
             if(landPoints.size()>0){
                 saveLandPoints(landData,landPoints);
-                land.setLandPoints(landPoints);
+                land.setBorder(landPoints);
             }
         }
         return land;
     }
     @Override
     public void deleteLand(Land land) {
-        LandData landData = land.getLandData();
+        LandData landData = land.getData();
         db.landPointDao().deleteAllByLID(landData.getId());
         db.landDao().delete(landData);
     }

@@ -7,45 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Land implements Parcelable {
-    private LandData landData;
-    private final List<LandPoint> landPoints;
-
-    public static boolean equals(Land land1,Land land2){
-        if(land1 == null && land2 == null){
-            return true;
-        }else if(land1 == null || land2 == null){
-            return false;
-        }else{
-            LandData landData1 = land1.getLandData(),
-                    landData2 = land2.getLandData();
-            if(landData1 == null && landData2 == null){
-                return true;
-            }else if(landData1 == null || landData2 == null){
-                return false;
-            }else{
-                return landData1.getId() == landData2.getId() ;
-            }
-        }
-    }
-
-    public Land(){
-        this.landData = null;
-        this.landPoints = new ArrayList<>();
-    }
-    public Land(LandData landData){
-        this.landData = landData;
-        this.landPoints = new ArrayList<>();
-    }
-    public Land(LandData landData,List<LandPoint> landPoints){
-        this.landData = landData;
-        this.landPoints = new ArrayList<>(landPoints);
-    }
-
-    protected Land(Parcel in) {
-        landData = in.readParcelable(LandData.class.getClassLoader());
-        landPoints = in.createTypedArrayList(LandPoint.CREATOR);
-    }
-
     public static final Creator<Land> CREATOR = new Creator<Land>() {
         @Override
         public Land createFromParcel(Parcel in) {
@@ -58,19 +19,75 @@ public class Land implements Parcelable {
         }
     };
 
-    public LandData getLandData() {
-        return landData;
-    }
-    public List<LandPoint> getLandPoints() {
-        return landPoints;
+    private LandData data;
+    private final List<LandPoint> border;
+    private final List<LandHole> holes;
+
+    public static boolean equals(Land land1,Land land2){
+        if(land1 == null && land2 == null){
+            return true;
+        }else if(land1 == null || land2 == null){
+            return false;
+        }else{
+            LandData landData1 = land1.getData(),
+                    landData2 = land2.getData();
+            if(landData1 == null && landData2 == null){
+                return true;
+            }else if(landData1 == null || landData2 == null){
+                return false;
+            }else{
+                return landData1.getId() == landData2.getId() ;
+            }
+        }
     }
 
-    public void setLandData(LandData landData) {
-        this.landData = landData;
+    public Land(){
+        this.data = null;
+        this.border = new ArrayList<>();
+        this.holes = new ArrayList<>();
     }
-    public void setLandPoints(List<LandPoint> landPoints) {
-        this.landPoints.clear();
-        this.landPoints.addAll(landPoints);
+    public Land(LandData data){
+        this.data = data;
+        this.border = new ArrayList<>();
+        this.holes = new ArrayList<>();
+    }
+    public Land(LandData data, List<LandPoint> border){
+        this.data = data;
+        this.border = new ArrayList<>(border);
+        this.holes = new ArrayList<>();
+    }
+    public Land(LandData data, List<LandPoint> border, List<LandHole> holes){
+        this.data = data;
+        this.border = new ArrayList<>(border);
+        this.holes = new ArrayList<>(holes);
+    }
+
+    protected Land(Parcel in) {
+        data = in.readParcelable(LandData.class.getClassLoader());
+        border = in.createTypedArrayList(LandPoint.CREATOR);
+        holes = in.createTypedArrayList(LandHole.CREATOR);
+    }
+
+    public LandData getData() {
+        return data;
+    }
+    public List<LandPoint> getBorder() {
+        return border;
+    }
+    public List<LandHole> getHoles() {
+        return holes;
+    }
+
+    public void setData(LandData data) {
+        this.data = data;
+    }
+    public void setBorder(List<LandPoint> border) {
+        this.border.clear();
+        this.border.addAll(border);
+    }
+    public void setHoles(List<LandHole> holes) {
+        this.holes.clear();
+        this.holes.addAll(holes);
     }
 
     @Override
@@ -80,7 +97,8 @@ public class Land implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(landData, flags);
-        dest.writeTypedList(landPoints);
+        dest.writeParcelable(data, flags);
+        dest.writeTypedList(border);
+        dest.writeTypedList(holes);
     }
 }

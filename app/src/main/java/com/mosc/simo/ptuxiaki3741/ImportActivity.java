@@ -31,7 +31,6 @@ import java.util.List;
 public class ImportActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnPolygonClickListener {
     public static final String TAG = "ImportActivity";
     public static final String resName = "polygon";
-
     private List<List<LatLng>> polyList;
     private User curUser;
     private GoogleMap mMap;
@@ -41,26 +40,50 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         ActivityImportBinding binding = ActivityImportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        init();
         initViewModel();
         initView();
-        init();
     }
-
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap){
         mMap = googleMap;
         initMap();
-        mMap.setOnMapLoadedCallback(this::onMapFullLoaded);
+    }
+    @Override
+    public void onPolygonClick(@NonNull Polygon polygon){
+        if(curUser != null){
+            Intent returnIntent;
+            returnIntent = new Intent();
+            returnIntent.putExtra(resName,new ParcelablePolygon(polygon.getPoints()));
+            setResult(RESULT_OK,returnIntent);
+            finish();
+        }else{
+            Toast.makeText(this, R.string.not_login_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
+    private void init(){
+        Intent intent = getIntent();
+        if(intent != null){
+            polyList = new ArrayList<>();
+            FileHelper fileHelper = new FileHelper(this);
+            polyList.addAll(fileHelper.handleFile(intent));
+            if(polyList.size() == 0){
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+        }else{
+            setResult(RESULT_CANCELED);
+            finish();
+        }
+    }
     private void initViewModel(){
         curUser = null;
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getCurrUser().observe(this,newUser -> curUser = newUser);
+        userViewModel.getCurrUser().observe(this,this::onUserUpdate);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         userViewModel.init(sharedPref);
     }
-
     private void initView(){
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -71,28 +94,25 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
             finish();
         }
     }
-
-    private void init(){
-        Intent intent = getIntent();
-        if(intent != null){
-            polyList = new ArrayList<>();
-            FileHelper fileHelper = new FileHelper(this);
-            polyList.addAll(fileHelper.handleFile(intent));
-            Log.d(TAG, "onCreate: "+polyList.size());
-        }else{
-            setResult(RESULT_CANCELED);
-            finish();
-        }
-    }
-
     private void initMap(){
         mMap.setOnPolygonClickListener(this);
+        mMap.setOnMapLoadedCallback(this::onMapFullLoaded);
+    }
+
+    private void onUserUpdate(User user) {
+        curUser = user;
+        if(user != null && polyList.size() == 1){
+            Intent returnIntent;
+            returnIntent = new Intent();
+            returnIntent.putExtra(resName,new ParcelablePolygon(polyList.get(0)));
+            setResult(RESULT_OK,returnIntent);
+            finish();
+        }
     }
 
     private void onMapFullLoaded(){
         showPointsOnMap();
     }
-
     private void showPointsOnMap(){
         if(polyList.size() > 0){
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -106,19 +126,6 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
                 }
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
-        }
-    }
-
-    @Override
-    public void onPolygonClick(@NonNull Polygon polygon){
-        if(curUser != null){
-            Intent returnIntent;
-            returnIntent = new Intent();
-            returnIntent.putExtra(resName,new ParcelablePolygon(polygon.getPoints()));
-            setResult(RESULT_OK,returnIntent);
-            finish();
-        }else{
-            Toast.makeText(this, R.string.not_login_error, Toast.LENGTH_SHORT).show();
         }
     }
 }

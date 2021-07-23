@@ -66,7 +66,7 @@ public class LandViewModel extends AndroidViewModel {
     public void saveLand(Land land, User currUser){
         AsyncTask.execute(()->{
             List<Land> lands = getLandsList();
-            List<LandPoint> landPoints = new ArrayList<>(land.getLandPoints());
+            List<LandPoint> landPoints = new ArrayList<>(land.getBorder());
             Land newLand = landRepository.saveLand(land);
             int index = indexOfLand(newLand);
             LandDBAction action;
@@ -78,7 +78,7 @@ public class LandViewModel extends AndroidViewModel {
                 action = LandDBAction.UPDATE;
             }
             LandRecord landRecord = new LandRecord(
-                    newLand.getLandData(),
+                    newLand.getData(),
                     landPoints,
                     currUser,
                     action,
