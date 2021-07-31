@@ -81,11 +81,20 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         userViewModel.init(sharedPref);
         userViewModel.getCurrUser().observe(this,this::onUserUpdate);
+        onUserUpdate(userViewModel.getCurrUser().getValue());
     }
 
     private void onUserUpdate(User user) {
+        boolean userIsNull;
+        if(user != null){
+            userIsNull = false;
+            Log.d(TAG, "onUserUpdate: user not null");
+        }else{
+            userIsNull = true;
+            Log.d(TAG, "onUserUpdate: user null");
+        }
         if(checkIfCalledByFile()){
-            if (user != null) {
+            if (!userIsNull) {
                 closeAfterImport = true;
                 goToImport();
             }else{

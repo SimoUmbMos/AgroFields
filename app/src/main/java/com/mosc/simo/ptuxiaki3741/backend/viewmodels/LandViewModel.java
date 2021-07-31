@@ -43,19 +43,27 @@ public class LandViewModel extends AndroidViewModel {
     }
 
     public void init(User user){
-        loadLands(user);
-        initSelectedList();
+        if(lands.getValue() == null){
+            lands.postValue(new ArrayList<>());
+        }
+        if(selectedList.getValue() == null){
+            selectedList.postValue(new ArrayList<>());
+        }
+        List<Land> landList = new ArrayList<>();
+        List<Integer> selectedIndexes = new ArrayList<>();
+        loadLands(user,landList);
+        initSelectedList(selectedIndexes);
     }
-    private void loadLands(User user) {
+    private void loadLands(User user, List<Land> landList) {
         AsyncTask.execute(()->{
-            List<Land> landList = landRepository.searchLandsByUser(user);
+            landList.clear();
+            landList.addAll(landRepository.searchLandsByUser(user));
             lands.postValue(landList);
         });
     }
-    private void initSelectedList(){
-        List<Integer> selectedIndexes = selectedList.getValue();
-        if(selectedIndexes == null){
-            selectedIndexes = new ArrayList<>();
+    private void initSelectedList(List<Integer> selectedIndexes){
+        if(selectedList.getValue() != null){
+            selectedIndexes.addAll(selectedList.getValue());
         }
         selectedList.postValue(selectedIndexes);
     }

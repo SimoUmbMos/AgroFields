@@ -48,10 +48,20 @@
     <string name="login_label">User Login</string>
     <string name="register_label">Register New User</string>
     <string name="register_button">Click Here To Register</string>
-    <string name="register_invalid_data_error">register_invalid_data_error</string>
 
     <string name="confirm_email_hint">Confirm Email</string>
     <string name="confirm_password_hint">Confirm Password</string>
     <string name="username_or_email_hint">Username or Email</string>
     <string name="phone_hint">Phone</string>
+
+    <string name="register_invalid_data_error">register_invalid_data_error</string>
+    <string name="register_email_empty_error">Email is empty</string>
+    <string name="register_email_not_match_error">Email don\'t match</string>
+    <string name="register_password_wrong_error">Wrong Password</string>
+    <string name="register_password_empty_error">Password is empty</string>
+    <string name="register_password_not_match_error">Password don\'t match</string>
+    <string name="register_phone_empty_error">Phone is empty</string>
+    <string name="register_username_wrong_error">Wrong Username</string>
+    <string name="register_username_empty_error">Username is empty</string>
+    <string name="register_username_taken_error">Username is taken</string>
 </resources>

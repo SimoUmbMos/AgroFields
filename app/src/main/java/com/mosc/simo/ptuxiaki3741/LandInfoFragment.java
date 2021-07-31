@@ -12,6 +12,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -112,6 +113,11 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
         finish();
     }
     private void onCurrUserUpdate(User user) {
+        if(user != null){
+            Log.d(TAG, "onUserUpdate: user not null");
+        }else{
+            Log.d(TAG, "onUserUpdate: user null");
+        }
         currUser = user;
     }
 

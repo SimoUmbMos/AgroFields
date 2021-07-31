@@ -43,4 +43,13 @@
     <string name="confirm_password_hint">Επιβεβαίωση Password</string>
     <string name="username_or_email_hint">Username ή Email</string>
     <string name="phone_hint">Τηλέφωνο</string>
+    <string name="register_email_empty_error">Το Email είναι κενό</string>
+    <string name="register_email_not_match_error">Τα Email δεν ταιριάζουν</string>
+    <string name="register_password_empty_error">Το Password είναι κενό</string>
+    <string name="register_password_not_match_error">Τα Password δεν ταιριάζουν</string>
+    <string name="register_phone_empty_error">Το Τηλέφωνο είναι κενό</string>
+    <string name="register_username_empty_error">Το Username είναι κενό</string>
+    <string name="register_username_taken_error">"Το Username είναι πιασμένο "</string>
+    <string name="register_password_wrong_error">Λάθος Password</string>
+    <string name="register_username_wrong_error">Λάθος Username</string>
 </resources>

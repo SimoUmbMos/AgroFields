@@ -58,6 +58,8 @@
         tools:layout="@layout/fragment_login_register" >
         <action
             android:id="@+id/toLandList"
-            app:destination="@id/landListFragment" />
+            app:destination="@id/landListFragment"
+            app:popUpTo="@id/nav_land_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

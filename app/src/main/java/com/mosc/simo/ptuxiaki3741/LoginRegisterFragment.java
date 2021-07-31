@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,27 +11,36 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LoginViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.User;
 
 public class LoginRegisterFragment extends Fragment implements FragmentBackPress {
+    public static final String TAG = "LoginRegisterFragment";
     private LoginViewHolder viewHolder;
+    private UserViewModel vmUsers;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        if(getActivity() != null){
+            if(getActivity() instanceof MainActivity){
+                MainActivity mainActivity = (MainActivity) getActivity();
+            }
+        }
         return inflater.inflate(R.layout.fragment_login_register, container, false);
     }
     @Override
@@ -59,11 +67,17 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     }
 
     private void init(View view) {
-        MainActivity activity = (MainActivity) getActivity();
-        if(activity != null){
-            activity.setOnBackPressed(this);
+        if(getActivity() != null){
+            if(getActivity() instanceof MainActivity){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                vmUsers = new ViewModelProvider(mainActivity).get(UserViewModel.class);
+                vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
+                onUserUpdate(vmUsers.getCurrUser().getValue());
+            }
         }
         viewHolder = new LoginViewHolder(
+                getResources(),
                 view,
                 this::onLogin,
                 this::onRegister,
@@ -71,40 +85,55 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 this::toLogin
         );
 
-        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        userViewModel.init(sharedPref);
-        userViewModel.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
     }
 
     private void onUserUpdate(User user) {
         if(user != null){
+            Log.d(TAG, "onUserUpdate: user not null");
             navigate(toLandList());
+        }else{
+            Log.d(TAG, "onUserUpdate: user null");
         }
     }
 
     private void onLogin(View view) {
-        //TODO: REPLACE WITH REAL METHOD
-        Snackbar.make(view,R.string.todo,Snackbar.LENGTH_LONG).show();
+        User user = getLoginDataIfValid();
+        if(user != null){
+            AsyncTask.execute(()->onLoginAction(user));
+        }
     }
     private void onRegister(View view) {
-        if(registerDataIsValid()){
-            //TODO: REPLACE WITH REAL METHOD
-            Snackbar.make(view,R.string.todo,Snackbar.LENGTH_LONG).show();
-        }else{
-            Snackbar.make(view,R.string.register_invalid_data_error,Snackbar.LENGTH_LONG).show();
+        User user = getRegisterDataIfValid();
+        if(user != null){
+            AsyncTask.execute(()->onRegisterAction(user));
         }
     }
     private void toRegister(View view) {
         viewHolder.clear();
+        viewHolder.clearErrors();
         viewHolder.showRegister();
     }
     private void toLogin(View view) {
         viewHolder.clear();
+        viewHolder.clearErrors();
         viewHolder.showLogin();
     }
 
-    private boolean registerDataIsValid() {
+    private User getLoginDataIfValid() {
+        String  username = viewHolder.etUserName.getText().toString().trim(),
+                password = viewHolder.etMainPassword.getText().toString().trim();
+
+        boolean isPasswordWritten = !password.isEmpty(),
+                isUsernameWritten = !username.isEmpty();
+
+        showLoginError(isUsernameWritten, isPasswordWritten);
+
+        if(isPasswordWritten && isUsernameWritten){
+            return new User(username, password);
+        }
+        return null;
+    }
+    private User getRegisterDataIfValid() {
         String  username = viewHolder.etUserName.getText().toString().trim(),
                 phone = viewHolder.etPhone.getText().toString().trim(),
                 email = viewHolder.etMainEmail.getText().toString().trim(),
@@ -119,12 +148,75 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 isPasswordWritten = !password.isEmpty(),
                 isUsernameWritten = !username.isEmpty();
 
-        return  isEmailSame && isPasswordSame &&
-                isUsernameWritten && isPhoneWritten && isEmailWritten && isPasswordWritten;
+        showRegisterError(isEmailSame, isEmailWritten,
+                isPasswordSame, isPasswordWritten,
+                isUsernameWritten, isPhoneWritten);
+
+        if(isEmailWritten && isEmailSame &&
+                isPasswordWritten && isPasswordSame &&
+                isPhoneWritten && isUsernameWritten){
+            return new User(username, password, phone, email);
+        }
+        return null;
     }
+
+    private void onLoginAction(User tempUser){
+        User user = vmUsers.checkCredentials(tempUser.getUsername(),tempUser.getPassword());
+        if (user != null) {
+            vmUsers.singIn(user);
+        }else{
+            if(getActivity() != null)
+                getActivity().runOnUiThread(()->
+                    Toast.makeText(
+                            getContext(),
+                            R.string.register_invalid_data_error,
+                            Toast.LENGTH_SHORT
+                    ).show()
+                );
+        }
+    }
+    private void onRegisterAction(User tempUser){
+        //TODO: DO REGISTER ACTION
+    }
+
+    private void showLoginError(boolean isUsernameWritten, boolean isPasswordWritten) {
+        viewHolder.clearErrors();
+        if(!isUsernameWritten){
+            viewHolder.showError(LoginRegisterError.UserNameEmptyError);
+        }
+        if(!isPasswordWritten){
+            viewHolder.showError(LoginRegisterError.PasswordEmptyError);
+        }
+    }
+    private void showRegisterError(boolean isEmailSame, boolean isEmailWritten,
+                        boolean isPasswordSame, boolean isPasswordWritten,
+                         boolean isUsernameWritten, boolean isPhoneWritten) {
+        viewHolder.clearErrors();
+
+        if(!isEmailWritten){
+            viewHolder.showError(LoginRegisterError.EmailEmptyError);
+        }else if(!isEmailSame){
+            viewHolder.showError(LoginRegisterError.EmailNotMatchError);
+        }
+
+        if(!isPasswordWritten){
+            viewHolder.showError(LoginRegisterError.PasswordEmptyError);
+        }else if(!isPasswordSame){
+            viewHolder.showError(LoginRegisterError.PasswordNotMatchError);
+        }
+
+        if(!isUsernameWritten){
+            viewHolder.showError(LoginRegisterError.UserNameEmptyError);
+        }
+
+        if(!isPhoneWritten){
+            viewHolder.showError(LoginRegisterError.PhoneEmptyError);
+        }
+    }
+
     private void navigate(NavDirections action){
         NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landInfoFragment)
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.loginRegisterFragment)
             navController.navigate(action);
     }
     private NavDirections toLandList(){

@@ -11,8 +11,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
-import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandRepository;
-import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.User;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
@@ -35,29 +33,27 @@ public class UserViewModel extends AndroidViewModel {
         userRepository = new UserRepositoryImpl(db);
         landRepository = new LandRepositoryImpl(db);
     }
-    public void saveUser(User user){
-        AsyncTask.execute(()->userRepository.saveUser(user));
+    public void init(SharedPreferences sharedPref){
+        this.sharedPref = sharedPref;
+        initCurrUser();
     }
-    public void deleteUser(User user){
+    private void initCurrUser() {
         AsyncTask.execute(()->{
-            landRepository.deleteLandsByUser(user);
-            userRepository.deleteUser(user);
+            User user = loadCurrUser();
+            currUser.postValue(user);
         });
+    }
+    private User loadCurrUser() {
+        long uid = getUidFromMemory();
+        User user = userRepository.searchUserByID(uid);
+        if(user == null){
+            clearUidFromMemory();
+        }
+        return user;
     }
 
     public LiveData<User> getCurrUser(){
         return currUser;
-    }
-    public void singIn(long uid) {
-        User user = userRepository.searchUserByID(uid);
-        if(user != null){
-            putUidToMemory(uid);
-        }
-        currUser.postValue(user);
-    }
-    public void logout() {
-        clearUidFromMemory();
-        currUser.postValue(null);
     }
 
     private void clearUidFromMemory(){
@@ -65,36 +61,50 @@ public class UserViewModel extends AndroidViewModel {
         editor.remove(sharedPreferenceKey);
         editor.apply();
     }
-    private long getUidFromMemory() {
-        return sharedPref.getLong(sharedPreferenceKey, sharedPreferenceDefault);
-    }
     private void putUidToMemory(long id){
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(sharedPreferenceKey, id);
         editor.apply();
     }
+    private long getUidFromMemory() {
+        return sharedPref.getLong(sharedPreferenceKey, sharedPreferenceDefault);
+    }
 
-    public void init(SharedPreferences sharedPref){
-        this.sharedPref = sharedPref;
-        AsyncTask.execute(this::initCurrUser);
+    public void reloadCurrUser(){
+        User user = currUser.getValue();
+        if(user!=null){
+            User newData = userRepository.searchUserByID(user.getId());
+            currUser.postValue(newData);
+        }
     }
-    private void initCurrUser() {
-        currUser.postValue(loadCurrUser());
+    public boolean saveNewUser(User user){
+        return userRepository.saveNewUser(user);
     }
-    private User loadCurrUser() {
-        long uid = getUidFromMemory();
-        //TODO: remove mock user
-        User user = getMockUser();
-        if(uid != sharedPreferenceDefault){
-            user = userRepository.searchUserByID(uid);
-            if(user == null){
-                clearUidFromMemory();
+    public void editUser(User user){
+        userRepository.editUser(user);
+    }
+    public void deleteUser(User user){
+        landRepository.deleteLandsByUser(user);
+        userRepository.deleteUser(user);
+    }
+
+    public User checkCredentials(String username, String password) {
+        User user = userRepository.searchUserByUserName(username);
+        if(user != null){
+            if(user.getPassword().equals(password)){
+                return user;
             }
         }
-        return user;
+        return null;
     }
-
-    private User getMockUser() {
-        return new User(1,"4200","makos","69********","*******@*****.**");
+    public void singIn(User user) {
+        if(user != null){
+            putUidToMemory(user.getId());
+        }
+        currUser.postValue(user);
+    }
+    public void logout() {
+        clearUidFromMemory();
+        currUser.postValue(null);
     }
 }

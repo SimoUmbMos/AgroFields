@@ -272,6 +272,11 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     }
     private void onCurrUserUpdate(User user) {
         currUser = user;
+        if(user != null){
+            Log.d(TAG, "onUserUpdate: user not null");
+        }else{
+            Log.d(TAG, "onUserUpdate: user null");
+        }
     }
 
     private void navigate(NavDirections action){

@@ -112,8 +112,8 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
             activity.setOnBackPressed(this);
             changeActionBarTitle("");
             getViewModels(activity);
-            initObservers();
             initHolders(view);
+            initObservers();
         }
     }
     private void changeActionBarTitle(String title) {
@@ -127,16 +127,13 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         vmUsers = new ViewModelProvider(activity).get(UserViewModel.class);
     }
     private void initObservers() {
-        if(vmLands != null){
+        if(vmUsers != null && vmLands != null){
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandListUpdate);
             vmLands.getSelectedLands().observe(getViewLifecycleOwner(),this::onSelectedLandUpdate);
-        }
-        if(vmUsers != null){
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-            if(vmUsers.getCurrUser().getValue() != null){
-                currUser = vmUsers.getCurrUser().getValue();
-                vmLands.init(currUser);
-            }
+            onLandListUpdate(vmLands.getLands().getValue());
+            onSelectedLandUpdate(vmLands.getSelectedLands().getValue());
+            onCurrUserUpdate(vmUsers.getCurrUser().getValue());
         }
     }
     private void initHolders(View view) {
@@ -145,20 +142,26 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         menuHolder = new LandListMenuHolder(this::OnNavigate,this::OnUpdateState,this::onAction);
     }
 
-    private void onCurrUserUpdate(User newLoginUser) {
-        this.currUser = newLoginUser;
+    private void onCurrUserUpdate(User user) {
+        this.currUser = user;
         if( currUser != null) {
-            changeActionBarTitle(currUser.getUsername()+"'s Land's");
+            Log.d(TAG, "onUserUpdate: user not null");
             vmLands.init(currUser);
-        }else if(getActivity() != null){
-            nav.toLogin(getActivity());
+            changeActionBarTitle(currUser.getUsername()+"'s Land's");
+        }else{
+            Log.d(TAG, "onUserUpdate: user null");
+            if(getActivity() != null){
+                nav.toLogin(getActivity());
+            }
         }
     }
     private void onSelectedLandUpdate(List<Integer> integers) {
         viewHolder.notifyItemsChanged();
     }
     private void onLandListUpdate(List<Land> lands) {
-        if(lands.size() == 0){
+        if(lands == null){
+            //TODO: SHOW NO LANDS tvLabel
+        }else if(lands.size() == 0){
             //TODO: SHOW NO LANDS tvLabel
         }else{
             //TODO: SHOW LANDS rcvLandList
