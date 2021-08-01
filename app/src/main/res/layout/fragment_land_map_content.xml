@@ -46,7 +46,7 @@
         android:id="@+id/clImgTab"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/bg_lower_rounded"
+        android:background="@color/colorBackground"
         app:layout_constraintEnd_toEndOf="@+id/map"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/map"

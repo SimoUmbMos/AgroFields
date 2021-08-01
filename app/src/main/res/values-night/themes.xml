@@ -1,13 +1,18 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimaryVariant">@color/night_colorPrimaryVariant</item>
         <item name="colorPrimary">@color/night_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/night_colorPrimaryDark</item>
-        <item name="colorAccent">@color/night_colorAccent</item>
+        <item name="colorOnPrimary">@color/night_colorOnPrimary</item>
+        <item name="colorSurface">@color/night_colorSurface</item>
+        <item name="colorSecondaryVariant">@color/night_colorSecondaryVariant</item>
+        <item name="colorSecondary">@color/night_colorSecondary</item>
+        <item name="colorOnSecondary">@color/night_colorOnSecondary</item>
+        <item name="colorOnSurface">@color/night_colorOnSurface</item>
+        <item name="android:colorBackground">@color/night_colorBackground</item>
+        <item name="colorOnBackground">@color/night_colorOnBackground</item>
+        <item name="colorError">@color/night_colorError</item>
+        <item name="colorOnError">@color/night_colorOnError</item>
 
-
-        <item name="colorSecondary">@color/night_shrine_pink_100</item>
-        <item name="colorOnSecondary">@color/night_shrine_pink_900</item>
-        <item name="colorOnSurface">@color/night_shrine_pink_900</item>
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
 
         <item name="extendedFloatingActionButtonStyle">@style/Widget.App.ExtendedFloatingActionButton</item>
@@ -26,9 +31,9 @@
         <item name="cornerSize">4dp</item>
     </style>
     <style name="ThemeOverlay.App.FloatingActionButton" parent="">
-        <item name="colorSecondary">@color/night_shrine_pink_100</item>
-        <item name="colorOnSecondary">@color/night_shrine_pink_900</item>
-        <item name="colorOnSurface">@color/night_shrine_pink_900</item>
+        <item name="colorSecondary">@color/shrine_pink_100</item>
+        <item name="colorOnSecondary">@color/shrine_pink_900</item>
+        <item name="colorOnSurface">@color/shrine_pink_900</item>
     </style>
     <style name="Widget.App.ExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton.Icon">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>

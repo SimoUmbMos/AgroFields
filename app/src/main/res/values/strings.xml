@@ -60,7 +60,7 @@
     <string name="register_password_wrong_error">Wrong Password</string>
     <string name="register_password_empty_error">Password is empty</string>
     <string name="register_password_not_match_error">Password don\'t match</string>
-    <string name="register_phone_empty_error">Phone is empty</string>
+    <string name="register_phone_length_error">Phone length is invalid</string>
     <string name="register_username_wrong_error">Wrong Username</string>
     <string name="register_username_empty_error">Username is empty</string>
     <string name="register_username_taken_error">Username is taken</string>

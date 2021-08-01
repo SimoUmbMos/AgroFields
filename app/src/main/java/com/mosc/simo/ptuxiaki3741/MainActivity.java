@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.backend.database.restserver.RestDatabase;
@@ -48,16 +49,17 @@ public class MainActivity extends AppCompatActivity {
         return new RestDatabase();
     }
 
-    public void showSnackBar(CharSequence text) {
-        showSnackBar(text.toString());
+    public void showToast(CharSequence text) {
+        showToast(text.toString());
     }
-    public void showSnackBar(String text) {
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_root), text, Snackbar.LENGTH_LONG);
+    public void showToast(String text) {
+        /*Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_root), text, Snackbar.LENGTH_LONG);
         snackbar.setBackgroundTint(getResources().getColor(R.color.colorPrimary, getTheme()));
         View view = snackbar.getView();
         TextView tv = view.findViewById(com.google.android.material.R.id.snackbar_text);
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        snackbar.show();
+        snackbar.show();*/
+        Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
     }
 
     private void init() {
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     super.onBackPressed();
                     return;
                 }
-                showSnackBar(getResources().getText(R.string.double_tap_exit));
+                showToast(getResources().getText(R.string.double_tap_exit));
                 doubleBackToExitPressedOnce = true;
                 new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, doubleTapBack);
             }else{

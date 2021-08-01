@@ -6,7 +6,7 @@ public enum LoginRegisterError {
     PasswordWrongError,
     PasswordEmptyError,
     PasswordNotMatchError,
-    PhoneEmptyError,
+    PhoneLengthError,
     UserNameWrongError,
     UserNameEmptyError,
     UserNameTakenError

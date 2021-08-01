@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimaryVariant">#3700B3</color>
     <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSecondaryVariant">#018786</color>
+    <color name="colorSecondary">#03DAC6</color>
+    <color name="colorOnSecondary">#000000</color>
+    <color name="colorOnSurface">#000000</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorOnBackground">#000000</color>
+    <color name="colorError">#B00020</color>
+    <color name="colorOnError">#FFFFFF</color>
+
+    <color name="night_colorPrimaryVariant">#3700B3</color>
+    <color name="night_colorPrimary">#BB86FC</color>
+    <color name="night_colorOnPrimary">#000000</color>
+    <color name="night_colorSurface">#121212</color>
+    <color name="night_colorSecondaryVariant">#03DAC6</color>
+    <color name="night_colorSecondary">#03DAC6</color>
+    <color name="night_colorOnSecondary">#000000</color>
+    <color name="night_colorOnSurface">#FFFFFF</color>
+    <color name="night_colorBackground">#121212</color>
+    <color name="night_colorOnBackground">#FFFFFF</color>
+    <color name="night_colorError">#CF6679</color>
+    <color name="night_colorOnError">#000000</color>
+
     <color name="shrine_pink_100">#FFCDD2</color>
     <color name="shrine_pink_900">#880E4F</color>
-    <color name="night_colorPrimary">#6200EE</color>
-    <color name="night_colorPrimaryDark">#3700B3</color>
-    <color name="night_colorAccent">#03DAC5</color>
-    <color name="night_shrine_pink_100">#FFCDD2</color>
-    <color name="night_shrine_pink_900">#880E4F</color>
-    <color name="colorTabPrimary">#FFFFFF</color>
-    <color name="colorTabPrimaryDark">#F4F4F4</color>
 </resources>

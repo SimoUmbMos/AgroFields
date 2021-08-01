@@ -120,8 +120,14 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     }
 
     private User getLoginDataIfValid() {
-        String  username = viewHolder.etUserName.getText().toString().trim(),
-                password = viewHolder.etMainPassword.getText().toString().trim();
+        String  username = "",
+                password = "";
+        try{
+            username = viewHolder.etUserName.getText().toString().trim();
+            password = viewHolder.etMainPassword.getText().toString().trim();
+        }catch (NullPointerException e){
+            Log.e(TAG, "getLoginDataIfValid: ", e);
+        }
 
         boolean isPasswordWritten = !password.isEmpty(),
                 isUsernameWritten = !username.isEmpty();
@@ -134,27 +140,39 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         return null;
     }
     private User getRegisterDataIfValid() {
-        String  username = viewHolder.etUserName.getText().toString().trim(),
-                phone = viewHolder.etPhone.getText().toString().trim(),
-                email = viewHolder.etMainEmail.getText().toString().trim(),
-                email2 = viewHolder.etSecondaryEmail.getText().toString().trim(),
-                password = viewHolder.etMainPassword.getText().toString().trim(),
-                password2 =viewHolder.etSecondaryPassword.getText().toString().trim();
+        String  username = "",
+                phone = "",
+                email = "",
+                email2 = "",
+                password = "",
+                password2 = "";
+        try{
+            username = viewHolder.etUserName.getText().toString().trim();
+            phone = viewHolder.etPhone.getText().toString().trim();
+            email = viewHolder.etMainEmail.getText().toString().trim();
+            email2 = viewHolder.etSecondaryEmail.getText().toString().trim();
+            password = viewHolder.etMainPassword.getText().toString().trim();
+            password2 =viewHolder.etSecondaryPassword.getText().toString().trim();
+        }catch (NullPointerException e){
+            Log.e(TAG, "getRegisterDataIfValid: ", e);
+        }
 
         boolean isEmailSame = email.equals(email2),
                 isPasswordSame = password.equals(password2),
-                isPhoneWritten = !phone.isEmpty(),
+                isPhoneLengthRight =
+                        viewHolder.etPhone.length() == viewHolder.etPhoneLayout.getCounterMaxLength() ||
+                        viewHolder.etPhone.length() == 0,
                 isEmailWritten = !email.isEmpty(),
                 isPasswordWritten = !password.isEmpty(),
                 isUsernameWritten = !username.isEmpty();
 
         showRegisterError(isEmailSame, isEmailWritten,
                 isPasswordSame, isPasswordWritten,
-                isUsernameWritten, isPhoneWritten);
+                isUsernameWritten, isPhoneLengthRight);
 
         if(isEmailWritten && isEmailSame &&
                 isPasswordWritten && isPasswordSame &&
-                isPhoneWritten && isUsernameWritten){
+                isPhoneLengthRight && isUsernameWritten){
             return new User(username, password, phone, email);
         }
         return null;
@@ -190,7 +208,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     }
     private void showRegisterError(boolean isEmailSame, boolean isEmailWritten,
                         boolean isPasswordSame, boolean isPasswordWritten,
-                         boolean isUsernameWritten, boolean isPhoneWritten) {
+                         boolean isUsernameWritten, boolean isPhoneLengthRight) {
         viewHolder.clearErrors();
 
         if(!isEmailWritten){
@@ -209,8 +227,8 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
             viewHolder.showError(LoginRegisterError.UserNameEmptyError);
         }
 
-        if(!isPhoneWritten){
-            viewHolder.showError(LoginRegisterError.PhoneEmptyError);
+        if(!isPhoneLengthRight){
+            viewHolder.showError(LoginRegisterError.PhoneLengthError);
         }
     }
 
