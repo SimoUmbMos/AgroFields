@@ -2,11 +2,8 @@ package com.mosc.simo.ptuxiaki3741;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +17,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.helper.FileHelper;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.User;
 

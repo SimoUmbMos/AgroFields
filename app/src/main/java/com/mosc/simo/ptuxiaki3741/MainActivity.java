@@ -1,28 +1,21 @@
 package com.mosc.simo.ptuxiaki3741;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.backend.database.restserver.RestDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.models.User;
@@ -32,13 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
-    private boolean doubleBackToExitPressedOnce = false,
-                        closeAfterImport = false;
-
-    private final ActivityResultLauncher<Intent> fileImportResult = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::importResult
-    );
+    private boolean doubleBackToExitPressedOnce = false;
 
     public static RoomDatabase getRoomDb(Context context){
         return Room.databaseBuilder(context,
@@ -76,20 +63,17 @@ public class MainActivity extends AppCompatActivity {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         userViewModel.init(sharedPref);
+        userViewModel.getCurrUser().observe(this,this::onUserUpdate);
     }
 
-    private void importResult(ActivityResult result) {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            if(result.getData() != null){
-                Log.d(TAG, "importResult: ResultCode == RESULT_OK && Data != null");
-            }else{
-                Log.d(TAG, "importResult: ResultCode == RESULT_OK && Data == null");
-            }
+    private void onUserUpdate(User user) {
+        if(user != null){
+            Log.d(TAG, "onUserUpdate: user not null");
         }else{
-            Log.d(TAG, "importResult: ResultCode == RESULT_CANCELED");
+            Log.d(TAG, "onUserUpdate: user null");
         }
-        if(closeAfterImport)
-            finish();
+        LandViewModel landViewModel = new ViewModelProvider(this).get(LandViewModel.class);
+        landViewModel.init(user);
     }
 
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){

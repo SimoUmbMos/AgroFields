@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741;
+package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,10 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LoginViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LoginViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.User;
 

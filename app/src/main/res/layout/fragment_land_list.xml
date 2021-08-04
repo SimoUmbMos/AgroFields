@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LandListFragment">
+    tools:context=".fragments.LandListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLandList"

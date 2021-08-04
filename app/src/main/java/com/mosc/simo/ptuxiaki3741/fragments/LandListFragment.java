@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741;
+package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,36 +18,26 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonExporter;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter;
-import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
+import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.helper.FileHelper;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.LandPoint;
 import com.mosc.simo.ptuxiaki3741.models.User;
 import com.mosc.simo.ptuxiaki3741.enums.LandListActionState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListNavigateStates;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.navigators.LandListNavigator;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandListMenuHolder;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandListRecycleViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.navigators.LandListNavigator;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandListMenuHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandListRecycleViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 
-import org.jdom2.Document;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter.XMLOUTPUT;
 
 public class LandListFragment  extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
@@ -143,13 +133,10 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         this.currUser = user;
         if( currUser != null) {
             Log.d(TAG, "onUserUpdate: user not null");
-            vmLands.init(currUser);
             changeActionBarTitle(currUser.getUsername()+"'s Land's");
         }else{
             Log.d(TAG, "onUserUpdate: user null");
-            if(getActivity() != null){
-                nav.toMenu(getActivity());
-            }
+            nav.toMenu(getActivity());
         }
     }
     private void onSelectedLandUpdate(List<Integer> integers) {
@@ -167,7 +154,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
 
     private void OnNavigate(LandListNavigateStates state){
-        if(state == LandListNavigateStates.ToCreate && getActivity() != null){
+        if(state == LandListNavigateStates.ToCreate){
             nav.toLandInfo(getActivity());
         }
     }
@@ -197,11 +184,9 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         if(menuHolder.getState() != LandListMenuState.NormalState) {
             vmLands.toggleSelectOnPosition(position);
         }else{
-            if(getActivity() != null){
-                Land land = vmLands.getLand(position);
-                if(land != null){
-                    nav.toEditLand(getActivity(),land);
-                }
+            Land land = vmLands.getLand(position);
+            if(land != null){
+                nav.toEditLand(getActivity(),land);
             }
         }
     }
@@ -236,33 +221,39 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         if(lands.size()>0){
             String fileName = currUser.hashCode()+"_"+(System.currentTimeMillis()/1000)+"_"+lands.size();
             try{
-                path.mkdirs();
-                String output="";
-                boolean doAction = true;
-                switch(action){
-                    case KML:
-                        output = FileHelper.landsToKmlString(lands,currUser);
-                        fileName = fileName+".kml";
-                        break;
-                    case GEOJSON:
-                        output = FileHelper.landsToGeoJsonString(lands);
-                        fileName = fileName+".json";
-                        break;
-                    case GML:
-                        //TODO: GML
-                    default:
-                        doAction = false;
-                        break;
+                boolean isPathCreated = false, pathExist = path.exists();
+                if (!pathExist) {
+                    isPathCreated = path.mkdirs();
+                    pathExist = path.exists();
                 }
-                if(doAction){
-                    File mFile = new File(path, fileName);
-                    FileWriter writer = new FileWriter(mFile);
-                    writer.append(output);
-                    writer.flush();
-                    writer.close();
-                    Toast.makeText(getContext(), "File created", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getContext(), "File not created", Toast.LENGTH_SHORT).show();
+                if( pathExist || isPathCreated ){
+                    String output="";
+                    boolean doAction = true;
+                    switch(action){
+                        case KML:
+                            output = FileHelper.landsToKmlString(lands,currUser);
+                            fileName = fileName+".kml";
+                            break;
+                        case GEOJSON:
+                            output = FileHelper.landsToGeoJsonString(lands);
+                            fileName = fileName+".json";
+                            break;
+                        case GML:
+                            //TODO: GML
+                        default:
+                            doAction = false;
+                            break;
+                    }
+                    if(doAction){
+                        File mFile = new File(path, fileName);
+                        FileWriter writer = new FileWriter(mFile);
+                        writer.append(output);
+                        writer.flush();
+                        writer.close();
+                        Toast.makeText(getContext(), "File created", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getContext(), "File not created", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } catch (IOException e) {
                 Log.e(TAG, "writeOnFile: ", e);

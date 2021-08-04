@@ -1,15 +1,14 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.navigators;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.navigators;
 
 import android.app.Activity;
 
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 
-import com.mosc.simo.ptuxiaki3741.LandListFragmentDirections;
+import com.mosc.simo.ptuxiaki3741.fragments.LandListFragmentDirections;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-
-import java.util.List;
 
 public class LandListNavigator {
     public static final String TAG = "LandListNavigator";
@@ -19,17 +18,6 @@ public class LandListNavigator {
         this.navController = navController;
     }
 
-    public void toEditLand(Activity activity, Land land){
-        NavDirections action = getEditLandAction(land);
-        activity.runOnUiThread(()->navigate(action));
-    }
-    public void toLandInfo(Activity activity){
-        NavDirections action = LandListFragmentDirections.toLandInfo(new Land());
-        activity.runOnUiThread(()->navigate(action));
-    }
-    public void toLandExport(Activity activity, List<Land> lands){
-
-    }
 
     private void navigate(NavDirections action){
         if(action != null){
@@ -49,8 +37,22 @@ public class LandListNavigator {
         }
     }
 
-    public void toMenu(Activity activity) {
+    public void toEditLand(@Nullable Activity activity, Land land){
+        NavDirections action = getEditLandAction(land);
+        if(activity != null){
+            activity.runOnUiThread(()->navigate(action));
+        }
+    }
+    public void toLandInfo(@Nullable Activity activity){
+        NavDirections action = LandListFragmentDirections.toLandInfo(new Land());
+        if(activity != null){
+            activity.runOnUiThread(()->navigate(action));
+        }
+    }
+    public void toMenu(@Nullable Activity activity) {
         NavDirections action = (NavDirections) LandListFragmentDirections.toMenu();
-        activity.runOnUiThread(()->navigate(action));
+        if(activity != null){
+            activity.runOnUiThread(()->navigate(action));
+        }
     }
 }

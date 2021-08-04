@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.holders;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandImgController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandImgController;
 import com.mosc.simo.ptuxiaki3741.enums.LandImgState;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
 

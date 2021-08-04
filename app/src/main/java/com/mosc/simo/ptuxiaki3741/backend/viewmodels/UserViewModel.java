@@ -15,8 +15,6 @@ import com.mosc.simo.ptuxiaki3741.models.User;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
 
-import java.util.List;
-
 public class UserViewModel extends AndroidViewModel {
     private static final String sharedPreferenceKey = "currUser";
     private static final long sharedPreferenceDefault = -1;
@@ -70,13 +68,6 @@ public class UserViewModel extends AndroidViewModel {
         return sharedPref.getLong(sharedPreferenceKey, sharedPreferenceDefault);
     }
 
-    public void reloadCurrUser(){
-        User user = currUser.getValue();
-        if(user!=null){
-            User newData = userRepository.searchUserByID(user.getId());
-            currUser.postValue(newData);
-        }
-    }
     public User saveNewUser(User user){
         return userRepository.saveNewUser(user);
     }

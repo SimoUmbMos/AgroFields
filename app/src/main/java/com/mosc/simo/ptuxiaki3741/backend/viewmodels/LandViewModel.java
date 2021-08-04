@@ -23,6 +23,7 @@ import java.util.List;
 
 public class LandViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
+    private final MutableLiveData<List<LandRecord>> landsHistory = new MutableLiveData<>();
     private final MutableLiveData<List<Integer>> selectedList = new MutableLiveData<>();
     private final LandRepositoryImpl landRepository;
     private final LandHistoryRepositoryImpl landHistoryRepository;
@@ -46,19 +47,37 @@ public class LandViewModel extends AndroidViewModel {
         if(lands.getValue() == null){
             lands.postValue(new ArrayList<>());
         }
+        if(landsHistory.getValue() == null){
+            landsHistory.postValue(new ArrayList<>());
+        }
         if(selectedList.getValue() == null){
             selectedList.postValue(new ArrayList<>());
         }
         List<Land> landList = new ArrayList<>();
+        List<LandRecord> landsHistoryList = new ArrayList<>();
         List<Integer> selectedIndexes = new ArrayList<>();
-        loadLands(user,landList);
-        initSelectedList(selectedIndexes);
+        if(user != null){
+            loadLands(user,landList);
+            loadLandsRecords(user,landsHistoryList);
+            initSelectedList(selectedIndexes);
+        }else{
+            lands.postValue(landList);
+            landsHistory.postValue(landsHistoryList);
+            selectedList.postValue(selectedIndexes);
+        }
     }
     private void loadLands(User user, List<Land> landList) {
         AsyncTask.execute(()->{
             landList.clear();
             landList.addAll(landRepository.searchLandsByUser(user));
             lands.postValue(landList);
+        });
+    }
+    private void loadLandsRecords(User user, List<LandRecord> landsHistoryList) {
+        AsyncTask.execute(()->{
+            landsHistoryList.clear();
+            landsHistoryList.addAll(landHistoryRepository.getLandRecordsByUser(user));
+            landsHistory.postValue(landsHistoryList);
         });
     }
     private void initSelectedList(List<Integer> selectedIndexes){

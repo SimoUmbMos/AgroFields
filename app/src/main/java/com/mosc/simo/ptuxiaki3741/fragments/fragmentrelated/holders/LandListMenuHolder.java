@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.holders;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
 import android.view.Menu;
 import android.view.MenuItem;

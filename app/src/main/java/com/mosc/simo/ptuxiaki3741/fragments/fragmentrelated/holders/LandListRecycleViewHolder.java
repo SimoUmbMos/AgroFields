@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.holders;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
 import android.view.View;
 
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.adapter.LandListAdapter;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.adapter.LandListAdapter;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 
 public class LandListRecycleViewHolder {

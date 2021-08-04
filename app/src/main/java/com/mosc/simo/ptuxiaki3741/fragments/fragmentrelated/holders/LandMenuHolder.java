@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.holders;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
 import android.view.MenuItem;
 
@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandFileController;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandImgController;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandPointsController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandFileController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandImgController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandPointsController;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandImgState;
 import com.mosc.simo.ptuxiaki3741.enums.LandPointsState;

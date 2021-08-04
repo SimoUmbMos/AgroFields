@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741;
+package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,11 +16,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.MainMenuHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.User;
@@ -33,6 +35,7 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
     private LandViewModel vmLands;
     private UserViewModel vmUsers;
     private NavController navController;
+    private MainMenuHolder menuHolder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,15 +70,14 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
     }
     private void initFragment(View view) {
         navController = NavHostFragment.findNavController(this);
-        Button btnList = view.findViewById(R.id.btnList);
-        Button btnLogout = view.findViewById(R.id.btnLogout);
-        Button btnHistory = view.findViewById(R.id.btnHistory);
-        Button btnFriends = view.findViewById(R.id.btnFriends);
-        btnList.setOnClickListener(v -> toListMenu(getActivity()));
-        btnLogout.setOnClickListener(v -> vmUsers.logout());
+        menuHolder = new MainMenuHolder(view);
+
+        menuHolder.btnList.setOnClickListener(v -> toListMenu(getActivity()));
+        menuHolder.btnLogout.setOnClickListener(v -> vmUsers.logout());
         //TODO: menu actions
-        btnHistory.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
-        btnFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
+        menuHolder.btnHistory.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
+        menuHolder.btnFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
+        menuHolder.btnProfile.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
     }
     private void initViewModels() {
         if(getActivity() != null){
@@ -89,19 +91,13 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandListUpdate);
         }
     }
-    private void initLandViewModel(User user) {
-        if(vmLands != null){
-            vmLands.init(user);
-        }
-    }
 
     private void onCurrUserUpdate(User user) {
-        if(user != null){
-            Log.d(TAG, "onUserUpdate: user not null");
-            initLandViewModel(user);
-        }else{
+        if(user == null){
             Log.d(TAG, "onUserUpdate: user null");
             toLogin(getActivity());
+        }else{
+            Log.d(TAG, "onUserUpdate: user not null");
         }
     }
     private void onLandListUpdate(List<Land> lands) {

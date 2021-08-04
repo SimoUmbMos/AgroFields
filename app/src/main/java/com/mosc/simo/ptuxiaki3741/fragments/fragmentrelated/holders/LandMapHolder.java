@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.holders;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
 import android.content.Intent;
 
@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandPointsController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandPointsController;
 import com.mosc.simo.ptuxiaki3741.enums.LandPointsState;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;

@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers;
 
 import android.net.Uri;
 import android.view.MotionEvent;

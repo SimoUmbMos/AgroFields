@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.helper;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper;
 
 import android.content.Context;
 import android.content.Intent;

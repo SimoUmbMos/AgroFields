@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.adapter;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

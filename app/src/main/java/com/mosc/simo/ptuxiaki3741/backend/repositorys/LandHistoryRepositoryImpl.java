@@ -5,6 +5,7 @@ import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandHistoryRepository;
 import com.mosc.simo.ptuxiaki3741.models.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.LandPointRecord;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +25,9 @@ public class LandHistoryRepositoryImpl implements LandHistoryRepository {
     }
 
     @Override
-    public List<LandRecord> getLandRecordsByCreatorID(long uid) {
+    public List<LandRecord> getLandRecordsByUser(User user) {
         List<LandRecord> landRecords = new ArrayList<>();
-        List<LandDataRecord> landDataRecords = db.landHistoryDao().getLandRecordsByUserId(uid);
+        List<LandDataRecord> landDataRecords = db.landHistoryDao().getLandRecordsByUserId(user.getId());
         List<LandPointRecord> landPointRecords;
         for(LandDataRecord landDataRecord : landDataRecords){
             landPointRecords =

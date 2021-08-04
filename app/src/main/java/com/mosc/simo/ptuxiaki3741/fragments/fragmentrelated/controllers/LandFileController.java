@@ -1,23 +1,16 @@
-package com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.OpenableColumns;
 
 import androidx.activity.result.ActivityResultLauncher;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonReader;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileReader;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.helper.FileHelper;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LandFileController {

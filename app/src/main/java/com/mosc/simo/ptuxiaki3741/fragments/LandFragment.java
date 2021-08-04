@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741;
+package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,17 +26,20 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.ImportActivity;
+import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandData;
 import com.mosc.simo.ptuxiaki3741.models.LandPoint;
 import com.mosc.simo.ptuxiaki3741.models.User;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandFileController;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandImgController;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.controllers.LandPointsController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandFileController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandImgController;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandPointsController;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandMapHolder;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandMenuHolder;
-import com.mosc.simo.ptuxiaki3741.fragmentrelated.holders.LandViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMapHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMenuHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandViewHolder;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
