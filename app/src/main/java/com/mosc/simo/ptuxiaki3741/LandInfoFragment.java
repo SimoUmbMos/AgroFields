@@ -133,12 +133,12 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     private void submitAdd(String landName) {
         if(currUser != null){
             LandData landData = new LandData(currUser.getId(),landName);
-            navigate(toMap(new Land(landData)));
+            navigate(toLandMap(new Land(landData)));
         }
     }
     private void submitEdit(String landName) {
         land.getData().setTitle(landName);
-        navigate(toMap(land));
+        navigate(toLandMap(land));
     }
     private void finish() {
         if(getActivity() != null)
@@ -149,7 +149,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
         if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landInfoFragment)
             navController.navigate(action);
     }
-    private NavDirections toMap(Land land){
-        return  LandInfoFragmentDirections.farmEdited(land);
+    private NavDirections toLandMap(Land land){
+        return  LandInfoFragmentDirections.toLandMap(land);
     }
 }

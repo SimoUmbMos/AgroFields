@@ -26,14 +26,14 @@ public class UserRepositoryImpl implements UserRepository {
         return db.userDao().getUserByUserName(username);
     }
     @Override
-    public boolean saveNewUser(User newUser){
+    public User saveNewUser(User newUser){
         User user = db.userDao().getUserByUserName(newUser.getUsername());
         if(user == null){
             long id = db.userDao().insert(newUser);
             newUser.setId(id);
-            return true;
+            return newUser;
         }
-        return false;
+        return null;
     }
     @Override
     public void editUser(User user) {

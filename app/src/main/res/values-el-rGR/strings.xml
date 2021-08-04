@@ -38,7 +38,6 @@
     <string name="login_label">Σύνδεση Χρήστη</string>
     <string name="register_label">Εγγραφή Νέου Χρήστη</string>
     <string name="register_button">Κάντε Κλικ Εδώ Για Εγγραφή</string>
-    <string name="register_invalid_data_error">register_invalid_data_error</string>
     <string name="confirm_email_hint">Επιβεβαίωση Email</string>
     <string name="confirm_password_hint">Επιβεβαίωση Password</string>
     <string name="username_or_email_hint">Username ή Email</string>
@@ -52,4 +51,7 @@
     <string name="register_password_wrong_error">Λάθος Password</string>
     <string name="register_username_wrong_error">Λάθος Username</string>
     <string name="register_phone_length_error">" Το μήκος του Τηλεφώνου δεν είναι έγκυρο"</string>
+    <!-- TODO change invalid data error -->
+    <string name="login_invalid_data_error">login_invalid_data_error</string>
+    <string name="register_invalid_data_error">register_invalid_data_error</string>
 </resources>

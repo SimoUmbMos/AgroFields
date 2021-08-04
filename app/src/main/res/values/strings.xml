@@ -54,7 +54,6 @@
     <string name="username_or_email_hint">Username or Email</string>
     <string name="phone_hint">Phone</string>
 
-    <string name="register_invalid_data_error">register_invalid_data_error</string>
     <string name="register_email_empty_error">Email is empty</string>
     <string name="register_email_not_match_error">Email don\'t match</string>
     <string name="register_password_wrong_error">Wrong Password</string>
@@ -64,4 +63,8 @@
     <string name="register_username_wrong_error">Wrong Username</string>
     <string name="register_username_empty_error">Username is empty</string>
     <string name="register_username_taken_error">Username is taken</string>
+
+    <!-- TODO change invalid data error -->
+    <string name="login_invalid_data_error">login_invalid_data_error</string>
+    <string name="register_invalid_data_error">register_invalid_data_error</string>=
 </resources>

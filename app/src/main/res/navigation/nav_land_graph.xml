@@ -5,45 +5,48 @@
     android:id="@+id/nav_land_graph"
     app:startDestination="@id/loginRegisterFragment">
 
-    <fragment
-        android:id="@+id/landListFragment"
+    <fragment android:id="@+id/loginRegisterFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.LoginRegisterFragment"
+        android:label="fragment_login_register"
+        tools:layout="@layout/fragment_login_register" >
+        <action
+            android:id="@+id/toMenu"
+            app:destination="@id/menuFragment"
+            app:popUpTo="@id/nav_land_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment android:id="@+id/menuFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/toLogin"
+            app:destination="@id/loginRegisterFragment"
+            app:popUpTo="@id/nav_land_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/toListMenu"
+            app:destination="@id/landListFragment" />
+    </fragment>
+    <fragment android:id="@+id/landListFragment"
         android:name="com.mosc.simo.ptuxiaki3741.LandListFragment"
         android:label="LandListFragment" >
         <action
-            android:id="@+id/editLand"
+            android:id="@+id/toLandMap"
             app:destination="@id/landMapFragment" />
         <action
-            android:id="@+id/createLand"
+            android:id="@+id/toLandInfo"
             app:destination="@id/landInfoFragment" />
-        <action
-            android:id="@+id/toLogin"
-            app:destination="@id/loginRegisterFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/landMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.LandFragment"
-        android:label="fragment_land_map"
-        tools:layout="@layout/fragment_land_map" >
         <action
             android:id="@+id/toMenu"
-            app:destination="@id/landListFragment"
-            app:popUpTo="@id/landListFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/editLandInfo"
-            app:destination="@id/landInfoFragment" />
-        <argument
-            android:name="land"
-            app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />
+            app:destination="@id/menuFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/landInfoFragment"
+    <fragment android:id="@+id/landInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.LandInfoFragment"
         android:label="fragment_land_info"
         tools:layout="@layout/fragment_land_info" >
         <action
-            android:id="@+id/farmEdited"
+            android:id="@+id/toLandMap"
             app:destination="@id/landMapFragment"
             app:popUpTo="@id/landInfoFragment"
             app:popUpToInclusive="true" />
@@ -51,15 +54,20 @@
             android:name="land"
             app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />
     </fragment>
-    <fragment
-        android:id="@+id/loginRegisterFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.LoginRegisterFragment"
-        android:label="fragment_login_register"
-        tools:layout="@layout/fragment_login_register" >
+    <fragment android:id="@+id/landMapFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.LandFragment"
+        android:label="fragment_land_map"
+        tools:layout="@layout/fragment_land_map" >
         <action
-            android:id="@+id/toLandList"
+            android:id="@+id/toListMenu"
             app:destination="@id/landListFragment"
-            app:popUpTo="@id/nav_land_graph"
+            app:popUpTo="@id/landListFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/toLandInfo"
+            app:destination="@id/landInfoFragment" />
+        <argument
+            android:name="land"
+            app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />
     </fragment>
 </navigation>

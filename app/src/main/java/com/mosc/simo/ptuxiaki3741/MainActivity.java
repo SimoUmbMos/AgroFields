@@ -53,12 +53,6 @@ public class MainActivity extends AppCompatActivity {
         showToast(text.toString());
     }
     public void showToast(String text) {
-        /*Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_root), text, Snackbar.LENGTH_LONG);
-        snackbar.setBackgroundTint(getResources().getColor(R.color.colorPrimary, getTheme()));
-        View view = snackbar.getView();
-        TextView tv = view.findViewById(com.google.android.material.R.id.snackbar_text);
-        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        snackbar.show();*/
         Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
     }
 
@@ -82,37 +76,6 @@ public class MainActivity extends AppCompatActivity {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         userViewModel.init(sharedPref);
-        userViewModel.getCurrUser().observe(this,this::onUserUpdate);
-        onUserUpdate(userViewModel.getCurrUser().getValue());
-    }
-
-    private void onUserUpdate(User user) {
-        boolean userIsNull;
-        if(user != null){
-            userIsNull = false;
-            Log.d(TAG, "onUserUpdate: user not null");
-        }else{
-            userIsNull = true;
-            Log.d(TAG, "onUserUpdate: user null");
-        }
-        if(checkIfCalledByFile()){
-            if (!userIsNull) {
-                closeAfterImport = true;
-                goToImport();
-            }else{
-                finish();
-            }
-        }
-    }
-
-    private void goToImport() {
-        Intent newIntent = new Intent(getApplicationContext(),ImportActivity.class);
-        newIntent.setData(getIntent().getData());
-        fileImportResult.launch(newIntent);
-    }
-
-    private boolean checkIfCalledByFile() {
-        return getIntent().getData() != null;
     }
 
     private void importResult(ActivityResult result) {

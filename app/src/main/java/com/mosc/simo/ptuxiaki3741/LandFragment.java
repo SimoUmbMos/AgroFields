@@ -176,7 +176,7 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     private void save() {
         if(isValidToSave()){
             saveToVM();
-            navigate(toLandMenu());
+            navigate(toListMenu());
         }
     }
     private void edit() {
@@ -239,6 +239,7 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     private void onFilePicked(Intent result) {
         Intent intent = parseFile(result);
         if(intent != null){
+            intent.putExtra(ImportActivity.userName,currUser.getId());
             mapResultLauncher.launch(intent);
         }
     }
@@ -284,11 +285,11 @@ public class LandFragment extends Fragment implements FragmentBackPress {
         if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landMapFragment)
             navController.navigate(action);
     }
-    private NavDirections toLandMenu(){
-        return LandFragmentDirections.toMenu();
+    private NavDirections toListMenu(){
+        return LandFragmentDirections.toListMenu();
     }
     private NavDirections toLandInfo(){
         Land currLand = getLand();
-        return LandFragmentDirections.editLandInfo(currLand);
+        return LandFragmentDirections.toLandInfo(currLand);
     }
 }

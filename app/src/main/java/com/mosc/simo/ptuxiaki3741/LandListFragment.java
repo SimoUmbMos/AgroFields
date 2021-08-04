@@ -131,9 +131,6 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandListUpdate);
             vmLands.getSelectedLands().observe(getViewLifecycleOwner(),this::onSelectedLandUpdate);
-            onLandListUpdate(vmLands.getLands().getValue());
-            onSelectedLandUpdate(vmLands.getSelectedLands().getValue());
-            onCurrUserUpdate(vmUsers.getCurrUser().getValue());
         }
     }
     private void initHolders(View view) {
@@ -151,7 +148,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         }else{
             Log.d(TAG, "onUserUpdate: user null");
             if(getActivity() != null){
-                nav.toLogin(getActivity());
+                nav.toMenu(getActivity());
             }
         }
     }
@@ -171,7 +168,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
 
     private void OnNavigate(LandListNavigateStates state){
         if(state == LandListNavigateStates.ToCreate && getActivity() != null){
-            nav.toCreateLand(getActivity());
+            nav.toLandInfo(getActivity());
         }
     }
 
@@ -228,17 +225,17 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         if(selectedLands != null){
             List<Land> lands = vmLands.returnSelectedLands();
             //TODO: REMOVE MOCK KML WITH REAL ACTION
-            writeOnFile(lands,FileType.KML);
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS);
+            writeOnFile(lands, path, FileType.KML);
             vmLands.deselectAllLands();
         }
     }
 
-    private void writeOnFile(List<Land> lands, FileType action) {
+    private void writeOnFile(List<Land> lands, File path, FileType action) {
         if(lands.size()>0){
             String fileName = currUser.hashCode()+"_"+(System.currentTimeMillis()/1000)+"_"+lands.size();
             try{
-                File path = Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOCUMENTS);
                 path.mkdirs();
                 String output="";
                 boolean doAction = true;

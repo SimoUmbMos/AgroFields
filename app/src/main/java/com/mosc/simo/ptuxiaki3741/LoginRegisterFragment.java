@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -46,6 +47,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initActivity();
         init(view);
     }
     @Override
@@ -68,13 +70,9 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
 
     private void init(View view) {
         if(getActivity() != null){
-            if(getActivity() instanceof MainActivity){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
-                vmUsers = new ViewModelProvider(mainActivity).get(UserViewModel.class);
-                vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
-                onUserUpdate(vmUsers.getCurrUser().getValue());
-            }
+            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
+            onUserUpdate(vmUsers.getCurrUser().getValue());
         }
         viewHolder = new LoginViewHolder(
                 getResources(),
@@ -86,11 +84,23 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         );
 
     }
+    private void initActivity() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        ActionBar actionBar = null;
+        if( mainActivity != null){
+            mainActivity.setOnBackPressed(this);
+            actionBar = mainActivity.getSupportActionBar();
+        }
+        if(actionBar != null){
+            actionBar.setTitle("");
+            actionBar.hide();
+        }
+    }
 
     private void onUserUpdate(User user) {
         if(user != null){
             Log.d(TAG, "onUserUpdate: user not null");
-            navigate(toLandList());
+            navigate(toMenu());
         }else{
             Log.d(TAG, "onUserUpdate: user null");
         }
@@ -184,17 +194,32 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
             vmUsers.singIn(user);
         }else{
             if(getActivity() != null)
-                getActivity().runOnUiThread(()->
+                getActivity().runOnUiThread(()->{
                     Toast.makeText(
                             getContext(),
-                            R.string.register_invalid_data_error,
+                            R.string.login_invalid_data_error,
                             Toast.LENGTH_SHORT
-                    ).show()
-                );
+                    ).show();
+                    viewHolder.showError(LoginRegisterError.UserNameWrongError);
+                    viewHolder.showError(LoginRegisterError.PasswordWrongError);
+                });
         }
     }
     private void onRegisterAction(User tempUser){
-        //TODO: DO REGISTER ACTION
+        User user = vmUsers.saveNewUser(tempUser);
+        if(user != null){
+            vmUsers.singIn(user);
+        }else{
+            if(getActivity() != null)
+                getActivity().runOnUiThread(()->{
+                        Toast.makeText(
+                                getContext(),
+                                R.string.register_invalid_data_error,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        viewHolder.showError(LoginRegisterError.UserNameTakenError);
+                });
+        }
     }
 
     private void showLoginError(boolean isUsernameWritten, boolean isPasswordWritten) {
@@ -237,7 +262,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.loginRegisterFragment)
             navController.navigate(action);
     }
-    private NavDirections toLandList(){
-        return  LoginRegisterFragmentDirections.toLandList();
+    private NavDirections toMenu(){
+        return  LoginRegisterFragmentDirections.toMenu();
     }
 }

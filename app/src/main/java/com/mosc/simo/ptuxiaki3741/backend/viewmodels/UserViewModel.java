@@ -77,7 +77,7 @@ public class UserViewModel extends AndroidViewModel {
             currUser.postValue(newData);
         }
     }
-    public boolean saveNewUser(User user){
+    public User saveNewUser(User user){
         return userRepository.saveNewUser(user);
     }
     public void editUser(User user){
@@ -100,11 +100,12 @@ public class UserViewModel extends AndroidViewModel {
     public void singIn(User user) {
         if(user != null){
             putUidToMemory(user.getId());
+        }else{
+            clearUidFromMemory();
         }
         currUser.postValue(user);
     }
     public void logout() {
-        clearUidFromMemory();
-        currUser.postValue(null);
+        singIn(null);
     }
 }

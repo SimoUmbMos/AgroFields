@@ -8,7 +8,7 @@ public interface UserRepository {
     List<User> getUsers();
     User searchUserByID(long id);
     User searchUserByUserName(String username);
-    boolean saveNewUser(User user);
+    User saveNewUser(User user);
     void editUser(User user);
     void deleteUser(User user);
 }

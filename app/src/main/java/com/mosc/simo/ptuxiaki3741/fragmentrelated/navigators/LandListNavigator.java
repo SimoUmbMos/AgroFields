@@ -23,8 +23,8 @@ public class LandListNavigator {
         NavDirections action = getEditLandAction(land);
         activity.runOnUiThread(()->navigate(action));
     }
-    public void toCreateLand(Activity activity){
-        NavDirections action = (NavDirections) LandListFragmentDirections.createLand(new Land());
+    public void toLandInfo(Activity activity){
+        NavDirections action = LandListFragmentDirections.toLandInfo(new Land());
         activity.runOnUiThread(()->navigate(action));
     }
     public void toLandExport(Activity activity, List<Land> lands){
@@ -40,17 +40,17 @@ public class LandListNavigator {
     private NavDirections getEditLandAction(Land land){
         if(land != null){
             if(land.getData() != null){
-                return (NavDirections) LandListFragmentDirections.editLand(land);
+                return LandListFragmentDirections.toLandMap(land);
             }else{
-                return (NavDirections) LandListFragmentDirections.createLand(new Land());
+                return LandListFragmentDirections.toLandInfo(new Land());
             }
         }else{
-            return (NavDirections) LandListFragmentDirections.createLand(new Land());
+            return LandListFragmentDirections.toLandInfo(new Land());
         }
     }
 
-    public void toLogin(Activity activity) {
-        NavDirections action = (NavDirections) LandListFragmentDirections.toLogin();
+    public void toMenu(Activity activity) {
+        NavDirections action = (NavDirections) LandListFragmentDirections.toMenu();
         activity.runOnUiThread(()->navigate(action));
     }
 }
