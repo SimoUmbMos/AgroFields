@@ -116,7 +116,6 @@ public class LandFragment extends Fragment implements FragmentBackPress {
             activity.setOnBackPressed(this);
             UserViewModel vmUsers = new ViewModelProvider(activity).get(UserViewModel.class);
             currUser = vmUsers.getCurrUser().getValue();
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
             actionBar = activity.getSupportActionBar();
             if(actionBar != null){
                 actionBar.show();
@@ -272,14 +271,6 @@ public class LandFragment extends Fragment implements FragmentBackPress {
             }else if(fileController.getFlag() == LandFileState.Img){
                 imgResultLauncher.launch(intent);
             }
-        }
-    }
-    private void onCurrUserUpdate(User user) {
-        currUser = user;
-        if(user != null){
-            Log.d(TAG, "onUserUpdate: user not null");
-        }else{
-            Log.d(TAG, "onUserUpdate: user null");
         }
     }
 

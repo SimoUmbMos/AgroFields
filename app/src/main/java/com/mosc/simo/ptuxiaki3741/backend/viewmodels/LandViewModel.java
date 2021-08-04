@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandHistoryRepositoryImpl;
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.LandPoint;
@@ -28,6 +28,7 @@ public class LandViewModel extends AndroidViewModel {
     private final LandRepositoryImpl landRepository;
     private final LandHistoryRepositoryImpl landHistoryRepository;
     private boolean isAllSelected = false;
+    private User currUser = null;
 
     public LandViewModel(@NonNull Application application) {
         super(application);
@@ -44,6 +45,7 @@ public class LandViewModel extends AndroidViewModel {
     }
 
     public void init(User user){
+        currUser = user;
         if(lands.getValue() == null){
             lands.postValue(new ArrayList<>());
         }
@@ -53,34 +55,22 @@ public class LandViewModel extends AndroidViewModel {
         if(selectedList.getValue() == null){
             selectedList.postValue(new ArrayList<>());
         }
-        List<Land> landList = new ArrayList<>();
-        List<LandRecord> landsHistoryList = new ArrayList<>();
+        loadData(user);
+    }
+    private void loadLands(User user) {
+        AsyncTask.execute(()->{
+            List<Land> landList = new ArrayList<>(landRepository.searchLandsByUser(user));
+            lands.postValue(landList);
+        });
+    }
+    private void loadLandsRecords(User user) {
+        AsyncTask.execute(()->{
+            List<LandRecord> landsHistoryList = new ArrayList<>(landHistoryRepository.getLandRecordsByUser(user));
+            landsHistory.postValue(landsHistoryList);
+        });
+    }
+    private void initSelectedList(){
         List<Integer> selectedIndexes = new ArrayList<>();
-        if(user != null){
-            loadLands(user,landList);
-            loadLandsRecords(user,landsHistoryList);
-            initSelectedList(selectedIndexes);
-        }else{
-            lands.postValue(landList);
-            landsHistory.postValue(landsHistoryList);
-            selectedList.postValue(selectedIndexes);
-        }
-    }
-    private void loadLands(User user, List<Land> landList) {
-        AsyncTask.execute(()->{
-            landList.clear();
-            landList.addAll(landRepository.searchLandsByUser(user));
-            lands.postValue(landList);
-        });
-    }
-    private void loadLandsRecords(User user, List<LandRecord> landsHistoryList) {
-        AsyncTask.execute(()->{
-            landsHistoryList.clear();
-            landsHistoryList.addAll(landHistoryRepository.getLandRecordsByUser(user));
-            landsHistory.postValue(landsHistoryList);
-        });
-    }
-    private void initSelectedList(List<Integer> selectedIndexes){
         if(selectedList.getValue() != null){
             selectedIndexes.addAll(selectedList.getValue());
         }
@@ -112,12 +102,11 @@ public class LandViewModel extends AndroidViewModel {
                     Calendar.getInstance().getTime()
             );
             landHistoryRepository.saveLandRecord(landRecord);
-            this.lands.postValue(lands);
+            loadData(this.currUser);
         });
     }
     public void removeLands(List<Land> removeLandList, User currUser) {
         AsyncTask.execute(()-> {
-            List<Land> lands = getLandsList();
             LandRecord landRecord;
             for(Land removeLand:removeLandList){
                 landRecord = new LandRecord(
@@ -129,9 +118,23 @@ public class LandViewModel extends AndroidViewModel {
                 landHistoryRepository.saveLandRecord(landRecord);
                 landRepository.deleteLand(removeLand);
             }
-            lands.removeAll(removeLandList);
-            this.lands.postValue(lands);
+            loadData(this.currUser);
         });
+    }
+
+    private void loadData(User currUser) {
+        if(currUser != null){
+            loadLands(currUser);
+            loadLandsRecords(currUser);
+            initSelectedList();
+        }else{
+            List<Land> landList = new ArrayList<>();
+            List<LandRecord> landsHistoryList = new ArrayList<>();
+            List<Integer> selectedIndexes = new ArrayList<>();
+            lands.postValue(landList);
+            landsHistory.postValue(landsHistoryList);
+            selectedList.postValue(selectedIndexes);
+        }
     }
 
     public LiveData<List<Integer>> getSelectedLands() {

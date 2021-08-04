@@ -51,7 +51,6 @@
     <string name="register_password_wrong_error">Λάθος Password</string>
     <string name="register_username_wrong_error">Λάθος Username</string>
     <string name="register_phone_length_error">" Το μήκος του Τηλεφώνου δεν είναι έγκυρο"</string>
-    <!-- TODO change invalid data error -->
-    <string name="login_invalid_data_error">login_invalid_data_error</string>
-    <string name="register_invalid_data_error">register_invalid_data_error</string>
+    <string name="login_invalid_data_error">Λάθος Username ή Password</string>
+    <string name="register_invalid_data_error">"Το Username είναι πιασμένο "</string>
 </resources>

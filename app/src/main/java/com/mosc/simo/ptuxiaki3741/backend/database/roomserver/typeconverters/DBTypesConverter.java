@@ -3,7 +3,7 @@ package com.mosc.simo.ptuxiaki3741.backend.database.roomserver.typeconverters;
 import androidx.room.TypeConverter;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 
 import java.util.Date;
 

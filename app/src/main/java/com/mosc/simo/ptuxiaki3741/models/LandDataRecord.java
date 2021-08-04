@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 
 import java.util.Date;
 

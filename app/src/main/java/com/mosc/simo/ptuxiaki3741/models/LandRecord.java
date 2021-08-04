@@ -1,6 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.models;
 
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 
 import java.util.ArrayList;
 import java.util.Date;
