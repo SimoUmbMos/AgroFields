@@ -12,6 +12,9 @@ import java.util.List;
 
 @Dao
 public interface LandDao {
+    @Query("SELECT * FROM LandData")
+    List<LandData> getLands();
+
     @Query("SELECT * FROM LandData WHERE `id` = :lid")
     LandData getLandData(long lid);
 

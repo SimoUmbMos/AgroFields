@@ -11,6 +11,8 @@ import java.util.List;
 
 @Dao
 public interface LandPointDao {
+    @Query("SELECT * FROM `LandPoints`")
+    List<LandPoint> getLandPoints();
 
     @Query("SELECT * FROM `LandPoints` Where `Lid` = :lid ORDER BY `Position` ASC")
     List<LandPoint> getAllLandPointsByLid(long lid);

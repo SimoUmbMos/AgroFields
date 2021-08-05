@@ -4,16 +4,25 @@ import androidx.room.TypeConverter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 
 import java.util.Date;
 
 public class DBTypesConverter {
     @TypeConverter
-    public static LandDBAction actionValueToAction(int ordinal) {
+    public static LandDBAction landActionValueToLandAction(int ordinal) {
         return LandDBAction.values()[ordinal];
     }
     @TypeConverter
-    public static int actionToActionValue(LandDBAction action) {
+    public static int landActionToLandActionValue(LandDBAction action) {
+        return action.ordinal();
+    }
+    @TypeConverter
+    public static UserDBAction userActionValueToUserAction(int ordinal) {
+        return UserDBAction.values()[ordinal];
+    }
+    @TypeConverter
+    public static int userActionToUserActionValue(UserDBAction action) {
         return action.ordinal();
     }
     @TypeConverter

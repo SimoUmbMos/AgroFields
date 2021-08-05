@@ -39,6 +39,16 @@ public class LandViewModel extends AndroidViewModel {
                 MainActivity.getRoomDb(application.getApplicationContext())
         );
     }
+    
+    public LiveData<List<Land>> getLands(){
+        return lands;
+    }
+    public LiveData<List<Integer>> getSelectedLands() {
+        return selectedList;
+    }
+    public LiveData<List<LandRecord>> getLandsHistory() {
+        return landsHistory;
+    }
 
     public boolean isAllSelected() {
         return isAllSelected;
@@ -55,7 +65,7 @@ public class LandViewModel extends AndroidViewModel {
         if(selectedList.getValue() == null){
             selectedList.postValue(new ArrayList<>());
         }
-        loadData(user);
+        loadFullData(user);
     }
     private void loadLands(User user) {
         AsyncTask.execute(()->{
@@ -77,52 +87,7 @@ public class LandViewModel extends AndroidViewModel {
         selectedList.postValue(selectedIndexes);
     }
 
-    public LiveData<List<Land>> getLands(){
-        return lands;
-    }
-    public void saveLand(Land land, User currUser){
-        AsyncTask.execute(()->{
-            List<Land> lands = getLandsList();
-            List<LandPoint> landPoints = new ArrayList<>(land.getBorder());
-            Land newLand = landRepository.saveLand(land);
-            int index = indexOfLand(newLand);
-            LandDBAction action;
-            if(index < 0){
-                lands.add(newLand);
-                action = LandDBAction.INSERT;
-            }else{
-                lands.set(index,newLand);
-                action = LandDBAction.UPDATE;
-            }
-            LandRecord landRecord = new LandRecord(
-                    newLand.getData(),
-                    landPoints,
-                    currUser,
-                    action,
-                    Calendar.getInstance().getTime()
-            );
-            landHistoryRepository.saveLandRecord(landRecord);
-            loadData(this.currUser);
-        });
-    }
-    public void removeLands(List<Land> removeLandList, User currUser) {
-        AsyncTask.execute(()-> {
-            LandRecord landRecord;
-            for(Land removeLand:removeLandList){
-                landRecord = new LandRecord(
-                        removeLand,
-                        currUser,
-                        LandDBAction.DELETE,
-                        Calendar.getInstance().getTime()
-                );
-                landHistoryRepository.saveLandRecord(landRecord);
-                landRepository.deleteLand(removeLand);
-            }
-            loadData(this.currUser);
-        });
-    }
-
-    private void loadData(User currUser) {
+    private void loadFullData(User currUser) {
         if(currUser != null){
             loadLands(currUser);
             loadLandsRecords(currUser);
@@ -136,10 +101,58 @@ public class LandViewModel extends AndroidViewModel {
             selectedList.postValue(selectedIndexes);
         }
     }
-
-    public LiveData<List<Integer>> getSelectedLands() {
-        return selectedList;
+    private void loadData(User currUser) {
+        if(currUser != null){
+            loadLands(currUser);
+            loadLandsRecords(currUser);
+        }else{
+            List<Land> landList = new ArrayList<>();
+            List<LandRecord> landsHistoryList = new ArrayList<>();
+            lands.postValue(landList);
+            landsHistory.postValue(landsHistoryList);
+        }
     }
+
+    public void saveLand(Land land, User user){
+        AsyncTask.execute(()->{
+            List<LandPoint> landPoints = new ArrayList<>(land.getBorder());
+            Land newLand = landRepository.saveLand(land);
+            int index = indexOfLand(newLand);
+            LandDBAction action;
+            if(index < 0){
+                action = LandDBAction.INSERT;
+            }else{
+                action = LandDBAction.UPDATE;
+            }
+            LandRecord landRecord = new LandRecord(
+                    newLand.getData(),
+                    landPoints,
+                    user,
+                    action,
+                    Calendar.getInstance().getTime()
+            );
+            landHistoryRepository.saveLandRecord(landRecord);
+            if(this.currUser != null)
+                loadData(this.currUser);
+        });
+    }
+    public void removeLands(List<Land> removeLandList, User user) {
+        AsyncTask.execute(()-> {
+            LandRecord landRecord;
+            for(Land removeLand:removeLandList){
+                landRecord = new LandRecord(
+                        removeLand,
+                        user,
+                        LandDBAction.DELETE,
+                        Calendar.getInstance().getTime()
+                );
+                landHistoryRepository.saveLandRecord(landRecord);
+                landRepository.deleteLand(removeLand);
+            }
+            loadData(this.currUser);
+        });
+    }
+
     public void selectAllLands() {
         List<Integer> indexes = selectedList.getValue();
         if(indexes != null ){
@@ -187,15 +200,23 @@ public class LandViewModel extends AndroidViewModel {
         else
             return new ArrayList<>();
     }
+    public Land getLand(int position) {
+        List<Land> lands = getLandsList();
+        if(lands.size() > position && position > -1){
+            return lands.get(position);
+        }else{
+            return null;
+        }
+    }
+    public int landSize() {
+        return getLandsList().size();
+    }
     public List<Integer> getSelectedIndexes() {
         List<Integer> selectedList = this.selectedList.getValue();
         if(selectedList != null)
             return selectedList;
         else
             return new ArrayList<>();
-    }
-    public int landSize() {
-        return getLandsList().size();
     }
     public List<Land> returnSelectedLands(){
         List<Land> lands = getLandsList();
@@ -208,10 +229,10 @@ public class LandViewModel extends AndroidViewModel {
 
         return selectedLands;
     }
-    public void removeSelectedLands(User currUser) {
+    public void removeSelectedLands(User user) {
         List<Land> landList = lands.getValue();
         if(landList != null){
-            removeLands(returnSelectedLands(),currUser);
+            removeLands(returnSelectedLands(),user);
         }
     }
     private int indexOfLand(Land land) {
@@ -224,12 +245,4 @@ public class LandViewModel extends AndroidViewModel {
         return -1;
     }
 
-    public Land getLand(int position) {
-        List<Land> lands = getLandsList();
-        if(lands.size() > position && position > -1){
-            return lands.get(position);
-        }else{
-            return null;
-        }
-    }
 }
