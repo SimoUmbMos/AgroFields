@@ -3,7 +3,6 @@ package com.mosc.simo.ptuxiaki3741.backend.file.helper;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ExportFieldModel {
     private String title;
@@ -36,10 +35,6 @@ public class ExportFieldModel {
     }
     public void setKey(String key) {
         this.key = key;
-    }
-    public void setPointsList(List<List<List<Double>>> points) {
-        this.points.clear();
-        this.points.addAll(points);
     }
 
     public String getTitle() {

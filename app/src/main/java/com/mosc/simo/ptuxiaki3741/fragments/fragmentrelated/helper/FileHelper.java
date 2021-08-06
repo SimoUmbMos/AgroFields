@@ -66,17 +66,11 @@ public class FileHelper {
             ));
         }
     }
-    private Context ctx;
+    private final Context ctx;
     public FileHelper(Context ctx){
         this.ctx = ctx;
     }
 
-    private List<List<LatLng>> parseFile(Intent result) {
-        if(fileIsValid(result)){
-            return handleFile(result);
-        }
-        return new ArrayList<>();
-    }
     public boolean fileIsValidImg(Intent response){
         String extension = getExtension(getFileName(response));
         return extension.equals("png") || extension.equals("jpg");

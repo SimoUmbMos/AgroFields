@@ -255,14 +255,6 @@ public class LandFragment extends Fragment implements FragmentBackPress {
         return intent;
     }
 
-    private ArrayList<ParcelablePolygon> convertToParcelable(List<List<LatLng>> pointsList) {
-        ArrayList<ParcelablePolygon> parcelablePolygons = new ArrayList<>();
-        for(List<LatLng> points : pointsList){
-            parcelablePolygons.add(new ParcelablePolygon(points));
-        }
-        return parcelablePolygons;
-    }
-
     public void onRequestPermissionsResult(Boolean result) {
         if(result){
             Intent intent = fileController.getFilePickerIntent();

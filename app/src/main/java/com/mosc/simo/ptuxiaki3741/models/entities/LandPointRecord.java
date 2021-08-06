@@ -6,8 +6,6 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
 
 @Entity(tableName = "LandPointsRecord")
 public class LandPointRecord {
@@ -19,13 +17,6 @@ public class LandPointRecord {
     private long position;
     @ColumnInfo(name = "LatLng")
     private final LatLng latLng;
-
-    @Ignore
-    public LandPointRecord(long landRecordID, long position, LatLng latLng) {
-        this.landRecordID = landRecordID;
-        this.position = position;
-        this.latLng = latLng;
-    }
 
     public LandPointRecord(long id, long landRecordID, long position, LatLng latLng) {
         this.id = id;

@@ -35,7 +35,6 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
     private LandViewModel vmLands;
     private UserViewModel vmUsers;
     private NavController navController;
-    private MainMenuHolder menuHolder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,7 +69,7 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
     }
     private void initFragment(View view) {
         navController = NavHostFragment.findNavController(this);
-        menuHolder = new MainMenuHolder(view);
+        MainMenuHolder menuHolder = new MainMenuHolder(view);
 
         menuHolder.btnList.setOnClickListener(v -> toListMenu(getActivity()));
         menuHolder.btnLogout.setOnClickListener(v -> vmUsers.logout());

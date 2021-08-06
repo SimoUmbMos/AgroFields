@@ -1,8 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson;
 
-
-import android.os.AsyncTask;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.helper.CoordinatesConverter;
@@ -17,16 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeoJsonReader {
-    public interface GeoJsonInterface{
-        void onGeoJsonResult(List<List<LatLng>> listPoints);
-    }
-
-    public static void execBackground(InputStream in,GeoJsonInterface geoJsonInterface){
-        AsyncTask.execute(()-> geoJsonInterface.onGeoJsonResult(exec(in)));
-    }
-    public static void execBackground(String in,GeoJsonInterface geoJsonInterface){
-        AsyncTask.execute(()-> geoJsonInterface.onGeoJsonResult(exec(in)));
-    }
     public static List<List<LatLng>> exec(InputStream inputStream){
         String json = getStringFromInputStream(inputStream);
         FeatureCollection featureCollection = new Gson().fromJson(json, FeatureCollection.class);

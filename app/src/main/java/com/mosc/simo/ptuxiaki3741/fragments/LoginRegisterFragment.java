@@ -38,11 +38,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        if(getActivity() != null){
-            if(getActivity() instanceof MainActivity){
-                MainActivity mainActivity = (MainActivity) getActivity();
-            }
-        }
         return inflater.inflate(R.layout.fragment_login_register, container, false);
     }
     @Override

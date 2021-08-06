@@ -76,10 +76,6 @@ public class LandFileController {
         prl.launch(permission);
     }
 
-    public List<List<LatLng>> handleFile(Intent result) {
-        return fileHelper.handleFile(result);
-    }
-
     public LandFileState getFlag() {
         return state;
     }

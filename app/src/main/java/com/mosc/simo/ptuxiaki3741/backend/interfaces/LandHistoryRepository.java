@@ -8,6 +8,6 @@ import java.util.List;
 public interface LandHistoryRepository {
     LandRecord getLandRecord(long id);
     List<LandRecord> getLandRecordsByUser(User user);
-    LandRecord saveLandRecord(LandRecord landRecord);
+    void saveLandRecord(LandRecord landRecord);
     void deleteLandRecord(LandRecord landRecord);
 }

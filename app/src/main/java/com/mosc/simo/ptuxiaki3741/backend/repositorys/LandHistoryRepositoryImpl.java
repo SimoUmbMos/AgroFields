@@ -41,7 +41,7 @@ public class LandHistoryRepositoryImpl implements LandHistoryRepository {
     }
 
     @Override
-    public LandRecord saveLandRecord(LandRecord landRecord) {
+    public void saveLandRecord(LandRecord landRecord) {
         LandDataRecord landRecordData = landRecord.getLandData();
         List<LandPointRecord> landRecordPoints = landRecord.getLandPoints();
 
@@ -58,7 +58,6 @@ public class LandHistoryRepositoryImpl implements LandHistoryRepository {
             }
             landRecord.setLandPoints(landRecordPoints);
         }
-        return landRecord;
     }
 
     @Override

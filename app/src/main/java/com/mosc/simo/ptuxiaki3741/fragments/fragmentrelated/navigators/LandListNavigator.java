@@ -11,7 +11,6 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 
 public class LandListNavigator {
-    public static final String TAG = "LandListNavigator";
     private final NavController navController;
 
     public LandListNavigator(NavController navController){
@@ -50,7 +49,7 @@ public class LandListNavigator {
         }
     }
     public void toMenu(@Nullable Activity activity) {
-        NavDirections action = (NavDirections) LandListFragmentDirections.toMenu();
+        NavDirections action = LandListFragmentDirections.toMenu();
         if(activity != null){
             activity.runOnUiThread(()->navigate(action));
         }
