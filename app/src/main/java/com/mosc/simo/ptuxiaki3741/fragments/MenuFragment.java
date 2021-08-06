@@ -25,7 +25,7 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.MainMenuHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.List;
 

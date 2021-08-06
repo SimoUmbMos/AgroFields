@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.models;
+package com.mosc.simo.ptuxiaki3741.models.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

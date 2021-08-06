@@ -13,9 +13,9 @@ import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandHistoryRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
-import com.mosc.simo.ptuxiaki3741.models.LandPoint;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -120,7 +120,7 @@ public class LandViewModel extends AndroidViewModel {
             int index = indexOfLand(newLand);
             LandDBAction action;
             if(index < 0){
-                action = LandDBAction.INSERT;
+                action = LandDBAction.CREATE;
             }else{
                 action = LandDBAction.UPDATE;
             }

@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
 

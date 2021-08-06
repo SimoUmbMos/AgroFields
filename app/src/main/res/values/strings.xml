@@ -6,6 +6,8 @@
 
     <string name="app_name">Land Declaration</string>
 
+    <string name="empty_list">List is empty</string>
+
     <string name="title_activity_import">Map</string>
     <string name="iv_check_box_desc">check box</string>
     <string name="land_name">Land Name</string>

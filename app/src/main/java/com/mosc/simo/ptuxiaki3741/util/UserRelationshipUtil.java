@@ -1,8 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
-import com.mosc.simo.ptuxiaki3741.models.User;
-import com.mosc.simo.ptuxiaki3741.models.UserRelationship;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
 
 import java.util.ArrayList;
 import java.util.List;

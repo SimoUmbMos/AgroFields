@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.models;
+package com.mosc.simo.ptuxiaki3741.models.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -14,7 +14,7 @@ import java.util.Objects;
 public class LandData implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
-    @ColumnInfo(name = "CreatorId")
+    @ColumnInfo(name = "CreatorID")
     private long creator_id;
     @ColumnInfo(name = "Title")
     private String title;

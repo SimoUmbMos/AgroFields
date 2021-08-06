@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.models.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface LandHistoryDao {
     @Query("SELECT * FROM LandDataRecord Where `id` = :id")
     LandDataRecord getLandRecord(long id);
 
-    @Query("SELECT * FROM LandDataRecord Where `CreatorId` = :uid")
+    @Query("SELECT * FROM LandDataRecord Where `CreatorID` = :uid")
     List<LandDataRecord> getLandRecordsByUserId(long uid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

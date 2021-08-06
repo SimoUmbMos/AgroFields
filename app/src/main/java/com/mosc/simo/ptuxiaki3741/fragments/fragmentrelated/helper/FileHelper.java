@@ -13,8 +13,8 @@ import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileReader;
 import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.LandPoint;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import org.jdom2.Document;
 import org.jdom2.output.Format;

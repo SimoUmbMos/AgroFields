@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.models.LandData;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ public interface LandDao {
     @Query("SELECT * FROM LandData WHERE `id` = :lid")
     LandData getLandData(long lid);
 
-    @Query("SELECT * FROM LandData WHERE `CreatorId` = :uid")
+    @Query("SELECT * FROM LandData WHERE `CreatorID` = :uid")
     List<LandData> getLandByCreatorId(long uid);
 
-    @Query("DELETE FROM LandData WHERE `CreatorId` = :uid")
+    @Query("DELETE FROM LandData WHERE `CreatorID` = :uid")
     void deleteByUID(long uid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

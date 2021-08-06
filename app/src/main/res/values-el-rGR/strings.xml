@@ -53,4 +53,5 @@
     <string name="register_phone_length_error">" Το μήκος του Τηλεφώνου δεν είναι έγκυρο"</string>
     <string name="login_invalid_data_error">Λάθος Username ή Password</string>
     <string name="register_invalid_data_error">"Το Username είναι πιασμένο "</string>
+    <string name="empty_list">Η λίστα είναι κενή</string>
 </resources>

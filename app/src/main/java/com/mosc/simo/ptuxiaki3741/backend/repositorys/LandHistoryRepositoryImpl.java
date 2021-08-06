@@ -2,10 +2,10 @@ package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandHistoryRepository;
-import com.mosc.simo.ptuxiaki3741.models.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.models.LandPointRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandPointRecord;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;

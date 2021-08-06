@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.models.LandPointRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandPointRecord;
 
 import java.util.List;
 
@@ -14,10 +14,10 @@ public interface LandPointHistoryDao {
     @Query("SELECT * FROM `LandPointsRecord`")
     List<LandPointRecord> getLandPointsHistory();
 
-    @Query("SELECT * FROM `LandPointsRecord` Where `LRid` = :LRid ORDER BY `Position` ASC")
+    @Query("SELECT * FROM `LandPointsRecord` Where `LandRecordID` = :LRid ORDER BY `Position` ASC")
     List<LandPointRecord> getLandPointHistoryByLRID(long LRid);
 
-    @Query("DELETE FROM `LandPointsRecord` Where `LRid` = :LRid")
+    @Query("DELETE FROM `LandPointsRecord` Where `LandRecordID` = :LRid")
     void deleteAllByLRID(long LRid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

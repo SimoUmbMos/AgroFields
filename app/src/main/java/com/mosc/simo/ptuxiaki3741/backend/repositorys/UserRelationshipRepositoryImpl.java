@@ -3,10 +3,11 @@ package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.UserRelationshipRepository;
-import com.mosc.simo.ptuxiaki3741.models.User;
-import com.mosc.simo.ptuxiaki3741.models.UserRelationship;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
+import com.mosc.simo.ptuxiaki3741.util.UserRelationshipUtil;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.mosc.simo.ptuxiaki3741.util.UserRelationshipUtil.getAllReceiverUsers;
@@ -20,45 +21,38 @@ public class UserRelationshipRepositoryImpl implements UserRelationshipRepositor
 
     @Override
     public List<User> getUserFriendList(User user) {
-        List<UserRelationship> senderRelationships =
-                db.userRelationshipDao().getUserRelationshipBySenderIDAndType(
-                        user.getId(),
-                        UserDBAction.FRIENDS
-                );
-        List<UserRelationship> receiverRelationships =
-                db.userRelationshipDao().getUserRelationshipByReceiverIDAndType(
-                        user.getId(),
-                        UserDBAction.FRIENDS
-                );
-        List<User> friends = new ArrayList<>();
-        friends.addAll(getAllSenderUsers(receiverRelationships, db));
-        friends.addAll(getAllReceiverUsers(senderRelationships, db));
+        List<UserRelationship> friendSenderRelationship = db.userRelationshipDao()
+                .getBySenderIDAndType(user.getId(), UserDBAction.FRIENDS);
+        List<UserRelationship> friendReceiverRelationship = db.userRelationshipDao()
+                .getByReceiverIDAndType(user.getId(), UserDBAction.FRIENDS);
+
+        List<User> friends = UserRelationshipUtil
+                .getAllReceiverUsers(friendSenderRelationship, db);
+        friends.addAll(UserRelationshipUtil
+                .getAllSenderUsers(friendReceiverRelationship, db));
+
         return friends;
     }
 
     @Override
     public List<User> getUserFriendRequestList(User user) {
-        List<UserRelationship> receiverRelationships =
-                db.userRelationshipDao().getUserRelationshipByReceiverIDAndType(
-                        user.getId(),
-                        UserDBAction.REQUESTED
-                );
-        return getAllSenderUsers(receiverRelationships, db);
+        List<UserRelationship> requestRelationship = db.userRelationshipDao()
+                .getByReceiverIDAndType(user.getId(), UserDBAction.REQUESTED);
+        return getAllSenderUsers(requestRelationship, db);
     }
 
     @Override
     public List<User> getUserBlockList(User user) {
-        List<UserRelationship> SenderRelationships =
-                db.userRelationshipDao().getUserRelationshipBySenderIDAndType(
-                        user.getId(),
-                        UserDBAction.BLOCKED
-                );
-        return getAllReceiverUsers(SenderRelationships, db);
+        List<UserRelationship> blockRelationship = db.userRelationshipDao()
+                .getBySenderIDAndType(user.getId(), UserDBAction.BLOCKED);
+        return getAllReceiverUsers(blockRelationship, db);
     }
 
     @Override
-    public boolean createUserRelationship(User sender, User receiver, UserDBAction type) {
-        return false;
+    public void createUserRelationship(User sender, User receiver, UserDBAction type) {
+        db.userRelationshipDao().insert(
+                new UserRelationship(sender.getId(),receiver.getId(), type, new Date())
+        );
     }
 
     @Override

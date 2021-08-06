@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.List;
 
@@ -14,6 +14,9 @@ import java.util.List;
 public interface UserDao {
     @Query("SELECT * FROM `Users`")
     List<User> getUsers();
+
+    @Query("SELECT * FROM `Users` WHERE `Username` LIKE '%' || :username || '%' AND id != :id")
+    List<User> searchUserByUserName(long id, String username);
 
     @Query("SELECT * FROM `Users` WHERE `id` = :id")
     User getUserById(long id);
@@ -26,4 +29,5 @@ public interface UserDao {
 
     @Delete
     void delete(User user);
+
 }

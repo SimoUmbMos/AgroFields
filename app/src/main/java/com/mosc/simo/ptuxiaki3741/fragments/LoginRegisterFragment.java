@@ -27,7 +27,7 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LoginViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 public class LoginRegisterFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LoginRegisterFragment";
@@ -134,8 +134,16 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         String  username = "",
                 password = "";
         try{
-            username = viewHolder.etUserName.getText().toString().trim();
-            password = viewHolder.etMainPassword.getText().toString().trim();
+            if(
+                    viewHolder.etUserName.getText() != null &&
+                    viewHolder.etMainPassword.getText() != null
+            ){
+                username = viewHolder.etUserName.getText().toString().trim();
+                password = viewHolder.etMainPassword.getText().toString().trim();
+            }else{
+                username = "";
+                password = "";
+            }
         }catch (NullPointerException e){
             Log.e(TAG, "getLoginDataIfValid: ", e);
         }
@@ -158,12 +166,28 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 password = "",
                 password2 = "";
         try{
-            username = viewHolder.etUserName.getText().toString().trim();
-            phone = viewHolder.etPhone.getText().toString().trim();
-            email = viewHolder.etMainEmail.getText().toString().trim();
-            email2 = viewHolder.etSecondaryEmail.getText().toString().trim();
-            password = viewHolder.etMainPassword.getText().toString().trim();
-            password2 =viewHolder.etSecondaryPassword.getText().toString().trim();
+            if(
+                    viewHolder.etUserName.getText() != null &&
+                    viewHolder.etPhone.getText() != null &&
+                    viewHolder.etMainEmail.getText() != null &&
+                    viewHolder.etSecondaryEmail.getText() != null &&
+                    viewHolder.etMainPassword.getText() != null &&
+                    viewHolder.etSecondaryPassword.getText() != null
+            ){
+                username = viewHolder.etUserName.getText().toString().trim();
+                phone = viewHolder.etPhone.getText().toString().trim();
+                email = viewHolder.etMainEmail.getText().toString().trim();
+                email2 = viewHolder.etSecondaryEmail.getText().toString().trim();
+                password = viewHolder.etMainPassword.getText().toString().trim();
+                password2 =viewHolder.etSecondaryPassword.getText().toString().trim();
+            }else{
+                username = "";
+                phone = "";
+                email = "";
+                email2 = "";
+                password = "";
+                password2 = "";
+            }
         }catch (NullPointerException e){
             Log.e(TAG, "getRegisterDataIfValid: ", e);
         }

@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.models;
+package com.mosc.simo.ptuxiaki3741.models.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -6,12 +6,14 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
 
 @Entity(tableName = "LandPointsRecord")
 public class LandPointRecord {
     @PrimaryKey(autoGenerate = true)
     private long id;
-    @ColumnInfo(name = "LRid")
+    @ColumnInfo(name = "LandRecordID")
     private long landRecordID;
     @ColumnInfo(name = "Position")
     private long position;

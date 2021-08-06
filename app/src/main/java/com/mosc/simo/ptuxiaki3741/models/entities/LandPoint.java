@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.models;
+package com.mosc.simo.ptuxiaki3741.models.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class LandPoint implements Parcelable,Comparable<LandPoint>{
     @PrimaryKey(autoGenerate = true)
     private long id;
-    @ColumnInfo(name = "Lid")
+    @ColumnInfo(name = "LandID")
     private long lid;
     @ColumnInfo(name = "Position")
     private final long position;

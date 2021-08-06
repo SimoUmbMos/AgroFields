@@ -23,7 +23,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.enums.LandListActionState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListNavigateStates;
@@ -144,11 +144,9 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
     private void onLandListUpdate(List<Land> lands) {
         if(lands == null){
-            //TODO: SHOW NO LANDS tvLabel
-        }else if(lands.size() == 0){
-            //TODO: SHOW NO LANDS tvLabel
+            viewHolder.showRc(false);
         }else{
-            //TODO: SHOW LANDS rcvLandList
+            viewHolder.showRc(lands.size() != 0);
         }
         viewHolder.notifyItemsChanged();
     }

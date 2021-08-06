@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.models;
+package com.mosc.simo.ptuxiaki3741.models.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -113,6 +113,17 @@ public class User implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.username, this.password, this.phone, this.email);
+        return Objects.hash(this.id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null) {
+            return false;
+        } else if (!(o instanceof User)) {
+            return false;
+        } else {
+            return ((User) o).getId() == this.getId();
+        }
     }
 }

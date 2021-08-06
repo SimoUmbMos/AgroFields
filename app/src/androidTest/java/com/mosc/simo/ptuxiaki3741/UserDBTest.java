@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
@@ -8,8 +9,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
-import com.mosc.simo.ptuxiaki3741.models.User;
-import com.mosc.simo.ptuxiaki3741.models.UserRelationship;
+import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRelationshipRepositoryImpl;
+import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UserRelationshipUtil;
 
 import org.junit.After;
@@ -17,7 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -25,17 +28,22 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class UserDBTest {
+    private static final String TAG = "UserJUnitTest";
+
     private RoomDatabase db;
-    private User user1, user2;
+    private UserRelationshipRepositoryImpl userRelationshipRepository;
+    private UserRepositoryImpl userRepository;
+
+    private List<User> users;
 
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         db = Room.inMemoryDatabaseBuilder(context, RoomDatabase.class).build();
-        user1 = new User("user1","user1");
-        user2 = new User("user2","user2");
-        user1.setId(db.userDao().insert(user1));
-        user2.setId(db.userDao().insert(user2));
+        userRelationshipRepository = new UserRelationshipRepositoryImpl(db);
+        userRepository = new UserRepositoryImpl(db);
+        initUsers();
+        initRelationships();
     }
 
     @After
@@ -44,63 +52,81 @@ public class UserDBTest {
     }
 
     @Test
-    public void userRequestTest() {
-        db.userRelationshipDao().insert(
-                new UserRelationship(user1.getId(),user2.getId(),UserDBAction.REQUESTED, new Date())
-        );
-        List<UserRelationship> user1ReceiverRelationship = db.userRelationshipDao()
-                .getUserRelationshipByReceiverIDAndType(user1.getId(), UserDBAction.REQUESTED);
-        List<UserRelationship> user2ReceiverRelationship = db.userRelationshipDao()
-                .getUserRelationshipByReceiverIDAndType(user2.getId(), UserDBAction.REQUESTED);
-        List<User> user1FriendRequest = UserRelationshipUtil
-                .getAllSenderUsers(user1ReceiverRelationship, db);
-        List<User> user2FriendRequest = UserRelationshipUtil
-                .getAllSenderUsers(user2ReceiverRelationship, db);
-        assertEquals(0,user1FriendRequest.size());
-        assertEquals(1,user2FriendRequest.size());
-        assertEquals(user1.getId(),user2FriendRequest.get(0).getId());
+    public void userFriendTest() {
+        List<User> user1Friends = userRelationshipRepository.getUserFriendList(users.get(0));
+        List<User> user2Friends = userRelationshipRepository.getUserFriendList(users.get(1));
+
+        debugList("user1Friends",user1Friends);
+        debugList("user2Friends",user2Friends);
+
+        assertEquals(1,user1Friends.size());
+        assertEquals(3,user2Friends.size());
     }
     @Test
-    public void userFriendTest() {
-        db.userRelationshipDao().insert(
-                new UserRelationship(user1.getId(),user2.getId(),UserDBAction.FRIENDS, new Date())
-        );
-        List<UserRelationship> user1SenderRelationship = db.userRelationshipDao()
-                .getUserRelationshipBySenderIDAndType(user1.getId(), UserDBAction.FRIENDS);
-        List<UserRelationship> user1ReceiverRelationship = db.userRelationshipDao()
-                .getUserRelationshipByReceiverIDAndType(user1.getId(), UserDBAction.FRIENDS);
-        List<User> user1Friends = UserRelationshipUtil
-                .getAllReceiverUsers(user1SenderRelationship, db);
-        user1Friends.addAll(UserRelationshipUtil
-                .getAllSenderUsers(user1ReceiverRelationship, db));
-        List<UserRelationship> user2SenderRelationship = db.userRelationshipDao()
-                .getUserRelationshipBySenderIDAndType(user2.getId(), UserDBAction.FRIENDS);
-        List<UserRelationship> user2ReceiverRelationship = db.userRelationshipDao()
-                .getUserRelationshipByReceiverIDAndType(user2.getId(), UserDBAction.FRIENDS);
-        List<User> user2Friends = UserRelationshipUtil
-                .getAllReceiverUsers(user2SenderRelationship, db);
-        user2Friends.addAll(UserRelationshipUtil
-                .getAllSenderUsers(user2ReceiverRelationship, db));
-        assertEquals(1,user1Friends.size());
-        assertEquals(user2.getId(),user1Friends.get(0).getId());
-        assertEquals(1,user2Friends.size());
-        assertEquals(user1.getId(),user2Friends.get(0).getId());
+    public void userRequestTest() {
+        List<User> user1FriendRequest = userRelationshipRepository.getUserFriendRequestList(users.get(0));
+        List<User> user3FriendRequest = userRelationshipRepository.getUserFriendRequestList(users.get(2));
+
+        debugList("user1FriendRequest",user1FriendRequest);
+        debugList("user3FriendRequest",user3FriendRequest);
+
+        assertEquals(0,user1FriendRequest.size());
+        assertEquals(1,user3FriendRequest.size());
     }
     @Test
     public void userBlockTest() {
-        db.userRelationshipDao().insert(
-                new UserRelationship(user1.getId(),user2.getId(),UserDBAction.BLOCKED, new Date())
-        );
-        List<UserRelationship> user1BlockRelationship = db.userRelationshipDao()
-                .getUserRelationshipBySenderIDAndType(user1.getId(), UserDBAction.BLOCKED);
-        List<UserRelationship> user2BlockRelationship = db.userRelationshipDao()
-                .getUserRelationshipBySenderIDAndType(user2.getId(), UserDBAction.BLOCKED);
-        List<User> user1BlockList = UserRelationshipUtil
-                .getAllReceiverUsers(user1BlockRelationship, db);
-        List<User> user2BlockList = UserRelationshipUtil
-                .getAllReceiverUsers(user2BlockRelationship, db);
-        assertEquals(1,user1BlockList.size());
-        assertEquals(user2.getId(),user1BlockList.get(0).getId());
-        assertEquals(0,user2BlockList.size());
+        List<User> user1BlockList = userRelationshipRepository.getUserBlockList(users.get(0));
+        List<User> user2BlockList = userRelationshipRepository.getUserBlockList(users.get(1));
+        List<User> user3BlockList = userRelationshipRepository.getUserBlockList(users.get(2));
+
+        debugList("user1BlockList",user1BlockList);
+        debugList("user2BlockList",user2BlockList);
+        debugList("user3BlockList",user3BlockList);
+
+        assertEquals(2,user1BlockList.size());
+        assertEquals(1,user2BlockList.size());
+        assertEquals(0,user3BlockList.size());
+    }
+    @Test
+    public void userSearchTest() {
+        List<User> user1SearchList = userRepository.userSearch(users.get(0),"user");
+        List<User> user2SearchList = userRepository.userSearch(users.get(1),"user");
+        List<User> user3SearchList = userRepository.userSearch(users.get(2),"user");
+
+        debugList("user1SearchList",user1SearchList);
+        debugList("user2SearchList",user2SearchList);
+        debugList("user3SearchList",user3SearchList);
+
+        assertEquals(3,user1SearchList.size());
+        assertEquals(4,user2SearchList.size());
+        assertEquals(5,user3SearchList.size());
+    }
+
+    private void initUsers() {
+        User temp;
+        for(int i = 1 ; i <= 6 ; i++){
+            temp = new User("user"+i,"user"+i);
+            userRepository.saveNewUser(temp);
+        }
+        users = userRepository.getUsers();
+    }
+    private void initRelationships() {
+        userRelationshipRepository.createUserRelationship(users.get(0),users.get(1),UserDBAction.FRIENDS);  // 1 is friends 2
+        userRelationshipRepository.createUserRelationship(users.get(0),users.get(2),UserDBAction.REQUESTED);// 1 has request friend 3
+        userRelationshipRepository.createUserRelationship(users.get(0),users.get(3),UserDBAction.BLOCKED);  // 1 has blocked 4
+        userRelationshipRepository.createUserRelationship(users.get(0),users.get(4),UserDBAction.BLOCKED);  // 1 has blocked 5
+
+        userRelationshipRepository.createUserRelationship(users.get(1),users.get(2),UserDBAction.FRIENDS);  // 2 is friends 3
+        userRelationshipRepository.createUserRelationship(users.get(1),users.get(3),UserDBAction.FRIENDS);  // 2 is friends 4
+        userRelationshipRepository.createUserRelationship(users.get(1),users.get(5),UserDBAction.BLOCKED);  // 2 has blocked 6
+    }
+    private void debugList(String name,List<User> usersLists){
+        Log.d(TAG, name+" size:" +usersLists.size());
+        if(usersLists.size() > 0){
+            for(User user : usersLists){
+                Log.d(TAG, user.getUsername());
+            }
+        }
+        Log.d(TAG, " ");
     }
 }

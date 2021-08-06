@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;

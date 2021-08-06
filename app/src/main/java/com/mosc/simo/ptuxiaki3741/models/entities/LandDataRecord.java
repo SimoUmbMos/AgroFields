@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.models;
+package com.mosc.simo.ptuxiaki3741.models.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -13,14 +13,14 @@ import java.util.Date;
 public class LandDataRecord {
     @PrimaryKey(autoGenerate = true)
     private long id;
-    @ColumnInfo(name = "LandId")
+    @ColumnInfo(name = "LandID")
     private long landID;
-    @ColumnInfo(name = "CreatorId")
+    @ColumnInfo(name = "CreatorID")
     private long landCreatorID;
+    @ColumnInfo(name = "UserID")
+    private long userID;
     @ColumnInfo(name = "LandTitle")
     private String landTitle;
-    @ColumnInfo(name = "UserId")
-    private long userID;
     @ColumnInfo(name = "ActionID")
     private LandDBAction actionID;
     @ColumnInfo(name = "Date")

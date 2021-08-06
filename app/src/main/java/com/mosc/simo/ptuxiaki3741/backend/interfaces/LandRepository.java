@@ -1,7 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.interfaces;
 
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.List;
 

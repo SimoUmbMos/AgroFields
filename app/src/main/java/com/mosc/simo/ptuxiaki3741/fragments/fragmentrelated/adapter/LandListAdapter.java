@@ -57,7 +57,10 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
 
     @Override
     public int getItemCount() {
-        return landViewModel.landSize();
+        if(landViewModel != null)
+            return landViewModel.landSize();
+        else
+            return 0;
     }
 
     public interface OnLandClick{
