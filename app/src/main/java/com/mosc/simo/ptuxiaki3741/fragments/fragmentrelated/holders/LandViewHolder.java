@@ -34,7 +34,7 @@ public class LandViewHolder implements View.OnTouchListener {
     public final ImageView imageView;
     public final FrameLayout touchLayer;
     public final FloatingActionButton fabSave,fabReset,fabPlus,fabMinus;
-    public MenuItem miLock;
+    public final MenuItem miLock;
 
     private OnAction onClose;
 

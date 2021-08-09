@@ -40,7 +40,8 @@
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toTopOf="@+id/map"
         app:srcCompat="@android:drawable/ic_menu_gallery"
-        tools:visibility="gone" />
+        tools:visibility="gone"
+        android:contentDescription="@string/land_imageView" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clImgTab"
@@ -68,7 +69,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/fabSave" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabReset"
@@ -81,7 +83,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/fabSave"
             app:layout_constraintEnd_toStartOf="@+id/fabSave"
             app:layout_constraintTop_toTopOf="@+id/fabSave"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:contentDescription="@string/fabReset" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabPlus"
@@ -97,7 +100,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/fabSave" />
+            app:layout_constraintTop_toTopOf="@+id/fabSave"
+            android:contentDescription="@string/fabPlus" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabMinus"
@@ -111,7 +115,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/fabPlus"
             app:layout_constraintStart_toEndOf="@+id/fabPlus"
             app:layout_constraintTop_toTopOf="@+id/fabPlus"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:contentDescription="@string/fabMinus" />
 
         <TextView
             android:id="@+id/tvImgAction"

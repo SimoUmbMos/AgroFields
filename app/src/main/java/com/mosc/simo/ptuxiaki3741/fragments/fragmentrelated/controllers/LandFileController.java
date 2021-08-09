@@ -7,11 +7,9 @@ import android.content.pm.PackageManager;
 
 import androidx.activity.result.ActivityResultLauncher;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
 
-import java.util.List;
 
 public class LandFileController {
     private LandFileState state = LandFileState.Disable;

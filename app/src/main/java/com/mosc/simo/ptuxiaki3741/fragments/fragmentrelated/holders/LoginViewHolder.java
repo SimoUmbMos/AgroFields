@@ -15,16 +15,16 @@ import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 
 public class LoginViewHolder {
     private final Resources res;
-    public View root;
-    public LinearLayout llLoginData, llLoginButtons;
-    public TextView tvLoginLabel;
-    public TextInputEditText etUserName,
+    public final View root;
+    public final LinearLayout llLoginData, llLoginButtons;
+    public final TextView tvLoginLabel;
+    public final TextInputEditText etUserName,
             etMainPassword, etSecondaryPassword,
             etPhone, etMainEmail, etSecondaryEmail;
-    public TextInputLayout etUserNameLayout,
+    public final TextInputLayout etUserNameLayout,
             etMainPasswordLayout,etSecondaryPasswordLayout,
             etPhoneLayout, etMainEmailLayout, etSecondaryEmailLayout;
-    public Button btnLoginCancel, btnLoginSubmit, btnToRegister, btnLoginButton;
+    public final Button btnLoginCancel, btnLoginSubmit, btnToRegister, btnLoginButton;
     private boolean isRegister;
 
     public LoginViewHolder(Resources res,

@@ -1,8 +1,12 @@
 <resources>
-    <string name="todo" translatable="false">TODO</string>
     <string name="email_hint" translatable="false">Email</string>
     <string name="password_hint" translatable="false">Password</string>
     <string name="username_hint" translatable="false">UserName</string>
+    <string name="fabSave" translatable="false">save edits</string>
+    <string name="fabReset" translatable="false">reset edits</string>
+    <string name="fabPlus" translatable="false">plus edit</string>
+    <string name="fabMinus" translatable="false">minus edit</string>
+    <string name="land_imageView" translatable="false">show img above map</string>
 
     <string name="app_name">Land Declaration</string>
 
@@ -53,7 +57,6 @@
 
     <string name="confirm_email_hint">Confirm Email</string>
     <string name="confirm_password_hint">Confirm Password</string>
-    <string name="username_or_email_hint">Username or Email</string>
     <string name="phone_hint">Phone</string>
 
     <string name="register_email_empty_error">Email is empty</string>

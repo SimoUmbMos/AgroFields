@@ -9,18 +9,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
-import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRelationshipRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.util.UserRelationshipUtil;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +26,6 @@ public class UserDBTest {
     private static final String TAG = "UserJUnitTest";
 
     private RoomDatabase db;
-    private UserRelationshipRepositoryImpl userRelationshipRepository;
     private UserRepositoryImpl userRepository;
 
     private List<User> users;
@@ -40,7 +34,6 @@ public class UserDBTest {
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
         db = Room.inMemoryDatabaseBuilder(context, RoomDatabase.class).build();
-        userRelationshipRepository = new UserRelationshipRepositoryImpl(db);
         userRepository = new UserRepositoryImpl(db);
         initUsers();
         initRelationships();
@@ -53,8 +46,8 @@ public class UserDBTest {
 
     @Test
     public void userFriendTest() {
-        List<User> user1Friends = userRelationshipRepository.getUserFriendList(users.get(0));
-        List<User> user2Friends = userRelationshipRepository.getUserFriendList(users.get(1));
+        List<User> user1Friends = userRepository.getUserFriendList(users.get(0));
+        List<User> user2Friends = userRepository.getUserFriendList(users.get(1));
 
         debugList("user1Friends",user1Friends);
         debugList("user2Friends",user2Friends);
@@ -64,8 +57,8 @@ public class UserDBTest {
     }
     @Test
     public void userRequestTest() {
-        List<User> user1FriendRequest = userRelationshipRepository.getUserFriendRequestList(users.get(0));
-        List<User> user3FriendRequest = userRelationshipRepository.getUserFriendRequestList(users.get(2));
+        List<User> user1FriendRequest = userRepository.getUserFriendRequestList(users.get(0));
+        List<User> user3FriendRequest = userRepository.getUserFriendRequestList(users.get(2));
 
         debugList("user1FriendRequest",user1FriendRequest);
         debugList("user3FriendRequest",user3FriendRequest);
@@ -75,9 +68,9 @@ public class UserDBTest {
     }
     @Test
     public void userBlockTest() {
-        List<User> user1BlockList = userRelationshipRepository.getUserBlockList(users.get(0));
-        List<User> user2BlockList = userRelationshipRepository.getUserBlockList(users.get(1));
-        List<User> user3BlockList = userRelationshipRepository.getUserBlockList(users.get(2));
+        List<User> user1BlockList = userRepository.getUserBlockList(users.get(0));
+        List<User> user2BlockList = userRepository.getUserBlockList(users.get(1));
+        List<User> user3BlockList = userRepository.getUserBlockList(users.get(2));
 
         debugList("user1BlockList",user1BlockList);
         debugList("user2BlockList",user2BlockList);
@@ -111,14 +104,14 @@ public class UserDBTest {
         users = userRepository.getUsers();
     }
     private void initRelationships() {
-        userRelationshipRepository.createUserRelationship(users.get(0),users.get(1),UserDBAction.FRIENDS);  // 1 is friends 2
-        userRelationshipRepository.createUserRelationship(users.get(0),users.get(2),UserDBAction.REQUESTED);// 1 has request friend 3
-        userRelationshipRepository.createUserRelationship(users.get(0),users.get(3),UserDBAction.BLOCKED);  // 1 has blocked 4
-        userRelationshipRepository.createUserRelationship(users.get(0),users.get(4),UserDBAction.BLOCKED);  // 1 has blocked 5
+        userRepository.saveUserRelationship(users.get(0),users.get(1),UserDBAction.FRIENDS);  // 1 is friends 2
+        userRepository.saveUserRelationship(users.get(0),users.get(2),UserDBAction.REQUESTED);// 1 has request friend 3
+        userRepository.saveUserRelationship(users.get(0),users.get(3),UserDBAction.BLOCKED);  // 1 has blocked 4
+        userRepository.saveUserRelationship(users.get(0),users.get(4),UserDBAction.BLOCKED);  // 1 has blocked 5
 
-        userRelationshipRepository.createUserRelationship(users.get(1),users.get(2),UserDBAction.FRIENDS);  // 2 is friends 3
-        userRelationshipRepository.createUserRelationship(users.get(1),users.get(3),UserDBAction.FRIENDS);  // 2 is friends 4
-        userRelationshipRepository.createUserRelationship(users.get(1),users.get(5),UserDBAction.BLOCKED);  // 2 has blocked 6
+        userRepository.saveUserRelationship(users.get(1),users.get(2),UserDBAction.FRIENDS);  // 2 is friends 3
+        userRepository.saveUserRelationship(users.get(1),users.get(3),UserDBAction.FRIENDS);  // 2 is friends 4
+        userRepository.saveUserRelationship(users.get(1),users.get(5),UserDBAction.BLOCKED);  // 2 has blocked 6
     }
     private void debugList(String name,List<User> usersLists){
         Log.d(TAG, name+" size:" +usersLists.size());

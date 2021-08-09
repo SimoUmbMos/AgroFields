@@ -40,7 +40,6 @@
     <string name="register_button">Κάντε Κλικ Εδώ Για Εγγραφή</string>
     <string name="confirm_email_hint">Επιβεβαίωση Email</string>
     <string name="confirm_password_hint">Επιβεβαίωση Password</string>
-    <string name="username_or_email_hint">Username ή Email</string>
     <string name="phone_hint">Τηλέφωνο</string>
     <string name="register_email_empty_error">Το Email είναι κενό</string>
     <string name="register_email_not_match_error">Τα Email δεν ταιριάζουν</string>

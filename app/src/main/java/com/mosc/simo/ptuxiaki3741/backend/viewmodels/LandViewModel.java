@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
-import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandHistoryRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
@@ -26,16 +25,12 @@ public class LandViewModel extends AndroidViewModel {
     private final MutableLiveData<List<LandRecord>> landsHistory = new MutableLiveData<>();
     private final MutableLiveData<List<Integer>> selectedList = new MutableLiveData<>();
     private final LandRepositoryImpl landRepository;
-    private final LandHistoryRepositoryImpl landHistoryRepository;
     private boolean isAllSelected = false;
     private User currUser = null;
 
     public LandViewModel(@NonNull Application application) {
         super(application);
         landRepository = new LandRepositoryImpl(
-                MainActivity.getRoomDb(application.getApplicationContext())
-        );
-        landHistoryRepository = new LandHistoryRepositoryImpl(
                 MainActivity.getRoomDb(application.getApplicationContext())
         );
     }
@@ -75,7 +70,7 @@ public class LandViewModel extends AndroidViewModel {
     }
     private void loadLandsRecords(User user) {
         AsyncTask.execute(()->{
-            List<LandRecord> landsHistoryList = new ArrayList<>(landHistoryRepository.getLandRecordsByUser(user));
+            List<LandRecord> landsHistoryList = new ArrayList<>(landRepository.getLandRecordsByUser(user));
             landsHistory.postValue(landsHistoryList);
         });
     }
@@ -131,7 +126,7 @@ public class LandViewModel extends AndroidViewModel {
                     action,
                     Calendar.getInstance().getTime()
             );
-            landHistoryRepository.saveLandRecord(landRecord);
+            landRepository.saveLandRecord(landRecord);
             if(this.currUser != null)
                 loadData(this.currUser);
         });
@@ -146,7 +141,7 @@ public class LandViewModel extends AndroidViewModel {
                         LandDBAction.DELETE,
                         Calendar.getInstance().getTime()
                 );
-                landHistoryRepository.saveLandRecord(landRecord);
+                landRepository.saveLandRecord(landRecord);
                 landRepository.deleteLand(removeLand);
             }
             loadData(this.currUser);

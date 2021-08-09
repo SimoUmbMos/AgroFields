@@ -6,7 +6,7 @@ import android.widget.Button;
 import com.mosc.simo.ptuxiaki3741.R;
 
 public class MainMenuHolder {
-    public Button btnList, btnLogout, btnHistory, btnFriends, btnProfile;
+    public final Button btnList, btnLogout, btnHistory, btnFriends, btnProfile;
 
     public MainMenuHolder(View view){
         btnList = view.findViewById(R.id.btnList);

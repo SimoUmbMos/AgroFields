@@ -40,7 +40,6 @@ import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMapHolder;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMenuHolder;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandViewHolder;
-import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;

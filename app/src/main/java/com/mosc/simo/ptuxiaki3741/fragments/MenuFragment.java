@@ -24,10 +24,7 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.MainMenuHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-
-import java.util.List;
 
 public class MenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="MenuFragment";
@@ -87,7 +84,6 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
     private void initObservers() {
         if(vmUsers != null && vmLands != null){
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandListUpdate);
         }
     }
 
@@ -99,10 +95,6 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
             Log.d(TAG, "onUserUpdate: user not null");
         }
     }
-    private void onLandListUpdate(List<Land> lands) {
-
-    }
-
 
     private void navigate(NavDirections action){
         if(action != null){

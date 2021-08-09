@@ -14,18 +14,10 @@ import java.util.List;
 
 @Dao
 public interface UserRelationshipDao {
-    @Query("SELECT * FROM `UserRelationships`")
-    List<UserRelationship> getAll();
 
     @Query("SELECT * FROM `UserRelationships` WHERE " +
     "(`SenderID` = :id1 AND `ReceiverID` = :id2) OR (`SenderID` = :id2 AND `ReceiverID` = :id1)")
     List<UserRelationship> getByIDs(long id1, long id2);
-
-    @Query("SELECT * FROM `UserRelationships` WHERE `SenderID` = :id OR `ReceiverID` = :id")
-    List<UserRelationship> getByUserID(long id);
-
-    @Query("SELECT * FROM `UserRelationships` WHERE (`SenderID` = :id OR `ReceiverID` = :id) AND Type = :type")
-    List<UserRelationship> getByUserIDAndType(long id, UserDBAction type);
 
     @Query("SELECT * FROM `UserRelationships` WHERE `SenderID` = :id AND Type = :type")
     List<UserRelationship> getBySenderIDAndType(long id, UserDBAction type);
@@ -36,7 +28,10 @@ public interface UserRelationshipDao {
     @Delete
     void delete(UserRelationship userRelationship);
 
+    @Query("DELETE FROM `UserRelationships` WHERE `SenderID` = :uid OR `ReceiverID` = :uid")
+    void deleteByUserID(long uid);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(UserRelationship userRelationship);
+    void insert(UserRelationship userRelationship);
 
 }

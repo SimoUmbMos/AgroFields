@@ -18,6 +18,9 @@ public interface LandHistoryDao {
     @Query("SELECT * FROM LandDataRecord Where `id` = :id")
     LandDataRecord getLandRecord(long id);
 
+    @Query("SELECT * FROM LandDataRecord Where `LandID` = :lid ORDER BY `LandID` ASC")
+    List<LandDataRecord> getLandRecordByLandID(long lid);
+
     @Query("SELECT * FROM LandDataRecord Where `CreatorID` = :uid")
     List<LandDataRecord> getLandRecordsByUserId(long uid);
 
@@ -25,5 +28,5 @@ public interface LandHistoryDao {
     long insert(LandDataRecord landRecord);
 
     @Delete
-    int delete(LandDataRecord landRecord);
+    void delete(LandDataRecord landRecord);
 }
