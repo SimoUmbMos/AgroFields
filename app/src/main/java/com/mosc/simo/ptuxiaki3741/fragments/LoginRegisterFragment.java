@@ -19,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -28,6 +27,7 @@ import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LoginViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.util.UserUtil;
 
 public class LoginRegisterFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LoginRegisterFragment";
@@ -149,7 +149,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         showLoginError(isUsernameWritten, isPasswordWritten);
 
         if(isPasswordWritten && isUsernameWritten){
-            return new User(username, password);
+            return new User(username, UserUtil.hashPassword(password));
         }
         return null;
     }
@@ -203,7 +203,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         if(isEmailWritten && isEmailSame &&
                 isPasswordWritten && isPasswordSame &&
                 isPhoneLengthRight && isUsernameWritten){
-            return new User(username, password, phone, email);
+            return new User(username, UserUtil.hashPassword(password), phone, email);
         }
         return null;
     }
@@ -213,16 +213,17 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         if (user != null) {
             vmUsers.singIn(user);
         }else{
-            if(getActivity() != null)
-                getActivity().runOnUiThread(()->{
-                    Toast.makeText(
-                            getContext(),
-                            R.string.login_invalid_data_error,
-                            Toast.LENGTH_SHORT
-                    ).show();
-                    viewHolder.showError(LoginRegisterError.UserNameWrongError);
-                    viewHolder.showError(LoginRegisterError.PasswordWrongError);
+            if(getActivity() != null) {
+                user = vmUsers.checkUserNameCredentials(tempUser.getUsername());
+                final boolean usernameExist = user != null;
+                getActivity().runOnUiThread(() -> {
+                    if (usernameExist) {
+                        viewHolder.showError(LoginRegisterError.PasswordWrongError);
+                    } else {
+                        viewHolder.showError(LoginRegisterError.UserNameWrongError);
+                    }
                 });
+            }
         }
     }
     private void onRegisterAction(User tempUser){
@@ -231,14 +232,9 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
             vmUsers.singIn(user);
         }else{
             if(getActivity() != null)
-                getActivity().runOnUiThread(()->{
-                        Toast.makeText(
-                                getContext(),
-                                R.string.register_invalid_data_error,
-                                Toast.LENGTH_SHORT
-                        ).show();
-                        viewHolder.showError(LoginRegisterError.UserNameTakenError);
-                });
+                getActivity().runOnUiThread(()->
+                        viewHolder.showError(LoginRegisterError.UserNameTakenError)
+                );
         }
     }
 

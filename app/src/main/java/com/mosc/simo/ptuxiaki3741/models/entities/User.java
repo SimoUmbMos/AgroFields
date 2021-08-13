@@ -2,12 +2,15 @@ package com.mosc.simo.ptuxiaki3741.models.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Objects;
 
 @Entity(tableName = "Users")
@@ -26,10 +29,10 @@ public class User implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
-    @ColumnInfo(name = "Password")
-    private String password;
     @ColumnInfo(name = "Username")
     private String username;
+    @ColumnInfo(name = "Password")
+    private String password;
     @ColumnInfo(name = "Phone")
     private String phone;
     @ColumnInfo(name = "Email")
@@ -46,8 +49,8 @@ public class User implements Parcelable {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.phone = "N/A";
-        this.email = "N/A";
+        this.phone = null;
+        this.email = null;
     }
     @Ignore
     public User(String username, String password, String phone, String email) {

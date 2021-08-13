@@ -12,17 +12,24 @@ import java.util.List;
 
 @Dao
 public interface UserDao {
-    @Query("SELECT * FROM `Users`")
+    @Query("SELECT * FROM `Users` ")
     List<User> getUsers();
 
-    @Query("SELECT * FROM `Users` WHERE `Username` LIKE '%' || :username || '%' AND id != :id")
+    @Query("SELECT * FROM `Users` " +
+            "WHERE `Username` LIKE '%' || :username || '%' AND id != :id")
     List<User> searchUserByUserName(long id, String username);
 
-    @Query("SELECT * FROM `Users` WHERE `id` = :id")
+    @Query("SELECT * FROM `Users` " +
+            "WHERE `id` = :id")
     User getUserById(long id);
 
-    @Query("SELECT * FROM `Users` WHERE `Username` = :username")
+    @Query("SELECT * FROM `Users` " +
+            "WHERE `Username` = :username")
     User getUserByUserName(String username);
+
+    @Query("SELECT * FROM `Users` " +
+            "WHERE `Username` = :username AND `Password` = :password")
+    User getUserByUserNameAndPassword(String username,String password);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(User user);

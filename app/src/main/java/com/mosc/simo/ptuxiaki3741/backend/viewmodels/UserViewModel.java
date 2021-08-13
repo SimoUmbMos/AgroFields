@@ -80,13 +80,10 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public User checkCredentials(String username, String password) {
-        User user = userRepository.searchUserByUserName(username);
-        if(user != null){
-            if(user.getPassword().equals(password)){
-                return user;
-            }
-        }
-        return null;
+        return userRepository.searchUserByUserNameAndPassword(username, password);
+    }
+    public User checkUserNameCredentials(String username) {
+        return userRepository.searchUserByUserName(username);
     }
     public void singIn(User user) {
         if(user != null){
@@ -99,4 +96,5 @@ public class UserViewModel extends AndroidViewModel {
     public void logout() {
         singIn(null);
     }
+
 }
