@@ -14,6 +14,7 @@ public interface UserRepository {
     boolean sendFriendRequest(User currUser, User receiver);
     boolean acceptFriendRequest(User currUser, User sender);
     boolean declineFriendRequest(User currUser, User sender);
+    boolean deleteFriend(User currUser, User friend);
     void blockUser(User currUser, User otherUser);
 
     List<User> getUsers();

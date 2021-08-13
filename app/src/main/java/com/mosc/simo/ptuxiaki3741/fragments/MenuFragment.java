@@ -69,11 +69,13 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
         MainMenuHolder menuHolder = new MainMenuHolder(view);
 
         menuHolder.btnList.setOnClickListener(v -> toListMenu(getActivity()));
-        menuHolder.btnLogout.setOnClickListener(v -> vmUsers.logout());
+
         //TODO: menu actions
         menuHolder.btnHistory.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
         menuHolder.btnFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
-        menuHolder.btnProfile.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
+
+        menuHolder.btnProfile.setOnClickListener(v -> toProfile(getActivity()));
+        menuHolder.btnLogout.setOnClickListener(v -> vmUsers.logout());
     }
     private void initViewModels() {
         if(getActivity() != null){
@@ -104,6 +106,11 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
     }
     public void toListMenu(@Nullable Activity activity) {
         NavDirections action = MenuFragmentDirections.toListMenu();
+        if(activity != null)
+            activity.runOnUiThread(()->navigate(action));
+    }
+    public void toProfile(@Nullable Activity activity) {
+        NavDirections action = MenuFragmentDirections.toUserProfile();
         if(activity != null)
             activity.runOnUiThread(()->navigate(action));
     }

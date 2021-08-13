@@ -51,4 +51,6 @@
     <string name="register_username_wrong_error">Λάθος Username</string>
     <string name="register_phone_length_error">" Το μήκος του Τηλεφώνου δεν είναι έγκυρο"</string>
     <string name="empty_list">Η λίστα είναι κενή</string>
+    <string name="profile_title_1">Προφίλ</string>
+    <string name="profile_title_2"/>
 </resources>

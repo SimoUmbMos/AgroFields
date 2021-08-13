@@ -68,5 +68,8 @@
     <string name="register_username_wrong_error">Wrong Username</string>
     <string name="register_username_empty_error">Username is empty</string>
     <string name="register_username_taken_error">Username is taken</string>
+
+    <string name="profile_title_1"/>
+    <string name="profile_title_2">Profile</string>
     =
 </resources>

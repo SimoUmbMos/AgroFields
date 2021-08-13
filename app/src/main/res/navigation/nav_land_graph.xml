@@ -27,6 +27,9 @@
         <action
             android:id="@+id/toListMenu"
             app:destination="@id/landListFragment" />
+        <action
+            android:id="@+id/toUserProfile"
+            app:destination="@id/userProfileFragment" />
     </fragment>
     <fragment android:id="@+id/landListFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LandListFragment"
@@ -70,4 +73,9 @@
             android:name="land"
             app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />
     </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserProfileFragment"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" />
 </navigation>

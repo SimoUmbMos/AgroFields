@@ -68,60 +68,51 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean sendFriendRequest(User currUser, User receiver){
-        List<UserRelationship> relationships = db.userRelationshipDao().getByIDs(
-                currUser.getId(),
-                receiver.getId()
-        );
-        if(relationships.size() == 0){
-            saveUserRelationship(currUser,receiver,UserDBAction.REQUESTED);
-            return true;
+        if(currUser != null && receiver != null ){
+            if(getUserFriendRequestList(currUser).contains(receiver)){
+                return acceptFriendRequest(currUser,receiver);
+            }else{
+                List<UserRelationship> relationships = db.userRelationshipDao().getByIDs(
+                        currUser.getId(),
+                        receiver.getId()
+                );
+                if(relationships.size() == 0){
+                    saveUserRelationship(currUser,receiver,UserDBAction.REQUESTED);
+                    return true;
+                }
+            }
         }
         return false;
     }
     @Override
     public boolean acceptFriendRequest(User currUser, User sender){
-        List<UserRelationship> relationships = db.userRelationshipDao().getByIDs(
-                currUser.getId(),
-                sender.getId()
-        );
-        boolean hasFriendRequest = false;
-        for(UserRelationship relationship : relationships){
-            if(
-                    relationship.getType() == UserDBAction.REQUESTED &&
-                    relationship.getReceiverID() == currUser.getId() &&
-                    relationship.getSenderID() == sender.getId()
-            ){
-                hasFriendRequest = true;
-                break;
+        if( currUser != null && sender != null ){
+            if(getUserFriendRequestList(currUser).contains(sender)){
+                deleteUserRelationship(currUser,sender);
+                saveUserRelationship(currUser,sender,UserDBAction.FRIENDS);
+                return true;
             }
-        }
-        if(hasFriendRequest){
-            deleteUserRelationship(currUser,sender);
-            saveUserRelationship(currUser,sender,UserDBAction.FRIENDS);
-            return true;
         }
         return false;
     }
     @Override
     public boolean declineFriendRequest(User currUser, User sender){
-        List<UserRelationship> relationships = db.userRelationshipDao().getByIDs(
-                currUser.getId(),
-                sender.getId()
-        );
-        boolean hasFriendRequest = false;
-        for(UserRelationship relationship : relationships){
-            if(
-                    relationship.getType() == UserDBAction.REQUESTED &&
-                            relationship.getReceiverID() == currUser.getId() &&
-                            relationship.getSenderID() == sender.getId()
-            ){
-                hasFriendRequest = true;
-                break;
+        if( currUser != null && sender != null ){
+            List<User> currUserRequests = getUserFriendRequestList(currUser);
+            if(currUserRequests.contains(sender)){
+                deleteUserRelationship(currUser,sender);
+                return true;
             }
         }
-        if(hasFriendRequest){
-            deleteUserRelationship(currUser,sender);
-            return true;
+        return false;
+    }
+    @Override
+    public boolean deleteFriend(User currUser, User friend){
+        if(currUser != null && friend!= null){
+            if(getUserFriendList(currUser).contains(friend)){
+                deleteUserRelationship(currUser,friend);
+                return true;
+            }
         }
         return false;
     }
@@ -164,22 +155,28 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User saveNewUser(User newUser){
-        User user = db.userDao().getUserByUserName(newUser.getUsername());
-        if(user == null){
-            long id = db.userDao().insert(newUser);
-            newUser.setId(id);
-            return newUser;
+        if(newUser != null){
+            User user = db.userDao().getUserByUserName(newUser.getUsername());
+            if(user == null){
+                long id = db.userDao().insert(newUser);
+                newUser.setId(id);
+                return newUser;
+            }
         }
         return null;
     }
     @Override
     public void editUser(User user) {
-        db.userDao().insert(user);
+        if(user != null){
+            db.userDao().insert(user);
+        }
     }
     @Override
     public void deleteUser(User user){
-        db.userRelationshipDao().deleteByUserID(user.getId());
-        db.userDao().delete(user);
+        if(user != null){
+            db.userRelationshipDao().deleteByUserID(user.getId());
+            db.userDao().delete(user);
+        }
     }
 
     private void saveUserRelationship(User sender, User receiver, UserDBAction type) {
@@ -191,8 +188,6 @@ public class UserRepositoryImpl implements UserRepository {
     private void deleteUserRelationship(User user1, User user2) {
         List<UserRelationship> relationships =
                 db.userRelationshipDao().getByIDs(user1.getId(),user2.getId());
-        for (UserRelationship relationship : relationships) {
-            db.userRelationshipDao().delete(relationship);
-        }
+        db.userRelationshipDao().deleteAll(relationships);
     }
 }

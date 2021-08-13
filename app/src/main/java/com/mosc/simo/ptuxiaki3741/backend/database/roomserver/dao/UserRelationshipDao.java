@@ -31,7 +31,7 @@ public interface UserRelationshipDao {
     List<UserRelationship> getByReceiverIDAndType(long id, UserDBAction type);
 
     @Delete
-    void delete(UserRelationship userRelationship);
+    void deleteAll(List<UserRelationship> userRelationships);
 
     @Query("DELETE FROM `UserRelationships` WHERE `SenderID` = :uid OR `ReceiverID` = :uid")
     void deleteByUserID(long uid);
