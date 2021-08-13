@@ -2,7 +2,6 @@ package com.mosc.simo.ptuxiaki3741.util;
 
 import android.util.Log;
 
-import com.google.android.gms.common.util.Hex;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
