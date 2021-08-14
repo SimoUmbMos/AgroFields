@@ -5,9 +5,11 @@ import android.os.Parcelable;
 
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Land implements Parcelable {
     public static final Creator<Land> CREATOR = new Creator<Land>() {
@@ -24,24 +26,6 @@ public class Land implements Parcelable {
 
     private LandData data;
     private final List<LandPoint> border;
-
-    public static boolean equals(Land land1,Land land2){
-        if(land1 == null && land2 == null){
-            return true;
-        }else if(land1 == null || land2 == null){
-            return false;
-        }else{
-            LandData landData1 = land1.getData(),
-                    landData2 = land2.getData();
-            if(landData1 == null && landData2 == null){
-                return true;
-            }else if(landData1 == null || landData2 == null){
-                return false;
-            }else{
-                return landData1.getId() == landData2.getId() ;
-            }
-        }
-    }
 
     public Land(){
         this.data = null;
@@ -85,5 +69,28 @@ public class Land implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(data, flags);
         dest.writeTypedList(border);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getData().getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null) {
+            return false;
+        } else if (!(o instanceof Land)) {
+            return false;
+        } else {
+            if(this.getData() == null && ((Land) o).getData() == null){
+                return true;
+            }else if(this.getData() != null && ((Land) o).getData() != null){
+                return ((Land) o).getData().getId() == this.getData().getId();
+            }else{
+                return false;
+            }
+        }
     }
 }

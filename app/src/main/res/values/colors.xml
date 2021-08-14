@@ -1,31 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-    <color name="colorPrimaryVariant">#3700B3</color>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorSurface">#FFFFFF</color>
-    <color name="colorSecondaryVariant">#018786</color>
-    <color name="colorSecondary">#03DAC6</color>
-    <color name="colorOnSecondary">#000000</color>
-    <color name="colorOnSurface">#000000</color>
-    <color name="colorBackground">#FFFFFF</color>
-    <color name="colorOnBackground">#000000</color>
-    <color name="colorError">#B00020</color>
-    <color name="colorOnError">#FFFFFF</color>
+  <color name="primaryColor">#81c784</color>
+  <color name="primaryLightColor">#b2fab4</color>
+  <color name="primaryDarkColor">#519657</color>
 
-    <color name="night_colorPrimaryVariant">#3700B3</color>
-    <color name="night_colorPrimary">#BB86FC</color>
-    <color name="night_colorOnPrimary">#000000</color>
-    <color name="night_colorSurface">#121212</color>
-    <color name="night_colorSecondaryVariant">#03DAC6</color>
-    <color name="night_colorSecondary">#03DAC6</color>
-    <color name="night_colorOnSecondary">#000000</color>
-    <color name="night_colorOnSurface">#FFFFFF</color>
-    <color name="night_colorBackground">#121212</color>
-    <color name="night_colorOnBackground">#FFFFFF</color>
-    <color name="night_colorError">#CF6679</color>
-    <color name="night_colorOnError">#000000</color>
+  <color name="secondaryColor">#4db6ac</color>
+  <color name="secondaryLightColor">#82e9de</color>
+  <color name="secondaryDarkColor">#00867d</color>
 
-    <color name="shrine_pink_100">#FFCDD2</color>
-    <color name="shrine_pink_900">#880E4F</color>
+  <color name="errorColor">#c51162</color>
+
+  <color name="bgColor">#eceff1</color>
+  <color name="bgColorDark">#263238</color>
+
+  <color name="primaryTextColor">#263238</color>
+  <color name="secondaryTextColor">#eceff1</color>
+
 </resources>

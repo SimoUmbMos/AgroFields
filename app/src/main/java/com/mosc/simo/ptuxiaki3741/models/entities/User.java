@@ -123,7 +123,11 @@ public class User implements Parcelable {
         } else if (!(o instanceof User)) {
             return false;
         } else {
-            return ((User) o).getId() == this.getId();
+            if(username != null){
+                return ((User) o).getId() == this.getId();
+            }else{
+                return false;
+            }
         }
     }
 }

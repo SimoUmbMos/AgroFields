@@ -28,7 +28,7 @@ import com.mosc.simo.ptuxiaki3741.enums.LandListActionState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListNavigateStates;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.navigators.LandListNavigator;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandListMenuHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.menuholders.LandListMenuHolder;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandListRecycleViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
@@ -141,6 +141,9 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
     private void onSelectedLandUpdate(List<Integer> integers) {
         viewHolder.notifyItemsChanged();
+        if(integers.size() == 0 && menuHolder.getState() == LandListMenuState.MultiSelectState){
+            menuHolder.setState(LandListMenuState.NormalState);
+        }
     }
     private void onLandListUpdate(List<Land> lands) {
         if(lands == null){
@@ -199,7 +202,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
 
     private void deleteAction() {
-        vmLands.removeSelectedLands(currUser);
+        vmLands.removeSelectedLands();
         vmLands.deselectAllLands();
         viewHolder.notifyItemsChanged();
     }

@@ -12,16 +12,22 @@ import java.util.List;
 
 @Dao
 public interface LandHistoryDao {
-    @Query("SELECT * FROM LandDataRecord")
+    @Query("SELECT * FROM LandDataRecord " +
+            "ORDER BY `Date`")
     List<LandDataRecord> getLandRecords();
 
-    @Query("SELECT * FROM LandDataRecord Where `id` = :id")
+    @Query("SELECT * FROM LandDataRecord " +
+            "Where `id` = :id")
     LandDataRecord getLandRecord(long id);
 
-    @Query("SELECT * FROM LandDataRecord Where `LandID` = :lid ORDER BY `LandID` ASC")
+    @Query("SELECT * FROM LandDataRecord " +
+            "Where `LandID` = :lid " +
+            "ORDER BY `Date`")
     List<LandDataRecord> getLandRecordByLandID(long lid);
 
-    @Query("SELECT * FROM LandDataRecord Where `CreatorID` = :uid")
+    @Query("SELECT * FROM LandDataRecord " +
+            "Where `CreatorID` = :uid " +
+            "ORDER BY `Date`, `LandID` ASC")
     List<LandDataRecord> getLandRecordsByUserId(long uid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

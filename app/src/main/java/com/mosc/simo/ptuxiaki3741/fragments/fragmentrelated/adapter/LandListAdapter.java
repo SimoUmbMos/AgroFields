@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import java.util.List;
 
@@ -41,13 +42,12 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     public void onBindViewHolder(@NonNull LandListAdapterViewHolder holder, int position) {
         holder.llContainer.setOnClickListener(v -> onLandClick.onLandClick(position));
         holder.llContainer.setOnLongClickListener(v -> onLandLongClick.onLandLongClick(position));
-        List<Land> mLands = landViewModel.getLandsList();
-        List<Integer> mSelectedLands = landViewModel.getSelectedIndexes();
-        if( mSelectedLands != null && mLands != null){
-            if(mLands.get(position).getData() != null){
-                holder.tvLandTitle.setText(mLands.get(position).getData().getTitle());
+        if(landViewModel.getLandsList().size()>position){
+            LandData landData = landViewModel.getLandsList().get(position).getData();
+            if(landData != null){
+                holder.tvLandTitle.setText(landData.getTitle());
             }
-            if(mSelectedLands.contains(position)){
+            if(landViewModel.getSelectedIndexes().contains(position)){
                 holder.ivCheckBox.setVisibility(View.VISIBLE);
             }else{
                 holder.ivCheckBox.setVisibility(View.GONE);
@@ -58,7 +58,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     @Override
     public int getItemCount() {
         if(landViewModel != null)
-            return landViewModel.landSize();
+            return landViewModel.getLandsList().size();
         else
             return 0;
     }

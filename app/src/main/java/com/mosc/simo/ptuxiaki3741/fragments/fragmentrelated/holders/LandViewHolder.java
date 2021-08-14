@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,26 +25,31 @@ import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
 public class LandViewHolder implements View.OnTouchListener {
     public final ActionBar actionBar;
     private final LandImgController imgController;
+    private String landName;
 
+    public final View view;
     public final DrawerLayout drawer;
     public final NavigationView navDrawer;
     public final ConstraintLayout clImgTab;
-    public final TextView tvImgAction;
     public final ImageView imageView;
     public final FrameLayout touchLayer;
+    public final FloatingActionButton terrainButton;
     public final FloatingActionButton fabSave,fabReset,fabPlus,fabMinus;
     public final MenuItem miLock;
 
     private OnAction onClose;
 
     @SuppressLint("ClickableViewAccessibility")
-    public LandViewHolder(View view, ActionBar actionBar, LandImgController imgController) {
+    public LandViewHolder(View view,ActionBar actionBar, LandImgController imgController) {
+        this.view = view;
         this.imgController = imgController;
         this.actionBar = actionBar;
+        this.landName = "";
+
+        terrainButton = view.findViewById(R.id.terrainButton);
 
         touchLayer = view.findViewById(R.id.map_touch_layer);
         clImgTab = view.findViewById(R.id.clImgTab);
-        tvImgAction = view.findViewById(R.id.tvImgAction);
         fabSave = view.findViewById(R.id.fabSave);
         fabReset = view.findViewById(R.id.fabReset);
         fabMinus = view.findViewById(R.id.fabMinus);
@@ -79,7 +83,13 @@ public class LandViewHolder implements View.OnTouchListener {
         fabMinus.setVisibility(View.GONE);
         fabSave.setOnClickListener(btnSave);
         fabReset.setOnClickListener(btnCancel);
-        tvImgAction.setText(title);
+        if(actionBar != null){
+            if(title.trim().isEmpty()){
+                actionBar.setTitle(landName);
+            }else{
+                actionBar.setTitle(landName + " - " + title);
+            }
+        }
     }
     public void showTabMenu(
             String title,
@@ -95,7 +105,13 @@ public class LandViewHolder implements View.OnTouchListener {
         fabMinus.setOnClickListener(btnMinus);
         fabSave.setOnClickListener(btnSave);
         fabReset.setOnClickListener(btnCancel);
-        tvImgAction.setText(title);
+        if(actionBar != null){
+            if(title.trim().isEmpty()){
+                actionBar.setTitle(landName);
+            }else{
+                actionBar.setTitle(landName + " - " + title);
+            }
+        }
     }
     public void closeTabMenu(){
         clImgTab.setVisibility(View.GONE);
@@ -104,7 +120,9 @@ public class LandViewHolder implements View.OnTouchListener {
         fabMinus.setOnClickListener(null);
         fabSave.setOnClickListener(null);
         fabReset.setOnClickListener(null);
-        tvImgAction.setText("");
+        if(actionBar != null){
+            actionBar.setTitle(landName);
+        }
         onClose.onCloseTab();
     }
     public void hideImgView() {
@@ -112,7 +130,13 @@ public class LandViewHolder implements View.OnTouchListener {
     }
 
     public void changeTabMenuTitle(String title) {
-        tvImgAction.setText(title);
+        if(actionBar != null){
+            if(title.trim().isEmpty()){
+                actionBar.setTitle(landName);
+            }else{
+                actionBar.setTitle(landName + " - " + title);
+            }
+        }
     }
 
     public void setOnClose(OnAction onClose) {
@@ -314,8 +338,10 @@ public class LandViewHolder implements View.OnTouchListener {
     }
 
     public void setTitle(String title) {
+        landName = title;
         if(actionBar != null){
             actionBar.setTitle(title);
         }
     }
+
 }

@@ -14,6 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_all"
+        android:textColor="?attr/colorOnPrimary"
+        app:drawableTint="?attr/colorOnPrimary"
         app:drawableTopCompat="@drawable/menu_ic_select_all" />
 
 </LinearLayout>

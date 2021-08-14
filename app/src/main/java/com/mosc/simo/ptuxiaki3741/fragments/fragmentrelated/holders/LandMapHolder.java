@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
 import android.content.Intent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -29,6 +30,7 @@ public class LandMapHolder implements OnMapReadyCallback,
     private final LandPointsController pointsController;
 
     private GoogleMap mMap;
+    private boolean isSatellite = false;
     private boolean mapIsLocked = false;
 
     public LandMapHolder(LandViewHolder viewHolder, LandPointsController pointsController) {
@@ -41,6 +43,9 @@ public class LandMapHolder implements OnMapReadyCallback,
         mMap = googleMap;
         initMap();
         mMap.setOnMapLoadedCallback(this::mapFullLoaded);
+        isSatellite = false;
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        viewHolder.terrainButton.setOnClickListener(v -> changeMapType());
     }
 
     private void initMap() {
@@ -89,20 +94,18 @@ public class LandMapHolder implements OnMapReadyCallback,
                 mMap.getUiSettings().setZoomGesturesEnabled(true);
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
+                viewHolder.terrainButton.setVisibility(View.VISIBLE);
+                viewHolder.miLock.setIcon(R.drawable.menu_ic_unlocked);
                 mapIsLocked=false;
-                if(viewHolder.miLock != null){
-                    viewHolder.miLock.setIcon(R.drawable.menu_ic_unlocked);
-                }
             }else{
                 mMap.getUiSettings().setRotateGesturesEnabled(false);
                 mMap.getUiSettings().setScrollGesturesEnabled(false);
                 mMap.getUiSettings().setZoomGesturesEnabled(false);
                 mMap.getUiSettings().setZoomControlsEnabled(false);
                 mMap.getUiSettings().setCompassEnabled(false);
+                viewHolder.terrainButton.setVisibility(View.GONE);
+                viewHolder.miLock.setIcon(R.drawable.menu_ic_locked);
                 mapIsLocked=true;
-                if(viewHolder.miLock != null){
-                    viewHolder.miLock.setIcon(R.drawable.menu_ic_locked);
-                }
             }
         }
     }
@@ -215,5 +218,14 @@ public class LandMapHolder implements OnMapReadyCallback,
         pointsController.addAll(points);
         drawOnMap();
         ZoomToPoints();
+    }
+
+    public void changeMapType(){
+        if(isSatellite){
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        }else{
+            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        }
+        isSatellite = !isSatellite;
     }
 }

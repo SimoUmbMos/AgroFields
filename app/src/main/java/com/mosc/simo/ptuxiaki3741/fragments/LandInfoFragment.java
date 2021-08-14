@@ -82,8 +82,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     }
     private void initData(Bundle arguments) {
         land = LandInfoFragmentArgs.fromBundle(arguments).getLand();
-        Land tempLand = new Land();
-        if(Land.equals(land,tempLand)){
+        if(new Land().equals(land)){
             land = null;
             isNew = true;
         }else{

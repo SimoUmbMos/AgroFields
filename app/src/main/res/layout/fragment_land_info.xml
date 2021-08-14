@@ -19,20 +19,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
-    <EditText
-        android:id="@+id/etLandName"
+    <LinearLayout
+        android:id="@+id/llLoginData"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="@string/land_name"
-        android:inputType="text"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/tvLandNameLabel"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/tvLandNameLabel"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLandNameLabel"
-        android:importantForAutofill="no" />
+        app:theme="@style/TextInputLayout">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etLandNameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/login_field_margin_start"
+            android:layout_marginEnd="@dimen/login_field_margin_end"
+            android:layout_marginBottom="@dimen/login_field_margin_bottom"
+            app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
+            app:errorTextAppearance="@style/ErrorText"
+            app:hintTextAppearance="@style/HintText">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLandName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/land_name"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textAlignment="center"
+                android:visibility="visible" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnSubmit"
@@ -76,7 +98,7 @@
         android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/primaryColor"
         android:fontFamily="sans-serif-light"
         android:gravity="center|center_horizontal|center_vertical"
         android:text="@string/land_info_title"

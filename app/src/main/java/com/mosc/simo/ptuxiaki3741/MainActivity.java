@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
@@ -19,6 +20,9 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+
+import static com.mosc.simo.ptuxiaki3741.util.UIUtil.getColorOnPrimaryFromTheme;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final int doubleTapBack = 2750;
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         Toolbar toolbar = findViewById(R.id.toolbar);
+        //toolbar.setTitleTextColor(getColorOnPrimaryFromTheme(getApplicationContext()));
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);

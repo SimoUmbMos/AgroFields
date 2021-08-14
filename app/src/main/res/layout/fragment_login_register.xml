@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
     <LinearLayout
         android:id="@+id/llLoginData"
+        app:theme="@style/TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -34,6 +35,8 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText">
             <com.google.android.material.textfield.TextInputEditText
@@ -53,6 +56,8 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText"
             app:passwordToggleEnabled="true">
@@ -72,6 +77,8 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText"
             app:passwordToggleEnabled="true">
@@ -91,6 +98,8 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText">
             <com.google.android.material.textfield.TextInputEditText
@@ -109,6 +118,8 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText">
             <com.google.android.material.textfield.TextInputEditText
@@ -127,6 +138,8 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText"
             app:counterEnabled="true"
@@ -143,6 +156,7 @@
         </com.google.android.material.textfield.TextInputLayout>
         <Button
             android:id="@+id/btnToRegister"
+            app:theme="@style/AppTheme"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

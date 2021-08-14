@@ -38,7 +38,7 @@ import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandImgC
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandPointsController;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMapHolder;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMenuHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.menuholders.LandMenuHolder;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
@@ -150,7 +150,7 @@ public class LandFragment extends Fragment implements FragmentBackPress {
     }
     private void initValues() {
         Land currLand = LandFragmentArgs.fromBundle(getArguments()).getLand();
-        if(!Land.equals(currLand,new Land())){
+        if(!new Land().equals(currLand)){
             currLandID = currLand.getData().getId();
         }
         viewHolder.setTitle(currLand.getData().getTitle());

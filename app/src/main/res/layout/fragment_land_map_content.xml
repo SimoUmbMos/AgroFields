@@ -16,6 +16,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/terrainButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        android:alpha="0.75"
+        android:clickable="true"
+        android:focusable="true"
+        android:foregroundTint="@android:color/white"
+        android:backgroundTint="@android:color/white"
+        app:backgroundTint="@android:color/white"
+        android:tint="@android:color/black"
+        app:tint="@android:color/black"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_mapmode"
+        android:contentDescription="@string/change_terrain_type" />
+
     <FrameLayout
         android:id="@+id/map_touch_layer"
         android:layout_width="match_parent"
@@ -33,6 +53,7 @@
         android:adjustViewBounds="false"
         android:alpha="0.50"
         android:clickable="false"
+        android:contentDescription="@string/land_imageView"
         android:focusable="false"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/map"
@@ -40,37 +61,46 @@
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toTopOf="@+id/map"
         app:srcCompat="@android:drawable/ic_menu_gallery"
-        tools:visibility="gone"
-        android:contentDescription="@string/land_imageView" />
+        tools:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clImgTab"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorBackground"
+        android:background="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="@+id/map"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toTopOf="@+id/map"
+        android:elevation="4dp"
+        app:elevation="4dp"
         tools:visibility="gone">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="210dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="270dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
+            android:contentDescription="@string/fabSave"
             android:focusable="true"
             android:src="@drawable/menu_ic_check"
-            app:layout_constraintBottom_toTopOf="@+id/tvImgAction"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/fabSave" />
+            android:foregroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorPrimary"
+            app:backgroundTint="?attr/colorPrimary"
+            android:tint="?attr/colorOnPrimary"
+            app:tint="?attr/colorOnPrimary"
+            android:elevation="0dp"
+            app:elevation="0dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabReset"
@@ -78,21 +108,30 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:clickable="true"
+            android:contentDescription="@string/fabReset"
             android:focusable="true"
             android:src="@drawable/menu_ic_reset"
-            app:layout_constraintBottom_toBottomOf="@+id/fabSave"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/fabSave"
             app:layout_constraintTop_toTopOf="@+id/fabSave"
             app:layout_constraintVertical_bias="0.0"
-            android:contentDescription="@string/fabReset" />
+            android:foregroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorPrimary"
+            app:backgroundTint="?attr/colorPrimary"
+            android:tint="?attr/colorOnPrimary"
+            app:tint="?attr/colorOnPrimary"
+            android:elevation="0dp"
+            app:elevation="0dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabPlus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="210dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="270dp"
             android:clickable="true"
+            android:contentDescription="@string/fabPlus"
             android:focusable="true"
             android:src="@drawable/menu_ic_plus"
             app:fabSize="mini"
@@ -101,7 +140,13 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/fabSave"
-            android:contentDescription="@string/fabPlus" />
+            android:foregroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorPrimary"
+            app:backgroundTint="?attr/colorPrimary"
+            android:tint="?attr/colorOnPrimary"
+            app:tint="?attr/colorOnPrimary"
+            android:elevation="0dp"
+            app:elevation="0dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabMinus"
@@ -109,6 +154,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:clickable="true"
+            android:contentDescription="@string/fabMinus"
             android:focusable="true"
             android:src="@drawable/menu_ic_minus"
             app:fabSize="mini"
@@ -116,19 +162,13 @@
             app:layout_constraintStart_toEndOf="@+id/fabPlus"
             app:layout_constraintTop_toTopOf="@+id/fabPlus"
             app:layout_constraintVertical_bias="0.0"
-            android:contentDescription="@string/fabMinus" />
-
-        <TextView
-            android:id="@+id/tvImgAction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:foregroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorPrimary"
+            app:backgroundTint="?attr/colorPrimary"
+            android:tint="?attr/colorOnPrimary"
+            app:tint="?attr/colorOnPrimary"
+            android:elevation="0dp"
+            app:elevation="0dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

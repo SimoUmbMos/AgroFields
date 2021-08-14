@@ -20,5 +20,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
+        android:theme="@style/DrawerNavigationStyle"
+        app:theme="@style/DrawerNavigationStyle"
         app:menu="@menu/map_side_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

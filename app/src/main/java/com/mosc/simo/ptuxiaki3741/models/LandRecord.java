@@ -10,10 +10,16 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class LandRecord {
     private LandDataRecord landData;
     private final List<LandPointRecord> landPoints;
+
+    public LandRecord(){
+        landData = null;
+        landPoints = new ArrayList<>();
+    }
 
     public LandRecord(Land land, User user, LandDBAction actionID, Date date){
         landPoints = new ArrayList<>();
@@ -39,14 +45,38 @@ public class LandRecord {
     public LandDataRecord getLandData() {
         return landData;
     }
-    public void setLandData(LandDataRecord landData) {
-        this.landData = landData;
-    }
     public List<LandPointRecord> getLandPoints() {
         return landPoints;
+    }
+
+    public void setLandData(LandDataRecord landData) {
+        this.landData = landData;
     }
     public void setLandPoints(List<LandPointRecord> landPoints) {
         this.landPoints.clear();
         this.landPoints.addAll(landPoints);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getLandData().getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null) {
+            return false;
+        } else if (!(o instanceof LandRecord)) {
+            return false;
+        } else {
+            if(this.getLandData() == null && ((LandRecord) o).getLandData() == null){
+                return true;
+            }else if(this.getLandData() != null && ((LandRecord) o).getLandData() != null){
+                return ((LandRecord) o).getLandData().getId() == this.getLandData().getId();
+            }else{
+                return false;
+            }
+        }
     }
 }

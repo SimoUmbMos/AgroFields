@@ -52,5 +52,6 @@
     <string name="register_phone_length_error">" Το μήκος του Τηλεφώνου δεν είναι έγκυρο"</string>
     <string name="empty_list">Η λίστα είναι κενή</string>
     <string name="profile_title_1">Προφίλ</string>
-    <string name="profile_title_2"/>
+    <string name="profile_title_2"> </string>
+    <string name="change_terrain_type">Αλλαγή τύπου εδάφους</string>
 </resources>

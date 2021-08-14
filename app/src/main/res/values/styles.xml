@@ -2,18 +2,18 @@
 <resources>
     <style name="HintText" parent="TextAppearance.Design.Hint">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/secondaryColor</item>
     </style>
     <style name="ErrorText" parent="TextAppearance.Design.Error">
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/errorColor</item>
     </style>
     <style name="CounterText" parent="TextAppearance.Design.Counter">
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/secondaryLightColor</item>
     </style>
     <style name="CounterOverFlow" parent="TextAppearance.Design.Counter.Overflow">
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textColor">@color/secondaryDarkColor</item>
     </style>
 </resources>

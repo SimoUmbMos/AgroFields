@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
+package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.menuholders;
 
 import android.view.MenuItem;
 
@@ -12,6 +12,8 @@ import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandPoin
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandImgState;
 import com.mosc.simo.ptuxiaki3741.enums.LandPointsState;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMapHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandViewHolder;
 
 public class LandMenuHolder implements NavigationView.OnNavigationItemSelectedListener{
     private final LandMapHolder mapHolder;

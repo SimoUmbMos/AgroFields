@@ -17,7 +17,7 @@ import com.mosc.simo.ptuxiaki3741.models.LandRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class LandViewModel extends AndroidViewModel {
@@ -51,67 +51,83 @@ public class LandViewModel extends AndroidViewModel {
 
     public void init(User user){
         currUser = user;
-        if(lands.getValue() == null){
-            lands.postValue(new ArrayList<>());
-        }
-        if(landsHistory.getValue() == null){
-            landsHistory.postValue(new ArrayList<>());
-        }
-        if(selectedList.getValue() == null){
-            selectedList.postValue(new ArrayList<>());
-        }
         loadFullData(user);
     }
     private void loadLands(User user) {
         AsyncTask.execute(()->{
-            List<Land> landList = new ArrayList<>(landRepository.searchLandsByUser(user));
+            List<Land> landList;
+            if(lands.getValue() != null){
+                landList = lands.getValue();
+                landList.clear();
+                landList.addAll(landRepository.searchLandsByUser(user));
+            }else{
+                landList = new ArrayList<>(landRepository.searchLandsByUser(user));
+            }
             lands.postValue(landList);
         });
+    }
+    private void clearLands() {
+        List<Land> landList;
+        if(lands.getValue() != null){
+            landList = lands.getValue();
+            landList.clear();
+        }else{
+            landList = new ArrayList<>();
+        }
+        lands.postValue(landList);
     }
     private void loadLandsRecords(User user) {
         AsyncTask.execute(()->{
-            List<LandRecord> landsHistoryList = new ArrayList<>(landRepository.getLandRecordsByUser(user));
+            List<LandRecord> landsHistoryList;
+            if(landsHistory.getValue() != null){
+                landsHistoryList = landsHistory.getValue();
+                landsHistoryList.clear();
+                landsHistoryList.addAll(landRepository.getLandRecordsByUser(user));
+            }else{
+                landsHistoryList = new ArrayList<>(landRepository.getLandRecordsByUser(user));
+            }
             landsHistory.postValue(landsHistoryList);
         });
     }
-    private void initSelectedList(){
-        List<Integer> selectedIndexes = new ArrayList<>();
-        if(selectedList.getValue() != null){
-            selectedIndexes.addAll(selectedList.getValue());
+    private void clearLandsRecords() {
+        List<LandRecord> landsHistoryList;
+        if(landsHistory.getValue() != null){
+            landsHistoryList = landsHistory.getValue();
+            landsHistoryList.clear();
+        }else{
+            landsHistoryList = new ArrayList<>();
+        }
+        landsHistory.postValue(landsHistoryList);
+    }
+    private void clearSelectedIndexes() {
+        List<Integer> selectedIndexes;
+        if (selectedList.getValue() != null) {
+            selectedIndexes = selectedList.getValue();
+            selectedIndexes.clear();
+        } else {
+            selectedIndexes = new ArrayList<>();
         }
         selectedList.postValue(selectedIndexes);
-    }
-
-    private void loadFullData(User currUser) {
-        if(currUser != null){
-            loadLands(currUser);
-            loadLandsRecords(currUser);
-            initSelectedList();
-        }else{
-            List<Land> landList = new ArrayList<>();
-            List<LandRecord> landsHistoryList = new ArrayList<>();
-            List<Integer> selectedIndexes = new ArrayList<>();
-            lands.postValue(landList);
-            landsHistory.postValue(landsHistoryList);
-            selectedList.postValue(selectedIndexes);
-        }
     }
     private void loadData(User currUser) {
         if(currUser != null){
             loadLands(currUser);
             loadLandsRecords(currUser);
         }else{
-            List<Land> landList = new ArrayList<>();
-            List<LandRecord> landsHistoryList = new ArrayList<>();
-            lands.postValue(landList);
-            landsHistory.postValue(landsHistoryList);
+            clearLands();
+            clearLandsRecords();
         }
+    }
+    private void loadFullData(User currUser) {
+        loadData(currUser);
+        clearSelectedIndexes();
     }
 
     public void saveLand(Land land, User user){
         AsyncTask.execute(()->{
             List<LandPoint> landPoints = new ArrayList<>(land.getBorder());
             Land newLand = landRepository.saveLand(land);
+
             int index = indexOfLand(newLand);
             LandDBAction action;
             if(index < 0){
@@ -119,16 +135,17 @@ public class LandViewModel extends AndroidViewModel {
             }else{
                 action = LandDBAction.UPDATE;
             }
+
             LandRecord landRecord = new LandRecord(
                     newLand.getData(),
                     landPoints,
                     user,
                     action,
-                    Calendar.getInstance().getTime()
+                    new Date()
             );
             landRepository.saveLandRecord(landRecord);
-            if(this.currUser != null)
-                loadData(this.currUser);
+
+            loadData(this.currUser);
         });
     }
     public void removeLands(List<Land> removeLandList, User user) {
@@ -139,7 +156,7 @@ public class LandViewModel extends AndroidViewModel {
                         removeLand,
                         user,
                         LandDBAction.DELETE,
-                        Calendar.getInstance().getTime()
+                        new Date()
                 );
                 landRepository.saveLandRecord(landRecord);
                 landRepository.deleteLand(removeLand);
@@ -155,7 +172,7 @@ public class LandViewModel extends AndroidViewModel {
         }else{
             indexes = new ArrayList<>();
         }
-        for(int i = 0; i < landSize(); i++){
+        for(int i = 0; i < getLandsList().size(); i++){
             indexes.add(i);
         }
         isAllSelected = true;
@@ -184,7 +201,7 @@ public class LandViewModel extends AndroidViewModel {
             indexes=new ArrayList<>();
             indexes.add(position);
         }
-        isAllSelected = (indexes.size() == landSize());
+        isAllSelected = (indexes.size() == getLandsList().size());
         selectedList.postValue(indexes);
     }
 
@@ -195,6 +212,13 @@ public class LandViewModel extends AndroidViewModel {
         else
             return new ArrayList<>();
     }
+    public List<LandRecord> getLandsHistoryList() {
+        List<LandRecord> landHistory = this.landsHistory.getValue();
+        if(landHistory != null)
+            return landHistory;
+        else
+            return new ArrayList<>();
+    }
     public Land getLand(int position) {
         List<Land> lands = getLandsList();
         if(lands.size() > position && position > -1){
@@ -202,9 +226,6 @@ public class LandViewModel extends AndroidViewModel {
         }else{
             return null;
         }
-    }
-    public int landSize() {
-        return getLandsList().size();
     }
     public List<Integer> getSelectedIndexes() {
         List<Integer> selectedList = this.selectedList.getValue();
@@ -224,20 +245,17 @@ public class LandViewModel extends AndroidViewModel {
 
         return selectedLands;
     }
-    public void removeSelectedLands(User user) {
+    public void removeSelectedLands() {
         List<Land> landList = lands.getValue();
-        if(landList != null){
-            removeLands(returnSelectedLands(),user);
+        if(landList != null && currUser != null){
+            removeLands(returnSelectedLands(),currUser);
         }
     }
     private int indexOfLand(Land land) {
-        List<Land> lands = getLandsList();
-        for(int i = 0; i < lands.size();i++){
-            if(Land.equals(lands.get(i),land)){
-                return i;
-            }
-        }
-        return -1;
+        if(land != null)
+            return getLandsList().indexOf(land);
+        else
+            return -1;
     }
 
 }
