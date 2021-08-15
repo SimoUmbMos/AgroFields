@@ -11,7 +11,7 @@ import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandImgC
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandPointsController;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandImgState;
-import com.mosc.simo.ptuxiaki3741.enums.LandPointsState;
+import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMapHolder;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandViewHolder;
 
@@ -62,16 +62,16 @@ public class LandMenuHolder implements NavigationView.OnNavigationItemSelectedLi
                 onEdit.edit();
                 return true;
             case(R.id.toolbar_action_add_on_end):
-                mapHolder.onPointActionClick(LandPointsState.AddEnd);
+                mapHolder.onPointActionClick(LandActionStates.AddEnd);
                 break;
             case(R.id.toolbar_action_add_between):
-                mapHolder.onPointActionClick(LandPointsState.AddBetween);
+                mapHolder.onPointActionClick(LandActionStates.AddBetween);
                 break;
             case(R.id.toolbar_action_edit):
-                mapHolder.onPointActionClick(LandPointsState.Edit);
+                mapHolder.onPointActionClick(LandActionStates.Edit);
                 break;
             case(R.id.toolbar_action_delete):
-                mapHolder.onPointActionClick(LandPointsState.Delete);
+                mapHolder.onPointActionClick(LandActionStates.Delete);
                 break;
             case(R.id.toolbar_action_clean):
                 clearButtonMenu();
@@ -105,7 +105,7 @@ public class LandMenuHolder implements NavigationView.OnNavigationItemSelectedLi
         return true;
     }
     public void clearControllersFlags() {
-        pointsController.setFlag(LandPointsState.Disable);
+        pointsController.setFlag(LandActionStates.Disable);
         imgController.setFlag(LandImgState.Disable);
         fileController.setFlag(LandFileState.Disable);
     }

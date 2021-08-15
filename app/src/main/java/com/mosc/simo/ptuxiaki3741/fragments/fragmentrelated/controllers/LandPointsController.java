@@ -3,7 +3,7 @@ package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.enums.LandPointsState;
+import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public class LandPointsController {
     public static final double DefaultDistanceToAction = 150000;
 
     private double distanceToAction;
-    private LandPointsState state;
+    private LandActionStates state;
     private List<LatLng> points;
     private final List<List<LatLng>> undoList;
 
@@ -20,12 +20,12 @@ public class LandPointsController {
 
     public LandPointsController(){
         distanceToAction = DefaultDistanceToAction;
-        state = LandPointsState.Disable;
+        state = LandActionStates.Disable;
         points=new ArrayList<>();
         undoList=new ArrayList<>();
     }
 
-    public LandPointsState getFlag() {
+    public LandActionStates getFlag() {
         return state;
     }
     public int getEditIndex() {
@@ -41,7 +41,7 @@ public class LandPointsController {
         resetEditStatus();
     }
 
-    public void setFlag(LandPointsState state) {
+    public void setFlag(LandActionStates state) {
         if(this.state != state){
             resetAddBetweenStatus();
             resetEditStatus();
@@ -277,7 +277,7 @@ public class LandPointsController {
         clearUndo();
         resetAddBetweenStatus();
         resetEditStatus();
-        state = LandPointsState.Disable;
+        state = LandActionStates.Disable;
         this.points.addAll(points);
     }
 }

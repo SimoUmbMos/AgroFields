@@ -21,7 +21,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
+import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.enums.LandListActionState;
@@ -45,6 +45,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     private LandViewModel vmLands;
     private UserViewModel vmUsers;
     private User currUser;
+    private boolean isLoading;
 
     private LandListRecycleViewHolder viewHolder;
     private LandListMenuHolder menuHolder;
@@ -95,6 +96,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
 
     private void init(View view) {
+        isLoading = false;
         MainActivity activity = (MainActivity) getActivity();
         actionBar = null;
         if (activity != null) {
@@ -120,9 +122,17 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
         if(vmUsers != null && vmLands != null){
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandListUpdate);
+            vmLands.isLoadingLands().observe(getViewLifecycleOwner(),this::onLoadingChangeState);
             vmLands.getSelectedLands().observe(getViewLifecycleOwner(),this::onSelectedLandUpdate);
         }
     }
+
+    private void onLoadingChangeState(Boolean isLoading) {
+        this.isLoading = isLoading;
+        if(viewHolder != null)
+            viewHolder.setIsLoading(isLoading);
+    }
+
     private void initHolders(View view) {
         nav = new LandListNavigator(NavHostFragment.findNavController(this));
         viewHolder = new LandListRecycleViewHolder(view, vmLands, this::landClick, this::landLongClick);
@@ -232,11 +242,11 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
                     boolean doAction = true;
                     switch(action){
                         case KML:
-                            output = FileHelper.landsToKmlString(lands,currUser);
+                            output = FileUtil.landsToKmlString(lands,currUser);
                             fileName = fileName+".kml";
                             break;
                         case GEOJSON:
-                            output = FileHelper.landsToGeoJsonString(lands);
+                            output = FileUtil.landsToGeoJsonString(lands);
                             fileName = fileName+".json";
                             break;
                         case GML:

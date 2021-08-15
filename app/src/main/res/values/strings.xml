@@ -28,8 +28,12 @@
     <string name="img_actions_group_title">Overlay Image</string>
 
     <string name="open_menu">Open Menu</string>
-    <string name="fab_create_point">Add Point</string>
-    <string name="fab_create_between">Add Between Points</string>
+    <string name="create_point">Add Point</string>
+    <string name="create_between_points">Add Between Points</string>
+    <string name="edit_point">Edit Point</string>
+    <string name="delete_point">Delete Points</string>
+    <string name="clear_points">Delete All Points</string>
+    <string name="reset_points">Reset All Points</string>
     <string name="lock_map">Lock map</string>
     <string name="add_img">Add overlay image</string>
     <string name="remove_img">Remove overlay image</string>
@@ -73,5 +77,5 @@
     <string name="profile_title_2">Profile</string>
 
     <string name="change_terrain_type">change terrain type</string>
-    =
+    <string name="loading_list">List is loading</string>
 </resources>

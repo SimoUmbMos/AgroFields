@@ -3,8 +3,12 @@
     <string name="app_name">Διακήρυξη Χωραφιών</string>
     <string name="land_actions_group_title">Ενέργειες χωραφιού</string>
     <string name="open_menu">Ανοίξτε το μενού</string>
-    <string name="fab_create_point">Προσθήκη σημείου</string>
-    <string name="fab_create_between">Προσθήκη μεταξύ σημείων</string>
+    <string name="create_point">Προσθήκη σημείου</string>
+    <string name="create_between_points">Προσθήκη μεταξύ σημείων</string>
+    <string name="edit_point">Επεξεργασία σημείου</string>
+    <string name="delete_point">Διαγραφή σημείων</string>
+    <string name="reset_points">Διαγραφή ολών των σημείων</string>
+    <string name="clear_points">Επαναφορά ολών των σημείων</string>
     <string name="img_actions_group_title">Επικάλυψη εικόνας</string>
     <string name="add_img">Προσθήκη εικόνας επικάλυψης</string>
     <string name="remove_img">Αφαιρέστε την εικόνα επικάλυψης</string>
@@ -54,4 +58,5 @@
     <string name="profile_title_1">Προφίλ</string>
     <string name="profile_title_2"> </string>
     <string name="change_terrain_type">Αλλαγή τύπου εδάφους</string>
+    <string name="loading_list">Η λίστα φορτώνεται</string>
 </resources>

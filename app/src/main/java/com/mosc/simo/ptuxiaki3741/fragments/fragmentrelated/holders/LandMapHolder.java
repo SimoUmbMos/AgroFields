@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.controllers.LandPointsController;
-import com.mosc.simo.ptuxiaki3741.enums.LandPointsState;
+import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 import com.mosc.simo.ptuxiaki3741.interfaces.OnAction;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 
@@ -83,7 +83,7 @@ public class LandMapHolder implements OnMapReadyCallback,
         drawOnMap();
     }
     public void clearFlag() {
-        pointsController.setFlag(LandPointsState.Disable);
+        pointsController.setFlag(LandActionStates.Disable);
     }
 
     public void toggleMapLock(){
@@ -138,7 +138,7 @@ public class LandMapHolder implements OnMapReadyCallback,
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 8));
     }
 
-    public void onPointActionClick(LandPointsState flagPointController) {
+    public void onPointActionClick(LandActionStates flagPointController) {
         pointsController.clearUndo();
         pointsController.setFlag(flagPointController);
         switch (flagPointController){
@@ -173,7 +173,7 @@ public class LandMapHolder implements OnMapReadyCallback,
         }
     }
     private void changeTitleBasedOnAction() {
-        if (pointsController.getFlag() == LandPointsState.AddBetween){
+        if (pointsController.getFlag() == LandActionStates.AddBetween){
             switch (pointsController.getAddBetweenStatus()) {
                 case (1):
                     viewHolder.changeTabMenuTitle("Select First Point");
@@ -188,7 +188,7 @@ public class LandMapHolder implements OnMapReadyCallback,
                     viewHolder.changeTabMenuTitle("Edit Placed Point");
                     break;
             }
-        }else if(pointsController.getFlag() == LandPointsState.Edit){
+        }else if(pointsController.getFlag() == LandActionStates.Edit){
             if(pointsController.getEditIndex() == -1){
                 viewHolder.changeTabMenuTitle("Select Point To Edit");
             }else{

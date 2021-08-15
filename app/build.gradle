@@ -61,6 +61,7 @@ dependencies {
     //file parser and creator
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.jdom:jdom2:2.0.6'
+    implementation files('libs/shapefilereader-1.0.jar')
 
     //geo oriented
     implementation 'org.osgeo:proj4j:0.1.0'

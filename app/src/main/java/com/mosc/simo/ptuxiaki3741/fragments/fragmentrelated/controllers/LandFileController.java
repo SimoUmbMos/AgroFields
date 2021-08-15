@@ -8,14 +8,11 @@ import android.content.pm.PackageManager;
 import androidx.activity.result.ActivityResultLauncher;
 
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
-
 
 public class LandFileController {
     private LandFileState state = LandFileState.Disable;
 
     private final Activity activity;
-    private final FileHelper fileHelper;
     private final ActivityResultLauncher<Intent> imgResultLauncher,fileResultLauncher;
     private final ActivityResultLauncher<String> prl;
 
@@ -23,7 +20,6 @@ public class LandFileController {
                               ActivityResultLauncher<Intent> imgResultLauncher,
                               ActivityResultLauncher<Intent> fileResultLauncher){
         this.activity = activity;
-        this.fileHelper = new FileHelper(activity);
         this.imgResultLauncher = imgResultLauncher;
         this.fileResultLauncher = fileResultLauncher;
         this.prl = prl;
@@ -38,13 +34,6 @@ public class LandFileController {
             chooseFile.setType("*/*");
         }
         return chooseFile;
-    }
-
-    public boolean fileIsValid(Intent response){
-        return fileHelper.fileIsValid(response);
-    }
-    public boolean fileIsValidImg(Intent response){
-        return fileHelper.fileIsValidImg(response);
     }
 
     public void importMenuAction() {

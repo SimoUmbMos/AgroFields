@@ -13,10 +13,13 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 public class LandListRecycleViewHolder {
     private final LandListAdapter adapter;
     private RecyclerView recyclerView;
-    private TextView emptyRv;
+    private TextView emptyRv, loadingRv;
+    private boolean isLoading,showRecyclerView;
     public LandListRecycleViewHolder(View view, LandViewModel vmLands,
                                      LandListAdapter.OnLandClick onLandClick,
                                      LandListAdapter.OnLandLongClick onLandLongClick) {
+        isLoading = false;
+        showRecyclerView = vmLands.getLandsList().size() > 0;
         adapter = new LandListAdapter(vmLands, onLandClick, onLandLongClick);
         initRecyclerView(view);
     }
@@ -26,6 +29,7 @@ public class LandListRecycleViewHolder {
     }
 
     private void initRecyclerView(View view) {
+        loadingRv = view.findViewById(R.id.loadingRv);
         emptyRv = view.findViewById(R.id.emptyRv);
         recyclerView = view.findViewById(R.id.rvLandList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -39,13 +43,25 @@ public class LandListRecycleViewHolder {
         showRc(adapter.getItemCount() > 0);
     }
 
-    public void showRc(boolean b) {
-        if(b){
+    public void showRc(boolean showRecyclerView) {
+        this.showRecyclerView = showRecyclerView;
+        if(isLoading) {
+            emptyRv.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            loadingRv.setVisibility(View.VISIBLE);
+        }else if(showRecyclerView){
+            loadingRv.setVisibility(View.GONE);
             emptyRv.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }else{
-            emptyRv.setVisibility(View.VISIBLE);
+            loadingRv.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
+            emptyRv.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setIsLoading(Boolean isLoading) {
+        this.isLoading = isLoading;
+        showRc(showRecyclerView);
     }
 }

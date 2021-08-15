@@ -31,31 +31,31 @@
                 android:id="@+id/toolbar_action_add_on_end"
                 android:icon="@drawable/menu_ic_add"
                 android:orderInCategory="1"
-                android:title="@string/fab_create_point"
+                android:title="@string/create_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_add_between"
                 android:icon="@drawable/menu_ic_add_between"
                 android:orderInCategory="2"
-                android:title="@string/fab_create_between"
+                android:title="@string/create_between_points"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_edit"
                 android:icon="@drawable/menu_ic_edit"
                 android:orderInCategory="3"
-                android:title="@string/edit"
+                android:title="@string/edit_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_delete"
                 android:icon="@drawable/menu_ic_delete"
                 android:orderInCategory="4"
-                android:title="@string/delete"
+                android:title="@string/delete_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_clean"
                 android:icon="@drawable/menu_ic_layer_clear"
                 android:orderInCategory="6"
-                android:title="@string/clean"
+                android:title="@string/reset_points"
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>

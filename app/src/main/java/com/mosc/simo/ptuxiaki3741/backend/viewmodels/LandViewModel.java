@@ -24,6 +24,8 @@ public class LandViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
     private final MutableLiveData<List<LandRecord>> landsHistory = new MutableLiveData<>();
     private final MutableLiveData<List<Integer>> selectedList = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoadingLands = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoadingLandRecords = new MutableLiveData<>();
     private final LandRepositoryImpl landRepository;
     private boolean isAllSelected = false;
     private User currUser = null;
@@ -44,17 +46,31 @@ public class LandViewModel extends AndroidViewModel {
     public LiveData<List<LandRecord>> getLandsHistory() {
         return landsHistory;
     }
+    public MutableLiveData<Boolean> isLoadingLands() {
+        return isLoadingLands;
+    }
+    public MutableLiveData<Boolean> isLoadingLandRecords() {
+        return isLoadingLandRecords;
+    }
 
     public boolean isAllSelected() {
         return isAllSelected;
     }
 
     public void init(User user){
+        isLoadingLands.postValue(false);
+        isLoadingLandRecords.postValue(false);
         currUser = user;
         loadFullData(user);
     }
     private void loadLands(User user) {
         AsyncTask.execute(()->{
+            if(isLoadingLands.getValue() != null){
+                if(!isLoadingLands.getValue())
+                    isLoadingLands.postValue(true);
+            }else{
+                isLoadingLands.postValue(true);
+            }
             List<Land> landList;
             if(lands.getValue() != null){
                 landList = lands.getValue();
@@ -64,6 +80,7 @@ public class LandViewModel extends AndroidViewModel {
                 landList = new ArrayList<>(landRepository.searchLandsByUser(user));
             }
             lands.postValue(landList);
+            isLoadingLands.postValue(false);
         });
     }
     private void clearLands() {
@@ -78,6 +95,12 @@ public class LandViewModel extends AndroidViewModel {
     }
     private void loadLandsRecords(User user) {
         AsyncTask.execute(()->{
+            if(isLoadingLandRecords.getValue() != null){
+                if(!isLoadingLandRecords.getValue())
+                    isLoadingLandRecords.postValue(true);
+            }else{
+                isLoadingLandRecords.postValue(true);
+            }
             List<LandRecord> landsHistoryList;
             if(landsHistory.getValue() != null){
                 landsHistoryList = landsHistory.getValue();
@@ -87,6 +110,7 @@ public class LandViewModel extends AndroidViewModel {
                 landsHistoryList = new ArrayList<>(landRepository.getLandRecordsByUser(user));
             }
             landsHistory.postValue(landsHistoryList);
+            isLoadingLandRecords.postValue(false);
         });
     }
     private void clearLandsRecords() {
@@ -124,6 +148,10 @@ public class LandViewModel extends AndroidViewModel {
     }
 
     public void saveLand(Land land, User user){
+        clearLands();
+        clearLandsRecords();
+        isLoadingLands.setValue(true);
+        isLoadingLandRecords.setValue(true);
         AsyncTask.execute(()->{
             List<LandPoint> landPoints = new ArrayList<>(land.getBorder());
             Land newLand = landRepository.saveLand(land);
@@ -149,6 +177,8 @@ public class LandViewModel extends AndroidViewModel {
         });
     }
     public void removeLands(List<Land> removeLandList, User user) {
+        clearLands();
+        clearLandsRecords();
         AsyncTask.execute(()-> {
             LandRecord landRecord;
             for(Land removeLand:removeLandList){

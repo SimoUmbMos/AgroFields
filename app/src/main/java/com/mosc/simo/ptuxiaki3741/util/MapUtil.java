@@ -1,4 +1,5 @@
-package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper;
+package com.mosc.simo.ptuxiaki3741.util;
+
 
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -14,7 +15,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapHelper {
+public class MapUtil {
+
+    public static int closestPoint(List<LatLng> points,LatLng point) {
+        double smallestDistance = -1, distance;
+        int index = -1;
+        for(int i = 0; i < points.size(); i++){
+            distance  = distanceBetween(point,points.get(i));
+            if(smallestDistance == -1 || distance < smallestDistance) {
+                index = i;
+                smallestDistance = distance;
+            }
+        }
+        return index;
+    }
 
     public static List<LatLng> simplify(List<LatLng> p){
         if(p !=null){
@@ -62,6 +76,28 @@ public class MapHelper {
             return GeometryEngine.distanceBetween(polygon1,polygon2);
         }
         return -1;
+    }
+    public static double distanceBetween(LatLng p1, LatLng p2) {
+        if(p1 != null && p2 != null){
+            double lat1 = p1.latitude, lng1 = p1.longitude;
+            double lat2 = p2.latitude, lng2 = p2.longitude;
+
+            double earthRadius = 6371; // 3958.75 in miles, 6371 in kilometer
+
+            double dLat = Math.toRadians(lat2-lat1);
+            double dLng = Math.toRadians(lng2-lng1);
+
+            double sindLat = Math.sin(dLat / 2);
+            double sindLng = Math.sin(dLng / 2);
+
+            double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                    * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+
+            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            return earthRadius * c;
+        }
+        return Double.MAX_VALUE;
     }
 
     public static boolean contains(LatLng point,List<LatLng> p){

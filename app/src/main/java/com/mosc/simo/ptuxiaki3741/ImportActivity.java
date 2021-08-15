@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.helper.FileHelper;
+import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
@@ -43,6 +43,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap){
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         initMap();
     }
     @Override
@@ -67,8 +68,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
                     onUserUpdate(MainActivity.getRoomDb(this).userDao().getUserById(id))
             );
             polyList = new ArrayList<>();
-            FileHelper fileHelper = new FileHelper(this);
-            polyList.addAll(fileHelper.handleFile(intent));
+            polyList.addAll(FileUtil.handleFile(getApplicationContext(),intent));
         }else{
             setResult(RESULT_CANCELED);
             finish();
