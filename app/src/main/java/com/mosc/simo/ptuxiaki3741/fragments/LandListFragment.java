@@ -45,7 +45,6 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     private LandViewModel vmLands;
     private UserViewModel vmUsers;
     private User currUser;
-    private boolean isLoading;
 
     private LandListRecycleViewHolder viewHolder;
     private LandListMenuHolder menuHolder;
@@ -96,7 +95,6 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
 
     private void init(View view) {
-        isLoading = false;
         MainActivity activity = (MainActivity) getActivity();
         actionBar = null;
         if (activity != null) {
@@ -128,7 +126,6 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     }
 
     private void onLoadingChangeState(Boolean isLoading) {
-        this.isLoading = isLoading;
         if(viewHolder != null)
             viewHolder.setIsLoading(isLoading);
     }

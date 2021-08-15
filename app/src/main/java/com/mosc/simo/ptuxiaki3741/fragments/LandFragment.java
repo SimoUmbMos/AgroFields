@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,6 +30,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -52,29 +55,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class LandFragment extends Fragment implements FragmentBackPress{
+public class LandFragment extends Fragment implements FragmentBackPress,View.OnTouchListener
+{
     public static final String TAG = "LandFragment";
-    public static final double distanceToMapActionKM = 15;
-    private static final float stepOpacity = 0.03f,
-            stepRotate = 1f,
-            stepZoom = 0.03f,
-            maxZoom = 7f,
-            minZoom = 0.1f;
+    public static final double distanceToMapActionKM = 1, defaultRadius = 5;
+    private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
+            maxZoom = 7f, minZoom = 0.1f;
     public static final int defaultPadding = 64;
+    private LandActionStates mapStatus;
+    private LandFileState fileState;
+    private float zoom, dx, dy, x, y;
+    private int index1, index2, index3;
+
     public ActionBar actionBar;
     private LandMapViewHolder viewHolder;
     private GoogleMap mMap;
 
-    private LandActionStates mapStatus;
-    private LandFileState fileState;
     private List<LatLng> points,startPoints;
     private List<List<LatLng>> undoList;
     private User currUser;
     private long currLandID;
     private String title;
-    private float zoom;
-    private int index1, index2, index3;
-    //todo undo
 
     //ActivityResultLauncher relative
     private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
@@ -172,6 +173,33 @@ public class LandFragment extends Fragment implements FragmentBackPress{
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if(viewHolder != null){
+            if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_MOVE:
+                        if (event.getPointerCount() == 1) {
+                            imgTouchMove(event);
+                        }else{
+                            v.performClick();
+                        }
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        if (event.getPointerCount() == 1) {
+                            initImgTouch(event);
+                        }else{
+                            v.performClick();
+                        }
+                        break;
+                    default:
+                        v.performClick();
+                        break;
+                }
+            }
+        }
+        return true;
     }
     @Override
     public boolean onBackPressed() {
@@ -398,6 +426,11 @@ public class LandFragment extends Fragment implements FragmentBackPress{
         mMap.clear();
         if(points.size() > 0){
             mMap.addPolygon(new PolygonOptions().addAll(points));
+            if(points.size()<25){
+                for(LatLng point : points){
+                    mMap.addCircle(new CircleOptions().center(point).radius(defaultRadius));
+                }
+            }
         }
     }
     private void zoomOnPoints() {
@@ -557,6 +590,7 @@ public class LandFragment extends Fragment implements FragmentBackPress{
     }
 
     //action relative
+    @SuppressLint("ClickableViewAccessibility")
     private void setAction(LandActionStates mapStatus){
         toggleDrawer(false);
         if(this.mapStatus != mapStatus){
@@ -566,12 +600,21 @@ public class LandFragment extends Fragment implements FragmentBackPress{
             switch (mapStatus){
                 case Move:
                     if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+                        if(viewHolder.terrainButton.getVisibility() == View.VISIBLE){
+                            toggleMapLock();
+                        }
+                        viewHolder.touchLayer.setVisibility(View.VISIBLE);
+                        viewHolder.touchLayer.setOnTouchListener(this);
                         setTitle(
                                 getResources().getString(R.string.move_img),
-                                save -> setAction(LandActionStates.Disable),
+                                save -> {
+                                    setAction(LandActionStates.Disable);
+                                    if(viewHolder.terrainButton.getVisibility() != View.VISIBLE){
+                                        toggleMapLock();
+                                    }
+                                },
                                 reset -> undo()
                         );
-                        //todo add touch control on move
                     }else{
                         setAction(LandActionStates.Disable);
                     }
@@ -655,10 +698,17 @@ public class LandFragment extends Fragment implements FragmentBackPress{
             }
         }
     }
+    @SuppressLint("ClickableViewAccessibility")
     private void clearFlags() {
         index1 = -1;
         index2 = -1;
         index3 = -1;
+        if(viewHolder != null){
+            if(viewHolder.touchLayer.getVisibility() != View.GONE){
+                viewHolder.touchLayer.setVisibility(View.GONE);
+                viewHolder.touchLayer.setOnTouchListener(null);
+            }
+        }
     }
     private void undo(){
         switch (mapStatus){
@@ -796,6 +846,33 @@ public class LandFragment extends Fragment implements FragmentBackPress{
             }
         }
     }
+    public void imgTouchMove(MotionEvent ev) {
+        float h = dx - ev.getX();
+        float v = dy - ev.getY();
+        x -= h;
+        y -= v;
+        if(
+            mapStatus == LandActionStates.Move &&
+            viewHolder.imageView.getVisibility() == View.VISIBLE
+        ){
+            viewHolder.imageView.animate()
+                    .translationX(x)
+                    .translationY(y)
+                    .setDuration(0).start();
+        }
+        initImgValues(ev);
+    }
+    public void initImgTouch(MotionEvent ev) {
+        if( mapStatus == LandActionStates.Move ){
+            initImgValues(ev);
+        }
+    }
+    private void initImgValues(MotionEvent ev) {
+        dx = ev.getX();
+        dy = ev.getY();
+        x = viewHolder.imageView.getX();
+        y = viewHolder.imageView.getY();
+    }
 
     //ui relative
     private void clearTitle() {
@@ -890,176 +967,4 @@ public class LandFragment extends Fragment implements FragmentBackPress{
             }
         }
     }
-
-    /*public static final String TAG = "LandFragment";
-    private LandMapHolder mapHolder;
-    private LandViewHolder viewHolder;
-    private LandMenuHolder menuHolder;
-    private LandFileController fileController;
-    private LandPointsController pointsController;
-    private long currLandID = -1;
-    private User currUser;
-
-    private final ActivityResultLauncher<Intent> fileResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::FileResult
-    );
-    private final ActivityResultLauncher<Intent> imgResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::ViewHolderResult
-    );
-    private final ActivityResultLauncher<Intent> mapResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::MapResult
-    );
-    private final ActivityResultLauncher<String> permissionResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            this::onRequestPermissionsResult
-    );
-
-
-    private void init(View view) {
-        MainActivity activity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
-        if (activity != null) {
-            activity.setOnBackPressed(this);
-            UserViewModel vmUsers = new ViewModelProvider(activity).get(UserViewModel.class);
-            currUser = vmUsers.getCurrUser().getValue();
-            actionBar = activity.getSupportActionBar();
-            if(actionBar != null){
-                actionBar.show();
-            }
-        }
-        controllersAndHandlersInit(view, actionBar);
-        initValues();
-        viewHolderConfig();
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(mapHolder);
-        }
-    }
-    private void controllersAndHandlersInit(View view, ActionBar actionBar) {
-        Log.i(TAG, "controllersAndHandlersInit: start");
-        pointsController = new LandPointsController();
-        LandImgController imgController = new LandImgController(view.findViewById(R.id.imageView));
-        fileController = new LandFileController(getActivity(), permissionResultLauncher,
-                imgResultLauncher, fileResultLauncher);
-        viewHolder= new LandViewHolder(view, actionBar, imgController);
-        mapHolder = new LandMapHolder(viewHolder,pointsController);
-        menuHolder = new LandMenuHolder(
-                viewHolder,
-                mapHolder,
-                fileController,
-                pointsController,
-                imgController,
-                this::save,
-                this::edit
-        );
-        Log.i(TAG, "controllersAndHandlersInit: end");
-    }
-    private void initValues() {
-        Land currLand = LandFragmentArgs.fromBundle(getArguments()).getLand();
-        if(!new Land().equals(currLand)){
-            currLandID = currLand.getData().getId();
-        }
-        viewHolder.setTitle(currLand.getData().getTitle());
-        List<LandPoint> landPointsList = new ArrayList<>(currLand.getBorder());
-        Collections.sort(landPointsList);
-        List<LatLng> landPoints = new ArrayList<>();
-        for(LandPoint landPoint : landPointsList){
-            landPoints.add(landPoint.getLatLng());
-        }
-        pointsController.setPoints(landPoints);
-    }
-    private void viewHolderConfig() {
-        viewHolder.navDrawer.setNavigationItemSelectedListener(menuHolder);
-        viewHolder.closeTabMenu();
-        viewHolder.hideImgView();
-        viewHolder.setOnClose(new OnAction() {
-            @Override
-            public void onCloseTab() {
-                mapHolder.clearFlag();
-            }
-        });
-    }
-
-    private void save() {
-        if(isValidToSave()){
-            saveToVM();
-            navigate(toListMenu());
-        }
-    }
-    private void edit() {
-        navigate(toLandInfo());
-    }
-
-
-
-
-
-
-
-    private void FileResult(ActivityResult result) {
-        if (result.getResultCode() == Activity.RESULT_OK){
-            onFilePicked(result.getData());
-        }
-    }
-    private void MapResult(ActivityResult result) {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            if(result.getData() != null){
-                mapHolder.onActivityResult(result.getData());
-            }
-        }
-    }
-    private void ViewHolderResult(ActivityResult result) {
-        if (
-                result.getResultCode() == Activity.RESULT_OK &&
-                fileController.fileIsValidImg(result.getData())
-        ){
-            viewHolder.onActivityResult(result.getData());
-        }
-    }
-
-    private void onFilePicked(Intent result) {
-        Log.d(TAG, "onFilePicked: "+result.getData().getPath());
-        Intent intent = parseFile(result);
-        if(intent != null){
-            intent.putExtra(ImportActivity.userName,currUser.getId());
-            mapResultLauncher.launch(intent);
-        }
-    }
-
-    private Intent parseFile(Intent result) {
-        Intent intent = null;
-        if(fileController.fileIsValid(result)){
-            intent = new Intent(getContext(), ImportActivity.class);
-            intent.setData(result.getData());
-        }
-        return intent;
-    }
-
-    public void onRequestPermissionsResult(Boolean result) {
-        if(result){
-            Intent intent = fileController.getFilePickerIntent();
-            if(fileController.getFlag() == LandFileState.File){
-                fileResultLauncher.launch(intent);
-            }else if(fileController.getFlag() == LandFileState.Img){
-                imgResultLauncher.launch(intent);
-            }
-        }
-    }
-
-    private void navigate(NavDirections action){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landMapFragment)
-            navController.navigate(action);
-    }
-    private NavDirections toListMenu(){
-        return LandFragmentDirections.toListMenu();
-    }
-    private NavDirections toLandInfo(){
-        Land currLand = getLand();
-        return LandFragmentDirections.toLandInfo(currLand);
-    }*/
 }

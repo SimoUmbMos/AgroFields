@@ -78,7 +78,8 @@ public class FileUtil {
                     return handleShapeFile(ctx, uri);
                 case GEOJSON:
                     return handleJson(ctx, uri);
-                //todo case GML:
+                case GML:
+                    return handleGML(ctx, uri);
             }
         }
         return new ArrayList<>();
@@ -173,6 +174,11 @@ public class FileUtil {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return new ArrayList<>();
+    }
+
+    private static List<List<LatLng>> handleGML(Context ctx, Uri uri) {
+        //todo handleGML
         return new ArrayList<>();
     }
     private static List<List<LatLng>> handleShapeFile(Context ctx, Uri uri) {
