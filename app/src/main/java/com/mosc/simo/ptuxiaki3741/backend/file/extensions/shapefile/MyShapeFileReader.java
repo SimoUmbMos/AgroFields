@@ -20,7 +20,7 @@ import static org.nocrala.tools.gis.data.esri.shapefile.shape.ShapeType.POLYLINE
 
 public class MyShapeFileReader {
     public static final String TAG = "MyShapeFileReader";
-    public static List<List<LatLng>> readShapeFileReader(InputStream is){
+    public static List<List<LatLng>> exec(InputStream is){
         List<List<LatLng>> result = new ArrayList<>();
         try {
             ValidationPreferences prefs = new ValidationPreferences();

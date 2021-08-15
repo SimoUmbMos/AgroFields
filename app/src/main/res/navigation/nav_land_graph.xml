@@ -51,8 +51,8 @@
         <action
             android:id="@+id/toLandMap"
             app:destination="@id/landMapFragment"
-            app:popUpTo="@id/landInfoFragment"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/landListFragment"
+            app:popUpToInclusive="false" />
         <argument
             android:name="land"
             app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />

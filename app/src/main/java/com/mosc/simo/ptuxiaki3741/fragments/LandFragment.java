@@ -470,6 +470,9 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                 viewHolder.miLock.setIcon(R.drawable.menu_ic_locked);
             }
         }
+        if(this.mapStatus != LandActionStates.Disable && this.mapStatus != LandActionStates.Move){
+            setAction(LandActionStates.Disable);
+        }
     }
     private void processClick(LatLng latLng) {
         switch (mapStatus){
@@ -592,27 +595,24 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     //action relative
     @SuppressLint("ClickableViewAccessibility")
     private void setAction(LandActionStates mapStatus){
-        toggleDrawer(false);
         if(this.mapStatus != mapStatus){
             this.mapStatus = mapStatus;
+            if(mapStatus != LandActionStates.Disable){
+                toggleDrawer(false);
+            }
             clearFlags();
             clearUndo();
             switch (mapStatus){
                 case Move:
                     if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+                        viewHolder.touchLayer.setVisibility(View.VISIBLE);
+                        viewHolder.touchLayer.setOnTouchListener(this);
                         if(viewHolder.terrainButton.getVisibility() == View.VISIBLE){
                             toggleMapLock();
                         }
-                        viewHolder.touchLayer.setVisibility(View.VISIBLE);
-                        viewHolder.touchLayer.setOnTouchListener(this);
                         setTitle(
                                 getResources().getString(R.string.move_img),
-                                save -> {
-                                    setAction(LandActionStates.Disable);
-                                    if(viewHolder.terrainButton.getVisibility() != View.VISIBLE){
-                                        toggleMapLock();
-                                    }
-                                },
+                                save -> saveAction(),
                                 reset -> undo()
                         );
                     }else{
@@ -623,7 +623,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                     if(viewHolder.imageView.getVisibility() == View.VISIBLE){
                         setTitle(
                                 getResources().getString(R.string.zoom_img),
-                                save -> setAction(LandActionStates.Disable),
+                                save -> saveAction(),
                                 reset -> undo(),
                                 plus -> plusAction(),
                                 minus -> minusAction()
@@ -636,7 +636,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                     if(viewHolder.imageView.getVisibility() == View.VISIBLE){
                         setTitle(
                                 getResources().getString(R.string.opacity_img),
-                                save -> setAction(LandActionStates.Disable),
+                                save -> saveAction(),
                                 reset -> undo(),
                                 plus -> plusAction(),
                                 minus -> minusAction()
@@ -649,7 +649,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                     if(viewHolder.imageView.getVisibility() == View.VISIBLE){
                         setTitle(
                                 getResources().getString(R.string.rotate_img),
-                                save -> setAction(LandActionStates.Disable),
+                                save -> saveAction(),
                                 reset -> undo(),
                                 plus -> plusAction(),
                                 minus -> minusAction()
@@ -661,14 +661,14 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                 case AddEnd:
                     setTitle(
                             getResources().getString(R.string.create_point),
-                            save -> setAction(LandActionStates.Disable),
+                            save -> saveAction(),
                             reset -> undo()
                     );
                     break;
                 case AddBetween:
                     setTitle(
                             getResources().getString(R.string.create_between_points),
-                            save -> setAction(LandActionStates.Disable),
+                            save -> saveAction(),
                             reset -> undo()
                     );
                     changeTitleBasedOnState();
@@ -676,26 +676,24 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                 case Edit:
                     setTitle(
                             getResources().getString(R.string.edit_point),
-                            save -> setAction(LandActionStates.Disable),
+                            save -> saveAction(),
                             reset -> undo()
                     );
                     break;
                 case Delete:
                     setTitle(
                             getResources().getString(R.string.delete_point),
-                            save -> setAction(LandActionStates.Disable),
+                            save -> saveAction(),
                             reset -> undo()
                     );
                     break;
                 case ResetAll:
-                    points.clear();
-                    points.addAll(startPoints);
-                    drawMap();
-                    this.mapStatus = LandActionStates.Disable;
-                case Disable:
-                    clearTitle();
+                    saveAction();
                     break;
             }
+        }
+        if(mapStatus == LandActionStates.Disable){
+            clearTitle();
         }
     }
     @SuppressLint("ClickableViewAccessibility")
@@ -708,6 +706,21 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                 viewHolder.touchLayer.setVisibility(View.GONE);
                 viewHolder.touchLayer.setOnTouchListener(null);
             }
+        }
+    }
+    private void saveAction(){
+        if(mapStatus != LandActionStates.Disable){
+            if(mapStatus == LandActionStates.ResetAll){
+                points.clear();
+                points.addAll(startPoints);
+                drawMap();
+            }else if(
+                mapStatus == LandActionStates.Move &&
+                viewHolder.terrainButton.getVisibility() != View.VISIBLE
+            ){
+                    toggleMapLock();
+            }
+            setAction(LandActionStates.Disable);
         }
     }
     private void undo(){
@@ -876,8 +889,6 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
 
     //ui relative
     private void clearTitle() {
-        clearFlags();
-        clearUndo();
         actionBar.setTitle(title);
         viewHolder.clTab.setVisibility(View.GONE);
         viewHolder.fabSave.setVisibility(View.GONE);
@@ -888,6 +899,8 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         viewHolder.fabMinus.setOnClickListener(null);
         viewHolder.fabReset.setOnClickListener(null);
         viewHolder.fabSave.setOnClickListener(null);
+        clearFlags();
+        clearUndo();
     }
     private void changeTitleBasedOnState() {
         if(mapStatus == LandActionStates.AddBetween){
@@ -962,6 +975,15 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         if(viewHolder != null){
             if(toggle){
                 viewHolder.drawer.openDrawer(GravityCompat.END);
+                if(
+                        mapStatus == LandActionStates.Move &&
+                        viewHolder.terrainButton.getVisibility() != View.VISIBLE
+                ){
+                    toggleMapLock();
+                }
+                if(this.mapStatus != LandActionStates.Disable){
+                    setAction(LandActionStates.Disable);
+                }
             }else{
                 viewHolder.drawer.closeDrawer(GravityCompat.END);
             }

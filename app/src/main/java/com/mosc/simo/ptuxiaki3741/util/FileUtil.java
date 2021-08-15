@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonReader;
+import com.mosc.simo.ptuxiaki3741.backend.file.extensions.gml.GMLReader;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileReader;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.shapefile.MyShapeFileReader;
@@ -131,7 +132,7 @@ public class FileUtil {
     }
     private static boolean isJSON(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
-        return extension.equals("json");
+        return extension.equals("json") || extension.equals("geojson") ;
     }
     private static boolean isShapeFile(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
@@ -178,12 +179,16 @@ public class FileUtil {
     }
 
     private static List<List<LatLng>> handleGML(Context ctx, Uri uri) {
-        //todo handleGML
+        try{
+            return GMLReader.exec(ctx.getContentResolver().openInputStream(uri));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return new ArrayList<>();
     }
     private static List<List<LatLng>> handleShapeFile(Context ctx, Uri uri) {
         try{
-            return MyShapeFileReader.readShapeFileReader(ctx.getContentResolver().openInputStream(uri));
+            return MyShapeFileReader.exec(ctx.getContentResolver().openInputStream(uri));
         }catch (Exception e){
             e.printStackTrace();
         }

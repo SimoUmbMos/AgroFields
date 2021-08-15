@@ -11,9 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 import static org.junit.Assert.assertNotEquals;
@@ -34,7 +32,7 @@ public class ShapeFileTest {
     public void testInputStreamExist(){
         assertNotEquals(null,in);
         if(in != null){
-            List<List<LatLng>> lands  = MyShapeFileReader.readShapeFileReader(in);
+            List<List<LatLng>> lands  = MyShapeFileReader.exec(in);
             Log.d(TAG, "lands size: "+lands.size());
             Log.d(TAG, " ");
             for(List<LatLng> land : lands){
