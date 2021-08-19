@@ -27,7 +27,6 @@ import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LoginViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.util.UserUtil;
 
 public class LoginRegisterFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LoginRegisterFragment";
@@ -149,7 +148,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         showLoginError(isUsernameWritten, isPasswordWritten);
 
         if(isPasswordWritten && isUsernameWritten){
-            return new User(username, UserUtil.hashPassword(password));
+            return new User(username, password);
         }
         return null;
     }
@@ -203,21 +202,19 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         if(isEmailWritten && isEmailSame &&
                 isPasswordWritten && isPasswordSame &&
                 isPhoneLengthRight && isUsernameWritten){
-            return new User(username, UserUtil.hashPassword(password), phone, email);
+            return new User(username, password, phone, email);
         }
         return null;
     }
 
     private void onLoginAction(User tempUser){
-        User user = vmUsers.checkCredentials(tempUser.getUsername(),tempUser.getPassword());
+        User user = vmUsers.checkCredentials(tempUser);
         if (user != null) {
             vmUsers.singIn(user);
         }else{
             if(getActivity() != null) {
-                user = vmUsers.checkUserNameCredentials(tempUser.getUsername());
-                final boolean usernameExist = user != null;
                 getActivity().runOnUiThread(() -> {
-                    if (usernameExist) {
+                    if (vmUsers.checkUserNameCredentials(tempUser) != null) {
                         viewHolder.showError(LoginRegisterError.PasswordWrongError);
                     } else {
                         viewHolder.showError(LoginRegisterError.UserNameWrongError);

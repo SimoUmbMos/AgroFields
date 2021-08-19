@@ -2,7 +2,6 @@ package com.mosc.simo.ptuxiaki3741;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
@@ -14,14 +13,12 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.restserver.RestDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
-import static com.mosc.simo.ptuxiaki3741.util.UIUtil.getColorOnPrimaryFromTheme;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -34,10 +31,6 @@ public class MainActivity extends AppCompatActivity {
     public static RoomDatabase getRoomDb(Context context){
         return Room.databaseBuilder(context,
                 RoomDatabase.class, "Main_db").fallbackToDestructiveMigration().build();
-    }
-
-    public static RestDatabase getRestDb(){
-        return new RestDatabase();
     }
 
     public void showToast(CharSequence text) {

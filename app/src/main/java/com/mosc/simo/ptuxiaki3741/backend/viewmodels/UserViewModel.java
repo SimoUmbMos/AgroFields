@@ -14,6 +14,7 @@ import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,10 @@ public class UserViewModel extends AndroidViewModel {
             boolean isCurrUser = user.equals(currUser.getValue());
             userRepository.editUser(user);
             if(isCurrUser){
-                this.currUser.postValue(user);
+                User decryptedUser = EncryptUtil.decrypt(
+                        userRepository.searchUserByID(user.getId())
+                );
+                this.currUser.postValue(decryptedUser);
             }
         }
     }
@@ -94,38 +98,45 @@ public class UserViewModel extends AndroidViewModel {
         }
     }
 
-    public User checkCredentials(String username, String password) {
-        return userRepository.searchUserByUserNameAndPassword(username, password);
+    public User checkCredentials(User user) {
+        return userRepository.searchUserByUserNameAndPassword(
+                user.getUsername(),
+                user.getPassword()
+        );
     }
-    public User checkUserNameCredentials(String username) {
-        return userRepository.searchUserByUserName(username);
+    public User checkUserNameCredentials(User user) {
+        return userRepository.searchUserByUserName(
+                user.getUsername()
+        );
     }
     public void singIn(User user) {
         if(user != null){
             putUidToMemory(user.getId());
+            User decryptedUser = EncryptUtil.decrypt(
+                    userRepository.searchUserByID(user.getId())
+            );
+            currUser.postValue(decryptedUser);
         }else{
-            clearUidFromMemory();
+            logout();
         }
-        currUser.postValue(user);
     }
     public void logout() {
-        singIn(null);
+        clearUidFromMemory();
+        currUser.postValue(null);
     }
 
     public List<User> searchUser(String search){
-        List<User> result = new ArrayList<>();
         if(currUser.getValue() != null){
-            result = userRepository.userSearch(currUser.getValue(), search);
+            return userRepository.userSearch(currUser.getValue(), search);
         }
-        return result;
+        return new ArrayList<>();
     }
 
     public List<User> getFriends(){
-        List<User> result = new ArrayList<>();
         if(currUser.getValue() != null){
-            result = userRepository.getUserFriendList(currUser.getValue());
+            return userRepository.getUserFriendList(currUser.getValue());
         }
-        return result;
+        return new ArrayList<>();
     }
     public List<User> getFriendRequests(){
         List<User> result = new ArrayList<>();

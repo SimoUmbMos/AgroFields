@@ -6,8 +6,6 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,20 +52,20 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
             returnIntent.putExtra(resName,new ParcelablePolygon(polygon.getPoints()));
             setResult(RESULT_OK,returnIntent);
             finish();
-        }else{
-            Toast.makeText(this, R.string.not_login_error, Toast.LENGTH_SHORT).show();
         }
     }
 
     private void init(){
         curUser = null;
+        polyList = new ArrayList<>();
         Intent intent = getIntent();
         if(intent != null){
-            long id = intent.getExtras().getLong(userName,-1);
-            AsyncTask.execute(()->
-                    onUserUpdate(MainActivity.getRoomDb(this).userDao().getUserById(id))
-            );
-            polyList = new ArrayList<>();
+            if(intent.getExtras() != null){
+                long id = intent.getExtras().getLong(userName,-1);
+                AsyncTask.execute(()->
+                        onUserUpdate(MainActivity.getRoomDb(this).userDao().getUserById(id))
+                );
+            }
             polyList.addAll(FileUtil.handleFile(getApplicationContext(),intent));
         }else{
             setResult(RESULT_CANCELED);
@@ -92,7 +90,6 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
     private void onUserUpdate(User user) {
         curUser = user;
         if(user != null){
-            Log.d(TAG, "onUserUpdate: user not null");
             if(polyList.size() == 1){
                 Intent returnIntent;
                 returnIntent = new Intent();
@@ -100,13 +97,32 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
                 setResult(RESULT_OK,returnIntent);
                 finish();
             }
-        }else{
-            Log.d(TAG, "onUserUpdate: user null");
+        }
+        if(mMap != null){
+            toggleMapLock(user == null);
         }
     }
 
+    private void toggleMapLock(boolean b){
+        if(mMap != null){
+            if(b){
+                mMap.getUiSettings().setRotateGesturesEnabled(false);
+                mMap.getUiSettings().setScrollGesturesEnabled(false);
+                mMap.getUiSettings().setZoomGesturesEnabled(false);
+                mMap.getUiSettings().setZoomControlsEnabled(false);
+                mMap.getUiSettings().setCompassEnabled(false);
+            }else{
+                mMap.getUiSettings().setRotateGesturesEnabled(true);
+                mMap.getUiSettings().setScrollGesturesEnabled(true);
+                mMap.getUiSettings().setZoomGesturesEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+                mMap.getUiSettings().setCompassEnabled(true);
+            }
+        }
+    }
     private void onMapFullLoaded(){
         showPointsOnMap();
+        onUserUpdate(curUser);
     }
     private void showPointsOnMap(){
         if(polyList.size() > 0){
@@ -120,7 +136,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
                     builder.include(point);
                 }
             }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 64));
         }
     }
 }

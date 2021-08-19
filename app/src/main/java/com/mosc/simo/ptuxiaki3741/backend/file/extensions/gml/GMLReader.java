@@ -8,8 +8,7 @@ import java.util.List;
 
 public class GMLReader {
     public static List<List<LatLng>> exec(InputStream openInputStream) {
-        List<List<LatLng>> result = new ArrayList<>();
         //todo gml reader
-        return result;
+        return new ArrayList<>();
     }
 }

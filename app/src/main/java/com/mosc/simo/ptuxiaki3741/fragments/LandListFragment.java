@@ -198,14 +198,13 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
             }
         }
     }
-    private boolean landLongClick(int position) {
+    private void landLongClick(int position) {
         if (menuHolder.getState() == LandListMenuState.NormalState){
             menuHolder.setState(LandListMenuState.MultiSelectState);
             vmLands.toggleSelectOnPosition(position);
         }else{
             landClick(position);
         }
-        return true;
     }
 
     private void deleteAction() {

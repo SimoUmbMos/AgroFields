@@ -5,6 +5,7 @@ import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.UserUtil;
 
 import java.util.ArrayList;
@@ -24,7 +25,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User searchUserByID(long id){
-        return db.userDao().getUserById(id);
+        User u = db.userDao().getUserById(id);
+        if(u != null){
+            return EncryptUtil.decrypt(u);
+        }
+        return null;
     }
     @Override
     public User searchUserByUserName(String username) {
@@ -32,7 +37,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public User searchUserByUserNameAndPassword(String username, String password) {
-        return db.userDao().getUserByUserNameAndPassword(username, password);
+        String encryptedPassword = EncryptUtil.encryptPassword(password);
+        return db.userDao().getUserByUserNameAndPassword(username, encryptedPassword);
     }
     @Override
     public List<User> userSearch(User user, String username) {
@@ -138,7 +144,7 @@ public class UserRepositoryImpl implements UserRepository {
         friends.addAll(UserUtil
                 .getAllSenderUsers(friendReceiverRelationship, db));
 
-        return friends;
+        return EncryptUtil.decryptAll(friends);
     }
     @Override
     public List<User> getUserFriendRequestList(User user) {
@@ -158,9 +164,10 @@ public class UserRepositoryImpl implements UserRepository {
         if(newUser != null){
             User user = db.userDao().getUserByUserName(newUser.getUsername());
             if(user == null){
-                long id = db.userDao().insert(newUser);
-                newUser.setId(id);
-                return newUser;
+                user = EncryptUtil.encryptWithPassword(newUser);
+                long id = db.userDao().insert(user);
+                user.setId(id);
+                return user;
             }
         }
         return null;
@@ -168,7 +175,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void editUser(User user) {
         if(user != null){
-            db.userDao().insert(user);
+            db.userDao().insert(EncryptUtil.encrypt(user));
         }
     }
     @Override

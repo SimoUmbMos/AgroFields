@@ -11,11 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
-import java.util.List;
 
 public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandListAdapterViewHolder>{
 
@@ -41,7 +39,10 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     @Override
     public void onBindViewHolder(@NonNull LandListAdapterViewHolder holder, int position) {
         holder.llContainer.setOnClickListener(v -> onLandClick.onLandClick(position));
-        holder.llContainer.setOnLongClickListener(v -> onLandLongClick.onLandLongClick(position));
+        holder.llContainer.setOnLongClickListener(v -> {
+            onLandLongClick.onLandLongClick(position);
+            return true;
+        });
         if(landViewModel.getLandsList().size()>position){
             LandData landData = landViewModel.getLandsList().get(position).getData();
             if(landData != null){
@@ -67,7 +68,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
         void onLandClick(int pos);
     }
     public interface OnLandLongClick{
-        boolean onLandLongClick(int pos);
+        void onLandLongClick(int pos);
     }
     protected static class LandListAdapterViewHolder  extends RecyclerView.ViewHolder {
         public final LinearLayout llContainer;

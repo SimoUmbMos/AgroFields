@@ -51,8 +51,6 @@
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
-    <string name="clean">Clean</string>
-    <string name="not_login_error">No Loged In</string>
 
     <string name="login">Login</string>
     <string name="login_label">User Login</string>
@@ -78,4 +76,5 @@
 
     <string name="change_terrain_type">change terrain type</string>
     <string name="loading_list">List is loading</string>
+    <string name="delete_lands_title">Other Deleted Lands</string>
 </resources>

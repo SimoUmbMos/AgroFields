@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.models.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -11,7 +12,7 @@ import androidx.room.PrimaryKey;
 import java.util.Objects;
 
 @Entity(tableName = "Users")
-public class User implements Parcelable {
+public class User implements Parcelable,Cloneable {
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
@@ -129,5 +130,11 @@ public class User implements Parcelable {
                 return false;
             }
         }
+    }
+
+    @Override
+    @NonNull
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

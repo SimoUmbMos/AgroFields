@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
@@ -9,7 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.util.UserUtil;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,9 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class UserDBTest {
+    public static final String TAG = "UserDBTest";
     private RoomDatabase db;
     private UserRepositoryImpl userRepository;
     private List<User> users;
@@ -50,6 +53,7 @@ public class UserDBTest {
         }
 
         testCreateUsers();
+        testEditUsers();
         testCreateFriendRequests();
         testDeclineFriendRequests();
         testCreateFriends();
@@ -59,16 +63,47 @@ public class UserDBTest {
 
     private void testCreateUsers() {
         User temp;
-        for(int i = 0 ; i < 6 ; i++){
-            temp = new User("user"+(i+1), UserUtil.hashPassword("user"+(i+1)));
-            userRepository.saveNewUser(temp);
+        int size = 6;
+        for(int i = 0 ; i < size ; i++){
+            temp = new User("test"+(i+1), "test"+(i+1));
+            userRepository.saveNewUser(EncryptUtil.encryptWithPassword(temp));
         }
         users.clear();
         users.addAll(userRepository.getUsers());
-        assertEquals(6,users.size());
+        assertEquals(size,users.size());
         for(User user : users){
             assertEquals(-1,user.getPassword().indexOf("user"));
         }
+    }
+    private void testEditUsers() {
+        String email = "test@test.com";
+        String phone = "6969696969";
+
+        User temp = users.get(0);
+        String firstPassword = temp.getPassword();
+        temp.setEmail(email);
+        temp.setPhone(phone);
+        User encrypted = EncryptUtil.encrypt(temp);
+        assertNotEquals(encrypted.getEmail(), email);
+        assertNotEquals(encrypted.getPhone(), phone);
+        assertEquals(firstPassword,encrypted.getPassword());
+
+        User decrypted = EncryptUtil.decrypt(temp);
+        assertEquals(decrypted.getEmail(), email);
+        assertEquals(decrypted.getPhone(), phone);
+        assertEquals(firstPassword,decrypted.getPassword());
+
+        Log.d(TAG, "temp password: "+temp.getPassword());
+        Log.d(TAG, "encrypted password: "+encrypted.getPassword());
+        Log.d(TAG, "decrypted password: "+decrypted.getPassword());
+
+        Log.d(TAG, "temp email: "+temp.getEmail());
+        Log.d(TAG, "encrypted email: "+encrypted.getEmail());
+        Log.d(TAG, "decrypted email: "+decrypted.getEmail());
+
+        Log.d(TAG, "temp phone: "+temp.getPhone());
+        Log.d(TAG, "encrypted phone: "+encrypted.getPhone());
+        Log.d(TAG, "decrypted phone: "+decrypted.getPhone());
     }
     private void testCreateFriendRequests(){
         userRepository.sendFriendRequest(users.get(1),users.get(0));  // 2 has request friend 1
@@ -121,12 +156,12 @@ public class UserDBTest {
         checkBlockList(0,users.get(5));
     }
     private void testUserSearch() {
-        List<User> result0 = userRepository.userSearch(users.get(0),"user");
-        List<User> result1 = userRepository.userSearch(users.get(1),"user");
-        List<User> result2 = userRepository.userSearch(users.get(2),"user");
-        List<User> result3 = userRepository.userSearch(users.get(3),"user");
-        List<User> result4 = userRepository.userSearch(users.get(4),"user");
-        List<User> result5 = userRepository.userSearch(users.get(5),"user");
+        List<User> result0 = userRepository.userSearch(users.get(0),"test");
+        List<User> result1 = userRepository.userSearch(users.get(1),"test");
+        List<User> result2 = userRepository.userSearch(users.get(2),"test");
+        List<User> result3 = userRepository.userSearch(users.get(3),"test");
+        List<User> result4 = userRepository.userSearch(users.get(4),"test");
+        List<User> result5 = userRepository.userSearch(users.get(5),"test");
 
         assertEquals(5,result0.size());
         assertEquals(5,result1.size());
@@ -153,4 +188,5 @@ public class UserDBTest {
         closeDb();
         createDb();
     }
+
 }

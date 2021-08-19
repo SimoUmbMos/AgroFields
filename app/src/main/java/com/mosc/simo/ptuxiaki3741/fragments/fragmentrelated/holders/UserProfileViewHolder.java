@@ -8,9 +8,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.mosc.simo.ptuxiaki3741.R;
 
 public class UserProfileViewHolder {
-    public TextView tvTitle;
-    public Button btnModify;
-    public TextInputEditText etPhone, etEmail;
+    public final TextView tvTitle;
+    public final Button btnModify;
+    public final TextInputEditText etPhone, etEmail;
     private boolean isEditMode;
     public UserProfileViewHolder(View v, View.OnClickListener onModify){
         tvTitle = v.findViewById(R.id.tvTitle);

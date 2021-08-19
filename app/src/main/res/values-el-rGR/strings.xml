@@ -21,7 +21,6 @@
     <string name="title_activity_import">Χάρτης</string>
     <string name="delete">Διαγραφή</string>
     <string name="edit">Επεξεργασία</string>
-    <string name="clean">Καθαρισμός</string>
     <string name="export">Εξαγωγή</string>
     <string name="inport">Εισαγωγή</string>
     <string name="add">Προσθήκη</string>
@@ -37,7 +36,6 @@
     <string name="edit_land_label">Επεξεργασία ονόματος χωραφιού</string>
     <string name="app_actions_group_title">Ενέργειες δεδομένων χωραφιού</string>
     <string name="map_view_actions_group_title">Ενέργειες χάρτι</string>
-    <string name="not_login_error">Not Logged</string>
     <string name="login">Σύνδεση</string>
     <string name="login_label">Σύνδεση Χρήστη</string>
     <string name="register_label">Εγγραφή Νέου Χρήστη</string>
@@ -59,4 +57,5 @@
     <string name="profile_title_2"> </string>
     <string name="change_terrain_type">Αλλαγή τύπου εδάφους</string>
     <string name="loading_list">Η λίστα φορτώνεται</string>
+    <string name="delete_lands_title">Άλλα διαγραμμένα χωράφια</string>
 </resources>

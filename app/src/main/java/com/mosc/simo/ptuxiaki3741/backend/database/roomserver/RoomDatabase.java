@@ -29,7 +29,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
         DBTypesConverter.class
 })
 public abstract class RoomDatabase extends androidx.room.RoomDatabase {
-    public static final int DATABASE_VERSION = 18;
+    public static final int DATABASE_VERSION = 20;
     public abstract UserDao userDao();
     public abstract LandDao landDao();
     public abstract LandHistoryDao landHistoryDao();

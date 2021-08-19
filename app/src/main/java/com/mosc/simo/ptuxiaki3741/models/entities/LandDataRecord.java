@@ -35,6 +35,16 @@ public class LandDataRecord {
         this.actionID = actionID;
         this.date = date;
     }
+    @Ignore
+    public LandDataRecord(long id,LandData land, long userID, LandDBAction actionID, Date date) {
+        this.id = id;
+        this.landID = land.getId();
+        this.landCreatorID = land.getCreator_id();
+        this.landTitle = land.getTitle();
+        this.userID = userID;
+        this.actionID = actionID;
+        this.date = date;
+    }
 
     public LandDataRecord(long id, long landID, long landCreatorID, String landTitle, long userID, LandDBAction actionID, Date date) {
         this.id = id;
