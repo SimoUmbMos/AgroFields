@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.backend.viewmodels;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -148,21 +149,24 @@ public class LandViewModel extends AndroidViewModel {
     }
 
     public void saveLand(Land land, User user){
-        clearLands();
-        clearLandsRecords();
         isLoadingLands.setValue(true);
         isLoadingLandRecords.setValue(true);
         AsyncTask.execute(()->{
             List<LandPoint> landPoints = new ArrayList<>(land.getBorder());
             Land newLand = landRepository.saveLand(land);
 
-            int index = indexOfLand(newLand);
+            //TODO CHECK
             LandDBAction action;
-            if(index < 0){
+            if(indexOfLand(newLand) == -1){
                 action = LandDBAction.CREATE;
+                Log.d("LandViewModel", "saveLand: CREATE");
             }else{
                 action = LandDBAction.UPDATE;
+                Log.d("LandViewModel", "saveLand: UPDATE");
             }
+
+            clearLands();
+            clearLandsRecords();
 
             LandRecord landRecord = new LandRecord(
                     newLand.getData(),
@@ -282,10 +286,15 @@ public class LandViewModel extends AndroidViewModel {
         }
     }
     private int indexOfLand(Land land) {
-        if(land != null)
-            return getLandsList().indexOf(land);
-        else
-            return -1;
+        if(land != null){
+            List<Land> lands = getLandsList();
+            for(int i = 0; i < lands.size(); i ++){
+                if(lands.get(i).getData().getId() == land.getData().getId()){
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
 }

@@ -134,4 +134,10 @@ public class LandRepositoryImpl implements LandRepository {
         db.landDao().deleteByUID(user.getId());
     }
 
+    @Override
+    public boolean landExist(Land newLand) {
+        LandData land = db.landDao().getLandData(newLand.getData().getId());
+        return land != null;
+    }
+
 }

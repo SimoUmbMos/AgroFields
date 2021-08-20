@@ -29,7 +29,7 @@ import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListNavigateStates;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.navigators.LandListNavigator;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.menuholders.LandListMenuHolder;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandListRecycleViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandListViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
@@ -46,7 +46,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
     private UserViewModel vmUsers;
     private User currUser;
 
-    private LandListRecycleViewHolder viewHolder;
+    private LandListViewHolder viewHolder;
     private LandListMenuHolder menuHolder;
     private LandListNavigator nav;
     private ActionBar actionBar;
@@ -132,7 +132,7 @@ public class LandListFragment  extends Fragment implements FragmentBackPress {
 
     private void initHolders(View view) {
         nav = new LandListNavigator(NavHostFragment.findNavController(this));
-        viewHolder = new LandListRecycleViewHolder(view, vmLands, this::landClick, this::landLongClick);
+        viewHolder = new LandListViewHolder(view, vmLands, this::landClick, this::landLongClick);
         menuHolder = new LandListMenuHolder(this::OnNavigate,this::OnUpdateState,this::onAction);
     }
 

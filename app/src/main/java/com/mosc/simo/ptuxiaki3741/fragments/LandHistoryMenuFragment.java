@@ -8,6 +8,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,10 +19,12 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandHistoryMenuViewHolder;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandHistoryListViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,7 +32,8 @@ import java.util.List;
 
 public class LandHistoryMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandHistoryMenuFragment";
-    private LandHistoryMenuViewHolder viewHolder;
+    private LandHistoryListViewHolder viewHolder;
+    private LandViewModel vmLands;
 
     private final List<Object> data = new ArrayList<>();
     private final List<Land> lands = new ArrayList<>();
@@ -47,6 +51,7 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
         initActivity();
         initViewModel();
         initFragment(view);
+        initObservers();
     }
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -76,7 +81,11 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
     }
     private void initViewModel() {
         if(getActivity() != null){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+        }
+    }
+    private void initObservers(){
+        if(vmLands != null){
             onLoadingStatus(true);
             onLandUpdate(vmLands.getLandsList());
             onLandHistoryUpdate(vmLands.getLandsHistoryList());
@@ -87,11 +96,12 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
         }
     }
     private void initFragment(View view) {
-        viewHolder = new LandHistoryMenuViewHolder(
+        viewHolder = new LandHistoryListViewHolder(
                 view,
                 data,
                 this::onItemClick,
-                this::onItemLongClick
+                this::onItemLongClick,
+                getResources()
         );
     }
 
@@ -152,6 +162,47 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
             }
         }
 
+        debugList();
+    }
 
+    private void debugList() {
+        Log.d(TAG, "debugList:");
+        for(Object obj:data){
+            if(obj instanceof Land){
+                LandData data = ((Land)obj).getData();
+                Log.d(TAG, "Land:");
+                Log.d(TAG, data.getId()+" "+data.getCreator_id()+" "+data.getTitle()
+                );
+            }else if(obj instanceof LandRecord){
+                LandDataRecord data = ((LandRecord)obj).getLandData();
+                String action;
+                switch (data.getActionID()){
+                    case CREATE:
+                        action = "CREATE";
+                        break;
+                    case UPDATE:
+                        action = "UPDATE";
+                        break;
+                    case RESTORE:
+                        action = "RESTORE";
+                        break;
+                    case DELETE:
+                        action = "DELETE";
+                        break;
+                    default:
+                        action = "UNKNOWN";
+                        break;
+                }
+                Log.d(TAG,"LandRecord:");
+                Log.d(TAG,data.getId()+" "+data.getUserID()+" "+action);
+                Log.d(TAG,data.getLandID()+" "+data.getLandCreatorID()+" "+data.getLandTitle());
+            }else if(obj instanceof String){
+                String string = (String)obj;
+                Log.d(TAG, "String:");
+                Log.d(TAG, string);
+            }else{
+                Log.d(TAG, "unknown object on data list");
+            }
+        }
     }
 }

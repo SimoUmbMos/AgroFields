@@ -69,10 +69,10 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
         MainMenuHolder menuHolder = new MainMenuHolder(view);
 
         menuHolder.btnList.setOnClickListener(v -> toListMenu(getActivity()));
+        menuHolder.btnHistory.setOnClickListener(v -> toLandHistory(getActivity()));
 
-        //TODO: menu actions
-        menuHolder.btnHistory.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
-        menuHolder.btnFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show());
+
+        menuHolder.btnFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show()); //TODO: menu actions
 
         menuHolder.btnProfile.setOnClickListener(v -> toProfile(getActivity()));
         menuHolder.btnLogout.setOnClickListener(v -> vmUsers.logout());
@@ -84,17 +84,14 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initObservers() {
-        if(vmUsers != null && vmLands != null){
+        if(vmUsers != null){
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
         }
     }
 
     private void onCurrUserUpdate(User user) {
         if(user == null){
-            Log.d(TAG, "onUserUpdate: user null");
             toLogin(getActivity());
-        }else{
-            Log.d(TAG, "onUserUpdate: user not null");
         }
     }
 
@@ -103,6 +100,11 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
             if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.menuFragment)
                 navController.navigate(action);
         }
+    }
+    public void toLandHistory(@Nullable Activity activity) {
+        NavDirections action = MenuFragmentDirections.toLandHistory();
+        if(activity != null)
+            activity.runOnUiThread(()->navigate(action));
     }
     public void toListMenu(@Nullable Activity activity) {
         NavDirections action = MenuFragmentDirections.toListMenu();

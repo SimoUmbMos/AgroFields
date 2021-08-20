@@ -21,4 +21,6 @@ public interface LandRepository {
     void deleteLand(Land land);
     void deleteLandRecord(LandRecord landRecord);
     void deleteLandsByUser(User user);
+
+    boolean landExist(Land newLand);
 }

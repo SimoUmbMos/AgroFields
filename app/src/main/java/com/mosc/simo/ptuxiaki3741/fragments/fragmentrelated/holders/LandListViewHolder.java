@@ -10,14 +10,14 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.adapter.LandListAdapter;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 
-public class LandListRecycleViewHolder {
+public class LandListViewHolder {
     private final LandListAdapter adapter;
     private RecyclerView recyclerView;
     private TextView emptyRv, loadingRv;
     private boolean isLoading,showRecyclerView;
-    public LandListRecycleViewHolder(View view, LandViewModel vmLands,
-                                     LandListAdapter.OnLandClick onLandClick,
-                                     LandListAdapter.OnLandLongClick onLandLongClick) {
+    public LandListViewHolder(View view, LandViewModel vmLands,
+                              LandListAdapter.OnLandClick onLandClick,
+                              LandListAdapter.OnLandLongClick onLandLongClick) {
         isLoading = false;
         showRecyclerView = vmLands.getLandsList().size() > 0;
         adapter = new LandListAdapter(vmLands, onLandClick, onLandLongClick);

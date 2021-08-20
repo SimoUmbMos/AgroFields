@@ -30,6 +30,9 @@
         <action
             android:id="@+id/toUserProfile"
             app:destination="@id/userProfileFragment" />
+        <action
+            android:id="@+id/toLandHistory"
+            app:destination="@id/landHistoryMenuFragment" />
     </fragment>
     <fragment android:id="@+id/landListFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LandListFragment"
@@ -78,4 +81,9 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserProfileFragment"
         android:label="fragment_user_profile"
         tools:layout="@layout/fragment_user_profile" />
+    <fragment
+        android:id="@+id/landHistoryMenuFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandHistoryMenuFragment"
+        android:label="fragment_land_history_menu"
+        tools:layout="@layout/fragment_land_history_menu" />
 </navigation>

@@ -94,10 +94,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
 
     private void onUserUpdate(User user) {
         if(user != null){
-            Log.d(TAG, "onUserUpdate: user not null");
             navigate(toMenu());
-        }else{
-            Log.d(TAG, "onUserUpdate: user null");
         }
     }
 
