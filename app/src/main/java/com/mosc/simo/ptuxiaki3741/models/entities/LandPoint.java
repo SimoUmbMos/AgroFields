@@ -22,7 +22,20 @@ public class LandPoint implements Parcelable,Comparable<LandPoint>{
     private final LatLng latLng;
 
     @Ignore
+    protected LandPoint(Parcel in) {
+        id = in.readLong();
+        lid = in.readLong();
+        position = in.readLong();
+        latLng = in.readParcelable(LatLng.class.getClassLoader());
+    }
+    @Ignore
     public LandPoint(long position, LatLng latLng) {
+        this.position = position;
+        this.latLng = latLng;
+    }
+    @Ignore
+    public LandPoint(long lid, long position, LatLng latLng) {
+        this.lid = lid;
         this.position = position;
         this.latLng = latLng;
     }
@@ -70,13 +83,6 @@ public class LandPoint implements Parcelable,Comparable<LandPoint>{
             return new LandPoint[size];
         }
     };
-    @Ignore
-    protected LandPoint(Parcel in) {
-        id = in.readLong();
-        lid = in.readLong();
-        position = in.readLong();
-        latLng = in.readParcelable(LatLng.class.getClassLoader());
-    }
 
     @Override
     public int describeContents() {

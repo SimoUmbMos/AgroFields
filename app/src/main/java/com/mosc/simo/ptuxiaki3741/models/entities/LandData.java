@@ -20,7 +20,22 @@ public class LandData implements Parcelable {
     private String title;
 
     @Ignore
+    protected LandData(Parcel in) {
+        id = in.readLong();
+        creator_id = in.readLong();
+        title = in.readString();
+    }
+    @Ignore
     public LandData(long creator_id, String title) {
+        this.id = -1;
+        this.creator_id = creator_id;
+        this.title = title;
+    }
+    @Ignore
+    public LandData(boolean setId,long creator_id, String title) {
+        if(setId){
+            this.id = -1;
+        }
         this.creator_id = creator_id;
         this.title = title;
     }
@@ -66,13 +81,6 @@ public class LandData implements Parcelable {
             return new LandData[size];
         }
     };
-
-    @Ignore
-    protected LandData(Parcel in) {
-        id = in.readLong();
-        creator_id = in.readLong();
-        title = in.readString();
-    }
 
     @Override
     public int describeContents() {

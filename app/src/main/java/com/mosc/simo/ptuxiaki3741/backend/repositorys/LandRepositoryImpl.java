@@ -83,7 +83,14 @@ public class LandRepositoryImpl implements LandRepository {
         LandData landData = land.getData();
         List<LandPoint> landPoints = land.getBorder();
         if(landData != null){
-            long id = db.landDao().insert(landData);
+            long id;
+            if(landData.getId() != -1){
+                id = db.landDao().insert(landData);
+            }else{
+                id = db.landDao().insert(
+                        new LandData(false,landData.getCreator_id(),landData.getTitle())
+                );
+            }
             landData.setId(id);
             land.setData(landData);
             if(landPoints.size()>0){

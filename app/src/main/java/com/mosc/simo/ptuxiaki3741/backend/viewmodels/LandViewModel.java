@@ -151,23 +151,17 @@ public class LandViewModel extends AndroidViewModel {
     public void saveLand(Land land, User user){
         isLoadingLands.setValue(true);
         isLoadingLandRecords.setValue(true);
+        clearLands();
+        clearLandsRecords();
         AsyncTask.execute(()->{
             List<LandPoint> landPoints = new ArrayList<>(land.getBorder());
-            Land newLand = landRepository.saveLand(land);
-
-            //TODO CHECK
             LandDBAction action;
-            if(indexOfLand(newLand) == -1){
-                action = LandDBAction.CREATE;
-                Log.d("LandViewModel", "saveLand: CREATE");
-            }else{
+            if(land.getData().getId() != -1){
                 action = LandDBAction.UPDATE;
-                Log.d("LandViewModel", "saveLand: UPDATE");
+            }else{
+                action = LandDBAction.CREATE;
             }
-
-            clearLands();
-            clearLandsRecords();
-
+            Land newLand = landRepository.saveLand(land);
             LandRecord landRecord = new LandRecord(
                     newLand.getData(),
                     landPoints,
@@ -285,16 +279,4 @@ public class LandViewModel extends AndroidViewModel {
             removeLands(returnSelectedLands(),currUser);
         }
     }
-    private int indexOfLand(Land land) {
-        if(land != null){
-            List<Land> lands = getLandsList();
-            for(int i = 0; i < lands.size(); i ++){
-                if(lands.get(i).getData().getId() == land.getData().getId()){
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
-
 }

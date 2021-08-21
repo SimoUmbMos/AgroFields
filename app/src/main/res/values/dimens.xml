@@ -11,4 +11,6 @@
     <dimen name="login_button_margin_end_small">16dp</dimen>
     <dimen name="login_button_margin_start_big">32dp</dimen>
     <dimen name="login_button_margin_end_big">32dp</dimen>
+    <!-- List margin metrics -->
+    <dimen name="list_history_item_margin">16dp</dimen>
 </resources>
