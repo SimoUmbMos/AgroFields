@@ -57,8 +57,8 @@
     <string name="profile_title_2"> </string>
     <string name="change_terrain_type">Αλλαγή τύπου εδάφους</string>
     <string name="loading_list">Η λίστα φορτώνεται</string>
-    <string name="delete_lands_title">Άλλα διαγραμμένα χωράφια</string>
     <string name="toggle_history_list">Επέκταση λίστας</string>
     <string name="land_history">Ιστορικό χωραφιών</string>
+    <string name="address_hint">" Διεύθυνση"</string>
 
 </resources>

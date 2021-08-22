@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ public class LandListViewHolder {
         initRecyclerView(view);
     }
 
+    //todo change if possible
+    @SuppressLint("NotifyDataSetChanged")
     public void notifyItemsChanged() {
         adapter.notifyDataSetChanged();
     }

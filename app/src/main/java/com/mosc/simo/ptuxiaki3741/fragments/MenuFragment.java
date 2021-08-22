@@ -12,7 +12,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.MainMenuHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
@@ -29,7 +27,6 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 public class MenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="MenuFragment";
 
-    private LandViewModel vmLands;
     private UserViewModel vmUsers;
     private NavController navController;
 
@@ -79,7 +76,6 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
     }
     private void initViewModels() {
         if(getActivity() != null){
-            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         }
     }
@@ -97,7 +93,7 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
 
     private void navigate(NavDirections action){
         if(action != null){
-            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.menuFragment)
+            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.MainMenuFragment)
                 navController.navigate(action);
         }
     }

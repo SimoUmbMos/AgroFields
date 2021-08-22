@@ -19,6 +19,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +74,15 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
     private void initView(){
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        if(mapFragment != null){
-            mapFragment.getMapAsync(this);
-        }else{
-            setResult(RESULT_CANCELED);
-            finish();
+        if(UIUtil.isGooglePlayServicesAvailable(this)){
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            if(mapFragment != null){
+                mapFragment.getMapAsync(this);
+            }else{
+                setResult(RESULT_CANCELED);
+                finish();
+            }
         }
     }
     private void initMap(){

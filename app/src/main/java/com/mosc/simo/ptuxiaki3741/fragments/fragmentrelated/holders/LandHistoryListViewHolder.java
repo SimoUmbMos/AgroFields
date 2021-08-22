@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ public class LandHistoryListViewHolder {
     public LandHistoryListViewHolder(
             View view,
             List<LandHistoryList> data,
+            LandHistoryListAdapter.OnRecordClick onRecordClick,
             Resources res
     ){
         isLoading = false;
@@ -37,7 +39,7 @@ public class LandHistoryListViewHolder {
         );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        adapter = new LandHistoryListAdapter(data);
+        adapter = new LandHistoryListAdapter(data,onRecordClick);
         recyclerView.setAdapter(adapter);
     }
 
@@ -65,6 +67,8 @@ public class LandHistoryListViewHolder {
         }
     }
 
+    //todo change if possible
+    @SuppressLint("NotifyDataSetChanged")
     public void update() {
         adapter.notifyDataSetChanged();
         checkIfAdapterIsPopulated();

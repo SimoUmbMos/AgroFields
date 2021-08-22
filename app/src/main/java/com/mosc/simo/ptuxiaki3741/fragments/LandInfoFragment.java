@@ -36,30 +36,41 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     private User currUser;
     private boolean isNew = false;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
+    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_land_info, container, false);
     }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view,getArguments());
     }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.empty_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public boolean onBackPressed() {
+    @Override public void onSubmit(String landName,String address) {
+        closeKeyboard();
+        landName = landName.replaceAll(
+                "[^a-zA-Z0-9]", " ");
+        landName = landName.trim().replaceAll(" +", " ");
+        if(!landName.isEmpty()){
+            if(isNew){
+                submitAdd(landName, address);
+            }else{
+                submitEdit(landName);
+            }
+        }
+    }
+    @Override public void onCancel() {
+        closeKeyboard();
+        finish();
+    }
+    @Override public boolean onBackPressed() {
         return true;
     }
 
@@ -91,28 +102,9 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     }
     private void initHolders(View view) {
         LandInfoHolder landInfoHolder = new LandInfoHolder(view, getResources(), this);
-        landInfoHolder.init(land);
+        landInfoHolder.init(getActivity(),land);
     }
 
-    @Override
-    public void onSubmit(String landName) {
-        closeKeyboard();
-        landName = landName.replaceAll(
-                "[^a-zA-Z0-9]", " ");
-        landName = landName.trim().replaceAll(" +", " ");
-        if(!landName.isEmpty()){
-            if(isNew){
-                submitAdd(landName);
-            }else{
-                submitEdit(landName);
-            }
-        }
-    }
-    @Override
-    public void onCancel() {
-        closeKeyboard();
-        finish();
-    }
     private void onCurrUserUpdate(User user) {
         if(user != null){
             Log.d(TAG, "onUserUpdate: user not null");
@@ -131,10 +123,10 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
                         InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
-    private void submitAdd(String landName) {
+    private void submitAdd(String landName, String address) {
         if(currUser != null){
             LandData landData = new LandData(currUser.getId(),landName);
-            navigate(toLandMap(new Land(landData)));
+            navigate(toLandMap(new Land(landData),address));
         }
     }
     private void submitEdit(String landName) {
@@ -147,10 +139,15 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     }
     private void navigate(NavDirections action){
         NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landInfoFragment)
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandInfoFragment)
             navController.navigate(action);
     }
     private NavDirections toLandMap(Land land){
-        return  LandInfoFragmentDirections.toLandMap(land);
+        return LandInfoFragmentDirections.toLandMap(land);
+    }
+    private NavDirections toLandMap(Land land,String address){
+        LandInfoFragmentDirections.ToLandMap action = LandInfoFragmentDirections.toLandMap(land);
+        action.setAddress(address);
+        return action;
     }
 }

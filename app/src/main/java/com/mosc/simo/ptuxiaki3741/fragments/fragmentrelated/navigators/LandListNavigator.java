@@ -20,7 +20,7 @@ public class LandListNavigator {
 
     private void navigate(NavDirections action){
         if(action != null){
-            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.landListFragment)
+            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandListFragment)
                 navController.navigate(action);
         }
     }

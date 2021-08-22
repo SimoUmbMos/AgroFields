@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -61,5 +62,17 @@ public class LandUtil {
             }
         }
         return recordsList;
+    }
+
+    public static List<LatLng> getLatLngPoints(Land land){
+        List<LatLng> points = new ArrayList<>();
+        if(land != null){
+            if(land.getBorder() != null){
+                for (int i = 0; i < land.getBorder().size();i++){
+                    points.add(land.getBorder().get(i).getLatLng());
+                }
+            }
+        }
+        return points;
     }
 }

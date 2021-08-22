@@ -2,7 +2,6 @@ package com.mosc.simo.ptuxiaki3741.backend.viewmodels;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;

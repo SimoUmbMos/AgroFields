@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.LandHistoryList;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
 
@@ -23,9 +23,11 @@ import java.util.Locale;
 public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryListAdapter.ItemViewHolder>{
     private static final int TextViewMargin = 8;
     private final List<LandHistoryList> data;
+    private final OnRecordClick onRecordClick;
 
-    public LandHistoryListAdapter(List<LandHistoryList> list){
+    public LandHistoryListAdapter(List<LandHistoryList> list, OnRecordClick onRecordClick){
         this.data = list;
+        this.onRecordClick = onRecordClick;
     }
 
     @NonNull
@@ -45,7 +47,7 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         if(position < data.size()){
-            holder.setupViewHolder(data.get(position));
+            holder.setupViewHolder(data.get(position),onRecordClick);
         }
     }
 
@@ -67,10 +69,10 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
             llHistoryRoot = view.findViewById(R.id.llHistoryRoot);
             llHistoryRoot.setVisibility(View.GONE);
         }
-        public void setupViewHolder(LandHistoryList item){
+        public void setupViewHolder(LandHistoryList item, OnRecordClick onRecordClick){
             if(item!=null){
                 if(item.getLand()!=null){
-                    setupItemData(item);
+                    setupItemData(item,onRecordClick);
                 }else{
                     v.setVisibility(View.GONE);
                 }
@@ -78,10 +80,19 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
                 v.setVisibility(View.GONE);
             }
         }
-        public void setupItemData(LandHistoryList item) {
-            tvLandTitle.setText(item.getLand().getData().getTitle());
+        public void setupItemData(LandHistoryList item, OnRecordClick onRecordClick) {
+            String title = item.getLand().getData().getTitle();
+            if(item.getLandRecords().size()>0){
+                if(
+                        item.getLandRecords().get(item.getLandRecords().size()-1)
+                            .getLandData().getActionID() == LandDBAction.DELETE
+                ){
+                    title = title + " - Deleted";
+                }
+            }
+            tvLandTitle.setText(title);
             tvLandTitle.setOnClickListener(v->toggleList());
-            DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss - dd/MM/yyyy", Locale.getDefault());
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy", Locale.getDefault());
             for(LandRecord record : item.getLandRecords()){
                 TextView textView = new TextView(v.getContext());
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -93,26 +104,27 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
                 String action;
                 switch (record.getLandData().getActionID()){
                     case CREATE:
-                        action = "CREATE";
+                        action = "Created";
                         break;
                     case UPDATE:
-                        action = "UPDATE";
+                        action = "Updated";
                         break;
                     case RESTORE:
-                        action = "RESTORE";
+                        action = "Restore";
                         break;
                     case DELETE:
-                        action = "DELETE";
+                        action = "Deleted";
                         break;
                     default:
                         action = "";
                         break;
                 }
                 String display =
-                        dateFormat.format(record.getLandData().getDate()) + " " +
-                                action + " : " +
+                        dateFormat.format(record.getLandData().getDate()) + ": " +
+                                action + " " +
                                 record.getLandData().getLandTitle();
                 textView.setText(display);
+                textView.setOnClickListener(v->onRecordClick.onRecordClick(record));
                 llHistoryRoot.addView(textView);
             }
         }
@@ -123,5 +135,9 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
                 llHistoryRoot.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    public interface OnRecordClick{
+        void onRecordClick(LandRecord record);
     }
 }

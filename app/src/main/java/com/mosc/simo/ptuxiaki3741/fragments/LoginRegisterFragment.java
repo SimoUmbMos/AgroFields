@@ -210,8 +210,9 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
             vmUsers.singIn(user);
         }else{
             if(getActivity() != null) {
+                boolean isValidUsername = vmUsers.checkUserNameCredentials(tempUser) != null;
                 getActivity().runOnUiThread(() -> {
-                    if (vmUsers.checkUserNameCredentials(tempUser) != null) {
+                    if (isValidUsername) {
                         viewHolder.showError(LoginRegisterError.PasswordWrongError);
                     } else {
                         viewHolder.showError(LoginRegisterError.UserNameWrongError);
@@ -269,10 +270,10 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
 
     private void navigate(NavDirections action){
         NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.loginRegisterFragment)
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LoginFragment)
             navController.navigate(action);
     }
     private NavDirections toMenu(){
-        return  LoginRegisterFragmentDirections.toMenu();
+        return LoginRegisterFragmentDirections.toMenu();
     }
 }

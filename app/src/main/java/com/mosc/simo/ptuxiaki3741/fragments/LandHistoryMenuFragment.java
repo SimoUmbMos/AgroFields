@@ -7,6 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,8 +21,10 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.adapter.LandHistoryListAdapter;
 import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandHistoryListViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistoryList;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
@@ -27,7 +32,10 @@ import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandHistoryMenuFragment extends Fragment implements FragmentBackPress {
+public class LandHistoryMenuFragment
+        extends Fragment
+        implements FragmentBackPress, LandHistoryListAdapter.OnRecordClick
+{
     public static final String TAG = "LandHistoryMenuFragment";
     private LandHistoryListViewHolder viewHolder;
     private LandViewModel vmLands;
@@ -35,27 +43,23 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
     private final List<LandHistoryList> data = new ArrayList<>();
     private final List<LandRecord> history = new ArrayList<>();
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_land_history_menu, container, false);
     }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
         initViewModel();
         initFragment(view);
         initObservers();
     }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.land_history_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_item_toggle_land_history_lists) {
             if(viewHolder != null){
                 if(viewHolder.areAllListsVisible()){
@@ -67,9 +71,13 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public boolean onBackPressed() {
+    @Override public boolean onBackPressed() {
         return true;
+    }
+    @Override public void onRecordClick(LandRecord record){
+        Land land = LandUtil.getLandFromLandRecord(record);
+        if(land != null)
+            navigate(toLandMap(land));
     }
 
     private void initActivity() {
@@ -93,6 +101,7 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
         viewHolder = new LandHistoryListViewHolder(
                 view,
                 data,
+                this,
                 getResources()
         );
     }
@@ -122,4 +131,18 @@ public class LandHistoryMenuFragment extends Fragment implements FragmentBackPre
         viewHolder.isLoading(isLoading);
     }
 
+    private void navigate(NavDirections action){
+        NavController navController = NavHostFragment.findNavController(this);
+        if(
+                navController.getCurrentDestination() == null ||
+                        navController.getCurrentDestination().getId() == R.id.LandHistoryFragment
+        )
+            navController.navigate(action);
+    }
+    private NavDirections toLandMap(Land land){
+        LandHistoryMenuFragmentDirections.ToLandMap action =
+                LandHistoryMenuFragmentDirections.toLandMap(land);
+        action.setDisplayMode(true);
+        return action;
+    }
 }

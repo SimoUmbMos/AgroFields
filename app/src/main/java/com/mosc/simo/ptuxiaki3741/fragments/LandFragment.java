@@ -4,8 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Address;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -50,6 +54,7 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,20 +65,23 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     public static final String TAG = "LandFragment";
     public static final double distanceToMapActionKM = 1, defaultRadius = 5;
     private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
-            maxZoom = 7f, minZoom = 0.1f;
+            maxZoom = 7f, minZoom = 0.1f, addressZoom = 10;
     public static final int defaultPadding = 64;
     private LandActionStates mapStatus;
     private LandFileState fileState;
     private float zoom, dx, dy, x, y;
     private int index1, index2, index3;
+    private boolean displayOnly = false;
 
     public ActionBar actionBar;
     private LandMapViewHolder viewHolder;
     private GoogleMap mMap;
+    private Menu menu;
 
     private List<LatLng> points,startPoints;
     private List<List<LatLng>> undoList;
     private User currUser;
+    private String address;
     private long currLandID;
     private String title;
 
@@ -145,37 +153,32 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     }
 
     // overrides
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
+    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_land_map, container, false);
     }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
         initData();
         initViewModel();
         initViews(view);
     }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.map_menu, menu);
+        this.menu = menu;
+        setupMenuItems();
         super.onCreateOptionsMenu(menu, inflater);
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(menuItemClick(item)){
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    @Override public boolean onTouch(View v, MotionEvent event) {
         if(viewHolder != null){
             if(viewHolder.imageView.getVisibility() == View.VISIBLE){
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -201,8 +204,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         }
         return true;
     }
-    @Override
-    public boolean onBackPressed() {
+    @Override public boolean onBackPressed() {
         if(viewHolder.drawer.isDrawerOpen(GravityCompat.END)){
             viewHolder.drawer.closeDrawer(GravityCompat.END);
             return false;
@@ -225,6 +227,9 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     }
     private void initData() {
         Land currLand = LandFragmentArgs.fromBundle(getArguments()).getLand();
+        address = LandFragmentArgs.fromBundle(getArguments()).getAddress();
+        displayOnly = LandFragmentArgs.fromBundle(getArguments()).getDisplayMode();
+        setupMenuItems();
         points = new ArrayList<>();
         if(!new Land().equals(currLand)){
             currLandID = currLand.getData().getId();
@@ -237,6 +242,12 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
             title = "";
         }
         startPoints = new ArrayList<>(points);
+        if(address == null){
+            Log.d(TAG, "address: null");
+            asyncFindLocation();
+        }else{
+            Log.d(TAG, "address: not null");
+        }
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
         currUser = null;
@@ -252,16 +263,23 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     private void initViews(View view) {
         viewHolder = new LandMapViewHolder(view);
         viewHolder.navDrawer.setNavigationItemSelectedListener(this::menuItemClick);
+        viewHolder.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         if(startPoints.size() > 0){
             viewHolder.resetAll.setTitle(getString(R.string.reset_points));
         }else{
             viewHolder.resetAll.setTitle(getString(R.string.clear_points));
         }
         clearTitle();
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this::initMap);
+        if(UIUtil.isGooglePlayServicesAvailable(getActivity())){
+            SupportMapFragment mapFragment =
+                    (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            if (mapFragment != null) {
+                mapFragment.getMapAsync(this::initMap);
+            }
+        }else{
+            viewHolder.terrainButton.setVisibility(View.GONE);
+            displayOnly = true;
+            setupMenuItems();
         }
     }
     private void initMap(GoogleMap googleMap) {
@@ -276,12 +294,12 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         googleMap.setOnMapLongClickListener(this::processClick);
         googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
         viewHolder.terrainButton.setOnClickListener(v -> changeMapType());
+        if(displayOnly)
+            toggleMapLock();
     }
     private void mapFullLoaded() {
-        if(points.size() > 0){
-            drawMap();
-            zoomOnPoints();
-        }
+        drawMap();
+        zoomOnPoints();
     }
 
     //land and user data getter setter
@@ -376,7 +394,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         NavController navController = NavHostFragment.findNavController(this);
         if(
                 navController.getCurrentDestination() == null ||
-                navController.getCurrentDestination().getId() == R.id.landMapFragment
+                navController.getCurrentDestination().getId() == R.id.LandMapFragment
         )
             navController.navigate(action);
     }
@@ -402,6 +420,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     }
     private boolean isValidToSave() {
         return
+                !displayOnly &&
                 points.size() > 2 &&
                 !title.trim().isEmpty() &&
                 currUser != null;
@@ -426,22 +445,26 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         mMap.clear();
         if(points.size() > 0){
             mMap.addPolygon(new PolygonOptions().addAll(points));
-            if(points.size()<25){
+            if(points.size()<25 && !displayOnly){
                 for(LatLng point : points){
                     mMap.addCircle(new CircleOptions().center(point).radius(defaultRadius));
                 }
             }
+        }else if(address != null){
+            asyncMoveCameraOnLocation(getActivity());
         }
     }
     private void zoomOnPoints() {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for(LatLng point : points){
-            builder.include(point);
+        if(points.size() > 0){
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for(LatLng point : points){
+                builder.include(point);
+            }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                    builder.build(),
+                    defaultPadding
+            ));
         }
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                builder.build(),
-                defaultPadding
-        ));
     }
     private void changeMapType() {
         if(mMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID){
@@ -972,21 +995,66 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         }
     }
     private void toggleDrawer(boolean toggle) {
-        if(viewHolder != null){
-            if(toggle){
-                viewHolder.drawer.openDrawer(GravityCompat.END);
-                if(
-                        mapStatus == LandActionStates.Move &&
-                        viewHolder.terrainButton.getVisibility() != View.VISIBLE
-                ){
-                    toggleMapLock();
+        if(!displayOnly){
+            if(viewHolder != null){
+                if(toggle){
+                    viewHolder.drawer.openDrawer(GravityCompat.END);
+                    if(
+                            mapStatus == LandActionStates.Move &&
+                                    viewHolder.terrainButton.getVisibility() != View.VISIBLE
+                    ){
+                        toggleMapLock();
+                    }
+                    if(this.mapStatus != LandActionStates.Disable){
+                        setAction(LandActionStates.Disable);
+                    }
+                }else{
+                    viewHolder.drawer.closeDrawer(GravityCompat.END);
                 }
-                if(this.mapStatus != LandActionStates.Disable){
-                    setAction(LandActionStates.Disable);
-                }
-            }else{
-                viewHolder.drawer.closeDrawer(GravityCompat.END);
             }
+        }
+    }
+    private void setupMenuItems(){
+        if(menu != null){
+            MenuItem menuToggle = menu.findItem(R.id.menu_item_toggle_drawer);
+            MenuItem menuSave = menu.findItem(R.id.menu_item_save_land);
+            menuToggle.setVisible(!displayOnly);
+            menuToggle.setEnabled(!displayOnly);
+            menuSave.setVisible(!displayOnly);
+            menuSave.setEnabled(!displayOnly);
+        }
+    }
+    private void asyncFindLocation() {
+        AsyncTask.execute(()->{
+            Address temp = MapUtil.findLocation(
+                    getContext(),
+                    MapUtil.getPolygonCenter(startPoints)
+            );
+            if(temp != null){
+                if(temp.getLocality() != null){
+                    if(temp.getCountryName() != null){
+                        address = temp.getLocality()+","+temp.getCountryName();
+                    }else{
+                        address = temp.getLocality();
+                    }
+                }
+            }
+        });
+    }
+    private void asyncMoveCameraOnLocation(Activity activity) {
+        if(activity != null){
+            AsyncTask.execute(()->{
+                Address location = MapUtil.findLocation(getContext(),address);
+                if(location != null){
+                    if(location.hasLatitude() && location.hasLongitude()){
+                        activity.runOnUiThread(()->
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(location.getLatitude(),location.getLongitude()),
+                                        addressZoom
+                                )));
+                    }
+                }
+            });
         }
     }
 }

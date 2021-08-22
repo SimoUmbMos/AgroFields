@@ -1,21 +1,83 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.util.Log;
+
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.PointCollection;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MapUtil {
+    public static final String TAG = "MapUtil";
+
+    public static Address findLocation(Context c, String a){
+        if(a != null){
+            String address = a.trim();
+            if(!address.isEmpty()){
+                try{
+                    Geocoder geocoder = new Geocoder(c);
+                    List<Address> locations = geocoder.getFromLocationName(a,1);
+                    if(locations == null)
+                        return null;
+                    if(locations.size()>0)
+                        return locations.get(0);
+                }catch (Exception e){
+                    Log.e(TAG, "findLocation: ", e);
+                }
+            }
+        }
+        return null;
+    }
+    public static Address findLocation(Context c, LatLng latLng){
+        if(latLng != null){
+            try{
+                Geocoder geocoder = new Geocoder(c, Locale.getDefault());
+                List<Address> locations =
+                        geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+                if(locations == null)
+                    return null;
+                if(locations.size()>0){
+                    return locations.get(0);
+                }
+            }catch (Exception e){
+                Log.e(TAG, "findLocation: ", e);
+            }
+        }
+        return null;
+    }
+
+    public static LatLng getPolygonCenter(List<LatLng> points){
+        if(points != null){
+            if(points.size() > 0){
+                LatLng center;
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for(int i = 0 ; i < points.size() ; i++) {
+                    builder.include(points.get(i));
+                }
+                LatLngBounds bounds = builder.build();
+                center =  bounds.getCenter();
+
+                return center;
+            }
+        }
+        return null;
+    }
 
     public static int closestPoint(List<LatLng> points,LatLng point) {
         double smallestDistance = -1, distance;
@@ -201,7 +263,7 @@ public class MapUtil {
         return intersectionsList;
     }
 
-    private static com.esri.arcgisruntime.geometry.Polygon convert(List<LatLng> p){
+    @Nullable private static com.esri.arcgisruntime.geometry.Polygon convert(List<LatLng> p){
         PointCollection polygonPoints = new PointCollection(SpatialReferences.getWgs84());
         if(p !=null) {
             for(LatLng ll : p){
