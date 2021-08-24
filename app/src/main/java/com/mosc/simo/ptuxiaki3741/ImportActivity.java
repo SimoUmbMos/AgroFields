@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,7 +62,9 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         polyList = new ArrayList<>();
         Intent intent = getIntent();
         if(intent != null){
+            Log.d(TAG, "init: intent not null");
             if(intent.getExtras() != null){
+                Log.d(TAG, "init: intent extra not null");
                 long id = intent.getExtras().getLong(userName,-1);
                 AsyncTask.execute(()->
                         onUserUpdate(MainActivity.getRoomDb(this).userDao().getUserById(id))
@@ -69,6 +72,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
             }
             polyList.addAll(FileUtil.handleFile(getApplicationContext(),intent));
         }else{
+            Log.d(TAG, "init: intent null");
             setResult(RESULT_CANCELED);
             finish();
         }
@@ -76,13 +80,16 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
     private void initView(){
         if(UIUtil.isGooglePlayServicesAvailable(this)){
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
+                    .findFragmentById(R.id.ImportActivityRoot);
             if(mapFragment != null){
                 mapFragment.getMapAsync(this);
             }else{
                 setResult(RESULT_CANCELED);
                 finish();
             }
+        }else{
+            setResult(RESULT_CANCELED);
+            finish();
         }
     }
     private void initMap(){

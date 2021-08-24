@@ -1,6 +1,9 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.location.Address;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,32 +22,44 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandInfoBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandInfoHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.util.LandUtil;
+import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
-public class LandInfoFragment extends Fragment implements FragmentBackPress, LandInfoHolder.LandInfoHolderActions {
+public class LandInfoFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
     private Land land;
     private User currUser;
+    private FragmentLandInfoBinding binding;
     private boolean isNew = false;
 
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_land_info, container, false);
+        binding = FragmentLandInfoBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init(view,getArguments());
+        initActivity();
+        initData();
+        initViewModel();
+        initView();
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.empty_menu, menu);
@@ -53,7 +68,139 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-    @Override public void onSubmit(String landName,String address) {
+    @Override public boolean onBackPressed() {
+        return true;
+    }
+
+    private void initActivity(){
+        MainActivity activity = (MainActivity) getActivity();
+        ActionBar actionBar = null;
+        if (activity != null) {
+            activity.setOnBackPressed(this);
+            actionBar = activity.getSupportActionBar();
+        }
+        if(actionBar != null){
+            actionBar.setTitle("");
+            actionBar.hide();
+        }
+    }
+    private void initData() {
+        land = LandInfoFragmentArgs.fromBundle(getArguments()).getLand();
+        if(new Land().equals(land)){
+            land = null;
+            isNew = true;
+        }else{
+            isNew = false;
+        }
+    }
+    private void initViewModel(){
+        if(getActivity() != null){
+            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            currUser = vmUsers.getCurrUser().getValue();
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
+        }
+    }
+    private void initView() {
+        binding.etLandInfoName.setOnEditorActionListener((v, actionId, event) -> {
+            if (
+                    actionId == EditorInfo.IME_ACTION_DONE &&
+                    binding.etLandInfoName.getText()!=null &&
+                    binding.etLandInfoAddress.getText()!=null
+            ) {
+                onSubmit(
+                        binding.etLandInfoName.getText().toString(),
+                        binding.etLandInfoAddress.getText().toString()
+                );
+                return true;
+            }
+            return false;
+        });
+        binding.etLandInfoAddress.setOnEditorActionListener((v, actionId, event) -> {
+            if (
+                    actionId == EditorInfo.IME_ACTION_DONE &&
+                    binding.etLandInfoName.getText()!=null &&
+                    binding.etLandInfoAddress.getText()!=null
+            ) {
+                onSubmit(
+                        binding.etLandInfoName.getText().toString(),
+                        binding.etLandInfoAddress.getText().toString()
+                );
+                return true;
+            }
+            return false;
+        });
+        binding.btnLandInfoSubmit.setOnClickListener(v->{
+            if(
+                    binding.etLandInfoName.getText()!=null &&
+                    binding.etLandInfoAddress.getText()!=null
+            ){
+                onSubmit(
+                        binding.etLandInfoName.getText().toString(),
+                        binding.etLandInfoAddress.getText().toString()
+                );
+            }
+        });
+
+        binding.btnLandInfoCancel.setOnClickListener(v->onCancel());
+
+        String landLabel;
+        if(land == null){
+            landLabel = getResources().getString(R.string.create_land_label);
+            binding.etLandInfoAddress.setEnabled(true);
+        }else{
+            landLabel = getResources().getString(R.string.edit_land_label);
+            binding.etLandInfoName.setText(land.getData().getTitle());
+            binding.etLandInfoAddress.setEnabled(false);
+            asyncFindAddress(getActivity(),land);
+        }
+        binding.tvLandInfoActionLabel.setText(landLabel);
+    }
+
+    //ui
+    private void onCurrUserUpdate(User user) {
+        if(user != null){
+            Log.d(TAG, "onUserUpdate: user not null");
+        }else{
+            Log.d(TAG, "onUserUpdate: user null");
+        }
+        currUser = user;
+    }
+    private void closeKeyboard() {
+        if(getActivity() != null && getActivity().getCurrentFocus() != null){
+            InputMethodManager inputManager = (InputMethodManager)
+                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if(inputManager != null)
+                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+    private void asyncFindAddress(Activity activity, Land land) {
+        if(activity != null){
+            AsyncTask.execute(()->{
+                Address address = MapUtil.findLocation(
+                        activity,
+                        MapUtil.getPolygonCenter(LandUtil.getLatLngPoints(land))
+                );
+                if(address!= null){
+                    String tempDisplay = null;
+                    if(address.getLocality() != null){
+                        if(address.getCountryName() != null){
+                            tempDisplay = address.getLocality()+", "+address.getCountryName();
+                        }else{
+                            tempDisplay = address.getLocality();
+                        }
+                    }
+                    final String finalDisplay = tempDisplay;
+                    if(finalDisplay != null){
+                        activity.runOnUiThread(()->binding.etLandInfoAddress.setText(finalDisplay));
+                    }
+                }
+            });
+        }
+    }
+
+    //submit
+    public void onSubmit(String landName,String address) {
         closeKeyboard();
         landName = landName.replaceAll(
                 "[^a-zA-Z0-9]", " ");
@@ -66,63 +213,6 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
             }
         }
     }
-    @Override public void onCancel() {
-        closeKeyboard();
-        finish();
-    }
-    @Override public boolean onBackPressed() {
-        return true;
-    }
-
-    private void init(View view, Bundle arguments) {
-        initData(arguments);
-        MainActivity activity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
-        if (activity != null) {
-            activity.setOnBackPressed(this);
-            UserViewModel vmUsers = new ViewModelProvider(activity).get(UserViewModel.class);
-            currUser = vmUsers.getCurrUser().getValue();
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-            actionBar = activity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle("");
-            actionBar.hide();
-        }
-        initHolders(view);
-    }
-    private void initData(Bundle arguments) {
-        land = LandInfoFragmentArgs.fromBundle(arguments).getLand();
-        if(new Land().equals(land)){
-            land = null;
-            isNew = true;
-        }else{
-            isNew = false;
-        }
-    }
-    private void initHolders(View view) {
-        LandInfoHolder landInfoHolder = new LandInfoHolder(view, getResources(), this);
-        landInfoHolder.init(getActivity(),land);
-    }
-
-    private void onCurrUserUpdate(User user) {
-        if(user != null){
-            Log.d(TAG, "onUserUpdate: user not null");
-        }else{
-            Log.d(TAG, "onUserUpdate: user null");
-        }
-        currUser = user;
-    }
-
-    private void closeKeyboard() {
-        if(getActivity() != null && getActivity().getCurrentFocus() != null){
-            InputMethodManager inputManager = (InputMethodManager)
-                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(inputManager != null)
-                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
     private void submitAdd(String landName, String address) {
         if(currUser != null){
             LandData landData = new LandData(currUser.getId(),landName);
@@ -133,10 +223,18 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress, Lan
         land.getData().setTitle(landName);
         navigate(toLandMap(land));
     }
+
+    //cancel
+    public void onCancel() {
+        closeKeyboard();
+        finish();
+    }
     private void finish() {
         if(getActivity() != null)
             getActivity().onBackPressed();
     }
+
+    //navigation
     private void navigate(NavDirections action){
         NavController navController = NavHostFragment.findNavController(this);
         if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandInfoFragment)

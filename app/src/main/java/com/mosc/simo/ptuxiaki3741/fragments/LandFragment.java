@@ -41,9 +41,9 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapBinding;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LandMapViewHolder;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -60,8 +60,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class LandFragment extends Fragment implements FragmentBackPress,View.OnTouchListener
-{
+public class LandFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
     public static final String TAG = "LandFragment";
     public static final double distanceToMapActionKM = 1, defaultRadius = 5;
     private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
@@ -74,7 +73,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     private boolean displayOnly = false;
 
     public ActionBar actionBar;
-    private LandMapViewHolder viewHolder;
+    private FragmentLandMapBinding binding;
     private GoogleMap mMap;
     private Menu menu;
 
@@ -84,6 +83,69 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     private String address;
     private long currLandID;
     private String title;
+
+    // overrides
+    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
+                                                 @Nullable ViewGroup container,
+                                                 @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        binding = FragmentLandMapBinding.inflate(inflater,container,false);
+        return binding.getRoot();
+    }
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initActivity();
+        initData();
+        initViewModel();
+        initViews();
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.map_menu, menu);
+        this.menu = menu;
+        setupMenuItems();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(menuItemClick(item)){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override public boolean onTouch(View v, MotionEvent event) {
+        if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_MOVE:
+                    if (event.getPointerCount() == 1) {
+                        imgTouchMove(event);
+                    }else{
+                        v.performClick();
+                    }
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    if (event.getPointerCount() == 1) {
+                        initImgTouch(event);
+                    }else{
+                        v.performClick();
+                    }
+                    break;
+                default:
+                    v.performClick();
+                    break;
+            }
+        }
+        return true;
+    }
+    @Override public boolean onBackPressed() {
+        if(binding.LandMapRoot.isDrawerOpen(GravityCompat.END)){
+            binding.LandMapRoot.closeDrawer(GravityCompat.END);
+            return false;
+        }
+        return true;
+    }
 
     //ActivityResultLauncher relative
     private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
@@ -152,66 +214,6 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         fileState = LandFileState.Disable;
     }
 
-    // overrides
-    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_land_map, container, false);
-    }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initActivity();
-        initData();
-        initViewModel();
-        initViews(view);
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.map_menu, menu);
-        this.menu = menu;
-        setupMenuItems();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(menuItemClick(item)){
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    @Override public boolean onTouch(View v, MotionEvent event) {
-        if(viewHolder != null){
-            if(viewHolder.imageView.getVisibility() == View.VISIBLE){
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_MOVE:
-                        if (event.getPointerCount() == 1) {
-                            imgTouchMove(event);
-                        }else{
-                            v.performClick();
-                        }
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-                        if (event.getPointerCount() == 1) {
-                            initImgTouch(event);
-                        }else{
-                            v.performClick();
-                        }
-                        break;
-                    default:
-                        v.performClick();
-                        break;
-                }
-            }
-        }
-        return true;
-    }
-    @Override public boolean onBackPressed() {
-        if(viewHolder.drawer.isDrawerOpen(GravityCompat.END)){
-            viewHolder.drawer.closeDrawer(GravityCompat.END);
-            return false;
-        }
-        return true;
-    }
-
     //init relative
     private void initActivity() {
         if(getActivity() != null){
@@ -260,24 +262,27 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::setCurrUser);
         }
     }
-    private void initViews(View view) {
-        viewHolder = new LandMapViewHolder(view);
-        viewHolder.navDrawer.setNavigationItemSelectedListener(this::menuItemClick);
-        viewHolder.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    private void initViews() {
+        binding.clLandControls.setVisibility(View.GONE);
+        binding.ivLandOverlay.setVisibility(View.GONE);
+        binding.flLandTouchLayer.setVisibility(View.GONE);
+        binding.navLandMenu.setNavigationItemSelectedListener(this::menuItemClick);
+        binding.LandMapRoot.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        MenuItem resetAll = binding.navLandMenu.getMenu().findItem(R.id.toolbar_action_clean);
         if(startPoints.size() > 0){
-            viewHolder.resetAll.setTitle(getString(R.string.reset_points));
+            resetAll.setTitle(getString(R.string.reset_points));
         }else{
-            viewHolder.resetAll.setTitle(getString(R.string.clear_points));
+            resetAll.setTitle(getString(R.string.clear_points));
         }
         clearTitle();
         if(UIUtil.isGooglePlayServicesAvailable(getActivity())){
             SupportMapFragment mapFragment =
-                    (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+                    (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapLandPoints);
             if (mapFragment != null) {
                 mapFragment.getMapAsync(this::initMap);
             }
         }else{
-            viewHolder.terrainButton.setVisibility(View.GONE);
+            binding.btnLandTerrain.setVisibility(View.GONE);
             displayOnly = true;
             setupMenuItems();
         }
@@ -293,7 +298,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         googleMap.setOnMapClickListener(this::processClick);
         googleMap.setOnMapLongClickListener(this::processClick);
         googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
-        viewHolder.terrainButton.setOnClickListener(v -> changeMapType());
+        binding.btnLandTerrain.setOnClickListener(v -> changeMapType());
         if(displayOnly)
             toggleMapLock();
     }
@@ -474,23 +479,25 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         }
     }
     private void toggleMapLock(){
+        MenuItem miLock = binding.navLandMenu.getMenu()
+                .findItem(R.id.toolbar_action_toggle_map_lock);
         if(mMap != null){
-            if(viewHolder.terrainButton.getVisibility() == View.GONE){
+            if(binding.btnLandTerrain.getVisibility() == View.GONE){
                 mMap.getUiSettings().setRotateGesturesEnabled(true);
                 mMap.getUiSettings().setScrollGesturesEnabled(true);
                 mMap.getUiSettings().setZoomGesturesEnabled(true);
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
-                viewHolder.terrainButton.setVisibility(View.VISIBLE);
-                viewHolder.miLock.setIcon(R.drawable.menu_ic_unlocked);
+                binding.btnLandTerrain.setVisibility(View.VISIBLE);
+                miLock.setIcon(R.drawable.menu_ic_unlocked);
             }else{
                 mMap.getUiSettings().setRotateGesturesEnabled(false);
                 mMap.getUiSettings().setScrollGesturesEnabled(false);
                 mMap.getUiSettings().setZoomGesturesEnabled(false);
                 mMap.getUiSettings().setZoomControlsEnabled(false);
                 mMap.getUiSettings().setCompassEnabled(false);
-                viewHolder.terrainButton.setVisibility(View.GONE);
-                viewHolder.miLock.setIcon(R.drawable.menu_ic_locked);
+                binding.btnLandTerrain.setVisibility(View.GONE);
+                miLock.setIcon(R.drawable.menu_ic_locked);
             }
         }
         if(this.mapStatus != LandActionStates.Disable && this.mapStatus != LandActionStates.Move){
@@ -627,10 +634,10 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
             clearUndo();
             switch (mapStatus){
                 case Move:
-                    if(viewHolder.imageView.getVisibility() == View.VISIBLE){
-                        viewHolder.touchLayer.setVisibility(View.VISIBLE);
-                        viewHolder.touchLayer.setOnTouchListener(this);
-                        if(viewHolder.terrainButton.getVisibility() == View.VISIBLE){
+                    if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
+                        binding.flLandTouchLayer.setVisibility(View.VISIBLE);
+                        binding.flLandTouchLayer.setOnTouchListener(this);
+                        if(binding.btnLandTerrain.getVisibility() == View.VISIBLE){
                             toggleMapLock();
                         }
                         setTitle(
@@ -643,7 +650,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                     }
                     break;
                 case Zoom:
-                    if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+                    if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
                         setTitle(
                                 getResources().getString(R.string.zoom_img),
                                 save -> saveAction(),
@@ -656,7 +663,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                     }
                     break;
                 case Alpha:
-                    if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+                    if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
                         setTitle(
                                 getResources().getString(R.string.opacity_img),
                                 save -> saveAction(),
@@ -669,7 +676,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                     }
                     break;
                 case Rotate:
-                    if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+                    if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
                         setTitle(
                                 getResources().getString(R.string.rotate_img),
                                 save -> saveAction(),
@@ -724,10 +731,10 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         index1 = -1;
         index2 = -1;
         index3 = -1;
-        if(viewHolder != null){
-            if(viewHolder.touchLayer.getVisibility() != View.GONE){
-                viewHolder.touchLayer.setVisibility(View.GONE);
-                viewHolder.touchLayer.setOnTouchListener(null);
+        if(binding != null){
+            if(binding.flLandTouchLayer.getVisibility() != View.GONE){
+                binding.flLandTouchLayer.setVisibility(View.GONE);
+                binding.flLandTouchLayer.setOnTouchListener(null);
             }
         }
     }
@@ -739,7 +746,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                 drawMap();
             }else if(
                 mapStatus == LandActionStates.Move &&
-                viewHolder.terrainButton.getVisibility() != View.VISIBLE
+                        binding.btnLandTerrain.getVisibility() != View.VISIBLE
             ){
                     toggleMapLock();
             }
@@ -755,24 +762,24 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                 undoPoints();
                 break;
             case Rotate:
-                viewHolder.imageView.animate()
+                binding.ivLandOverlay.animate()
                         .rotation(0)
                         .setDuration(0).start();
                 break;
             case Alpha:
-                viewHolder.imageView.animate()
+                binding.ivLandOverlay.animate()
                         .alpha(0.5f)
                         .setDuration(0).start();
                 break;
             case Zoom:
                 zoom=1f;
-                viewHolder.imageView.animate()
+                binding.ivLandOverlay.animate()
                         .scaleX(1f)
                         .scaleY(1f)
                         .setDuration(0).start();
                 break;
             case Move:
-                viewHolder.imageView.animate()
+                binding.ivLandOverlay.animate()
                         .translationX(0)
                         .translationY(0)
                         .setDuration(0).start();
@@ -805,9 +812,9 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     private void addOverlayImg(Uri data) {
         if(data != null){
             zoom = 1f;
-            viewHolder.imageView.setVisibility(View.VISIBLE);
-            viewHolder.imageView.setImageURI(data);
-            viewHolder.imageView.animate()
+            binding.ivLandOverlay.setVisibility(View.VISIBLE);
+            binding.ivLandOverlay.setImageURI(data);
+            binding.ivLandOverlay.animate()
                     .alpha(0.5f)
                     .rotation(0)
                     .scaleX(1f)
@@ -818,9 +825,9 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         }
     }
     private void removeOverlayImg() {
-        if(viewHolder.imageView.getVisibility() != View.GONE){
+        if(binding.ivLandOverlay.getVisibility() != View.GONE){
             zoom = 1f;
-            viewHolder.imageView.animate()
+            binding.ivLandOverlay.animate()
                     .alpha(0.5f)
                     .rotation(0)
                     .scaleX(1f)
@@ -828,27 +835,27 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                     .translationX(0)
                     .translationY(0)
                     .setDuration(0).start();
-            viewHolder.imageView.setImageDrawable(null);
-            viewHolder.imageView.setVisibility(View.GONE);
+            binding.ivLandOverlay.setImageDrawable(null);
+            binding.ivLandOverlay.setVisibility(View.GONE);
         }
     }
     private void plusAction(){
-        if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+        if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
             switch (mapStatus){
                 case Rotate:
-                    viewHolder.imageView.animate()
+                    binding.ivLandOverlay.animate()
                             .rotationBy(stepRotate)
                             .setDuration(0).start();
                     break;
                 case Alpha:
-                    viewHolder.imageView.animate()
+                    binding.ivLandOverlay.animate()
                             .alphaBy(stepOpacity)
                             .setDuration(0).start();
                     break;
                 case Zoom:
                     if((zoom+stepZoom)<maxZoom){
                         zoom+=stepZoom;
-                        viewHolder.imageView.animate()
+                        binding.ivLandOverlay.animate()
                                 .scaleXBy(stepZoom)
                                 .scaleYBy(stepZoom)
                                 .setDuration(0).start();
@@ -858,22 +865,22 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         }
     }
     private void minusAction(){
-        if(viewHolder.imageView.getVisibility() == View.VISIBLE){
+        if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
             switch (mapStatus){
                 case Rotate:
-                    viewHolder.imageView.animate()
+                    binding.ivLandOverlay.animate()
                             .rotationBy(-stepRotate)
                             .setDuration(0).start();
                     break;
                 case Alpha:
-                    viewHolder.imageView.animate()
+                    binding.ivLandOverlay.animate()
                             .alphaBy(-stepOpacity)
                             .setDuration(0).start();
                     break;
                 case Zoom:
                     if((zoom-stepZoom)>minZoom){
                         zoom-=stepZoom;
-                        viewHolder.imageView.animate()
+                        binding.ivLandOverlay.animate()
                                 .scaleXBy(-stepZoom)
                                 .scaleYBy(-stepZoom)
                                 .setDuration(0).start();
@@ -889,9 +896,9 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         y -= v;
         if(
             mapStatus == LandActionStates.Move &&
-            viewHolder.imageView.getVisibility() == View.VISIBLE
+                    binding.ivLandOverlay.getVisibility() == View.VISIBLE
         ){
-            viewHolder.imageView.animate()
+            binding.ivLandOverlay.animate()
                     .translationX(x)
                     .translationY(y)
                     .setDuration(0).start();
@@ -906,22 +913,22 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     private void initImgValues(MotionEvent ev) {
         dx = ev.getX();
         dy = ev.getY();
-        x = viewHolder.imageView.getX();
-        y = viewHolder.imageView.getY();
+        x = binding.ivLandOverlay.getX();
+        y = binding.ivLandOverlay.getY();
     }
 
     //ui relative
     private void clearTitle() {
         actionBar.setTitle(title);
-        viewHolder.clTab.setVisibility(View.GONE);
-        viewHolder.fabSave.setVisibility(View.GONE);
-        viewHolder.fabReset.setVisibility(View.GONE);
-        viewHolder.fabPlus.setVisibility(View.GONE);
-        viewHolder.fabMinus.setVisibility(View.GONE);
-        viewHolder.fabPlus.setOnClickListener(null);
-        viewHolder.fabMinus.setOnClickListener(null);
-        viewHolder.fabReset.setOnClickListener(null);
-        viewHolder.fabSave.setOnClickListener(null);
+        binding.clLandControls.setVisibility(View.GONE);
+        binding.fabLandActionSave.setVisibility(View.GONE);
+        binding.fabLandActionSave.setOnClickListener(null);
+        binding.fabLandActionReset.setVisibility(View.GONE);
+        binding.fabLandActionReset.setOnClickListener(null);
+        binding.fabLandActionPlus.setVisibility(View.GONE);
+        binding.fabLandActionPlus.setOnClickListener(null);
+        binding.fabLandActionMinus.setVisibility(View.GONE);
+        binding.fabLandActionMinus.setOnClickListener(null);
         clearFlags();
         clearUndo();
     }
@@ -945,23 +952,23 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     ) {
         if(s != null){
             actionBar.setTitle(title + "-" +s);
-            viewHolder.clTab.setVisibility(View.VISIBLE);
-            viewHolder.fabSave.setVisibility(View.VISIBLE);
-            viewHolder.fabReset.setVisibility(View.VISIBLE);
-            viewHolder.fabReset.setOnClickListener(reset);
-            viewHolder.fabSave.setOnClickListener(save);
+            binding.clLandControls.setVisibility(View.VISIBLE);
+            binding.fabLandActionSave.setVisibility(View.VISIBLE);
+            binding.fabLandActionSave.setOnClickListener(save);
+            binding.fabLandActionReset.setVisibility(View.VISIBLE);
+            binding.fabLandActionReset.setOnClickListener(reset);
         }else{
             actionBar.setTitle(title);
-            viewHolder.clTab.setVisibility(View.GONE);
-            viewHolder.fabSave.setVisibility(View.GONE);
-            viewHolder.fabReset.setVisibility(View.GONE);
-            viewHolder.fabReset.setOnClickListener(null);
-            viewHolder.fabSave.setOnClickListener(null);
+            binding.clLandControls.setVisibility(View.GONE);
+            binding.fabLandActionSave.setVisibility(View.GONE);
+            binding.fabLandActionSave.setOnClickListener(null);
+            binding.fabLandActionReset.setVisibility(View.GONE);
+            binding.fabLandActionReset.setOnClickListener(null);
         }
-        viewHolder.fabPlus.setVisibility(View.GONE);
-        viewHolder.fabMinus.setVisibility(View.GONE);
-        viewHolder.fabPlus.setOnClickListener(null);
-        viewHolder.fabMinus.setOnClickListener(null);
+        binding.fabLandActionPlus.setVisibility(View.GONE);
+        binding.fabLandActionPlus.setOnClickListener(null);
+        binding.fabLandActionMinus.setVisibility(View.GONE);
+        binding.fabLandActionMinus.setOnClickListener(null);
     }
     private void setTitle(
             String s,
@@ -972,36 +979,36 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
     ) {
         if(s != null){
             actionBar.setTitle(title + "-" +s);
-            viewHolder.clTab.setVisibility(View.VISIBLE);
-            viewHolder.fabSave.setVisibility(View.VISIBLE);
-            viewHolder.fabReset.setVisibility(View.VISIBLE);
-            viewHolder.fabPlus.setVisibility(View.VISIBLE);
-            viewHolder.fabMinus.setVisibility(View.VISIBLE);
-            viewHolder.fabSave.setOnClickListener(save);
-            viewHolder.fabReset.setOnClickListener(reset);
-            viewHolder.fabPlus.setOnClickListener(plus);
-            viewHolder.fabMinus.setOnClickListener(minus);
+            binding.clLandControls.setVisibility(View.VISIBLE);
+            binding.fabLandActionSave.setVisibility(View.VISIBLE);
+            binding.fabLandActionSave.setOnClickListener(save);
+            binding.fabLandActionReset.setVisibility(View.VISIBLE);
+            binding.fabLandActionReset.setOnClickListener(reset);
+            binding.fabLandActionPlus.setVisibility(View.VISIBLE);
+            binding.fabLandActionPlus.setOnClickListener(plus);
+            binding.fabLandActionMinus.setVisibility(View.VISIBLE);
+            binding.fabLandActionMinus.setOnClickListener(minus);
         }else{
             actionBar.setTitle(title);
-            viewHolder.clTab.setVisibility(View.GONE);
-            viewHolder.fabSave.setVisibility(View.GONE);
-            viewHolder.fabReset.setVisibility(View.GONE);
-            viewHolder.fabPlus.setVisibility(View.GONE);
-            viewHolder.fabMinus.setVisibility(View.GONE);
-            viewHolder.fabReset.setOnClickListener(null);
-            viewHolder.fabSave.setOnClickListener(null);
-            viewHolder.fabPlus.setOnClickListener(null);
-            viewHolder.fabMinus.setOnClickListener(null);
+            binding.clLandControls.setVisibility(View.GONE);
+            binding.fabLandActionSave.setVisibility(View.GONE);
+            binding.fabLandActionSave.setOnClickListener(null);
+            binding.fabLandActionReset.setVisibility(View.GONE);
+            binding.fabLandActionReset.setOnClickListener(null);
+            binding.fabLandActionPlus.setVisibility(View.GONE);
+            binding.fabLandActionPlus.setOnClickListener(null);
+            binding.fabLandActionMinus.setVisibility(View.GONE);
+            binding.fabLandActionMinus.setOnClickListener(null);
         }
     }
     private void toggleDrawer(boolean toggle) {
         if(!displayOnly){
-            if(viewHolder != null){
+            if(binding != null){
                 if(toggle){
-                    viewHolder.drawer.openDrawer(GravityCompat.END);
+                    binding.LandMapRoot.openDrawer(GravityCompat.END);
                     if(
                             mapStatus == LandActionStates.Move &&
-                                    viewHolder.terrainButton.getVisibility() != View.VISIBLE
+                                    binding.btnLandTerrain.getVisibility() != View.VISIBLE
                     ){
                         toggleMapLock();
                     }
@@ -1009,7 +1016,7 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
                         setAction(LandActionStates.Disable);
                     }
                 }else{
-                    viewHolder.drawer.closeDrawer(GravityCompat.END);
+                    binding.LandMapRoot.closeDrawer(GravityCompat.END);
                 }
             }
         }
@@ -1057,4 +1064,5 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
             });
         }
     }
+
 }

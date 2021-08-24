@@ -1,126 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/LandInfoRoot"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.LandInfoFragment" >
 
     <TextView
-        android:id="@+id/tvLandNameLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
-
-    <LinearLayout
-        android:id="@+id/llLoginData"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLandNameLabel"
-        app:theme="@style/TextInputLayout">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etLandNameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLandName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/land_name"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:textAlignment="center"
-                android:visibility="visible" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etAddressLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/address_hint"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:textAlignment="center"
-                android:visibility="visible" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnSubmit"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline2" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="56dp" />
-
-    <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvLandInfoLabel"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="?attr/colorPrimary"
@@ -131,9 +19,105 @@
         android:textColor="?attr/colorOnPrimary"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintBottom_toTopOf="@+id/glLandInfoVertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView android:id="@+id/tvLandInfoActionLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/glLandInfoVertical" />
+    <LinearLayout android:id="@+id/llLandInfoData"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvLandInfoActionLabel"
+        app:theme="@style/TextInputLayout">
+
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLandInfoNameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/login_field_margin_start"
+            android:layout_marginEnd="@dimen/login_field_margin_end"
+            android:layout_marginBottom="@dimen/login_field_margin_bottom"
+            app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
+            app:errorTextAppearance="@style/ErrorText"
+            app:hintTextAppearance="@style/HintText">
+
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLandInfoName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/land_name"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textAlignment="center"
+                android:visibility="visible" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLandInfoAddressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/login_field_margin_start"
+            android:layout_marginEnd="@dimen/login_field_margin_end"
+            android:layout_marginBottom="@dimen/login_field_margin_bottom"
+            app:errorEnabled="true"
+            app:boxBackgroundColor="@android:color/transparent"
+            android:background="@android:color/transparent"
+            app:errorTextAppearance="@style/ErrorText"
+            app:hintTextAppearance="@style/HintText">
+
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLandInfoAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/address_hint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textAlignment="center"
+                android:visibility="visible" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <Button android:id="@+id/btnLandInfoSubmit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glLandInfoHorizontal" />
+    <Button android:id="@+id/btnLandInfoCancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/glLandInfoHorizontal"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline android:id="@+id/glLandInfoHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+    <androidx.constraintlayout.widget.Guideline android:id="@+id/glLandInfoVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="56dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

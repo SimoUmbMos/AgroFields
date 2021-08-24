@@ -1,6 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;

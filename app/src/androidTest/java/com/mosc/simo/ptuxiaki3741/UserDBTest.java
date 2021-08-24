@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;

@@ -19,39 +19,39 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.UserProfileViewHolder;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserProfileBinding;import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 public class UserProfileFragment extends Fragment implements FragmentBackPress {
-    private UserProfileViewHolder viewHolder;
+    private FragmentUserProfileBinding binding;
     private User currUser;
+    private boolean isEditMode;
     private UserViewModel vmUsers;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_user_profile, container, false);
+        binding = FragmentUserProfileBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
-        initFragment(view);
+        initFragment();
         initViewModels();
     }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.empty_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public boolean onBackPressed() {
+    @Override public boolean onBackPressed() {
         return true;
     }
 
@@ -67,8 +67,9 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
             actionBar.hide();
         }
     }
-    private void initFragment(View view){
-        viewHolder = new UserProfileViewHolder(view,this::onModifyClick);
+    private void initFragment(){
+        binding.btnUserProfileModify.setOnClickListener(this::onModifyClick);
+        setEditMode(false);
         setupUiForUser(null);
     }
 
@@ -84,22 +85,22 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
         if(user != null){
             String title = getResources().getString(R.string.profile_title_1) + " " +
                     user.getUsername() + " " + getResources().getString(R.string.profile_title_2);
-            viewHolder.tvTitle.setText(title);
-            viewHolder.etPhone.setText(user.getPhone());
-            viewHolder.etEmail.setText(user.getEmail());
+            binding.tvUserProfileLabel.setText(title);
+            binding.etUserProfilePhone.setText(user.getPhone());
+            binding.etUserProfileEmail.setText(user.getEmail());
         }else{
-            viewHolder.tvTitle.setText("");
-            viewHolder.etPhone.setText("");
-            viewHolder.etEmail.setText("");
+            binding.tvUserProfileLabel.setText("");
+            binding.etUserProfilePhone.setText("");
+            binding.etUserProfileEmail.setText("");
         }
     }
 
     private void onModifyClick(View view) {
-        viewHolder.setEditMode(!viewHolder.isEditMode());
-        if(viewHolder.isEditMode()){
-            viewHolder.btnModify.setText(R.string.save);
+        setEditMode(!isEditMode);
+        if(isEditMode){
+            binding.btnUserProfileModify.setText(R.string.save);
         }else{
-            viewHolder.btnModify.setText(R.string.edit);
+            binding.btnUserProfileModify.setText(R.string.edit);
             if(currUser != null){
                 if(isDataValid()){
                     currUser.setEmail(getEmailData());
@@ -111,27 +112,31 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+    public void setEditMode(boolean isEditMode) {
+        this.isEditMode = isEditMode;
+        binding.etUserProfileEmail.setEnabled(isEditMode);
+        binding.etUserProfilePhone.setEnabled(isEditMode);
+    }
 
     private boolean isDataValid(){
         if(
-                viewHolder.etEmail.getText() != null &&
-                viewHolder.etPhone.getText() != null
+                binding.etUserProfileEmail.getText() != null
         ){
-            String email = viewHolder.etEmail.getText().toString();
+            String email = binding.etUserProfileEmail.getText().toString();
             return !email.trim().isEmpty();
         }
         return false;
     }
     private String getEmailData(){
-        if(viewHolder.etEmail.getText() != null){
-            String email = viewHolder.etEmail.getText().toString();
+        if(binding.etUserProfileEmail.getText() != null){
+            String email = binding.etUserProfileEmail.getText().toString();
             return email.trim();
         }
         return "";
     }
     private String getPhoneData(){
-        if(viewHolder.etPhone.getText() != null){
-            String phone = viewHolder.etPhone.getText().toString();
+        if(binding.etUserProfilePhone.getText() != null){
+            String phone = binding.etUserProfilePhone.getText().toString();
             return phone.trim();
         }
         return "";

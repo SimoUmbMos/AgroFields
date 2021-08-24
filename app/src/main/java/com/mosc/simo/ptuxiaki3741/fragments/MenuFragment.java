@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.MainMenuHolder;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
@@ -29,23 +29,26 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
 
     private UserViewModel vmUsers;
     private NavController navController;
+    private FragmentMenuMainBinding binding;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_menu, container, false);
+        binding = FragmentMenuMainBinding.inflate(inflater,container, false);
+        return binding.getRoot();
     }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
-        initFragment(view);
         initViewModels();
         initObservers();
+        initFragment();
     }
-    @Override
-    public boolean onBackPressed() {
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+    @Override public boolean onBackPressed() {
         return true;
     }
 
@@ -61,18 +64,16 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
             actionBar.hide();
         }
     }
-    private void initFragment(View view) {
+    private void initFragment() {
         navController = NavHostFragment.findNavController(this);
-        MainMenuHolder menuHolder = new MainMenuHolder(view);
 
-        menuHolder.btnList.setOnClickListener(v -> toListMenu(getActivity()));
-        menuHolder.btnHistory.setOnClickListener(v -> toLandHistory(getActivity()));
+        binding.btnMainMenuList.setOnClickListener(v -> toListMenu(getActivity()));
+        binding.btnMainMenuHistory.setOnClickListener(v -> toLandHistory(getActivity()));
 
+        binding.btnMainMenuFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show()); //TODO: menu actions
 
-        menuHolder.btnFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show()); //TODO: menu actions
-
-        menuHolder.btnProfile.setOnClickListener(v -> toProfile(getActivity()));
-        menuHolder.btnLogout.setOnClickListener(v -> vmUsers.logout());
+        binding.btnMainMenuProfile.setOnClickListener(v -> toProfile(getActivity()));
+        binding.btnMainMenuLogout.setOnClickListener(v -> vmUsers.logout());
     }
     private void initViewModels() {
         if(getActivity() != null){

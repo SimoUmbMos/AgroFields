@@ -48,10 +48,10 @@
     <string name="register_password_empty_error">Το Password είναι κενό</string>
     <string name="register_password_not_match_error">Τα Password δεν ταιριάζουν</string>
     <string name="register_username_empty_error">Το Username είναι κενό</string>
-    <string name="register_username_taken_error">"Το Username είναι πιασμένο "</string>
+    <string name="register_username_taken_error">Το Username είναι πιασμένο</string>
     <string name="register_password_wrong_error">Λάθος Password</string>
     <string name="register_username_wrong_error">Λάθος Username</string>
-    <string name="register_phone_length_error">" Το μήκος του Τηλεφώνου δεν είναι έγκυρο"</string>
+    <string name="register_phone_length_error">Το μήκος του Τηλεφώνου δεν είναι έγκυρο</string>
     <string name="empty_list">Η λίστα είναι κενή</string>
     <string name="profile_title_1">Προφίλ</string>
     <string name="profile_title_2"> </string>
@@ -59,6 +59,8 @@
     <string name="loading_list">Η λίστα φορτώνεται</string>
     <string name="toggle_history_list">Επέκταση λίστας</string>
     <string name="land_history">Ιστορικό χωραφιών</string>
-    <string name="address_hint">" Διεύθυνση"</string>
+    <string name="address_hint">Διεύθυνση</string>
+    <string name="land_bar_label_1">Χωράφια του</string>
+    <string name="land_bar_label_2"> </string>
 
 </resources>

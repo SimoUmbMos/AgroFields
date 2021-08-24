@@ -13,7 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         };
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.tbMainActivity);
         //toolbar.setTitleTextColor(getColorOnPrimaryFromTheme(getApplicationContext()));
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null){
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.nav_host_fragment);
+                        .findFragmentById(R.id.fcvNavHostFragment);
         init();
         initViewModels();
     }

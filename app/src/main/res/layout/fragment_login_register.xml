@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/LoginRegisterRoot"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/loginRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.LoginRegisterFragment" >
-    <TextView
-        android:id="@+id/tvLoginLabel"
+    <TextView android:id="@+id/tvLoginLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -17,8 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <LinearLayout
-        android:id="@+id/llLoginData"
+    <LinearLayout android:id="@+id/llLoginRegisterData"
         app:theme="@style/TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -27,8 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLoginLabel">
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etUserNameLayout"
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginUserNameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
@@ -39,8 +35,7 @@
             android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etUserName"
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Username"
@@ -48,8 +43,7 @@
                 android:inputType="textPersonName"
                 android:visibility="visible" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etMainPasswordLayout"
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginMainPasswordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
@@ -61,16 +55,14 @@
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText"
             app:passwordToggleEnabled="true">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etMainPassword"
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginMainPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Password"
                 android:hint="@string/password_hint"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etSecondaryPasswordLayout"
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginSecondaryPasswordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
@@ -82,16 +74,14 @@
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText"
             app:passwordToggleEnabled="true">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSecondaryPassword"
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginSecondaryPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Password"
                 android:hint="@string/confirm_password_hint"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etMainEmailLayout"
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginMainEmailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
@@ -102,16 +92,14 @@
             android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etMainEmail"
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginMainEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Email"
                 android:hint="@string/email_hint"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etSecondaryEmailLayout"
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginSecondaryEmailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
@@ -122,16 +110,14 @@
             android:background="@android:color/transparent"
             app:errorTextAppearance="@style/ErrorText"
             app:hintTextAppearance="@style/HintText">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSecondaryEmail"
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginSecondaryEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Email"
                 android:hint="@string/confirm_email_hint"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etPhoneLayout"
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginPhoneLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
@@ -146,16 +132,14 @@
             app:counterMaxLength="10"
             app:counterOverflowTextAppearance="@style/CounterOverFlow"
             app:counterTextAppearance="@style/CounterText">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPhone"
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Phone"
                 android:hint="@string/phone_hint"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
-        <Button
-            android:id="@+id/btnToRegister"
+        <Button android:id="@+id/btnLoginRegister"
             app:theme="@style/AppTheme"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
@@ -164,16 +148,14 @@
             android:layout_marginEnd="@dimen/login_button_margin_end_big"
             android:text="@string/register_button" />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/llLoginButtons"
+    <LinearLayout android:id="@+id/llLoginButtons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-        <Button
-            android:id="@+id/btnLoginCancel"
+        <Button android:id="@+id/btnLoginCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_big"
@@ -183,8 +165,7 @@
             android:layout_weight="1"
             android:text="@string/cancel"
             style="?android:attr/buttonBarButtonStyle"/>
-        <Button
-            android:id="@+id/btnLoginSubmit"
+        <Button android:id="@+id/btnLoginSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_small"
@@ -194,8 +175,7 @@
             android:layout_weight="1"
             android:text="@string/submit"
             style="?android:attr/buttonBarButtonStyle"/>
-        <Button
-            android:id="@+id/btnLoginButton"
+        <Button android:id="@+id/btnLoginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_big"

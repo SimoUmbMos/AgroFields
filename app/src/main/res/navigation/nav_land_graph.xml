@@ -18,34 +18,21 @@
     <fragment android:id="@+id/MainMenuFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuFragment"
         android:label="fragment_menu"
-        tools:layout="@layout/fragment_menu" >
+        tools:layout="@layout/fragment_menu_main" >
         <action
             android:id="@+id/toLogin"
             app:destination="@id/LoginFragment"
             app:popUpTo="@id/nav_land_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/toListMenu"
-            app:destination="@id/LandListFragment" />
-        <action
             android:id="@+id/toUserProfile"
             app:destination="@id/UserProfileFragment" />
         <action
             android:id="@+id/toLandHistory"
             app:destination="@id/LandHistoryFragment" />
-    </fragment>
-    <fragment android:id="@+id/LandListFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandListFragment"
-        android:label="LandListFragment" >
         <action
-            android:id="@+id/toLandMap"
-            app:destination="@id/LandMapFragment" />
-        <action
-            android:id="@+id/toLandInfo"
-            app:destination="@id/LandInfoFragment" />
-        <action
-            android:id="@+id/toMenu"
-            app:destination="@id/MainMenuFragment" />
+            android:id="@+id/toListMenu"
+            app:destination="@id/LandCollectionFragment" />
     </fragment>
     <fragment android:id="@+id/LandInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LandInfoFragment"
@@ -54,7 +41,7 @@
         <action
             android:id="@+id/toLandMap"
             app:destination="@id/LandMapFragment"
-            app:popUpTo="@id/LandListFragment"
+            app:popUpTo="@id/LandCollectionFragment"
             app:popUpToInclusive="false" />
         <argument
             android:name="land"
@@ -66,8 +53,8 @@
         tools:layout="@layout/fragment_land_map" >
         <action
             android:id="@+id/toListMenu"
-            app:destination="@id/LandListFragment"
-            app:popUpTo="@id/LandListFragment"
+            app:destination="@id/LandCollectionFragment"
+            app:popUpTo="@id/LandCollectionFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/toLandInfo"
@@ -85,16 +72,25 @@
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>
-    <fragment
-        android:id="@+id/UserProfileFragment"
+    <fragment android:id="@+id/UserProfileFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserProfileFragment"
         android:label="fragment_user_profile"
         tools:layout="@layout/fragment_user_profile" />
-    <fragment
-        android:id="@+id/LandHistoryFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandHistoryMenuFragment"
+    <fragment android:id="@+id/LandHistoryFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.HistoryMenuFragment"
         android:label="fragment_land_history_menu"
-        tools:layout="@layout/fragment_land_history_menu" >
+        tools:layout="@layout/fragment_menu_history" >
+        <action
+            android:id="@+id/toLandMap"
+            app:destination="@id/LandMapFragment" />
+    </fragment>
+    <fragment android:id="@+id/LandCollectionFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMenuFragment"
+        android:label="fragment_land_collection"
+        tools:layout="@layout/fragment_menu_land" >
+        <action
+            android:id="@+id/toLandInfo"
+            app:destination="@id/LandInfoFragment" />
         <action
             android:id="@+id/toLandMap"
             app:destination="@id/LandMapFragment" />

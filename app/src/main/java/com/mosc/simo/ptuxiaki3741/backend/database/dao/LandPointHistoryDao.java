@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.backend.database.roomserver.dao;
+package com.mosc.simo.ptuxiaki3741.backend.database.dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;

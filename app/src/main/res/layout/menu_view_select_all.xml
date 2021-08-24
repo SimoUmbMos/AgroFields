@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/llMenuSelectAll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/llMenuSelectAll"
     style="@android:style/Widget.ActionButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true">
-
-    <TextView
-        android:id="@+id/tvMenuLabelSelectAll"
+    <TextView android:id="@+id/tvMenuLabelSelectAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_all"
         android:textColor="?attr/colorOnPrimary"
         app:drawableTint="?attr/colorOnPrimary"
         app:drawableTopCompat="@drawable/menu_ic_select_all" />
-
 </LinearLayout>

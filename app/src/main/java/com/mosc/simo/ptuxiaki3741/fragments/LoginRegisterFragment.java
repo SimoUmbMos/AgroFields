@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -23,62 +24,48 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoginRegisterBinding;
 import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
-import com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.holders.LoginViewHolder;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 public class LoginRegisterFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LoginRegisterFragment";
-    private LoginViewHolder viewHolder;
+    private FragmentLoginRegisterBinding binding;
     private UserViewModel vmUsers;
+    private boolean isRegister;
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_login_register, container, false);
+        binding = FragmentLoginRegisterBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
-        init(view);
+        initViewModel();
+        init();
     }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.empty_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public boolean onBackPressed() {
-        if(viewHolder.isRegisterMode()){
-            viewHolder.showLogin();
+    @Override public boolean onBackPressed() {
+        if(isRegister){
+            showLogin();
             return false;
         }
         return true;
     }
 
-    private void init(View view) {
-        if(getActivity() != null){
-            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
-            onUserUpdate(vmUsers.getCurrUser().getValue());
-        }
-        viewHolder = new LoginViewHolder(
-                getResources(),
-                view,
-                this::onLogin,
-                this::onRegister,
-                this::toRegister,
-                this::toLogin
-        );
-
-    }
     private void initActivity() {
         MainActivity mainActivity = (MainActivity) getActivity();
         ActionBar actionBar = null;
@@ -90,6 +77,20 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
             actionBar.setTitle("");
             actionBar.hide();
         }
+    }
+    private void initViewModel() {
+        if(getActivity() != null){
+            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
+            onUserUpdate(vmUsers.getCurrUser().getValue());
+        }
+    }
+    private void init() {
+        binding.btnLoginButton.setOnClickListener(this::onLogin);
+        binding.btnLoginSubmit.setOnClickListener(this::onRegister);
+        binding.btnLoginRegister.setOnClickListener(this::toRegister);
+        binding.btnLoginCancel.setOnClickListener(this::toLogin);
+        showLogin();
     }
 
     private void onUserUpdate(User user) {
@@ -111,14 +112,14 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
     private void toRegister(View view) {
-        viewHolder.clear();
-        viewHolder.clearErrors();
-        viewHolder.showRegister();
+        clear();
+        clearErrors();
+        showRegister();
     }
     private void toLogin(View view) {
-        viewHolder.clear();
-        viewHolder.clearErrors();
-        viewHolder.showLogin();
+        clear();
+        clearErrors();
+        showLogin();
     }
 
     private User getLoginDataIfValid() {
@@ -126,11 +127,11 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 password = "";
         try{
             if(
-                    viewHolder.etUserName.getText() != null &&
-                    viewHolder.etMainPassword.getText() != null
+                    binding.etLoginUserName.getText() != null &&
+                    binding.etLoginMainPassword.getText() != null
             ){
-                username = viewHolder.etUserName.getText().toString().trim();
-                password = viewHolder.etMainPassword.getText().toString().trim();
+                username = binding.etLoginUserName.getText().toString().trim();
+                password = binding.etLoginMainPassword.getText().toString().trim();
             }else{
                 username = "";
                 password = "";
@@ -158,19 +159,19 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 password2 = "";
         try{
             if(
-                    viewHolder.etUserName.getText() != null &&
-                    viewHolder.etPhone.getText() != null &&
-                    viewHolder.etMainEmail.getText() != null &&
-                    viewHolder.etSecondaryEmail.getText() != null &&
-                    viewHolder.etMainPassword.getText() != null &&
-                    viewHolder.etSecondaryPassword.getText() != null
+                    binding.etLoginUserName.getText() != null &&
+                    binding.etLoginPhone.getText() != null &&
+                    binding.etLoginMainEmail.getText() != null &&
+                    binding.etLoginSecondaryEmail.getText() != null &&
+                    binding.etLoginMainPassword.getText() != null &&
+                    binding.etLoginSecondaryPassword.getText() != null
             ){
-                username = viewHolder.etUserName.getText().toString().trim();
-                phone = viewHolder.etPhone.getText().toString().trim();
-                email = viewHolder.etMainEmail.getText().toString().trim();
-                email2 = viewHolder.etSecondaryEmail.getText().toString().trim();
-                password = viewHolder.etMainPassword.getText().toString().trim();
-                password2 =viewHolder.etSecondaryPassword.getText().toString().trim();
+                username = binding.etLoginUserName.getText().toString().trim();
+                phone = binding.etLoginPhone.getText().toString().trim();
+                email = binding.etLoginMainEmail.getText().toString().trim();
+                email2 = binding.etLoginSecondaryEmail.getText().toString().trim();
+                password = binding.etLoginMainPassword.getText().toString().trim();
+                password2 =binding.etLoginSecondaryPassword.getText().toString().trim();
             }else{
                 username = "";
                 phone = "";
@@ -186,8 +187,9 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         boolean isEmailSame = email.equals(email2),
                 isPasswordSame = password.equals(password2),
                 isPhoneLengthRight =
-                        viewHolder.etPhone.length() == viewHolder.etPhoneLayout.getCounterMaxLength() ||
-                        viewHolder.etPhone.length() == 0,
+                        binding.etLoginPhone.length() ==
+                                binding.etLoginPhoneLayout.getCounterMaxLength() ||
+                        binding.etLoginPhone.length() == 0,
                 isEmailWritten = !email.isEmpty(),
                 isPasswordWritten = !password.isEmpty(),
                 isUsernameWritten = !username.isEmpty();
@@ -213,9 +215,9 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 boolean isValidUsername = vmUsers.checkUserNameCredentials(tempUser) != null;
                 getActivity().runOnUiThread(() -> {
                     if (isValidUsername) {
-                        viewHolder.showError(LoginRegisterError.PasswordWrongError);
+                        showError(LoginRegisterError.PasswordWrongError);
                     } else {
-                        viewHolder.showError(LoginRegisterError.UserNameWrongError);
+                        showError(LoginRegisterError.UserNameWrongError);
                     }
                 });
             }
@@ -228,49 +230,154 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }else{
             if(getActivity() != null)
                 getActivity().runOnUiThread(()->
-                        viewHolder.showError(LoginRegisterError.UserNameTakenError)
+                        showError(LoginRegisterError.UserNameTakenError)
                 );
         }
     }
 
     private void showLoginError(boolean isUsernameWritten, boolean isPasswordWritten) {
-        viewHolder.clearErrors();
+        clearErrors();
         if(!isUsernameWritten){
-            viewHolder.showError(LoginRegisterError.UserNameEmptyError);
+            showError(LoginRegisterError.UserNameEmptyError);
         }
         if(!isPasswordWritten){
-            viewHolder.showError(LoginRegisterError.PasswordEmptyError);
+            showError(LoginRegisterError.PasswordEmptyError);
         }
     }
     private void showRegisterError(boolean isEmailSame, boolean isEmailWritten,
                         boolean isPasswordSame, boolean isPasswordWritten,
                          boolean isUsernameWritten, boolean isPhoneLengthRight) {
-        viewHolder.clearErrors();
+        clearErrors();
 
         if(!isEmailWritten){
-            viewHolder.showError(LoginRegisterError.EmailEmptyError);
+            showError(LoginRegisterError.EmailEmptyError);
         }else if(!isEmailSame){
-            viewHolder.showError(LoginRegisterError.EmailNotMatchError);
+            showError(LoginRegisterError.EmailNotMatchError);
         }
 
         if(!isPasswordWritten){
-            viewHolder.showError(LoginRegisterError.PasswordEmptyError);
+            showError(LoginRegisterError.PasswordEmptyError);
         }else if(!isPasswordSame){
-            viewHolder.showError(LoginRegisterError.PasswordNotMatchError);
+            showError(LoginRegisterError.PasswordNotMatchError);
         }
 
         if(!isUsernameWritten){
-            viewHolder.showError(LoginRegisterError.UserNameEmptyError);
+            showError(LoginRegisterError.UserNameEmptyError);
         }
 
         if(!isPhoneLengthRight){
-            viewHolder.showError(LoginRegisterError.PhoneLengthError);
+            showError(LoginRegisterError.PhoneLengthError);
         }
     }
 
+    //ui
+    public void showLogin(){
+        isRegister = false;
+        binding.tvLoginLabel.setText(R.string.login_label);
+
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
+                binding.llLoginButtons.getLayoutParams();
+        params.verticalBias = 0.65f;
+        binding.llLoginButtons.setLayoutParams(params);
+
+        binding.btnLoginRegister.setVisibility(View.VISIBLE);
+        binding.btnLoginButton.setVisibility(View.VISIBLE);
+        binding.btnLoginSubmit.setVisibility(View.GONE);
+        binding.btnLoginCancel.setVisibility(View.GONE);
+
+        binding.etLoginPhoneLayout.setVisibility(View.GONE);
+        binding.etLoginMainEmailLayout.setVisibility(View.GONE);
+        binding.etLoginSecondaryEmailLayout.setVisibility(View.GONE);
+        binding.etLoginSecondaryPasswordLayout.setVisibility(View.GONE);
+    }
+    public void showRegister(){
+        isRegister = true;
+        binding.tvLoginLabel.setText(R.string.register_label);
+
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
+                binding.llLoginButtons.getLayoutParams();
+        params.verticalBias = 1.0f;
+        binding.llLoginButtons.setLayoutParams(params);
+
+        binding.btnLoginRegister.setVisibility(View.GONE);
+        binding.btnLoginButton.setVisibility(View.GONE);
+        binding.btnLoginSubmit.setVisibility(View.VISIBLE);
+        binding.btnLoginCancel.setVisibility(View.VISIBLE);
+
+        binding.etLoginPhoneLayout.setVisibility(View.VISIBLE);
+        binding.etLoginMainEmailLayout.setVisibility(View.VISIBLE);
+        binding.etLoginSecondaryEmailLayout.setVisibility(View.VISIBLE);
+        binding.etLoginSecondaryPasswordLayout.setVisibility(View.VISIBLE);
+
+    }
+    public void clear(){
+        binding.etLoginPhone.setText("");
+        binding.etLoginUserName.setText("");
+        binding.etLoginMainEmail.setText("");
+        binding.etLoginMainPassword.setText("");
+        binding.etLoginSecondaryEmail.setText("");
+        binding.etLoginSecondaryPassword.setText("");
+    }
+    public void clearErrors() {
+        binding.etLoginPhoneLayout.setError(null);
+        binding.etLoginUserNameLayout.setError(null);
+        binding.etLoginMainEmailLayout.setError(null);
+        binding.etLoginMainPasswordLayout.setError(null);
+        binding.etLoginSecondaryEmailLayout.setError(null);
+        binding.etLoginSecondaryPasswordLayout.setError(null);
+    }
+    public void showError(LoginRegisterError error) {
+        switch (error){
+            case EmailEmptyError:
+                binding.etLoginMainEmailLayout.setError(
+                        getResources().getString(R.string.register_email_empty_error));
+                break;
+            case EmailNotMatchError:
+                binding.etLoginMainEmailLayout.setError(
+                        getResources().getString(R.string.register_email_not_match_error));
+                binding.etLoginSecondaryEmailLayout.setError(
+                        getResources().getString(R.string.register_email_not_match_error));
+                break;
+            case PasswordWrongError:
+                binding.etLoginMainPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_wrong_error));
+                break;
+            case PasswordEmptyError:
+                binding.etLoginMainPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_empty_error));
+                break;
+            case PasswordNotMatchError:
+                binding.etLoginMainPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_not_match_error));
+                binding.etLoginSecondaryPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_not_match_error));
+                break;
+            case PhoneLengthError:
+                binding.etLoginPhoneLayout.setError(
+                        getResources().getString(R.string.register_phone_length_error));
+                break;
+            case UserNameWrongError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_wrong_error));
+                break;
+            case UserNameEmptyError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_empty_error));
+                break;
+            case UserNameTakenError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_taken_error));
+                break;
+        }
+    }
+
+    //navigate
     private void navigate(NavDirections action){
         NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LoginFragment)
+        if(
+                navController.getCurrentDestination() == null ||
+                navController.getCurrentDestination().getId() == R.id.LoginFragment
+        )
             navController.navigate(action);
     }
     private NavDirections toMenu(){

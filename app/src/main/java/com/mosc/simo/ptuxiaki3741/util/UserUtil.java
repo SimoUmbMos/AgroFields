@@ -1,6 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.roomserver.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
 

@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments.fragmentrelated.adapter;
+package com.mosc.simo.ptuxiaki3741.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +11,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+
+import java.util.List;
 
 
 public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandListAdapterViewHolder>{
 
-    private final LandViewModel landViewModel;
+    private final List<Land> data;
+    private final List<Integer> indexes;
     private final OnLandClick onLandClick;
     private final OnLandLongClick onLandLongClick;
 
-    public LandListAdapter(LandViewModel landViewModel, OnLandClick onLandClick,
+    public LandListAdapter(List<Land> data, List<Integer> indexes, OnLandClick onLandClick,
                            OnLandLongClick onLandLongClick){
-        this.landViewModel = landViewModel;
+        this.data = data;
+        this.indexes = indexes;
         this.onLandClick = onLandClick;
         this.onLandLongClick = onLandLongClick;
     }
@@ -43,12 +47,12 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
             onLandLongClick.onLandLongClick(position);
             return true;
         });
-        if(landViewModel.getLandsList().size()>position){
-            LandData landData = landViewModel.getLandsList().get(position).getData();
+        if(data.size()>position){
+            LandData landData = data.get(position).getData();
             if(landData != null){
                 holder.tvLandTitle.setText(landData.getTitle());
             }
-            if(landViewModel.getSelectedIndexes().contains(position)){
+            if(indexes.contains(position)){
                 holder.ivCheckBox.setVisibility(View.VISIBLE);
             }else{
                 holder.ivCheckBox.setVisibility(View.GONE);
@@ -58,8 +62,8 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
 
     @Override
     public int getItemCount() {
-        if(landViewModel != null)
-            return landViewModel.getLandsList().size();
+        if(data != null)
+            return data.size();
         else
             return 0;
     }

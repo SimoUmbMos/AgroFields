@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.backend.database.roomserver.typeconverters;
+package com.mosc.simo.ptuxiaki3741.backend.database.typeconverters;
 
 import androidx.room.TypeConverter;
 

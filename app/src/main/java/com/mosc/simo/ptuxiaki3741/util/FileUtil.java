@@ -33,6 +33,15 @@ import java.util.List;
 import static com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter.XMLOUTPUT;
 
 public class FileUtil {
+    public static String landsToKmlString(List<Land> lands,String label) {
+        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
+        landToExportModel(lands, exportFieldModels);
+        Document document = KmlFileExporter.kmlFileExporter(
+                label, exportFieldModels
+        );
+        XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
+        return xmOut.outputString(document);
+    }
     public static String landsToKmlString(List<Land> lands, User currUser) {
         List<ExportFieldModel> exportFieldModels = new ArrayList<>();
         landToExportModel(lands, exportFieldModels);

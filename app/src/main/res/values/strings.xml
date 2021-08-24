@@ -79,4 +79,6 @@
     <string name="toggle_history_list">Επέκταση λιστών</string>
     <string name="land_history">Lands History</string>
     <string name="address_hint">Address</string>
+    <string name="land_bar_label_1"> </string>
+    <string name="land_bar_label_2">\'s Land\'s</string>
 </resources>
