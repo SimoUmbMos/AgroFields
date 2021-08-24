@@ -13,4 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/schemas/
 /app/src/androidTest/resources/

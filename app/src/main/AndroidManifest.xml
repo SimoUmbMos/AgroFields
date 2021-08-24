@@ -192,23 +192,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <!--<intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-
-                <data android:mimeType="application/vnd.google-earth.kml+xml"/>
-                <data android:mimeType="application/vnd.geo+json"/>
-                <data android:mimeType="application/geo+json"/>
-                <data android:mimeType="application/json"/>
-                <data android:mimeType="x-gis/x-shapefile"/>
-
-                <data android:host="*"/>
-            </intent-filter>-->
         </activity>
     </application>
 </manifest>
