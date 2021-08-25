@@ -8,6 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +30,7 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
     private User currUser;
     private boolean isEditMode;
     private UserViewModel vmUsers;
+    private ActionBar actionBar;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,10 +49,14 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
         binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
+        inflater.inflate(R.menu.user_profile_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_item_logout){
+            logout();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
@@ -57,26 +65,26 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
 
     private void initActivity(){
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
+        actionBar = null;
         if( mainActivity != null){
             mainActivity.setOnBackPressed(this);
             actionBar = mainActivity.getSupportActionBar();
         }
         if(actionBar != null){
             actionBar.setTitle("");
-            actionBar.hide();
+            actionBar.show();
         }
     }
     private void initFragment(){
         binding.btnUserProfileModify.setOnClickListener(this::onModifyClick);
         setEditMode(false);
-        setupUiForUser(null);
     }
-
     private void initViewModels(){
         if(getActivity() != null){
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::setupUiForUser);
+        }else{
+            setupUiForUser(null);
         }
     }
 
@@ -85,13 +93,13 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
         if(user != null){
             String title = getResources().getString(R.string.profile_title_1) + " " +
                     user.getUsername() + " " + getResources().getString(R.string.profile_title_2);
-            binding.tvUserProfileLabel.setText(title);
+            if(actionBar != null){
+                actionBar.setTitle(title);
+            }
             binding.etUserProfilePhone.setText(user.getPhone());
             binding.etUserProfileEmail.setText(user.getEmail());
         }else{
-            binding.tvUserProfileLabel.setText("");
-            binding.etUserProfilePhone.setText("");
-            binding.etUserProfileEmail.setText("");
+            navigate(toLogin());
         }
     }
 
@@ -140,5 +148,20 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
             return phone.trim();
         }
         return "";
+    }
+
+    private void logout(){
+        vmUsers.logout();
+    }
+
+    private void navigate(NavDirections action){
+        NavController navController = NavHostFragment.findNavController(this);
+        if(action != null){
+            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.UserProfileFragment)
+                navController.navigate(action);
+        }
+    }
+    public NavDirections toLogin() {
+        return UserProfileFragmentDirections.toLogin();
     }
 }

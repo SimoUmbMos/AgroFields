@@ -62,5 +62,14 @@
     <string name="address_hint">Διεύθυνση</string>
     <string name="land_bar_label_1">Χωράφια του</string>
     <string name="land_bar_label_2"> </string>
-
+    <string name="logout">Αποσύνδεση</string>
+    <string name="main_menu_label_land_number">Αριθμός Χωραφιών:</string>
+    <string name="main_menu_label_land_area">Συνολική Έκταση Χωραφιών:</string>
+    <string name="main_menu_label_owned_lands">Αριθμός Ιδιόκτητων Χωραφιών:</string>
+    <string name="main_menu_label_shared_lands">Αριθμός Κοινόχρηστων Χωραφιών:</string>
+    <string name="main_menu_label_contact">Αριθμός Επαφών:</string>
+    <string name="main_menu_lands_button">Χωράφια</string>
+    <string name="main_menu_history_button">Ιστορικό</string>
+    <string name="main_menu_profile_button">Προφίλ</string>
+    <string name="main_menu_contacts_button">Επαφές</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,17 +20,27 @@ import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.util.LandUtil;
+import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
-public class MenuFragment extends Fragment implements FragmentBackPress {
+import java.util.List;
+import java.util.Locale;
+
+public class MainMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="MenuFragment";
 
     private UserViewModel vmUsers;
-    private NavController navController;
+    private LandViewModel vmLands;
+    private User currUser;
+
     private FragmentMenuMainBinding binding;
+    private ActionBar actionBar;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,67 +65,118 @@ public class MenuFragment extends Fragment implements FragmentBackPress {
 
     private void initActivity() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
+        actionBar = null;
         if( mainActivity != null){
             mainActivity.setOnBackPressed(this);
             actionBar = mainActivity.getSupportActionBar();
         }
         if(actionBar != null){
             actionBar.setTitle("");
-            actionBar.hide();
+            actionBar.show();
         }
     }
     private void initFragment() {
-        navController = NavHostFragment.findNavController(this);
-
         binding.btnMainMenuList.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnMainMenuHistory.setOnClickListener(v -> toLandHistory(getActivity()));
-
-        binding.btnMainMenuFriends.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show()); //TODO: menu actions
-
         binding.btnMainMenuProfile.setOnClickListener(v -> toProfile(getActivity()));
-        binding.btnMainMenuLogout.setOnClickListener(v -> vmUsers.logout());
+        binding.btnMainMenuContacts.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show()); //TODO: menu actions
     }
     private void initViewModels() {
         if(getActivity() != null){
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
         }
     }
     private void initObservers() {
         if(vmUsers != null){
+            currUser = vmUsers.getCurrUser().getValue();
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
+            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
         }
     }
 
     private void onCurrUserUpdate(User user) {
-        if(user == null){
+        currUser = user;
+        if(currUser != null){
+            actionBar.setTitle(currUser.getUsername());
+            AsyncTask.execute(()->{
+                String display = String.valueOf(vmUsers.getFriends().size());
+                if(getActivity() != null)
+                    getActivity().runOnUiThread(()-> binding.
+                            tvMainMenuContactsNumber.setText(display)
+                    );
+            });
+        }else{
             toLogin(getActivity());
+        }
+    }
+    private void onLandUpdate(List<Land> lands) {
+        if(lands != null){
+            double areaSum = 0;
+            int ownedLands = 0, sharedLands = 0;
+            if(currUser != null){
+                for(Land land : lands){
+                    if(land.getData()!=null){
+                        if(land.getData().getCreator_id() == currUser.getId()){
+                            ownedLands++;
+                        }else{
+                            sharedLands++;
+                        }
+                    }
+                    if(land.getBorder() != null){
+                        areaSum = areaSum + MapUtil.area(LandUtil.getLatLngPoints(land));
+                    }
+                }
+            }else{
+                for(Land land : lands){
+                    if(land.getBorder() != null){
+                        areaSum = areaSum + MapUtil.area(LandUtil.getLatLngPoints(land));
+                    }
+                }
+            }
+            String areaDisplay;
+            if(areaSum >= 1000000){
+                areaSum = areaSum / 1000000;
+                areaDisplay = String.format(Locale.getDefault(),"%.0f", areaSum)+" km²";
+            }else{
+                areaDisplay = String.format(Locale.getDefault(),"%.1f", areaSum)+" m²";
+            }
+            binding.tvMainMenuLandNumber.setText(String.valueOf(lands.size()));
+            binding.tvMainMenuLandArea.setText(areaDisplay);
+            binding.tvMainMenuOwnedLands.setText(String.valueOf(ownedLands));
+            binding.tvMainMenuSharedLands.setText(String.valueOf(sharedLands));
+        }else{
+            binding.tvMainMenuLandNumber.setText("0 m²");
+            binding.tvMainMenuLandArea.setText("0");
+            binding.tvMainMenuOwnedLands.setText("0");
+            binding.tvMainMenuSharedLands.setText("0");
         }
     }
 
     private void navigate(NavDirections action){
+        NavController navController = NavHostFragment.findNavController(this);
         if(action != null){
             if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.MainMenuFragment)
                 navController.navigate(action);
         }
     }
     public void toLandHistory(@Nullable Activity activity) {
-        NavDirections action = MenuFragmentDirections.toLandHistory();
+        NavDirections action = MainMenuFragmentDirections.toLandHistory();
         if(activity != null)
             activity.runOnUiThread(()->navigate(action));
     }
     public void toListMenu(@Nullable Activity activity) {
-        NavDirections action = MenuFragmentDirections.toListMenu();
+        NavDirections action = MainMenuFragmentDirections.toListMenu();
         if(activity != null)
             activity.runOnUiThread(()->navigate(action));
     }
     public void toProfile(@Nullable Activity activity) {
-        NavDirections action = MenuFragmentDirections.toUserProfile();
+        NavDirections action = MainMenuFragmentDirections.toUserProfile();
         if(activity != null)
             activity.runOnUiThread(()->navigate(action));
     }
     public void toLogin(@Nullable Activity activity) {
-        NavDirections action = MenuFragmentDirections.toLogin();
+        NavDirections action = MainMenuFragmentDirections.toLogin();
         if(activity != null)
             activity.runOnUiThread(()->navigate(action));
     }

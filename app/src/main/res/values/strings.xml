@@ -76,9 +76,20 @@
 
     <string name="change_terrain_type">change terrain type</string>
     <string name="loading_list">List is loading</string>
-    <string name="toggle_history_list">Επέκταση λιστών</string>
+    <string name="toggle_history_list">Toggle List</string>
     <string name="land_history">Lands History</string>
     <string name="address_hint">Address</string>
+    <string name="logout">Logout</string>
     <string name="land_bar_label_1"> </string>
     <string name="land_bar_label_2">\'s Land\'s</string>
+
+    <string name="main_menu_label_land_number">Number Of Lands:</string>
+    <string name="main_menu_label_land_area">Lands Total Area:</string>
+    <string name="main_menu_label_owned_lands">Number Of Owned Lands:</string>
+    <string name="main_menu_label_shared_lands">Number Of Shared Lands:</string>
+    <string name="main_menu_label_contact">Contacts Number:</string>
+    <string name="main_menu_lands_button">Lands</string>
+    <string name="main_menu_history_button">History</string>
+    <string name="main_menu_profile_button">Profile</string>
+    <string name="main_menu_contacts_button">Contacts</string>
 </resources>
