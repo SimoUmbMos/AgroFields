@@ -174,22 +174,38 @@ public class LandViewModel extends AndroidViewModel {
         });
     }
     public void removeLands(List<Land> removeLandList, User user) {
-        clearLands();
-        clearLandsRecords();
-        AsyncTask.execute(()-> {
-            LandRecord landRecord;
-            for(Land removeLand:removeLandList){
-                landRecord = new LandRecord(
-                        removeLand,
-                        user,
-                        LandDBAction.DELETE,
-                        new Date()
-                );
-                landRepository.saveLandRecord(landRecord);
-                landRepository.deleteLand(removeLand);
-            }
-            loadData(this.currUser);
-        });
+        if(user != null){
+            clearLands();
+            clearLandsRecords();
+            AsyncTask.execute(()-> {
+                LandRecord landRecord;
+                for(Land removeLand:removeLandList){
+                    if(removeLand.getData() != null){
+                        if(removeLand.getData().getCreator_id() == user.getId()){
+                            landRecord = new LandRecord(
+                                    removeLand,
+                                    user,
+                                    LandDBAction.DELETE,
+                                    new Date()
+                            );
+                            landRepository.saveLandRecord(landRecord);
+                            landRepository.deleteLand(removeLand);
+                        }
+                        //todo else remove land from shared table of user
+                    }else{
+                        landRecord = new LandRecord(
+                                removeLand,
+                                user,
+                                LandDBAction.DELETE,
+                                new Date()
+                        );
+                        landRepository.saveLandRecord(landRecord);
+                        landRepository.deleteLand(removeLand);
+                    }
+                }
+                loadData(this.currUser);
+            });
+        }
     }
 
     public void selectAllLands() {

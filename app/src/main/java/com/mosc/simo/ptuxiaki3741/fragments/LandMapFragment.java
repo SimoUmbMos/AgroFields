@@ -34,7 +34,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -60,9 +59,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class LandFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
+public class LandMapFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
     public static final String TAG = "LandFragment";
-    public static final double distanceToMapActionKM = 1, defaultRadius = 5;
+    public static final double distanceToMapActionKM = 1;
     private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
             maxZoom = 7f, minZoom = 0.1f, addressZoom = 10;
     public static final int defaultPadding = 64;
@@ -228,9 +227,9 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         }
     }
     private void initData() {
-        Land currLand = LandFragmentArgs.fromBundle(getArguments()).getLand();
-        address = LandFragmentArgs.fromBundle(getArguments()).getAddress();
-        displayOnly = LandFragmentArgs.fromBundle(getArguments()).getDisplayMode();
+        Land currLand = LandMapFragmentArgs.fromBundle(getArguments()).getLand();
+        address = LandMapFragmentArgs.fromBundle(getArguments()).getAddress();
+        displayOnly = LandMapFragmentArgs.fromBundle(getArguments()).getDisplayMode();
         setupMenuItems();
         points = new ArrayList<>();
         if(!new Land().equals(currLand)){
@@ -404,10 +403,10 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
             navController.navigate(action);
     }
     private NavDirections toMenu(){
-        return LandFragmentDirections.toListMenu();
+        return LandMapFragmentDirections.toListMenu();
     }
     private NavDirections toInfo(){
-        return LandFragmentDirections.toLandInfo(getLand());
+        return LandMapFragmentDirections.toLandInfo(getLand());
     }
     private void toImportFile(){
         importFile(LandFileState.File);
@@ -450,11 +449,6 @@ public class LandFragment extends Fragment implements FragmentBackPress,View.OnT
         mMap.clear();
         if(points.size() > 0){
             mMap.addPolygon(new PolygonOptions().addAll(points));
-            if(points.size()<25 && !displayOnly){
-                for(LatLng point : points){
-                    mMap.addCircle(new CircleOptions().center(point).radius(defaultRadius));
-                }
-            }
         }else if(address != null){
             asyncMoveCameraOnLocation(getActivity());
         }

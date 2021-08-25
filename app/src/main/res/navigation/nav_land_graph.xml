@@ -48,7 +48,7 @@
             app:argType="com.mosc.simo.ptuxiaki3741.models.Land" />
     </fragment>
     <fragment android:id="@+id/LandMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMapFragment"
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
         <action
