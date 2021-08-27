@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
@@ -153,11 +154,11 @@ public class UserViewModel extends AndroidViewModel {
         return result;
     }
 
-    public boolean sendFriendRequest(User user){
+    public UserFriendRequestStatus sendFriendRequest(User user){
         if(currUser.getValue() != null && user != null){
             return userRepository.sendFriendRequest(currUser.getValue(),user);
         }
-        return false;
+        return UserFriendRequestStatus.REQUEST_FAILED;
     }
     public boolean acceptRequest(User user){
         if(currUser.getValue() != null && user != null){

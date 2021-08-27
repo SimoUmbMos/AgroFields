@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.interfaces;
 
+import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface UserRepository {
     User searchUserByUserNameAndPassword(String username, String password);
     List<User> userSearch(User user, String Username);
 
-    boolean sendFriendRequest(User currUser, User receiver);
+    UserFriendRequestStatus sendFriendRequest(User currUser, User receiver);
     boolean acceptFriendRequest(User currUser, User sender);
     boolean declineFriendRequest(User currUser, User sender);
     boolean deleteFriend(User currUser, User friend);

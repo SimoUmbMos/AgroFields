@@ -33,6 +33,9 @@
         <action
             android:id="@+id/toListMenu"
             app:destination="@id/LandCollectionFragment" />
+        <action
+            android:id="@+id/toUserContacts"
+            app:destination="@id/UserContactsFragment" />
     </fragment>
     <fragment android:id="@+id/LandInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LandInfoFragment"
@@ -101,4 +104,9 @@
             android:id="@+id/toLandMap"
             app:destination="@id/LandMapFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/UserContactsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserContactsFragment"
+        android:label="fragment_user_contacts"
+        tools:layout="@layout/fragment_user_contacts" />
 </navigation>

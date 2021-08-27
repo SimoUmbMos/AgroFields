@@ -19,8 +19,6 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
-
-
 public class MainActivity extends AppCompatActivity {
     private static final int doubleTapBack = 2750;
     private static final String TAG = "MainActivity";

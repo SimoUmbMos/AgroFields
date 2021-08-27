@@ -11,6 +11,7 @@
     <string name="app_name">Land Declaration</string>
 
     <string name="empty_list">List is empty</string>
+    <string name="empty_search">No result</string>
 
     <string name="title_activity_import">Map</string>
     <string name="iv_check_box_desc">check box</string>
@@ -92,4 +93,10 @@
     <string name="main_menu_history_button">History</string>
     <string name="main_menu_profile_button">Profile</string>
     <string name="main_menu_contacts_button">Contacts</string>
+    <string name="search_user_hint">Search User</string>
+
+    <string name="accept">Accept</string>
+    <string name="file_type_select_title">Select File Type</string>
+    <string name="delete_lands_title">Delete Lands</string>
+    <string name="delete_lands_text">Are you sure you want to delete the selected lands?</string>
 </resources>

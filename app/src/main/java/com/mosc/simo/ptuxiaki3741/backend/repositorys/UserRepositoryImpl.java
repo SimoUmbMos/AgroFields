@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.UserRepository;
+import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
@@ -73,22 +74,27 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean sendFriendRequest(User currUser, User receiver){
+    public UserFriendRequestStatus sendFriendRequest(User currUser, User receiver){
         if(currUser != null && receiver != null ){
             if(getUserFriendRequestList(currUser).contains(receiver)){
-                return acceptFriendRequest(currUser,receiver);
+                if(acceptFriendRequest(currUser,receiver)){
+                    return UserFriendRequestStatus.ACCEPTED;
+                }
             }else{
                 List<UserRelationship> relationships = db.userRelationshipDao().getByIDs(
                         currUser.getId(),
                         receiver.getId()
                 );
-                if(relationships.size() == 0){
+                if(relationships == null){
                     saveUserRelationship(currUser,receiver,UserDBAction.REQUESTED);
-                    return true;
+                    return UserFriendRequestStatus.REQUESTED;
+                }else if(relationships.size() == 0){
+                    saveUserRelationship(currUser,receiver,UserDBAction.REQUESTED);
+                    return UserFriendRequestStatus.REQUESTED;
                 }
             }
         }
-        return false;
+        return UserFriendRequestStatus.REQUEST_FAILED;
     }
     @Override
     public boolean acceptFriendRequest(User currUser, User sender){

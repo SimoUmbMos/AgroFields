@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
@@ -43,7 +45,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//todo change if possible
 @SuppressLint("NotifyDataSetChanged")
 public class LandMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
@@ -52,10 +53,12 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private final List<Integer> indexes = new ArrayList<>();
 
     private LandListAdapter adapter;
+    private int dialogChecked;
     private LandViewModel vmLands;
     private LandListMenuState state = LandListMenuState.NormalState;
 
     private FragmentMenuLandBinding binding;
+    private AlertDialog dialog;
     private ActionBar actionBar;
     private Menu menu;
 
@@ -296,14 +299,13 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         vmLands.deselectAllLands();
         adapter.notifyDataSetChanged();
     }
-    private void exportSelectedLands(){
+    private void exportSelectedLands(FileType action){
         List<Land> lands = vmLands.returnSelectedLands();
         if(lands.size() > 0){
             File path = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS
             );
-            //TODO CHANGE FILE TYPE
-            writeOnFile(lands, path, FileType.KML);
+            writeOnFile(lands, path, action);
             vmLands.deselectAllLands();
         }
     }
@@ -361,20 +363,29 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private void doAction(LandListActionState actionState) {
         switch (actionState){
             case ToCreate:
+                setState(LandListMenuState.NormalState);
                 navigate(toLandAdd());
                 break;
             case SelectAllAction:
                 toggleSelectAll();
                 break;
             case DeleteAction:
-                deleteSelectedLands();
+                if(vmLands.returnSelectedLands().size() > 0){
+                    showDeleteDialog();
+                }else{
+                    setState(LandListMenuState.NormalState);
+                }
                 break;
             case ExportAction:
-                exportSelectedLands();
+                if(vmLands.returnSelectedLands().size() > 0){
+                    showExportDialog();
+                }else{
+                    setState(LandListMenuState.NormalState);
+                }
                 break;
-        }
-        if(actionState != LandListActionState.SelectAllAction){
-            setState(LandListMenuState.NormalState);
+            default:
+                setState(LandListMenuState.NormalState);
+                break;
         }
     }
     private void changeActionBarTitle(String label) {
@@ -393,6 +404,54 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }else{
             binding.tvLandListActionLabel.setVisibility(View.VISIBLE);
             binding.rvLandList.setVisibility(View.GONE);
+        }
+    }
+    private void showExportDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            dialogChecked = 0;
+            String[] dataTypes = {"KML","GeoJson","GML"};
+            dialog = new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(getString(R.string.file_type_select_title))
+                    .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
+                    .setOnDismissListener(dialog -> setState(LandListMenuState.NormalState))
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> {
+                        switch (dialogChecked) {
+                            case 0:
+                                exportSelectedLands(FileType.KML);
+                                break;
+                            case 1:
+                                exportSelectedLands(FileType.GEOJSON);
+                                break;
+                            case 2:
+                                exportSelectedLands(FileType.GML);
+                                break;
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
+    }
+    private void showDeleteDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            dialog = new MaterialAlertDialogBuilder(getContext())
+                    .setTitle(getString(R.string.delete_lands_title))
+                    .setMessage(getString(R.string.delete_lands_text))
+                    .setOnDismissListener(dialog -> setState(LandListMenuState.NormalState))
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> deleteSelectedLands())
+                    .create();
+            dialog.show();
         }
     }
 

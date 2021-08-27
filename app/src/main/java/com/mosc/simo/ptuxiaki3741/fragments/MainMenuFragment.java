@@ -16,7 +16,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -79,7 +78,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         binding.btnMainMenuList.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnMainMenuHistory.setOnClickListener(v -> toLandHistory(getActivity()));
         binding.btnMainMenuProfile.setOnClickListener(v -> toProfile(getActivity()));
-        binding.btnMainMenuContacts.setOnClickListener(v -> Toast.makeText(getContext(),"TODO",Toast.LENGTH_SHORT).show()); //TODO: menu actions
+        binding.btnMainMenuContacts.setOnClickListener(v -> toUserContacts(getActivity()));
     }
     private void initViewModels() {
         if(getActivity() != null){
@@ -177,6 +176,11 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     }
     public void toLogin(@Nullable Activity activity) {
         NavDirections action = MainMenuFragmentDirections.toLogin();
+        if(activity != null)
+            activity.runOnUiThread(()->navigate(action));
+    }
+    public void toUserContacts(@Nullable Activity activity) {
+        NavDirections action = MainMenuFragmentDirections.toUserContacts();
         if(activity != null)
             activity.runOnUiThread(()->navigate(action));
     }
