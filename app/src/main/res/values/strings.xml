@@ -72,8 +72,7 @@
     <string name="register_username_empty_error">Username is empty</string>
     <string name="register_username_taken_error">Username is taken</string>
 
-    <string name="profile_title_1"> </string>
-    <string name="profile_title_2">Profile</string>
+    <string name="profile_bar_label">My Profile</string>
 
     <string name="change_terrain_type">change terrain type</string>
     <string name="loading_list">List is loading</string>
@@ -81,13 +80,12 @@
     <string name="land_history">Lands History</string>
     <string name="address_hint">Address</string>
     <string name="logout">Logout</string>
-    <string name="land_bar_label_1"> </string>
-    <string name="land_bar_label_2">\'s Land\'s</string>
+    <string name="land_bar_label">My Land\'s</string>
 
     <string name="main_menu_label_land_number">Number Of Lands:</string>
-    <string name="main_menu_label_land_area">Lands Total Area:</string>
-    <string name="main_menu_label_owned_lands">Number Of Owned Lands:</string>
-    <string name="main_menu_label_shared_lands">Number Of Shared Lands:</string>
+    <string name="main_menu_label_land_area">Lands Area:</string>
+    <string name="main_menu_label_owned_lands">Owned Lands:</string>
+    <string name="main_menu_label_shared_lands">Shared Lands:</string>
     <string name="main_menu_label_contact">Contacts Number:</string>
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_history_button">History</string>

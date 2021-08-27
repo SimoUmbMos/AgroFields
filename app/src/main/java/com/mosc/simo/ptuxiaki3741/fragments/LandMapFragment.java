@@ -1019,10 +1019,14 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         if(menu != null){
             MenuItem menuToggle = menu.findItem(R.id.menu_item_toggle_drawer);
             MenuItem menuSave = menu.findItem(R.id.menu_item_save_land);
-            menuToggle.setVisible(!displayOnly);
-            menuToggle.setEnabled(!displayOnly);
-            menuSave.setVisible(!displayOnly);
-            menuSave.setEnabled(!displayOnly);
+            if(menuToggle != null){
+                menuToggle.setVisible(!displayOnly);
+                menuToggle.setEnabled(!displayOnly);
+            }
+            if(menuSave != null){
+                menuSave.setVisible(!displayOnly);
+                menuSave.setEnabled(!displayOnly);
+            }
         }
     }
     private void asyncFindLocation() {

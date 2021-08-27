@@ -30,7 +30,6 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
     private User currUser;
     private boolean isEditMode;
     private UserViewModel vmUsers;
-    private ActionBar actionBar;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,14 +64,13 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
 
     private void initActivity(){
         MainActivity mainActivity = (MainActivity) getActivity();
-        actionBar = null;
         if( mainActivity != null){
             mainActivity.setOnBackPressed(this);
-            actionBar = mainActivity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle("");
-            actionBar.show();
+            ActionBar actionBar = mainActivity.getSupportActionBar();
+            if(actionBar != null){
+                actionBar.setTitle(getString(R.string.profile_bar_label));
+                actionBar.show();
+            }
         }
     }
     private void initFragment(){
@@ -91,11 +89,6 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
     private void setupUiForUser(User user) {
         currUser = user;
         if(user != null){
-            String title = getResources().getString(R.string.profile_title_1) + " " +
-                    user.getUsername() + " " + getResources().getString(R.string.profile_title_2);
-            if(actionBar != null){
-                actionBar.setTitle(title);
-            }
             binding.etUserProfilePhone.setText(user.getPhone());
             binding.etUserProfileEmail.setText(user.getEmail());
         }else{

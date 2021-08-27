@@ -59,7 +59,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     private FragmentMenuLandBinding binding;
     private AlertDialog dialog;
-    private ActionBar actionBar;
     private Menu menu;
 
 
@@ -101,14 +100,13 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     //init
     private void initActivity() {
         MainActivity activity = (MainActivity) getActivity();
-        actionBar = null;
         if (activity != null) {
-            actionBar = activity.getSupportActionBar();
+            ActionBar actionBar = activity.getSupportActionBar();
             if(actionBar != null){
+                actionBar.setTitle(getString(R.string.land_bar_label));
                 actionBar.show();
             }
             activity.setOnBackPressed(this);
-            changeActionBarTitle("");
         }
     }
     private void initData() {
@@ -230,13 +228,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     //observers
     private void onUserUpdate(User user) {
-        if(user != null){
-            changeActionBarTitle(
-                getResources().getString(R.string.land_bar_label_1) + " "+
-                        user.getUsername() + " "+
-                        getResources().getString(R.string.land_bar_label_2)
-            );
-        }else{
+        if(user == null){
             finish();
         }
     }
@@ -386,15 +378,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             default:
                 setState(LandListMenuState.NormalState);
                 break;
-        }
-    }
-    private void changeActionBarTitle(String label) {
-        if( actionBar != null ){
-            if(label != null){
-                actionBar.setTitle(label);
-            }else{
-                actionBar.setTitle("");
-            }
         }
     }
     private void updateUi() {
