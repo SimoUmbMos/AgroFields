@@ -24,12 +24,16 @@
             app:titleTextColor="?attr/colorOnPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
-    <include android:id="@+id/incMainActivityContent"
-        layout="@layout/activity_main_content"
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fcvNavHostFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ablMainActivity" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ablMainActivity"
+        app:navGraph="@navigation/nav_land_graph" />
 </androidx.constraintlayout.widget.ConstraintLayout>

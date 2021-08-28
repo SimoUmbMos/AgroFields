@@ -1,6 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -10,7 +9,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -30,6 +28,7 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistoryList;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,14 +133,17 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
 
     //ui
     private void onLandHistoryUpdate(List<LandRecord> r) {
+        int size = data.size();
         data.clear();
+        adapter.notifyItemRangeRemoved(0,size);
 
         List<List<LandRecord>> recordsList = LandUtil.splitLandRecordByLand(r);
-        for(List<LandRecord> records : recordsList){
-            data.add(new LandHistoryList(records));
+        for(int i = 0;i<recordsList.size();i++){
+            data.add(i,new LandHistoryList(recordsList.get(i)));
+            adapter.notifyItemInserted(i);
         }
 
-        update();
+        checkIfAdapterIsPopulated();
     }
     private void onLoadingStatus(boolean isLoading) {
         this.isLoading = isLoading;
@@ -195,23 +197,12 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
         if(land != null)
             toLandMap(getActivity(),land);
     }
-    @SuppressLint("NotifyDataSetChanged")
-    public void update() {
-        adapter.notifyDataSetChanged();
-        checkIfAdapterIsPopulated();
-    }
 
     //ui
-    private NavController getNavController(){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandHistoryFragment)
-            return navController;
-        return null;
-    }
     public void toLandMap(@Nullable Activity activity, Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LandHistoryFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(LandMapFragment.argLand,land);
                 bundle.putBoolean(LandMapFragment.argDisplayMode,true);

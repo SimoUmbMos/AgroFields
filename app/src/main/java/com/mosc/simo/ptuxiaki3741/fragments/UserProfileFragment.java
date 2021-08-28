@@ -10,7 +10,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +23,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserProfileBinding;import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class UserProfileFragment extends Fragment implements FragmentBackPress {
     private FragmentUserProfileBinding binding;
@@ -154,16 +154,10 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
         vmUsers.logout();
     }
 
-    private NavController getNavController(){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.UserProfileFragment)
-            return navController;
-        return null;
-    }
     public void toLogin(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.UserProfileFragment);
                 if(nav != null)
                     nav.navigate(R.id.userProfileToLogin);
             });

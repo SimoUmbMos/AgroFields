@@ -12,7 +12,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +33,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class LandInfoFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
@@ -248,16 +248,10 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     }
 
     //navigation
-    private NavController getNavController(){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandInfoFragment)
-            return navController;
-        return null;
-    }
     public void toLandMap(@Nullable Activity activity,Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LandInfoFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(LandMapFragment.argLand,land);
                 if(nav != null)
@@ -267,7 +261,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     public void toLandMap(@Nullable Activity activity, Land land, String address) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LandInfoFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(LandMapFragment.argLand,land);
                 bundle.putString(LandMapFragment.argAddress,address);

@@ -73,7 +73,10 @@ public class Land implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getData().getId());
+        if(this.getData() != null){
+            return Objects.hash(this.getData().getId());
+        }
+        return -1;
     }
 
     @Override

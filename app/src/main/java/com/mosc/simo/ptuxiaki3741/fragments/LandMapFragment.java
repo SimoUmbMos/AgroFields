@@ -27,7 +27,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,7 +60,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     public static final String TAG = "LandFragment";
     public static final String argLand = "land",
             argAddress = "address",
-            argDisplayMode = "address";
+            argDisplayMode = "display_mode";
 
     public static final double distanceToMapActionKM = 1;
     private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
@@ -420,16 +419,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
 
     //navigation relative
-    private NavController getNavController(){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandMapFragment)
-            return navController;
-        return null;
-    }
     public void toMenu(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
                 if(nav != null)
                     nav.navigate(R.id.landMapToListMenu);
             });
@@ -437,7 +430,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     public void toInfo(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
                 Land land = getLand();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(LandInfoFragment.argLand,land);

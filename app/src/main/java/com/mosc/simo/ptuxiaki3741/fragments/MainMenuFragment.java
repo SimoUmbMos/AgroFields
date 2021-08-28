@@ -10,7 +10,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,7 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -151,16 +151,10 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
 
-    private NavController getNavController(){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.MainMenuFragment)
-            return navController;
-        return null;
-    }
     public void toLandHistory(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
                 if(nav != null)
                     nav.navigate(R.id.mainMenuToLandHistory);
             });
@@ -168,7 +162,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     public void toListMenu(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
                 if(nav != null)
                     nav.navigate(R.id.mainMenuToListMenu);
             });
@@ -176,7 +170,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     public void toProfile(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
                 if(nav != null)
                     nav.navigate(R.id.mainMenuToUserProfile);
             });
@@ -184,7 +178,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     public void toLogin(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
                 if(nav != null)
                     nav.navigate(R.id.mainMenuToLogin);
             });
@@ -192,7 +186,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     public void toUserContacts(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
                 if(nav != null)
                     nav.navigate(R.id.mainMenuToUserContacts);
             });

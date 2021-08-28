@@ -1,6 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Environment;
@@ -38,6 +36,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -45,7 +44,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressLint("NotifyDataSetChanged")
 public class LandMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
 
@@ -54,6 +52,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     private LandListAdapter adapter;
     private int dialogChecked;
+    private boolean justAdded;
     private LandViewModel vmLands;
     private LandListMenuState state = LandListMenuState.NormalState;
 
@@ -110,6 +109,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initData() {
+        justAdded = true;
         adapter = new LandListAdapter(
                 data,
                 indexes,
@@ -233,19 +233,40 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void onDataUpdate(List<Land> data) {
+        int size = this.data.size();
         this.data.clear();
+        adapter.notifyItemRangeRemoved(0,size);
         if(data != null){
             this.data.addAll(data);
+            adapter.notifyItemRangeInserted(0,this.data.size());
         }
-        adapter.notifyDataSetChanged();
         updateUi();
+        justAdded = true;
     }
     private void onSelectUpdate(List<Integer> indexes) {
-        this.indexes.clear();
-        if(indexes != null){
-            this.indexes.addAll(indexes);
+        if(justAdded){
+            this.indexes.clear();
+            if(indexes != null){
+                this.indexes.addAll(indexes);
+            }
+            adapter.notifyItemRangeChanged(0,data.size());
+            justAdded = false;
+        }else{
+            List<Integer> tempIndexes = new ArrayList<>(this.indexes);
+            this.indexes.clear();
+            if(indexes != null){
+                this.indexes.addAll(indexes);
+            }
+            for(Integer tempIndex : tempIndexes){
+                adapter.notifyItemChanged(tempIndex);
+            }
+            for(Integer index : this.indexes){
+                if(!tempIndexes.contains(index)){
+                    adapter.notifyItemChanged(index);
+                }
+            }
         }
-        adapter.notifyDataSetChanged();
+
         if(
                 state == LandListMenuState.MultiSelectState &&
                 this.indexes.size() == 0
@@ -289,7 +310,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private void deleteSelectedLands(){
         vmLands.removeSelectedLands();
         vmLands.deselectAllLands();
-        adapter.notifyDataSetChanged();
     }
     private void exportSelectedLands(FileType action){
         List<Land> lands = vmLands.returnSelectedLands();
@@ -439,16 +459,10 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //navigate
-    private NavController getNavController(){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandCollectionFragment)
-            return navController;
-        return null;
-    }
     public void toLandEdit(@Nullable Activity activity, Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(LandMapFragment.argLand,land);
                 if(nav != null)
@@ -458,7 +472,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     public void toLandAdd(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
                 Land land = new Land();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(LandInfoFragment.argLand,land);

@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +27,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoginRegisterBinding;
 import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class LoginRegisterFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LoginRegisterFragment";
@@ -371,16 +371,10 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
 
-    private NavController getNavController(){
-        NavController navController = NavHostFragment.findNavController(this);
-        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LoginFragment)
-            return navController;
-        return null;
-    }
     public void toMenu(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = getNavController();
+                NavController nav = UIUtil.getNavController(this,R.id.LoginFragment);
                 if(nav != null)
                     nav.navigate(R.id.loginToMenu);
             });
