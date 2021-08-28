@@ -10,7 +10,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -152,36 +151,50 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
 
-    private void navigate(NavDirections action){
+    private NavController getNavController(){
         NavController navController = NavHostFragment.findNavController(this);
-        if(action != null){
-            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.MainMenuFragment)
-                navController.navigate(action);
-        }
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.MainMenuFragment)
+            return navController;
+        return null;
     }
     public void toLandHistory(@Nullable Activity activity) {
-        NavDirections action = MainMenuFragmentDirections.toLandHistory();
         if(activity != null)
-            activity.runOnUiThread(()->navigate(action));
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.mainMenuToLandHistory);
+            });
     }
     public void toListMenu(@Nullable Activity activity) {
-        NavDirections action = MainMenuFragmentDirections.toListMenu();
         if(activity != null)
-            activity.runOnUiThread(()->navigate(action));
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.mainMenuToListMenu);
+            });
     }
     public void toProfile(@Nullable Activity activity) {
-        NavDirections action = MainMenuFragmentDirections.toUserProfile();
         if(activity != null)
-            activity.runOnUiThread(()->navigate(action));
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.mainMenuToUserProfile);
+            });
     }
     public void toLogin(@Nullable Activity activity) {
-        NavDirections action = MainMenuFragmentDirections.toLogin();
         if(activity != null)
-            activity.runOnUiThread(()->navigate(action));
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.mainMenuToLogin);
+            });
     }
     public void toUserContacts(@Nullable Activity activity) {
-        NavDirections action = MainMenuFragmentDirections.toUserContacts();
         if(activity != null)
-            activity.runOnUiThread(()->navigate(action));
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.mainMenuToUserContacts);
+            });
     }
 }

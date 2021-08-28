@@ -12,7 +12,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
@@ -38,14 +37,21 @@ import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
 public class LandInfoFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
+    public static final String argLand = "land";
+
     private Land land;
     private User currUser;
     private FragmentLandInfoBinding binding;
     private boolean isNew = false;
 
+    @Override public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initData();
+    }
+
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+                                                 @Nullable ViewGroup container,
+                                                 @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         binding = FragmentLandInfoBinding.inflate(inflater,container,false);
         return binding.getRoot();
@@ -53,7 +59,6 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
-        initData();
         initViewModel();
         initView();
     }
@@ -72,6 +77,23 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
         return true;
     }
 
+    private void initData() {
+        if(getArguments() != null){
+            if(getArguments().containsKey(argLand)){
+                land = getArguments().getParcelable(argLand);
+            }else{
+                land = new Land();
+            }
+        }else{
+            land = new Land();
+        }
+        if(new Land().equals(land)){
+            land = null;
+            isNew = true;
+        }else{
+            isNew = false;
+        }
+    }
     private void initActivity(){
         MainActivity activity = (MainActivity) getActivity();
         ActionBar actionBar = null;
@@ -82,15 +104,6 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
         if(actionBar != null){
             actionBar.setTitle("");
             actionBar.hide();
-        }
-    }
-    private void initData() {
-        land = LandInfoFragmentArgs.fromBundle(getArguments()).getLand();
-        if(new Land().equals(land)){
-            land = null;
-            isNew = true;
-        }else{
-            isNew = false;
         }
     }
     private void initViewModel(){
@@ -216,12 +229,12 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     private void submitAdd(String landName, String address) {
         if(currUser != null){
             LandData landData = new LandData(currUser.getId(),landName);
-            navigate(toLandMap(new Land(landData),address));
+            toLandMap(getActivity(),new Land(landData),address);
         }
     }
     private void submitEdit(String landName) {
         land.getData().setTitle(landName);
-        navigate(toLandMap(land));
+        toLandMap(getActivity(),land);
     }
 
     //cancel
@@ -235,17 +248,31 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     }
 
     //navigation
-    private void navigate(NavDirections action){
+    private NavController getNavController(){
         NavController navController = NavHostFragment.findNavController(this);
         if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandInfoFragment)
-            navController.navigate(action);
+            return navController;
+        return null;
     }
-    private NavDirections toLandMap(Land land){
-        return LandInfoFragmentDirections.toLandMap(land);
+    public void toLandMap(@Nullable Activity activity,Land land) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LandMapFragment.argLand,land);
+                if(nav != null)
+                    nav.navigate(R.id.landInfoToLandMap,bundle);
+            });
     }
-    private NavDirections toLandMap(Land land,String address){
-        LandInfoFragmentDirections.ToLandMap action = LandInfoFragmentDirections.toLandMap(land);
-        action.setAddress(address);
-        return action;
+    public void toLandMap(@Nullable Activity activity, Land land, String address) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LandMapFragment.argLand,land);
+                bundle.putString(LandMapFragment.argAddress,address);
+                if(nav != null)
+                    nav.navigate(R.id.landInfoToLandMap,bundle);
+            });
     }
 }

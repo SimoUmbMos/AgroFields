@@ -8,7 +8,6 @@ import android.location.Address;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +27,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -61,10 +59,15 @@ import java.util.List;
 
 public class LandMapFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
     public static final String TAG = "LandFragment";
+    public static final String argLand = "land",
+            argAddress = "address",
+            argDisplayMode = "address";
+
     public static final double distanceToMapActionKM = 1;
     private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
             maxZoom = 7f, minZoom = 0.1f, addressZoom = 10;
     public static final int defaultPadding = 64;
+
     private LandActionStates mapStatus;
     private LandFileState fileState;
     private float zoom, dx, dy, x, y;
@@ -84,6 +87,11 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private String title;
 
     // overrides
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initData();
+    }
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                                                  @Nullable ViewGroup container,
                                                  @Nullable Bundle savedInstanceState) {
@@ -94,7 +102,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
-        initData();
+        initDataToView();
         initViewModel();
         initViews();
     }
@@ -214,23 +222,29 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
 
     //init relative
-    private void initActivity() {
-        if(getActivity() != null){
-            if(getActivity() instanceof MainActivity){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
-                actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
+    private void initData(){
+        Land currLand;
+        if(getArguments() != null){
+            if(getArguments().containsKey(argLand)) {
+                currLand = getArguments().getParcelable(argLand);
+            }else {
+                currLand = new Land();
             }
+            if(getArguments().containsKey(argAddress)) {
+                address = getArguments().getString(argAddress);
+            }else {
+                address = null;
+            }
+            if(getArguments().containsKey(argDisplayMode)) {
+                displayOnly = getArguments().getBoolean(argDisplayMode);
+            }else{
+                displayOnly = false;
+            }
+        }else{
+            currLand = new Land();
+            address = null;
+            displayOnly = false;
         }
-    }
-    private void initData() {
-        Land currLand = LandMapFragmentArgs.fromBundle(getArguments()).getLand();
-        address = LandMapFragmentArgs.fromBundle(getArguments()).getAddress();
-        displayOnly = LandMapFragmentArgs.fromBundle(getArguments()).getDisplayMode();
-        setupMenuItems();
         points = new ArrayList<>();
         if(!new Land().equals(currLand)){
             currLandID = currLand.getData().getId();
@@ -243,15 +257,27 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             title = "";
         }
         startPoints = new ArrayList<>(points);
-        if(address == null){
-            Log.d(TAG, "address: null");
-            asyncFindLocation();
-        }else{
-            Log.d(TAG, "address: not null");
-        }
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
         currUser = null;
+    }
+    private void initActivity() {
+        if(getActivity() != null){
+            if(getActivity() instanceof MainActivity){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.show();
+                }
+            }
+        }
+    }
+    private void initDataToView() {
+        setupMenuItems();
+        if(address == null){
+            asyncFindLocation();
+        }
         clearFlags();
         clearUndo();
     }
@@ -349,7 +375,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 toggleMapLock();
                 return true;
             case (R.id.toolbar_action_edit_land_info):
-                navigate(toInfo());
+                toInfo(getActivity());
                 return true;
             case (R.id.toolbar_action_add_on_end):
                 setAction(LandActionStates.AddEnd);
@@ -394,19 +420,30 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
 
     //navigation relative
-    private void navigate(NavDirections action){
+    private NavController getNavController(){
         NavController navController = NavHostFragment.findNavController(this);
-        if(
-                navController.getCurrentDestination() == null ||
-                navController.getCurrentDestination().getId() == R.id.LandMapFragment
-        )
-            navController.navigate(action);
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandMapFragment)
+            return navController;
+        return null;
     }
-    private NavDirections toMenu(){
-        return LandMapFragmentDirections.toListMenu();
+    public void toMenu(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.landMapToListMenu);
+            });
     }
-    private NavDirections toInfo(){
-        return LandMapFragmentDirections.toLandInfo(getLand());
+    public void toInfo(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                Land land = getLand();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LandInfoFragment.argLand,land);
+                if(nav != null)
+                    nav.navigate(R.id.landMapToLandInfo,bundle);
+            });
     }
     private void toImportFile(){
         importFile(LandFileState.File);
@@ -419,7 +456,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void save() {
         if(isValidToSave()){
             saveToVM();
-            navigate(toMenu());
+            toMenu(getActivity());
         }
     }
     private boolean isValidToSave() {

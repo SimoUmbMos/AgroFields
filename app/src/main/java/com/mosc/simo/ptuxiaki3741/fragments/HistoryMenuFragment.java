@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,7 +10,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -42,7 +42,6 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
     private boolean isLoading;
 
     private final List<LandHistoryList> data = new ArrayList<>();
-    private final List<LandRecord> history = new ArrayList<>();
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -107,7 +106,19 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
         );
         binding.rvHistoryList.setLayoutManager(layoutManager);
         binding.rvHistoryList.setHasFixedSize(true);
-        adapter = new LandHistoryListAdapter(data,this::onRecordClick);
+        String[] values = new String[]{
+                getString(R.string.land_action_created),
+                getString(R.string.land_action_updated),
+                getString(R.string.land_action_restored),
+                getString(R.string.land_action_deleted)
+        };
+        adapter = new LandHistoryListAdapter(
+                getActivity(),
+                data,
+                values,
+                this::onHeaderClick,
+                this::onRecordClick
+        );
         binding.rvHistoryList.setAdapter(adapter);
         checkIfAdapterIsPopulated();
     }
@@ -123,11 +134,9 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
 
     //ui
     private void onLandHistoryUpdate(List<LandRecord> r) {
-        history.clear();
         data.clear();
 
-        history.addAll(r);
-        List<List<LandRecord>> recordsList = LandUtil.splitLandRecordByLand(history);
+        List<List<LandRecord>> recordsList = LandUtil.splitLandRecordByLand(r);
         for(List<LandRecord> records : recordsList){
             data.add(new LandHistoryList(records));
         }
@@ -157,45 +166,34 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     public boolean areAllListsVisible(){
-        for(int i = 0; i < adapter.getItemCount(); i++){
-            LandHistoryListAdapter.ItemViewHolder vh = (LandHistoryListAdapter.ItemViewHolder)
-                    binding.rvHistoryList.findViewHolderForAdapterPosition(i);
-            if(vh != null){
-                if(vh.llHistoryRoot.getVisibility() == View.GONE){
-                    return false;
-                }
-            }
+        for(LandHistoryList item : data){
+            if(!item.isVisible())
+                return false;
         }
         return true;
     }
     public void showAllLists(){
-        for(int i = 0; i < adapter.getItemCount(); i++){
-            LandHistoryListAdapter.ItemViewHolder vh = (LandHistoryListAdapter.ItemViewHolder)
-                    binding.rvHistoryList.findViewHolderForAdapterPosition(i);
-            if(vh != null){
-                if(vh.llHistoryRoot.getVisibility() != View.VISIBLE){
-                    vh.toggleList();
-                }
-            }
+        for(int i = 0; i < data.size();i++){
+            data.get(i).setVisible(true);
+            adapter.notifyItemChanged(i);
         }
     }
     public void hideAllLists(){
-        for(int i = 0; i < adapter.getItemCount(); i++){
-            LandHistoryListAdapter.ItemViewHolder vh = (LandHistoryListAdapter.ItemViewHolder)
-                    binding.rvHistoryList.findViewHolderForAdapterPosition(i);
-            if(vh != null){
-                if(vh.llHistoryRoot.getVisibility() != View.GONE){
-                    vh.toggleList();
-                }
-            }
+        for(int i = 0; i < data.size();i++){
+            data.get(i).setVisible(false);
+            adapter.notifyItemChanged(i);
         }
     }
 
     //recycle view
+    public void onHeaderClick(int pos){
+        data.get(pos).setVisible(!data.get(pos).isVisible());
+        adapter.notifyItemChanged(pos);
+    }
     public void onRecordClick(LandRecord record){
         Land land = LandUtil.getLandFromLandRecord(record);
         if(land != null)
-            navigate(toLandMap(land));
+            toLandMap(getActivity(),land);
     }
     @SuppressLint("NotifyDataSetChanged")
     public void update() {
@@ -204,18 +202,21 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //ui
-    private void navigate(NavDirections action){
+    private NavController getNavController(){
         NavController navController = NavHostFragment.findNavController(this);
-        if(
-                navController.getCurrentDestination() == null ||
-                        navController.getCurrentDestination().getId() == R.id.LandHistoryFragment
-        )
-            navController.navigate(action);
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandHistoryFragment)
+            return navController;
+        return null;
     }
-    private NavDirections toLandMap(Land land){
-        HistoryMenuFragmentDirections.ToLandMap action =
-                HistoryMenuFragmentDirections.toLandMap(land);
-        action.setDisplayMode(true);
-        return action;
+    public void toLandMap(@Nullable Activity activity, Land land) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LandMapFragment.argLand,land);
+                bundle.putBoolean(LandMapFragment.argDisplayMode,true);
+                if(nav != null)
+                    nav.navigate(R.id.landHistoryToLandMap,bundle);
+            });
     }
 }

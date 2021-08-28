@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -9,7 +10,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -49,6 +49,7 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.user_profile_menu, menu);
+        initMenu(menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -74,7 +75,7 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initFragment(){
-        binding.btnUserProfileModify.setOnClickListener(this::onModifyClick);
+        binding.btnUserProfileModify.setOnClickListener(v->onModifyClick());
         setEditMode(false);
     }
     private void initViewModels(){
@@ -85,6 +86,12 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
             setupUiForUser(null);
         }
     }
+    private void initMenu(Menu menu){
+        MenuItem logout = menu.findItem(R.id.menu_item_logout);
+        logout.getActionView().setOnClickListener(
+                v-> menu.performIdentifierAction(logout.getItemId(),0)
+        );
+    }
 
     private void setupUiForUser(User user) {
         currUser = user;
@@ -92,11 +99,11 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
             binding.etUserProfilePhone.setText(user.getPhone());
             binding.etUserProfileEmail.setText(user.getEmail());
         }else{
-            navigate(toLogin());
+            toLogin(getActivity());
         }
     }
 
-    private void onModifyClick(View view) {
+    private void onModifyClick() {
         setEditMode(!isEditMode);
         if(isEditMode){
             binding.btnUserProfileModify.setText(R.string.save);
@@ -147,14 +154,18 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
         vmUsers.logout();
     }
 
-    private void navigate(NavDirections action){
+    private NavController getNavController(){
         NavController navController = NavHostFragment.findNavController(this);
-        if(action != null){
-            if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.UserProfileFragment)
-                navController.navigate(action);
-        }
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.UserProfileFragment)
+            return navController;
+        return null;
     }
-    public NavDirections toLogin() {
-        return UserProfileFragmentDirections.toLogin();
+    public void toLogin(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.userProfileToLogin);
+            });
     }
 }

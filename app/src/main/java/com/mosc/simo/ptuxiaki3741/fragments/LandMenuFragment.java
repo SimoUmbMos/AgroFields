@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -268,7 +268,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             vmLands.toggleSelectOnPosition(position);
         }else{
             Land land = vmLands.getLand(position);
-            navigate(toLandEdit(land));
+            toLandEdit(getActivity(),land);
         }
     }
     private void onLandLongClick(int position) {
@@ -334,9 +334,9 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                         writer.append(output);
                         writer.flush();
                         writer.close();
-                        Toast.makeText(getContext(), "File created", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.file_created), Toast.LENGTH_SHORT).show();
                     }else{
-                        Toast.makeText(getContext(), "File not created", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.file_not_created), Toast.LENGTH_SHORT).show();
                     }
                 }
             } catch (IOException e) {
@@ -356,7 +356,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         switch (actionState){
             case ToCreate:
                 setState(LandListMenuState.NormalState);
-                navigate(toLandAdd());
+                toLandAdd(getActivity());
                 break;
             case SelectAllAction:
                 toggleSelectAll();
@@ -439,29 +439,32 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //navigate
-    private void navigate(NavDirections action){
+    private NavController getNavController(){
         NavController navController = NavHostFragment.findNavController(this);
-        if(
-                navController.getCurrentDestination() == null ||
-                        navController.getCurrentDestination().getId() == R.id.LandCollectionFragment
-        )
-            navController.navigate(action);
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LandCollectionFragment)
+            return navController;
+        return null;
     }
-    private NavDirections toLandAdd(){
-        return LandMenuFragmentDirections.toLandInfo(new Land());
+    public void toLandEdit(@Nullable Activity activity, Land land) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LandMapFragment.argLand,land);
+                if(nav != null)
+                    nav.navigate(R.id.landCollectionToLandMap,bundle);
+            });
     }
-    private NavDirections toLandEdit(Land land){
-        NavDirections action;
-        if(land != null){
-            if(land.getData() != null){
-                action = LandMenuFragmentDirections.toLandMap(land);
-            }else{
-                action = toLandAdd();
-            }
-        }else{
-            action = toLandAdd();
-        }
-        return action;
+    public void toLandAdd(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                Land land = new Land();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LandInfoFragment.argLand,land);
+                if(nav != null)
+                    nav.navigate(R.id.landCollectionToLandInfo,bundle);
+            });
     }
     private void finish() {
         if(getActivity() != null)

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class LandHistoryList {
     private Land land;
+    private boolean isVisible;
     private final List<LandRecord> landRecords;
 
     public LandHistoryList(List<LandRecord> landRecords){
@@ -17,10 +18,14 @@ public class LandHistoryList {
         }else{
             land = null;
         }
+        isVisible = false;
     }
 
     public Land getLand() {
         return land;
+    }
+    public boolean isVisible() {
+        return isVisible;
     }
     public List<LandRecord> getLandRecords() {
         return landRecords;
@@ -28,6 +33,9 @@ public class LandHistoryList {
 
     public void setLand(Land land) {
         this.land = land;
+    }
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
     public void setLandRecords(List<LandRecord> landRecords) {
         this.landRecords.clear();

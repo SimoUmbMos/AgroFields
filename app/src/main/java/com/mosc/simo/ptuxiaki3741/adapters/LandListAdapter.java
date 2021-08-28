@@ -3,14 +3,12 @@ package com.mosc.simo.ptuxiaki3741.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.databinding.ViewLandListBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
@@ -42,20 +40,20 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
 
     @Override
     public void onBindViewHolder(@NonNull LandListAdapterViewHolder holder, int position) {
-        holder.llContainer.setOnClickListener(v -> onLandClick.onLandClick(position));
-        holder.llContainer.setOnLongClickListener(v -> {
+        holder.binding.llContainer.setOnClickListener(v -> onLandClick.onLandClick(position));
+        holder.binding.llContainer.setOnLongClickListener(v -> {
             onLandLongClick.onLandLongClick(position);
             return true;
         });
         if(data.size()>position){
             LandData landData = data.get(position).getData();
             if(landData != null){
-                holder.tvLandTitle.setText(landData.getTitle());
+                holder.binding.tvLandTitle.setText(landData.getTitle());
             }
             if(indexes.contains(position)){
-                holder.ivCheckBox.setVisibility(View.VISIBLE);
+                holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
             }else{
-                holder.ivCheckBox.setVisibility(View.GONE);
+                holder.binding.ivCheckBox.setVisibility(View.GONE);
             }
         }
     }
@@ -75,14 +73,10 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
         void onLandLongClick(int pos);
     }
     protected static class LandListAdapterViewHolder  extends RecyclerView.ViewHolder {
-        public final LinearLayout llContainer;
-        public final TextView tvLandTitle;
-        public final ImageView ivCheckBox;
+        public final ViewLandListBinding binding;
         public LandListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-            llContainer = itemView.findViewById(R.id.llContainer);
-            tvLandTitle = itemView.findViewById(R.id.tvLandTitle);
-            ivCheckBox = itemView.findViewById(R.id.ivCheckBox);
+            binding = ViewLandListBinding.bind(itemView);
         }
     }
 }

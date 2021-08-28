@@ -145,8 +145,13 @@ public class UserContactsFragment
         }else{
             binding.tvContactAction.setText(getString(R.string.empty_list));
         }
-        if(data.size()>0){
-            binding.tvContactAction.setText(data.size()+" results");
+        String display;
+        if(data.size()>1){
+            display = data.size()+" "+getString(R.string.list_results);
+            binding.tvContactAction.setText(display);
+        }else if(data.size() == 1){
+            display = data.size()+" "+getString(R.string.list_result);
+            binding.tvContactAction.setText(display);
         }else{
             binding.tvContactAction.setVisibility(View.VISIBLE);
         }

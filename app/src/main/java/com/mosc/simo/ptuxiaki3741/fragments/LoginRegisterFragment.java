@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -10,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
@@ -95,7 +95,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
 
     private void onUserUpdate(User user) {
         if(user != null){
-            navigate(toMenu());
+            toMenu(getActivity());
         }
     }
 
@@ -371,16 +371,18 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
 
-    //navigate
-    private void navigate(NavDirections action){
+    private NavController getNavController(){
         NavController navController = NavHostFragment.findNavController(this);
-        if(
-                navController.getCurrentDestination() == null ||
-                navController.getCurrentDestination().getId() == R.id.LoginFragment
-        )
-            navController.navigate(action);
+        if( navController.getCurrentDestination() == null || navController.getCurrentDestination().getId() == R.id.LoginFragment)
+            return navController;
+        return null;
     }
-    private NavDirections toMenu(){
-        return LoginRegisterFragmentDirections.toMenu();
+    public void toMenu(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = getNavController();
+                if(nav != null)
+                    nav.navigate(R.id.loginToMenu);
+            });
     }
 }
