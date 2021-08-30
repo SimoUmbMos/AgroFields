@@ -107,7 +107,6 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
                 getString(R.string.land_action_deleted)
         };
         adapter = new LandHistoryListAdapter(
-                getActivity(),
                 data,
                 values,
                 this::onHeaderClick,

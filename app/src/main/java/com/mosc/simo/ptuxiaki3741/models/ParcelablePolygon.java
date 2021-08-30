@@ -21,25 +21,25 @@ public class ParcelablePolygon implements Parcelable {
             return new ParcelablePolygon[size];
         }
     };
-    private final double[] lats;
-    private final double[] lngs;
+    private final double[] latList;
+    private final double[] lngList;
 
     public ParcelablePolygon(List<LatLng> points){
-        List<Double> mLats = new ArrayList<>();
-        List<Double> mLngs = new ArrayList<>();
+        List<Double> mLatList = new ArrayList<>();
+        List<Double> mLngList = new ArrayList<>();
         for(LatLng point : points){
-            mLats.add(point.latitude);
-            mLngs.add(point.longitude);
+            mLatList.add(point.latitude);
+            mLngList.add(point.longitude);
         }
-        lats = toPrimitive(mLats);
-        lngs = toPrimitive(mLngs);
+        latList = toPrimitive(mLatList);
+        lngList = toPrimitive(mLngList);
     }
     protected ParcelablePolygon(Parcel in) {
         int size = in.readInt();
-        lats = new double[size];
-        lngs = new double[size];
-        in.readDoubleArray(lats);
-        in.readDoubleArray(lngs);
+        latList = new double[size];
+        lngList = new double[size];
+        in.readDoubleArray(latList);
+        in.readDoubleArray(lngList);
     }
 
     private double[] toPrimitive(List<Double> list){
@@ -52,8 +52,8 @@ public class ParcelablePolygon implements Parcelable {
 
     public List<LatLng> getPoints(){
         List<LatLng> points = new ArrayList<>();
-        for (int i = 0; i < lats.length; i++) {
-            points.add(new LatLng(lats[i],lngs[i]));
+        for (int i = 0; i < latList.length; i++) {
+            points.add(new LatLng(latList[i],lngList[i]));
         }
         return points;
     }
@@ -65,8 +65,8 @@ public class ParcelablePolygon implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(lats.length);
-        dest.writeDoubleArray(lats);
-        dest.writeDoubleArray(lngs);
+        dest.writeInt(latList.length);
+        dest.writeDoubleArray(latList);
+        dest.writeDoubleArray(lngList);
     }
 }

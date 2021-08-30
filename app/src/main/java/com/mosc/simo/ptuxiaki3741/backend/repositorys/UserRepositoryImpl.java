@@ -44,27 +44,27 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> userSearch(User user, String username) {
         List<User> searchResult = db.userDao().searchUserByUserName(user.getId(),username);
-        List<User> templist = UserUtil.getAllSenderUsers(
+        List<User> tempList = UserUtil.getAllSenderUsers(
                 db.userRelationshipDao().getByReceiverIDAndType(user.getId(), UserDBAction.BLOCKED),
                 db
         );
-        templist.addAll(UserUtil.getAllReceiverUsers(
+        tempList.addAll(UserUtil.getAllReceiverUsers(
                 db.userRelationshipDao().getBySenderIDAndType(user.getId(), UserDBAction.BLOCKED),
                 db
         ));
-        searchResult.removeAll(templist);
-        templist.clear();
+        searchResult.removeAll(tempList);
+        tempList.clear();
 
-        templist = UserUtil.getAllSenderUsers(
+        tempList = UserUtil.getAllSenderUsers(
                 db.userRelationshipDao().getByReceiverIDAndType(user.getId(), UserDBAction.FRIENDS),
                 db
         );
-        templist.addAll(UserUtil.getAllReceiverUsers(
+        tempList.addAll(UserUtil.getAllReceiverUsers(
                 db.userRelationshipDao().getBySenderIDAndType(user.getId(), UserDBAction.FRIENDS),
                 db
         ));
         List<User> common = new ArrayList<>(searchResult);
-        common.retainAll(templist);
+        common.retainAll(tempList);
         Collections.reverse(common);
         searchResult.removeAll(common);
         Collections.reverse(searchResult);

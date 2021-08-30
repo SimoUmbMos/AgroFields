@@ -7,15 +7,12 @@
     <string name="fabPlus" translatable="false">plus edit</string>
     <string name="fabMinus" translatable="false">minus edit</string>
     <string name="land_imageView" translatable="false">show img above map</string>
-    <string name="content_desc_toggle_land_history" translatable="false">toggle land history</string>
-
     <string name="app_name">Land Declaration</string>
 
     <string name="empty_list">List is empty</string>
     <string name="empty_search">No result</string>
 
     <string name="title_activity_import">Map</string>
-    <string name="iv_check_box_desc">check box</string>
     <string name="land_name">Land Name</string>
     <string name="land_info_title">Land Info</string>
     <string name="create_land_label">Set Land Name</string>
@@ -45,7 +42,7 @@
     <string name="opacity_img">Change Opacity</string>
     <string name="select_all">Select All</string>
 
-    <string name="inport">Import</string>
+    <string name="import_label">Import</string>
     <string name="export">Export</string>
     <string name="add">Add</string>
     <string name="edit">Edit</string>

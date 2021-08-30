@@ -22,10 +22,9 @@
     <string name="delete">Διαγραφή</string>
     <string name="edit">Επεξεργασία</string>
     <string name="export">Εξαγωγή</string>
-    <string name="inport">Εισαγωγή</string>
+    <string name="import_label">Εισαγωγή</string>
     <string name="add">Προσθήκη</string>
     <string name="save">Αποθήκευσης</string>
-    <string name="iv_check_box_desc">πλαίσιο ελέγχου</string>
     <string name="select_all">Επιλογή όλων</string>
     <string name="land_name">Όνομα χωραφιού</string>
     <string name="double_tap_exit">Πατήστε ξανά για έξοδο</string>

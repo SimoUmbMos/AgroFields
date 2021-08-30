@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/llContainer"
+<LinearLayout
+    android:id="@+id/llContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -12,14 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="12dp"/>
-    <ImageView android:id="@+id/ivCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:contentDescription="@string/iv_check_box_desc"
-        android:src="@drawable/ic_check"
-        app:tint="?attr/colorSecondaryVariant"
-        android:visibility="visible" />
+        android:padding="12dp"
+        app:drawableEndCompat="@drawable/ic_check"
+        app:drawableTint="?attr/colorSecondaryVariant" />
 </LinearLayout>

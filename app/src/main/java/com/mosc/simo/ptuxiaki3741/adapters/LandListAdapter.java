@@ -46,10 +46,8 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
                 String display = landData.getTitle()+" #"+ EncryptUtil.convert4digit(landData.getId());
                 holder.binding.tvLandTitle.setText(display);
             }
-            if(land.isSelected()){
-                holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
-            }else{
-                holder.binding.ivCheckBox.setVisibility(View.GONE);
+            if(!land.isSelected()){
+                holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
             }
             holder.binding.llContainer.setOnClickListener(v ->
                     onLandClick.onLandClick(land)

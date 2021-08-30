@@ -19,8 +19,8 @@
         <item name="android:textColor">@color/secondaryTextColor</item>
 
         <item name="windowActionBar">false</item>
-        <item name="fontFamily">@font/firasanscondensed_medium</item>
-        <item name="android:fontFamily">@font/firasanscondensed_medium</item>
+        <item name="fontFamily">@font/main_font</item>
+        <item name="android:fontFamily">@font/main_font</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">

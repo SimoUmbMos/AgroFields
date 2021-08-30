@@ -17,9 +17,9 @@ import java.util.List;
 public class KmlFileExporter {
     public static final XMLOutputProcessor XMLOUTPUT = new AbstractXMLOutputProcessor() {
         @Override
-        protected void printDeclaration(final Writer out, final FormatStack fstack) throws IOException {
+        protected void printDeclaration(final Writer out, final FormatStack fStack) throws IOException {
             write(out, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-            write(out, fstack.getLineSeparator());
+            write(out, fStack.getLineSeparator());
         }
     };
 

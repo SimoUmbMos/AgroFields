@@ -107,7 +107,7 @@
                 android:id="@+id/toolbar_action_import"
                 android:icon="@drawable/menu_ic_import"
                 android:orderInCategory="1"
-                android:title="@string/inport"
+                android:title="@string/import_label"
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>

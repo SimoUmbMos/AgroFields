@@ -1,7 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.adapters;
 
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +8,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
@@ -32,21 +29,12 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     private final OnRecordClick onRecordClick;
     private final OnHeaderClick onHeaderClick;
     private final String[] values;
-    private final Drawable iconOpen,iconClose;
     public LandHistoryListAdapter(
-            Activity activity,
             List<LandHistoryList> list,
             String[] values,
             OnHeaderClick onHeaderClick,
             OnRecordClick onRecordClick
     ){
-        if(activity != null){
-            iconOpen = ContextCompat.getDrawable(activity, R.drawable.ic_menu_open);
-            iconClose = ContextCompat.getDrawable(activity, R.drawable.ic_menu_close);
-        }else{
-            iconOpen = null;
-            iconClose = null;
-        }
         this.data = list;
         this.values = values;
         this.onRecordClick = onRecordClick;
@@ -142,12 +130,12 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
         }
         if(item.isVisible()){
             holder.binding.tlHistoryRoot.setVisibility(View.VISIBLE);
-            holder.binding.ivItemToggle.setImageDrawable(iconClose);
+            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_menu_close, 0);
         }else{
             holder.binding.tlHistoryRoot.setVisibility(View.GONE);
-            holder.binding.ivItemToggle.setImageDrawable(iconOpen);
+            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_menu_open, 0);
         }
-        holder.binding.llHeader.setOnClickListener(v->onHeaderClick.onHeaderClick(position));
+        holder.binding.tvLandTitle.setOnClickListener(v->onHeaderClick.onHeaderClick(position));
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
