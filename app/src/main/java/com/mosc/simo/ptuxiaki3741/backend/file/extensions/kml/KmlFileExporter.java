@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
 
 import org.jdom2.Document;
@@ -45,7 +46,7 @@ public class KmlFileExporter {
         return doc;
     }
 
-    private static Element createGeometry(List<List<List<Double>>> pointsList) {
+    private static Element createGeometry(List<List<LatLng>> pointsList) {
         Element multiGeometry = createElement("MultiGeometry"),
                 polygon, outerBoundaryIs, linearRing, tessellate, coordinates;
         StringBuilder coordinatesString = new StringBuilder();
@@ -58,7 +59,11 @@ public class KmlFileExporter {
             tessellate.addContent("1");
             coordinates = createElement("coordinates");
             for(int j=0;j<pointsList.get(i).size();j++){
-                coordinatesString.append(pointsList.get(i).get(j).get(0)).append(",").append(pointsList.get(i).get(j).get(1)).append(" ");
+                coordinatesString
+                        .append(pointsList.get(i).get(j).longitude)
+                        .append(",")
+                        .append(pointsList.get(i).get(j).latitude)
+                        .append(" ");
             }
             coordinates.addContent(coordinatesString.toString());
             linearRing.addContent(tessellate);

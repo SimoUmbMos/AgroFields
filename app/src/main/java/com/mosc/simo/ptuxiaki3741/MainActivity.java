@@ -39,14 +39,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        fragmentBackPress = new FragmentBackPress(){
-            @Override
-            public boolean onBackPressed() {
-                return true;
-            }
-        };
+        fragmentBackPress = () -> true;
         Toolbar toolbar = findViewById(R.id.tbMainActivity);
-        //toolbar.setTitleTextColor(getColorOnPrimaryFromTheme(getApplicationContext()));
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);

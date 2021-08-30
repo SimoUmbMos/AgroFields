@@ -37,8 +37,4 @@ public class LandHistoryList {
     public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
     }
-    public void setLandRecords(List<LandRecord> landRecords) {
-        this.landRecords.clear();
-        this.landRecords.addAll(landRecords);
-    }
 }

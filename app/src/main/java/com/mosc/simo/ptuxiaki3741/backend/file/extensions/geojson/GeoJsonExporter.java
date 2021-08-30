@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
 
 import org.json.JSONArray;
@@ -36,10 +37,10 @@ public class GeoJsonExporter {
                     geometryJson.put("type", "Polygon");
                     coordinatesOuterBounds = new JSONArray();
                     coordinatesInnerBounds = new JSONArray();
-                    for(List<Double> point : field.getPointsList().get(0)){
+                    for(LatLng point : field.getPointsList().get(0)){
                         coordinatesBounds = new JSONArray();
-                        coordinatesBounds.put(point.get(0));
-                        coordinatesBounds.put(point.get(1));
+                        coordinatesBounds.put(point.longitude);
+                        coordinatesBounds.put(point.latitude);
                         coordinatesInnerBounds.put(coordinatesBounds);
                     }
                     coordinatesOuterBounds.put(coordinatesInnerBounds);
@@ -48,13 +49,13 @@ public class GeoJsonExporter {
                 }else if(field.getPointsList().size() > 1){
                     geometryJson.put("type", "MultiPolygon");
                     coordinatesListBounds = new JSONArray();
-                    for(List<List<Double>> points : field.getPointsList()){
+                    for(List<LatLng> points : field.getPointsList()){
                         coordinatesOuterBounds = new JSONArray();
                         coordinatesInnerBounds = new JSONArray();
-                        for(List<Double> point : points){
+                        for(LatLng point : points){
                             coordinatesBounds = new JSONArray();
-                            coordinatesBounds.put(point.get(0));
-                            coordinatesBounds.put(point.get(1));
+                            coordinatesBounds.put(point.longitude);
+                            coordinatesBounds.put(point.latitude);
                             coordinatesInnerBounds.put(coordinatesBounds);
                         }
                         coordinatesOuterBounds.put(coordinatesInnerBounds);

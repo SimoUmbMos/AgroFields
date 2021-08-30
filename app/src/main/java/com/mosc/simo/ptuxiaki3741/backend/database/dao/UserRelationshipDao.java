@@ -20,10 +20,6 @@ public interface UserRelationshipDao {
             "(`SenderID` = :id2 AND `ReceiverID` = :id1)")
     List<UserRelationship> getByIDs(long id1, long id2);
 
-    @Query("SELECT * FROM `UserRelationships` WHERE " +
-            "`SenderID` = :id OR`ReceiverID` = :id")
-    List<UserRelationship> getByID(long id);
-
     @Query("SELECT * FROM `UserRelationships` WHERE `SenderID` = :id AND Type = :type")
     List<UserRelationship> getBySenderIDAndType(long id, UserDBAction type);
 

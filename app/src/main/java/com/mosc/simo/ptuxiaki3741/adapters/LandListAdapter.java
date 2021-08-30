@@ -11,6 +11,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewLandListBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 
 import java.util.List;
 
@@ -18,14 +19,12 @@ import java.util.List;
 public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandListAdapterViewHolder>{
 
     private final List<Land> data;
-    private final List<Integer> indexes;
     private final OnLandClick onLandClick;
     private final OnLandLongClick onLandLongClick;
 
-    public LandListAdapter(List<Land> data, List<Integer> indexes, OnLandClick onLandClick,
+    public LandListAdapter(List<Land> data, OnLandClick onLandClick,
                            OnLandLongClick onLandLongClick){
         this.data = data;
-        this.indexes = indexes;
         this.onLandClick = onLandClick;
         this.onLandLongClick = onLandLongClick;
     }
@@ -40,21 +39,25 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
 
     @Override
     public void onBindViewHolder(@NonNull LandListAdapterViewHolder holder, int position) {
-        holder.binding.llContainer.setOnClickListener(v -> onLandClick.onLandClick(position));
-        holder.binding.llContainer.setOnLongClickListener(v -> {
-            onLandLongClick.onLandLongClick(position);
-            return true;
-        });
         if(data.size()>position){
-            LandData landData = data.get(position).getData();
+            Land land = data.get(position);
+            LandData landData = land.getData();
             if(landData != null){
-                holder.binding.tvLandTitle.setText(landData.getTitle());
+                String display = landData.getTitle()+" #"+ EncryptUtil.convert4digit(landData.getId());
+                holder.binding.tvLandTitle.setText(display);
             }
-            if(indexes.contains(position)){
+            if(land.isSelected()){
                 holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
             }else{
                 holder.binding.ivCheckBox.setVisibility(View.GONE);
             }
+            holder.binding.llContainer.setOnClickListener(v ->
+                    onLandClick.onLandClick(land)
+            );
+            holder.binding.llContainer.setOnLongClickListener(v -> {
+                onLandLongClick.onLandLongClick(land);
+                return true;
+            });
         }
     }
 
@@ -67,10 +70,10 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     }
 
     public interface OnLandClick{
-        void onLandClick(int pos);
+        void onLandClick(Land land);
     }
     public interface OnLandLongClick{
-        void onLandLongClick(int pos);
+        void onLandLongClick(Land land);
     }
     protected static class LandListAdapterViewHolder  extends RecyclerView.ViewHolder {
         public final ViewLandListBinding binding;

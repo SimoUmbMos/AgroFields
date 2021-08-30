@@ -43,7 +43,6 @@ import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
@@ -53,7 +52,6 @@ import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class LandMapFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
@@ -62,7 +60,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             argAddress = "address",
             argDisplayMode = "display_mode";
 
-    public static final double distanceToMapActionKM = 1;
+    public static final double distanceToMapActionKM = 100;
     private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
             maxZoom = 7f, minZoom = 0.1f, addressZoom = 10;
     public static final int defaultPadding = 64;
@@ -86,11 +84,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private String title;
 
     // overrides
-    @Override
-    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initData();
-    }
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                                                  @Nullable ViewGroup container,
                                                  @Nullable Bundle savedInstanceState) {
@@ -100,6 +93,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
         initDataToView();
         initViewModel();
@@ -248,8 +242,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         if(!new Land().equals(currLand)){
             currLandID = currLand.getData().getId();
             title = currLand.getData().getTitle();
-            if(currLand.getBorder() != null){
-                points.addAll(getPointsFromLandBorder(currLand.getBorder()));
+            if(currLand.getData().getBorder().size()>0){
+                points.addAll(currLand.getData().getBorder());
+                if(points.get(0).equals(points.get(points.size()-1)))
+                    points.remove(points.size()-1);
             }
         }else{
             currLandID = -1;
@@ -335,30 +331,14 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void setCurrUser(User user) {
         currUser = user;
     }
-    private List<LatLng> getPointsFromLandBorder(List<LandPoint> border) {
-        List<LandPoint> landPointsList = new ArrayList<>(border);
-        Collections.sort(landPointsList);
-        List<LatLng> landPoints = new ArrayList<>();
-        for(LandPoint landPoint : landPointsList){
-            landPoints.add(landPoint.getLatLng());
-        }
-        return landPoints;
-    }
     private Land getLand() {
         Land currLand;
         if(currLandID >= 0){
-            currLand = new Land(new LandData(currLandID,currUser.getId(),title),getLandPoints());
+            currLand = new Land(new LandData(currLandID,currUser.getId(),title,points));
         }else{
-            currLand = new Land(new LandData(currUser.getId(),title),getLandPoints());
+            currLand = new Land(new LandData(currUser.getId(),title,points));
         }
         return currLand;
-    }
-    private List<LandPoint> getLandPoints() {
-        List<LandPoint> landPoints = new ArrayList<>();
-        for(int i = 0; i < points.size(); i++){
-            landPoints.add(new LandPoint(i,points.get(i)));
-        }
-        return landPoints;
     }
 
     //menu relative

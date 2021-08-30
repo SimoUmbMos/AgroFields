@@ -3,10 +3,14 @@ package com.mosc.simo.ptuxiaki3741.backend.database.typeconverters;
 import androidx.room.TypeConverter;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 
+import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.List;
 
 public class DBTypesConverter {
     @TypeConverter
@@ -43,5 +47,15 @@ public class DBTypesConverter {
     @TypeConverter
     public static Long dateToTimestamp(Date date) {
         return date == null ? null : date.getTime();
+    }
+    @TypeConverter
+    public static List<LatLng> stringToPoints(String points) {
+        Type listType = new TypeToken<List<LatLng>>() {}.getType();
+        return new Gson().fromJson(points, listType);
+    }
+    @TypeConverter
+    public static String pointsToString(List<LatLng> points) {
+        Gson gson = new Gson();
+        return gson.toJson(points);
     }
 }

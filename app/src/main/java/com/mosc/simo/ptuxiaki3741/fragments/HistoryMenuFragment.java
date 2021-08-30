@@ -23,6 +23,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuHistoryBinding;
 import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryListAdapter;
+import com.mosc.simo.ptuxiaki3741.enums.ViewModelStatus;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistoryList;
@@ -37,23 +38,21 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandHistoryMenuFragment";
     private LandHistoryListAdapter adapter;
     private FragmentMenuHistoryBinding binding;
-    private LandViewModel vmLands;
-    private boolean isLoading;
 
-    private final List<LandHistoryList> data = new ArrayList<>();
+    private List<LandHistoryList> data;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                                       Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         binding = FragmentMenuHistoryBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
-        initViewModel();
         initFragment();
-        initObservers();
+        initViewModel();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -78,6 +77,9 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //init
+    private void initData(){
+        data = new ArrayList<>();
+    }
     private void initActivity() {
         MainActivity mainActivity = (MainActivity) getActivity();
         ActionBar actionBar = null;
@@ -90,14 +92,7 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
             actionBar.show();
         }
     }
-    private void initViewModel() {
-        if(getActivity() != null){
-            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-        }
-    }
     private void initFragment() {
-        isLoading = false;
-        binding.tvHistoryActionLabel.setText(getResources().getString(R.string.empty_list));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -119,52 +114,49 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
                 this::onRecordClick
         );
         binding.rvHistoryList.setAdapter(adapter);
-        checkIfAdapterIsPopulated();
+
+        onStatusChange(ViewModelStatus.LOADING);
     }
-    private void initObservers(){
-        if(vmLands != null){
-            onLoadingStatus(true);
-            onLandHistoryUpdate(vmLands.getLandsHistoryList());
-            onLoadingStatus(false);
-            vmLands.getLandsHistory().observe(getViewLifecycleOwner(),this::onLandHistoryUpdate);
-            vmLands.isLoadingLandRecords().observe(getViewLifecycleOwner(),this::onLoadingStatus);
+    private void initViewModel() {
+        if(getActivity() != null){
+            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            onHistoryChange(vmLands.getLandsHistory().getValue());
+            onStatusChange(vmLands.getStatus().getValue());
+            vmLands.getLandsHistory().observe(getViewLifecycleOwner(),this::onHistoryChange);
+            vmLands.getStatus().observe(getViewLifecycleOwner(),this::onStatusChange);
         }
     }
 
     //ui
-    private void onLandHistoryUpdate(List<LandRecord> r) {
-        int size = data.size();
-        data.clear();
-        adapter.notifyItemRangeRemoved(0,size);
-
+    private void onHistoryChange(List<LandRecord> r) {
+        if(data.size()>0){
+            int size = data.size();
+            data.clear();
+            adapter.notifyItemRangeRemoved(0,size);
+        }
         List<List<LandRecord>> recordsList = LandUtil.splitLandRecordByLand(r);
         for(int i = 0;i<recordsList.size();i++){
             data.add(i,new LandHistoryList(recordsList.get(i)));
             adapter.notifyItemInserted(i);
         }
-
-        checkIfAdapterIsPopulated();
     }
-    private void onLoadingStatus(boolean isLoading) {
-        this.isLoading = isLoading;
-        if(isLoading){
-            binding.tvHistoryActionLabel.setText(getResources().getString(R.string.loading_list));
-            binding.tvHistoryActionLabel.setVisibility(View.VISIBLE);
+    private void onStatusChange(ViewModelStatus status) {
+        if(status != ViewModelStatus.FULLY_LOADED){
+            binding.tvHistoryActionLabel.setText(getString(R.string.loading_list));
             binding.rvHistoryList.setVisibility(View.GONE);
+            binding.tvHistoryActionLabel.setVisibility(View.VISIBLE);
         }else{
-            binding.tvHistoryActionLabel.setText(getResources().getString(R.string.empty_list));
-            checkIfAdapterIsPopulated();
+            binding.tvHistoryActionLabel.setText(getString(R.string.empty_list));
+            updateUI();
         }
     }
-    private void checkIfAdapterIsPopulated() {
-        if(!isLoading){
-            if(adapter.getItemCount()>0){
-                binding.rvHistoryList.setVisibility(View.VISIBLE);
-                binding.tvHistoryActionLabel.setVisibility(View.GONE);
-            }else{
-                binding.tvHistoryActionLabel.setVisibility(View.VISIBLE);
-                binding.rvHistoryList.setVisibility(View.GONE);
-            }
+    private void updateUI() {
+        if(data.size()>0){
+            binding.rvHistoryList.setVisibility(View.VISIBLE);
+            binding.tvHistoryActionLabel.setVisibility(View.GONE);
+        }else{
+            binding.tvHistoryActionLabel.setVisibility(View.VISIBLE);
+            binding.rvHistoryList.setVisibility(View.GONE);
         }
     }
     public boolean areAllListsVisible(){

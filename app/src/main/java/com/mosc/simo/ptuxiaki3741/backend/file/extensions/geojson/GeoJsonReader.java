@@ -19,10 +19,6 @@ public class GeoJsonReader {
         FeatureCollection featureCollection = new Gson().fromJson(json, FeatureCollection.class);
         return onFeatureCollectionGet(featureCollection);
     }
-    public static List<List<LatLng>> exec(String json){
-        FeatureCollection featureCollection = new Gson().fromJson(json, FeatureCollection.class);
-        return onFeatureCollectionGet(featureCollection);
-    }
 
     private static String getStringFromInputStream(InputStream inputStream) {
         InputStreamReader isReader = new InputStreamReader(inputStream);

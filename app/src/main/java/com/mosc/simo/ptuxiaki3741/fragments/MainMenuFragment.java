@@ -23,7 +23,6 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
@@ -96,58 +95,68 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     private void onCurrUserUpdate(User user) {
         currUser = user;
         if(currUser != null){
-            actionBar.setTitle(currUser.getUsername());
-            AsyncTask.execute(()->{
-                String display = String.valueOf(vmUsers.getFriends().size());
-                if(getActivity() != null)
-                    getActivity().runOnUiThread(()-> binding.
-                            tvMainMenuContactsNumber.setText(display)
-                    );
-            });
+            if(binding != null){
+                actionBar.setTitle(currUser.getUsername());
+                AsyncTask.execute(()->{
+                    String display = String.valueOf(vmUsers.getFriends().size());
+                    if(getActivity() != null)
+                        getActivity().runOnUiThread(()-> {
+                            if(binding != null){
+                                binding.tvMainMenuContactsNumber.setText(display);
+                            }
+                        });
+                });
+            }
         }else{
             toLogin(getActivity());
         }
     }
     private void onLandUpdate(List<Land> lands) {
-        if(lands != null){
-            double areaSum = 0;
-            int ownedLands = 0, sharedLands = 0;
-            if(currUser != null){
-                for(Land land : lands){
-                    if(land.getData()!=null){
-                        if(land.getData().getCreator_id() == currUser.getId()){
-                            ownedLands++;
-                        }else{
-                            sharedLands++;
+        if(binding != null){
+            if(lands != null){
+                double areaSum = 0;
+                int ownedLands = 0, sharedLands = 0;
+                if(currUser != null){
+                    for(Land land : lands){
+                        if(land.getData()!=null){
+                            if(land.getData().getCreator_id() == currUser.getId()){
+                                ownedLands++;
+                            }else{
+                                sharedLands++;
+                            }
+                        }
+                        if(land.getData() != null){
+                            if(land.getData().getBorder() != null){
+                                areaSum = areaSum + MapUtil.area(land.getData().getBorder());
+                            }
                         }
                     }
-                    if(land.getBorder() != null){
-                        areaSum = areaSum + MapUtil.area(LandUtil.getLatLngPoints(land));
+                }else{
+                    for(Land land : lands){
+                        if(land.getData() != null){
+                            if(land.getData().getBorder() != null){
+                                areaSum = areaSum + MapUtil.area(land.getData().getBorder());
+                            }
+                        }
                     }
                 }
-            }else{
-                for(Land land : lands){
-                    if(land.getBorder() != null){
-                        areaSum = areaSum + MapUtil.area(LandUtil.getLatLngPoints(land));
-                    }
+                String areaDisplay;
+                if(areaSum >= 1000000){
+                    areaSum = areaSum / 1000000;
+                    areaDisplay = String.format(Locale.getDefault(),"%.0f", areaSum)+" km²";
+                }else{
+                    areaDisplay = String.format(Locale.getDefault(),"%.1f", areaSum)+" m²";
                 }
-            }
-            String areaDisplay;
-            if(areaSum >= 1000000){
-                areaSum = areaSum / 1000000;
-                areaDisplay = String.format(Locale.getDefault(),"%.0f", areaSum)+" km²";
+                binding.tvMainMenuLandNumber.setText(String.valueOf(lands.size()));
+                binding.tvMainMenuLandArea.setText(areaDisplay);
+                binding.tvMainMenuOwnedLands.setText(String.valueOf(ownedLands));
+                binding.tvMainMenuSharedLands.setText(String.valueOf(sharedLands));
             }else{
-                areaDisplay = String.format(Locale.getDefault(),"%.1f", areaSum)+" m²";
+                binding.tvMainMenuLandNumber.setText("0 m²");
+                binding.tvMainMenuLandArea.setText("0");
+                binding.tvMainMenuOwnedLands.setText("0");
+                binding.tvMainMenuSharedLands.setText("0");
             }
-            binding.tvMainMenuLandNumber.setText(String.valueOf(lands.size()));
-            binding.tvMainMenuLandArea.setText(areaDisplay);
-            binding.tvMainMenuOwnedLands.setText(String.valueOf(ownedLands));
-            binding.tvMainMenuSharedLands.setText(String.valueOf(sharedLands));
-        }else{
-            binding.tvMainMenuLandNumber.setText("0 m²");
-            binding.tvMainMenuLandArea.setText("0");
-            binding.tvMainMenuOwnedLands.setText("0");
-            binding.tvMainMenuSharedLands.setText("0");
         }
     }
 

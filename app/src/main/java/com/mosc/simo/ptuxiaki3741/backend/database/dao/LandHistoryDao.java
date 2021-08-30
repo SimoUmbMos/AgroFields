@@ -12,14 +12,6 @@ import java.util.List;
 
 @Dao
 public interface LandHistoryDao {
-    @Query("SELECT * FROM LandDataRecord "  +
-            "ORDER BY `LandID`, `Date`, `LandTitle`")
-    List<LandDataRecord> getLandRecords();
-
-    @Query("SELECT * FROM LandDataRecord " +
-            "Where `id` = :id")
-    LandDataRecord getLandRecord(long id);
-
     @Query("SELECT * FROM LandDataRecord " +
             "Where `LandID` = :lid " +
             "ORDER BY `Date`, `LandTitle`")

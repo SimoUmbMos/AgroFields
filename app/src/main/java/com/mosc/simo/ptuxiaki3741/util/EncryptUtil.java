@@ -11,6 +11,8 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -22,7 +24,11 @@ public class EncryptUtil {
     public static final String
             TAG = "EncryptUtil",
             divider = "::encoded::";
-
+    public static String convert4digit(long id){
+        Random random = new Random();
+        random.setSeed((id*4)/2);
+        return String.format(Locale.getDefault(),"%04d", random.nextInt(10000));
+    }
     public static String encryptString(String s){
         if(s == null)
             return null;

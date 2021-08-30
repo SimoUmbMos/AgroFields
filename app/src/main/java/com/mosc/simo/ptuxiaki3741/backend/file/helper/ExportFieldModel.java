@@ -1,5 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.helper;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +9,10 @@ import java.util.List;
 public class ExportFieldModel {
     private String title;
     private String key;
-    private final List<List<List<Double>>> points;
+    private final List<List<LatLng>> points;
 
     public ExportFieldModel(String title,
-                            List<List<List<Double>>> points
+                            List<List<LatLng>> points
     ){
         this.title = title;
         this.key = getRandomHexString()+"-"+
@@ -22,7 +24,7 @@ public class ExportFieldModel {
     }
     public ExportFieldModel(String title,
                             String key,
-                            List<List<List<Double>>> points
+                            List<List<LatLng>> points
     ){
         this.title = title;
         this.key = key;
@@ -43,7 +45,7 @@ public class ExportFieldModel {
     public String getKey() {
         return key;
     }
-    public List<List<List<Double>>> getPointsList(){
+    public List<List<LatLng>> getPointsList(){
         return points;
     }
 

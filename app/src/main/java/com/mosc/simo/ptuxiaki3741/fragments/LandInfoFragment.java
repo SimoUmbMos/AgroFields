@@ -31,7 +31,6 @@ import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
-import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
@@ -44,11 +43,6 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     private FragmentLandInfoBinding binding;
     private boolean isNew = false;
 
-    @Override public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initData();
-    }
-
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                                                  @Nullable ViewGroup container,
                                                  @Nullable Bundle savedInstanceState) {
@@ -58,6 +52,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
         initViewModel();
         initView();
@@ -192,7 +187,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
             AsyncTask.execute(()->{
                 Address address = MapUtil.findLocation(
                         activity,
-                        MapUtil.getPolygonCenter(LandUtil.getLatLngPoints(land))
+                        MapUtil.getPolygonCenter(land.getData().getBorder())
                 );
                 if(address!= null){
                     String tempDisplay = null;

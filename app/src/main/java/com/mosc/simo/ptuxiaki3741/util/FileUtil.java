@@ -18,8 +18,6 @@ import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import org.jdom2.Document;
 import org.jdom2.output.Format;
@@ -39,15 +37,6 @@ public class FileUtil {
         Document document = KmlFileExporter.kmlFileExporter(
                 label, exportFieldModels
         );
-        XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
-        return xmOut.outputString(document);
-    }
-    public static String landsToKmlString(List<Land> lands, User currUser) {
-        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
-        landToExportModel(lands, exportFieldModels);
-        Document document = KmlFileExporter.kmlFileExporter(
-                String.valueOf(currUser.hashCode()),
-                exportFieldModels);
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
         return xmOut.outputString(document);
     }
@@ -115,19 +104,10 @@ public class FileUtil {
         return FileType.NONE;
     }
     private static void landToExportModel(List<Land> lands, List<ExportFieldModel> exportFieldModels) {
-        List<Double> latLng = new ArrayList<>();
-        List<List<Double>> points = new ArrayList<>();
-        List<List<List<Double>>> points2 = new ArrayList<>();
+        List<List<LatLng>> points2 = new ArrayList<>();
         for(Land land : lands){
-            points.clear();
             points2.clear();
-            for(LandPoint landPoint: land.getBorder()){
-                latLng.clear();
-                latLng.add(landPoint.getLatLng().longitude);
-                latLng.add(landPoint.getLatLng().latitude);
-                points.add(new ArrayList<>(latLng));
-            }
-            points2.add(new ArrayList<>(points));
+            points2.add(new ArrayList<>(land.getData().getBorder()));
             exportFieldModels.add(new ExportFieldModel(
                     land.getData().getTitle(),
                     String.valueOf(land.getData().hashCode()),
@@ -161,7 +141,10 @@ public class FileUtil {
             if (uriString.startsWith("content://")) {
                 try (Cursor cursor = ctx.getContentResolver().query(uri, null, null, null, null)) {
                     if (cursor != null && cursor.moveToFirst()) {
-                        displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                        int value = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if( value >= 0){
+                            displayName = cursor.getString(value);
+                        }
                     }
                 }
             } else if (uriString.startsWith("file://")) {

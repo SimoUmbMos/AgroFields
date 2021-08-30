@@ -7,6 +7,7 @@
     <string name="fabPlus" translatable="false">plus edit</string>
     <string name="fabMinus" translatable="false">minus edit</string>
     <string name="land_imageView" translatable="false">show img above map</string>
+    <string name="content_desc_toggle_land_history" translatable="false">toggle land history</string>
 
     <string name="app_name">Land Declaration</string>
 

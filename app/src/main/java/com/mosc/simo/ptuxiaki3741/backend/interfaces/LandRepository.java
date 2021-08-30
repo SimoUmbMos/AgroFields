@@ -11,7 +11,6 @@ public interface LandRepository {
     List<Land> searchLandsByUser(User user);
 
     Land getLand(long lid);
-    LandRecord getLandRecord(long id);
     List<LandRecord> getLandRecordsByLand(Land land);
     List<LandRecord> getLandRecordsByUser(User user);
 
@@ -19,8 +18,5 @@ public interface LandRepository {
     void saveLandRecord(LandRecord landRecord);
 
     void deleteLand(Land land);
-    void deleteLandRecord(LandRecord landRecord);
     void deleteLandsByUser(User user);
-
-    boolean landExist(Land newLand);
 }

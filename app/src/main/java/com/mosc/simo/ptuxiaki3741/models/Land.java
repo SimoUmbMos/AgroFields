@@ -4,10 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandPoint;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Land implements Parcelable {
@@ -24,39 +21,33 @@ public class Land implements Parcelable {
     };
 
     private LandData data;
-    private final List<LandPoint> border;
+    private boolean selected;
 
     public Land(){
         this.data = null;
-        this.border = new ArrayList<>();
+        this.selected=false;
     }
     public Land(LandData data){
         this.data = data;
-        this.border = new ArrayList<>();
+        this.selected=false;
     }
-    public Land(LandData data, List<LandPoint> border){
-        this.data = data;
-        this.border = new ArrayList<>(border);
-    }
-
     protected Land(Parcel in) {
         data = in.readParcelable(LandData.class.getClassLoader());
-        border = in.createTypedArrayList(LandPoint.CREATOR);
+        selected = in.readInt() == 1;
     }
 
+    public boolean isSelected(){
+        return selected;
+    }
     public LandData getData() {
         return data;
     }
-    public List<LandPoint> getBorder() {
-        return border;
-    }
 
+    public void setSelected(boolean selected){
+        this.selected = selected;
+    }
     public void setData(LandData data) {
         this.data = data;
-    }
-    public void setBorder(List<LandPoint> border) {
-        this.border.clear();
-        this.border.addAll(border);
     }
 
     @Override
@@ -67,7 +58,11 @@ public class Land implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(data, flags);
-        dest.writeTypedList(border);
+        if(selected){
+            dest.writeInt(1);
+        }else{
+            dest.writeInt(0);
+        }
     }
 
 

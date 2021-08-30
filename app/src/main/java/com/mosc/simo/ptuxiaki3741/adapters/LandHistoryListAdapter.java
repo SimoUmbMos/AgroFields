@@ -18,6 +18,7 @@ import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewLandHistoryItemBinding;
 import com.mosc.simo.ptuxiaki3741.models.LandHistoryList;
 import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -79,7 +80,9 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
 
     private void setupViewHolder(@NonNull ItemViewHolder holder, int position) {
         LandHistoryList item = data.get(position);
-        String title = item.getLand().getData().getTitle();
+        String title = item.getLand().getData().getTitle()+
+                " #"+
+                EncryptUtil.convert4digit(item.getLand().getData().getId());
         if(item.getLandRecords().get(item.getLandRecords().size()-1).getLandData()
                 .getActionID() == LandDBAction.DELETE
         )
