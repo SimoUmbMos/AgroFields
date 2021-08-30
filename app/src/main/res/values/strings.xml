@@ -103,4 +103,9 @@
     <string name="land_action_updated">Updated</string>
     <string name="land_action_restored">Restored</string>
     <string name="land_action_deleted">Deleted</string>
+
+    <string name="selectFirstPoint">select first point</string>
+    <string name="selectSecondPoint">select second point</string>
+    <string name="placePoint">place point</string>
+    <string name="editPlacedPoint">edit placed point</string>
 </resources>

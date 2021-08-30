@@ -83,4 +83,8 @@
     <string name="land_action_updated">Ενημερώθηκε</string>
     <string name="land_action_restored">Αποκαταστάθηκε</string>
     <string name="land_action_deleted">Διαγράφηκε</string>
+    <string name="selectFirstPoint">επιλέξτε πρώτο σημείο</string>
+    <string name="selectSecondPoint">επιλέξτε δεύτερο σημείο</string>
+    <string name="placePoint">τοποθετήστε το σημείο</string>
+    <string name="editPlacedPoint">επεξεργασία νέου σημείου</string>
 </resources>

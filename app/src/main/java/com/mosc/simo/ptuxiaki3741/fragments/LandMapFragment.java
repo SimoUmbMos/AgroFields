@@ -47,6 +47,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
@@ -81,7 +82,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private User currUser;
     private String address;
     private long currLandID;
-    private String title;
+    private String title,displayTitle;
 
     // overrides
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
@@ -142,6 +143,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     @Override public boolean onBackPressed() {
         if(binding.LandMapRoot.isDrawerOpen(GravityCompat.END)){
             binding.LandMapRoot.closeDrawer(GravityCompat.END);
+            return false;
+        }
+        if(binding.clLandControls.getVisibility() != View.GONE){
+            clearTitle();
             return false;
         }
         return true;
@@ -242,6 +247,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         if(!new Land().equals(currLand)){
             currLandID = currLand.getData().getId();
             title = currLand.getData().getTitle();
+            displayTitle = title;
+            if(currLandID != -1){
+                displayTitle = displayTitle + " #"+ EncryptUtil.convert4digit(currLandID);
+            }
             if(currLand.getData().getBorder().size()>0){
                 points.addAll(currLand.getData().getBorder());
                 if(points.get(0).equals(points.get(points.size()-1)))
@@ -923,7 +932,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
 
     //ui relative
     private void clearTitle() {
-        actionBar.setTitle(title);
+        actionBar.setTitle(displayTitle);
         binding.clLandControls.setVisibility(View.GONE);
         binding.fabLandActionSave.setVisibility(View.GONE);
         binding.fabLandActionSave.setOnClickListener(null);
@@ -939,13 +948,13 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void changeTitleBasedOnState() {
         if(mapStatus == LandActionStates.AddBetween){
             if(index1 < 0){
-                actionBar.setTitle(title + " - " +"select first point");
+                actionBar.setTitle(getString(R.string.selectFirstPoint));
             }else if(index2 < 0){
-                actionBar.setTitle(title + " - " +"select second point");
+                actionBar.setTitle(getString(R.string.selectSecondPoint));
             }else if(index3 < 0){
-                actionBar.setTitle(title + " - " +"place point");
+                actionBar.setTitle(getString(R.string.placePoint));
             }else{
-                actionBar.setTitle(title + " - " +"edit placed point");
+                actionBar.setTitle(getString(R.string.editPlacedPoint));
             }
         }
     }
@@ -955,14 +964,14 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             View.OnClickListener reset
     ) {
         if(s != null){
-            actionBar.setTitle(title + "-" +s);
+            actionBar.setTitle(s);
             binding.clLandControls.setVisibility(View.VISIBLE);
             binding.fabLandActionSave.setVisibility(View.VISIBLE);
             binding.fabLandActionSave.setOnClickListener(save);
             binding.fabLandActionReset.setVisibility(View.VISIBLE);
             binding.fabLandActionReset.setOnClickListener(reset);
         }else{
-            actionBar.setTitle(title);
+            actionBar.setTitle(displayTitle);
             binding.clLandControls.setVisibility(View.GONE);
             binding.fabLandActionSave.setVisibility(View.GONE);
             binding.fabLandActionSave.setOnClickListener(null);
@@ -982,7 +991,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             View.OnClickListener minus
     ) {
         if(s != null){
-            actionBar.setTitle(title + "-" +s);
+            actionBar.setTitle(s);
             binding.clLandControls.setVisibility(View.VISIBLE);
             binding.fabLandActionSave.setVisibility(View.VISIBLE);
             binding.fabLandActionSave.setOnClickListener(save);
@@ -993,7 +1002,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             binding.fabLandActionMinus.setVisibility(View.VISIBLE);
             binding.fabLandActionMinus.setOnClickListener(minus);
         }else{
-            actionBar.setTitle(title);
+            actionBar.setTitle(displayTitle);
             binding.clLandControls.setVisibility(View.GONE);
             binding.fabLandActionSave.setVisibility(View.GONE);
             binding.fabLandActionSave.setOnClickListener(null);
