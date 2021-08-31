@@ -1,22 +1,19 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <item name="colorPrimary">@color/primaryDarkColor</item>
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorPrimaryVariant">@color/primaryColor</item>
-        <item name="colorOnPrimary">@color/primaryTextColor</item>
-
-        <item name="colorSecondary">@color/secondaryColor</item>
-        <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
-        <item name="colorOnSecondary">@color/primaryTextColor</item>
-
-        <item name="colorError">@color/errorColor</item>
-        <item name="colorOnError">@color/secondaryTextColor</item>
-
-        <item name="colorSurface">@color/bgColorDark</item>
-        <item name="android:colorBackground">@color/bgColorDark</item>
-        <item name="colorOnSurface">@color/secondaryTextColor</item>
-        <item name="colorOnBackground">@color/secondaryTextColor</item>
-        <item name="android:textColor">@color/secondaryTextColor</item>
+        <item name="colorPrimary">@color/colorPrimaryNight</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariantNight</item>
+        <item name="colorOnPrimary">@color/colorOnPrimaryNight</item>
+        <item name="colorSecondary">@color/colorSecondaryNight</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariantNight</item>
+        <item name="colorOnSecondary">@color/colorOnSecondaryNight</item>
+        <item name="colorError">@color/colorErrorNight</item>
+        <item name="colorOnError">@color/colorOnErrorNight</item>
+        <item name="colorSurface">@color/colorSurfaceNight</item>
+        <item name="android:colorBackground">@color/colorBackgroundNight</item>
+        <item name="colorOnSurface">@color/colorOnSurfaceNight</item>
+        <item name="colorOnBackground">@color/colorOnBackgroundNight</item>
+        <item name="android:textColor">@color/textColorNight</item>
 
         <item name="windowActionBar">false</item>
         <item name="fontFamily">@font/main_font</item>
@@ -31,10 +28,13 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="DrawerNavigationStyle" parent="AppTheme">
-        <item name="colorSurface">@color/bgColorDark</item>
-        <item name="android:colorBackground">@color/bgColorDark</item>
+        <item name="colorSurface">@color/colorSurfaceNight</item>
+        <item name="android:colorBackground">@color/colorBackgroundNight</item>
     </style>
-    <style name="TextInputLayout" parent="AppTheme">
-        <item name="colorPrimary">@color/secondaryLightColor</item>
+    <style name="TextInputFields" parent="AppTheme">
+        <item name="colorPrimary">@color/textColorNight</item>
+    </style>
+    <style name="BorderlessButtonStyle" parent="AppTheme">
+        <item name="colorPrimary">@color/textColorNight</item>
     </style>
 </resources>

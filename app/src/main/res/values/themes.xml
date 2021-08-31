@@ -1,22 +1,19 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryColor</item>
-        <item name="colorPrimaryVariant">@color/primaryLightColor</item>
-        <item name="colorOnPrimary">@color/primaryTextColor</item>
-
-        <item name="colorSecondary">@color/secondaryColor</item>
-        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
-        <item name="colorOnSecondary">@color/primaryTextColor</item>
-
-        <item name="colorError">@color/errorColor</item>
-        <item name="colorOnError">@color/secondaryTextColor</item>
-
-        <item name="colorSurface">@color/bgColor</item>
-        <item name="android:colorBackground">@color/bgColor</item>
-        <item name="colorOnSurface">@color/primaryTextColor</item>
-        <item name="colorOnBackground">@color/primaryTextColor</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+        <item name="android:textColor">@color/textColor</item>
 
         <item name="windowActionBar">false</item>
         <item name="fontFamily">@font/main_font</item>
@@ -31,10 +28,13 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="DrawerNavigationStyle" parent="AppTheme">
-        <item name="colorSurface">@color/bgColor</item>
-        <item name="android:colorBackground">@color/bgColor</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
     </style>
-    <style name="TextInputLayout" parent="AppTheme">
-        <item name="colorPrimary">@color/secondaryDarkColor</item>
+    <style name="TextInputFields" parent="AppTheme">
+        <item name="colorPrimary">@color/textColor</item>
+    </style>
+    <style name="BorderlessButtonStyle" parent="AppTheme">
+        <item name="colorPrimary">@color/textColor</item>
     </style>
 </resources>

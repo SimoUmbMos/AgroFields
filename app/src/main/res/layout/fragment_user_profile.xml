@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:theme="@style/TextInputLayout">
+        app:theme="@style/TextInputFields">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/etUserProfileEmailLayout"
@@ -25,11 +25,8 @@
             android:layout_marginStart="@dimen/login_field_margin_start"
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            android:background="@android:color/transparent"
-            app:boxBackgroundColor="@android:color/transparent"
             app:errorEnabled="true"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUserProfileEmail"
@@ -47,15 +44,10 @@
             android:layout_marginStart="@dimen/login_field_margin_start"
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            android:background="@android:color/transparent"
-            app:boxBackgroundColor="@android:color/transparent"
             app:counterEnabled="true"
             app:counterMaxLength="10"
-            app:counterOverflowTextAppearance="@style/CounterOverFlow"
-            app:counterTextAppearance="@style/CounterText"
             app:errorEnabled="true"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUserProfilePhone"

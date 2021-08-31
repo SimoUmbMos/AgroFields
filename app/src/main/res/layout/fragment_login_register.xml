@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.LoginRegisterFragment" >
-    <TextView android:id="@+id/tvLoginLabel"
+
+    <TextView
+        android:id="@+id/tvLoginLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -14,16 +16,17 @@
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/login_label" />
     <LinearLayout android:id="@+id/llLoginRegisterData"
-        app:theme="@style/TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/llLoginButtons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLoginLabel">
+        app:layout_constraintTop_toBottomOf="@+id/tvLoginLabel"
+        app:theme="@style/TextInputFields">
         <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginUserNameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,11 +34,10 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText">
-            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginUserName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLoginUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Username"
@@ -50,11 +52,8 @@
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginMainPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,91 +61,96 @@
                 android:hint="@string/password_hint"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginSecondaryPasswordLayout"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etLoginSecondaryPasswordLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText"
             app:passwordToggleEnabled="true">
-            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginSecondaryPassword"
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLoginSecondaryPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Password"
                 android:hint="@string/confirm_password_hint"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginMainEmailLayout"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etLoginMainEmailLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText">
-            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginMainEmail"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLoginMainEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Email"
                 android:hint="@string/email_hint"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginSecondaryEmailLayout"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etLoginSecondaryEmailLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText">
-            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginSecondaryEmail"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLoginSecondaryEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Email"
                 android:hint="@string/confirm_email_hint"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginPhoneLayout"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etLoginPhoneLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_field_margin_start"
             android:layout_marginEnd="@dimen/login_field_margin_end"
             android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            app:errorEnabled="true"
-            app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:errorTextAppearance="@style/ErrorText"
-            app:hintTextAppearance="@style/HintText"
             app:counterEnabled="true"
             app:counterMaxLength="10"
-            app:counterOverflowTextAppearance="@style/CounterOverFlow"
-            app:counterTextAppearance="@style/CounterText">
-            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginPhone"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLoginPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Phone"
                 android:hint="@string/phone_hint"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
-        <Button android:id="@+id/btnLoginRegister"
-            app:theme="@style/AppTheme"
+
+        <Button
+            android:id="@+id/btnLoginRegister"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_big"
             android:layout_marginEnd="@dimen/login_button_margin_end_big"
-            android:text="@string/register_button" />
+            android:text="@string/register_button"
+            android:textAllCaps="false"
+            app:theme="@style/BorderlessButtonStyle"/>
     </LinearLayout>
     <LinearLayout android:id="@+id/llLoginButtons"
         android:layout_width="0dp"
@@ -155,7 +159,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-        <Button android:id="@+id/btnLoginCancel"
+
+        <Button
+            android:id="@+id/btnLoginCancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_big"
@@ -163,9 +170,13 @@
             android:layout_marginEnd="@dimen/login_button_margin_end_small"
             android:layout_marginBottom="@dimen/login_button_margin_bottom"
             android:layout_weight="1"
-            android:text="@string/cancel"
-            style="?android:attr/buttonBarButtonStyle"/>
-        <Button android:id="@+id/btnLoginSubmit"
+            android:text="@string/cancel_register"
+            android:textAllCaps="false"
+            app:theme="@style/BorderlessButtonStyle" />
+
+        <Button
+            android:id="@+id/btnLoginSubmit"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_small"
@@ -173,17 +184,22 @@
             android:layout_marginEnd="@dimen/login_button_margin_end_big"
             android:layout_marginBottom="@dimen/login_button_margin_bottom"
             android:layout_weight="1"
-            android:text="@string/submit"
-            style="?android:attr/buttonBarButtonStyle"/>
-        <Button android:id="@+id/btnLoginButton"
+            android:text="@string/submit_register"
+            android:textAllCaps="false"
+            app:theme="@style/BorderlessButtonStyle" />
+
+        <Button
+            android:id="@+id/btnLoginButton"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_big"
-            android:layout_marginEnd="@dimen/login_button_margin_end_big"
             android:layout_marginTop="@dimen/login_button_margin_top"
+            android:layout_marginEnd="@dimen/login_button_margin_end_big"
             android:layout_marginBottom="@dimen/login_button_margin_bottom"
             android:layout_weight="1"
             android:text="@string/login"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:textAllCaps="false"
+            app:theme="@style/BorderlessButtonStyle"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

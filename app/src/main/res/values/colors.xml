@@ -1,19 +1,36 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="primaryColor">#81c784</color>
-  <color name="primaryLightColor">#b2fab4</color>
-  <color name="primaryDarkColor">#519657</color>
+  <!--Light theme color-->
+  <color name="colorPrimary">#81c784</color>
+  <color name="colorPrimaryVariant">#b2fab4</color>
+  <color name="colorPrimaryDark">#59A661</color>
+  <color name="colorSecondary">#01A7A7</color>
+  <color name="colorSecondaryVariant">#03DAC6</color>
+  <color name="colorError">#B00020</color>
+  <color name="colorSurface">#EDEDED</color>
+  <color name="colorBackground">#EDEDED</color>
+  <!--Night theme color-->
+  <color name="colorPrimaryNight">#1f1f1f</color>
+  <color name="colorPrimaryVariantNight">#81c784</color>
+  <color name="colorPrimaryDarkNight">#121212</color>
+  <color name="colorSecondaryNight">#03DAC6</color>
+  <color name="colorSecondaryVariantNight">#bb86fb</color>
+  <color name="colorErrorNight">#F9718A</color>
+  <color name="colorSurfaceNight">#121212</color>
+  <color name="colorBackgroundNight">#121212</color>
 
-  <color name="secondaryColor">#4db6ac</color>
-  <color name="secondaryLightColor">#82e9de</color>
-  <color name="secondaryDarkColor">#00867d</color>
-
-  <color name="errorColor">#c51162</color>
-
-  <color name="bgColor">#eceff1</color>
-  <color name="bgColorDark">#263238</color>
-
-  <color name="primaryTextColor">#263238</color>
-  <color name="secondaryTextColor">#eceff1</color>
-
+  <!--Light theme text color-->
+  <color name="colorOnPrimary">#000000</color>
+  <color name="colorOnSecondary">#000000</color>
+  <color name="colorOnError">#EDEDED</color>
+  <color name="colorOnBackground">#121212</color>
+  <color name="colorOnSurface">#121212</color>
+  <color name="textColor">#121212</color>
+  <!--Night theme text color-->
+  <color name="colorOnPrimaryNight">#EDEDED</color>
+  <color name="colorOnSecondaryNight">#121212</color>
+  <color name="colorOnErrorNight">#121212</color>
+  <color name="colorOnBackgroundNight">#EDEDED</color>
+  <color name="colorOnSurfaceNight">#EDEDED</color>
+  <color name="textColorNight">#EDEDED</color>
 </resources>
