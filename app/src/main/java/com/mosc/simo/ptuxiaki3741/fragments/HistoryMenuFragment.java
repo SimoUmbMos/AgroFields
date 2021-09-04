@@ -26,8 +26,8 @@ import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryListAdapter;
 import com.mosc.simo.ptuxiaki3741.enums.ViewModelStatus;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.LandHistoryList;
-import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandHistory;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
@@ -39,7 +39,7 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
     private LandHistoryListAdapter adapter;
     private FragmentMenuHistoryBinding binding;
 
-    private List<LandHistoryList> data;
+    private List<LandHistory> data;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
@@ -127,15 +127,15 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //ui
-    private void onHistoryChange(List<LandRecord> r) {
+    private void onHistoryChange(List<LandDataRecord> r) {
         if(data.size()>0){
             int size = data.size();
             data.clear();
             adapter.notifyItemRangeRemoved(0,size);
         }
-        List<List<LandRecord>> recordsList = LandUtil.splitLandRecordByLand(r);
+        List<LandHistory> recordsList = LandUtil.splitLandRecordByLand(r);
         for(int i = 0;i<recordsList.size();i++){
-            data.add(i,new LandHistoryList(recordsList.get(i)));
+            data.add(i,recordsList.get(i));
             adapter.notifyItemInserted(i);
         }
     }
@@ -159,7 +159,7 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     public boolean areAllListsVisible(){
-        for(LandHistoryList item : data){
+        for(LandHistory item : data){
             if(!item.isVisible())
                 return false;
         }
@@ -183,9 +183,9 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
         data.get(pos).setVisible(!data.get(pos).isVisible());
         adapter.notifyItemChanged(pos);
     }
-    public void onRecordClick(LandRecord record){
-        Land land = LandUtil.getLandFromLandRecord(record);
-        if(land != null)
+    public void onRecordClick(LandDataRecord record){
+        Land land = new Land(LandUtil.getLandDataFromLandRecord(record));
+        if(land.getData() != null)
             toLandMap(getActivity(),land);
     }
 

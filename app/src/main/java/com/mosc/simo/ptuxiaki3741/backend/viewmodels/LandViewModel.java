@@ -13,7 +13,7 @@ import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.enums.ViewModelStatus;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
-import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
 public class LandViewModel extends AndroidViewModel {
     public static final String TAG = "LandViewModel";
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
-    private final MutableLiveData<List<LandRecord>> landsHistory = new MutableLiveData<>();
+    private final MutableLiveData<List<LandDataRecord>> landsHistory = new MutableLiveData<>();
     private final MutableLiveData<ViewModelStatus> status = new MutableLiveData<>();
     private final LandRepositoryImpl landRepository;
     private User currUser = null;
@@ -41,7 +41,7 @@ public class LandViewModel extends AndroidViewModel {
     public MutableLiveData<ViewModelStatus> getStatus() {
         return status;
     }
-    public LiveData<List<LandRecord>> getLandsHistory() {
+    public LiveData<List<LandDataRecord>> getLandsHistory() {
         return landsHistory;
     }
 
@@ -78,7 +78,7 @@ public class LandViewModel extends AndroidViewModel {
     }
     private void loadLandsRecords(User user) {
         if(currUser != null){
-            List<LandRecord> landsHistoryList;
+            List<LandDataRecord> landsHistoryList;
             if(landsHistory.getValue() != null){
                 landsHistoryList = landsHistory.getValue();
                 landsHistoryList.clear();
@@ -115,8 +115,8 @@ public class LandViewModel extends AndroidViewModel {
             loadLands(this.currUser);
             status.postValue(ViewModelStatus.LOADED_LANDS);
 
-            LandRecord landRecord = new LandRecord(
-                    newLand,
+            LandDataRecord landRecord = new LandDataRecord(
+                    newLand.getData(),
                     user,
                     action,
                     new Date()
@@ -133,13 +133,13 @@ public class LandViewModel extends AndroidViewModel {
             landsHistory.postValue(new ArrayList<>());
             AsyncTask.execute(()-> {
 
-                LandRecord landRecord;
-                List<LandRecord> landRecords = new ArrayList<>();
+                LandDataRecord landRecord;
+                List<LandDataRecord> landRecords = new ArrayList<>();
                 for(Land removeLand:removeLandList){
                     if(removeLand.getData() != null){
                         if(removeLand.getData().getCreator_id() == user.getId()){
-                            landRecord = new LandRecord(
-                                    removeLand,
+                            landRecord = new LandDataRecord(
+                                    removeLand.getData(),
                                     user,
                                     LandDBAction.DELETE,
                                     new Date()
@@ -147,14 +147,6 @@ public class LandViewModel extends AndroidViewModel {
                             landRecords.add(landRecord);
                         }
                         //todo else remove land from shared table of user
-                    }else{
-                        landRecord = new LandRecord(
-                                removeLand,
-                                user,
-                                LandDBAction.DELETE,
-                                new Date()
-                        );
-                        landRecords.add(landRecord);
                     }
                 }
 
@@ -164,7 +156,7 @@ public class LandViewModel extends AndroidViewModel {
                 loadLands(this.currUser);
                 status.postValue(ViewModelStatus.LOADED_LANDS);
 
-                for(LandRecord temp:landRecords){
+                for(LandDataRecord temp:landRecords){
                     landRepository.saveLandRecord(temp);
                 }
                 loadLandsRecords(this.currUser);

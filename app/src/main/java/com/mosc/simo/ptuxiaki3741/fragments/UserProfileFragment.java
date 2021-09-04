@@ -106,9 +106,9 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
     private void onModifyClick() {
         setEditMode(!isEditMode);
         if(isEditMode){
-            binding.btnUserProfileModify.setText(R.string.save);
+            binding.btnUserProfileModify.setText(R.string.save_user);
         }else{
-            binding.btnUserProfileModify.setText(R.string.edit);
+            binding.btnUserProfileModify.setText(R.string.edit_user);
             if(currUser != null){
                 if(isDataValid()){
                     currUser.setEmail(getEmailData());

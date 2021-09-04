@@ -7,10 +7,12 @@ import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(tableName = "LandDataRecord")
 public class LandDataRecord {
@@ -91,5 +93,26 @@ public class LandDataRecord {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LandDataRecord that = (LandDataRecord) o;
+        return
+                id == that.id &&
+                landID == that.landID &&
+                landCreatorID == that.landCreatorID &&
+                userID == that.userID &&
+                actionID == that.actionID &&
+                landTitle.equals(that.landTitle) &&
+                date.equals(that.date) &&
+                ListUtils.arraysMatch(border,that.border);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, landID, landCreatorID, userID, actionID, landTitle, date, border);
     }
 }

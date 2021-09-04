@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -58,7 +59,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     private FragmentMenuLandBinding binding;
     private AlertDialog dialog;
-    private Menu menu;
+    private ActionMode actionMenu;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,7 +76,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.list_menu, menu);
         initMenu(menu);
-        updateMenu(state);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public void onDestroyView() {
@@ -83,7 +83,9 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         binding = null;
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return menuItemClick(item);
+        if(menuItemClick(item))
+            return true;
+        return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
         if(state != LandListMenuState.NormalState){
@@ -134,21 +136,31 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             vmLands.getStatus().observe(getViewLifecycleOwner(),this::onVMStatusChange);
         }
     }
-    public void initMenu(Menu menu) {
-        this.menu = menu;
-        final MenuItem add = this.menu.findItem(R.id.menu_item_add);
-        final MenuItem delete = this.menu.findItem(R.id.menu_item_delete);
-        final MenuItem export = this.menu.findItem(R.id.menu_item_export);
-        final MenuItem deleteAction = this.menu.findItem(R.id.menu_delete_action);
-        final MenuItem exportAction = this.menu.findItem(R.id.menu_export_action);
-        final MenuItem selectAll = this.menu.findItem(R.id.menu_select_all_action);
-
-        add.getActionView().setOnClickListener(v-> this.menu.performIdentifierAction(add.getItemId(),0));
-        delete.getActionView().setOnClickListener(v-> this.menu.performIdentifierAction(delete.getItemId(),0));
-        export.getActionView().setOnClickListener(v-> this.menu.performIdentifierAction(export.getItemId(),0));
-        deleteAction.getActionView().setOnClickListener(v-> this.menu.performIdentifierAction(deleteAction.getItemId(),0));
-        exportAction.getActionView().setOnClickListener(v-> this.menu.performIdentifierAction(exportAction.getItemId(),0));
-        selectAll.getActionView().setOnClickListener(v-> this.menu.performIdentifierAction(selectAll.getItemId(),0));
+    private void initMenu(Menu menu){
+        actionMenu = null;
+        final MenuItem add = menu.findItem(R.id.menu_item_add);
+        final MenuItem delete = menu.findItem(R.id.menu_item_delete);
+        final MenuItem export = menu.findItem(R.id.menu_item_export);
+        add.getActionView().setOnClickListener(v->
+                menu.performIdentifierAction(add.getItemId(), 0)
+        );
+        delete.getActionView().setOnClickListener(v->
+                menu.performIdentifierAction(delete.getItemId(),0)
+        );
+        export.getActionView().setOnClickListener(v->
+                menu.performIdentifierAction(export.getItemId(),0)
+        );
+    }
+    private void initActionMenu(Menu menu){
+        final MenuItem delete = menu.findItem(R.id.menu_delete_action);
+        final MenuItem export = menu.findItem(R.id.menu_export_action);
+        if(state == LandListMenuState.MultiDeleteState){
+            export.setEnabled(false);
+            export.setVisible(false);
+        }else if(state == LandListMenuState.MultiExportState){
+            delete.setEnabled(false);
+            delete.setVisible(false);
+        }
     }
 
     //menu
@@ -172,52 +184,47 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             case (R.id.menu_select_all_action):
                 doAction(LandListActionState.SelectAllAction);
                 return true;
+            default:
+                return false;
         }
-        return super.onOptionsItemSelected(item);
     }
-    public void updateMenu(LandListMenuState state) {
-        if(menu != null){
-            MenuItem add = menu.findItem(R.id.menu_item_add);
-            MenuItem delete = menu.findItem(R.id.menu_item_delete);
-            MenuItem export = menu.findItem(R.id.menu_item_export);
-            MenuItem deleteAction = menu.findItem(R.id.menu_delete_action);
-            MenuItem exportAction = menu.findItem(R.id.menu_export_action);
-            MenuItem selectAll = menu.findItem(R.id.menu_select_all_action);
 
-            switch (state){
-                case MultiSelectState:
-                    add.setVisible(false);
-                    delete.setVisible(false);
-                    export.setVisible(false);
-                    deleteAction.setVisible(true);
-                    exportAction.setVisible(true);
-                    selectAll.setVisible(true);
-                    break;
-                case MultiDeleteState:
-                    add.setVisible(false);
-                    delete.setVisible(false);
-                    export.setVisible(false);
-                    deleteAction.setVisible(true);
-                    exportAction.setVisible(false);
-                    selectAll.setVisible(true);
-                    break;
-                case MultiExportState:
-                    add.setVisible(false);
-                    delete.setVisible(false);
-                    export.setVisible(false);
-                    deleteAction.setVisible(false);
-                    exportAction.setVisible(true);
-                    selectAll.setVisible(true);
-                    break;
-                case NormalState:
-                default:
-                    add.setVisible(true);
-                    delete.setVisible(true);
-                    export.setVisible(true);
-                    deleteAction.setVisible(false);
-                    exportAction.setVisible(false);
-                    selectAll.setVisible(false);
-                    break;
+    public void updateMenu(LandListMenuState state) {
+        if(state != LandListMenuState.NormalState){
+            if(actionMenu == null){
+                MainActivity activity = (MainActivity) getActivity();
+                if(activity != null){
+                    ActionMode.Callback callback = new ActionMode.Callback() {
+                        @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                            mode.getMenuInflater().inflate(R.menu.contextual_list_menu,menu);
+                            switch (state){
+                                case MultiSelectState:
+                                case MultiDeleteState:
+                                case MultiExportState:
+                                    mode.setTitle(R.string.contextual_menu_land_label);
+                                    return data.size()>0;
+                                default:
+                                    return false;
+                            }
+                        }
+                        @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                            initActionMenu(menu);
+                            return true;
+                        }
+                        @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item){
+                            return menuItemClick(item);
+                        }
+                        @Override public void onDestroyActionMode(ActionMode mode) {
+                            setState(LandListMenuState.NormalState);
+                        }
+                    };
+                    actionMenu = activity.startSupportActionMode(callback);
+                }
+            }
+        }else{
+            if(actionMenu != null){
+                actionMenu.finish();
+                actionMenu = null;
             }
         }
     }

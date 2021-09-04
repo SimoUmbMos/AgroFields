@@ -30,7 +30,9 @@ import java.util.List;
 
 import static com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter.XMLOUTPUT;
 
-public class FileUtil {
+public final class FileUtil {
+    private FileUtil(){}
+
     public static String landsToKmlString(List<Land> lands,String label) {
         List<ExportFieldModel> exportFieldModels = new ArrayList<>();
         landToExportModel(lands, exportFieldModels);

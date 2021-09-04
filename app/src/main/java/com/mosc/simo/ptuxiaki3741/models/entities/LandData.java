@@ -9,6 +9,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +125,19 @@ public class LandData implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LandData landData = (LandData) o;
+        return
+                id == landData.id &&
+                creator_id == landData.creator_id &&
+                title.equals(landData.title) &&
+                ListUtils.arraysMatch(border,landData.border);
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.creator_id, this.title);
+        return Objects.hash(id, creator_id, title, border);
     }
 }

@@ -1,23 +1,20 @@
 package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.database.dao.UserDao;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
-import com.mosc.simo.ptuxiaki3741.util.UserUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static com.mosc.simo.ptuxiaki3741.util.UserUtil.getAllReceiverUsers;
-import static com.mosc.simo.ptuxiaki3741.util.UserUtil.getAllSenderUsers;
-
 public class UserRepositoryImpl implements UserRepository {
+    private static final int PAGE_SIZE = 50;
     private final RoomDatabase db;
 
     public UserRepositoryImpl(RoomDatabase db) {
@@ -42,35 +39,33 @@ public class UserRepositoryImpl implements UserRepository {
         return db.userDao().getUserByUserNameAndPassword(username, encryptedPassword);
     }
     @Override
-    public List<User> userSearch(User user, String username) {
-        List<User> searchResult = db.userDao().searchUserByUserName(user.getId(),username);
-        List<User> tempList = UserUtil.getAllSenderUsers(
-                db.userRelationshipDao().getByReceiverIDAndType(user.getId(), UserDBAction.BLOCKED),
-                db
-        );
-        tempList.addAll(UserUtil.getAllReceiverUsers(
-                db.userRelationshipDao().getBySenderIDAndType(user.getId(), UserDBAction.BLOCKED),
-                db
-        ));
-        searchResult.removeAll(tempList);
-        tempList.clear();
-
-        tempList = UserUtil.getAllSenderUsers(
-                db.userRelationshipDao().getByReceiverIDAndType(user.getId(), UserDBAction.FRIENDS),
-                db
-        );
-        tempList.addAll(UserUtil.getAllReceiverUsers(
-                db.userRelationshipDao().getBySenderIDAndType(user.getId(), UserDBAction.FRIENDS),
-                db
-        ));
-        List<User> common = new ArrayList<>(searchResult);
-        common.retainAll(tempList);
-        Collections.reverse(common);
-        searchResult.removeAll(common);
-        Collections.reverse(searchResult);
-        searchResult.addAll(common);
-        Collections.reverse(searchResult);
-        return searchResult;
+    public int searchPageCount(User searchUser, String search) {
+        if(search.length() > 3 && searchUser != null){
+            int n = db.userDao().searchResultCount(searchUser.getId(),search,UserDBAction.BLOCKED);
+            if(n > 0)
+                return (int) Math.ceil(n / (PAGE_SIZE * 1.0));
+            else
+                return 0;
+        }
+        return -1;
+    }
+    @Override
+    public List<User> userSearch(User searchUser, String search, int p) {
+        if(search.length() > 3 && searchUser != null){
+            int page;
+            if(p > 0)
+                page = p * PAGE_SIZE;
+            else
+                page = 0;
+            return db.userDao().searchUserByUserName(
+                    searchUser.getId(),
+                    search,
+                    PAGE_SIZE,
+                    page,
+                    UserDBAction.BLOCKED
+            );
+        }
+        return null;
     }
 
     @Override
@@ -140,29 +135,50 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public List<User> getUserFriendList(User user) {
-        List<UserRelationship> friendSenderRelationship = db.userRelationshipDao()
-                .getBySenderIDAndType(user.getId(), UserDBAction.FRIENDS);
-        List<UserRelationship> friendReceiverRelationship = db.userRelationshipDao()
-                .getByReceiverIDAndType(user.getId(), UserDBAction.FRIENDS);
-
-        List<User> friends = UserUtil
-                .getAllReceiverUsers(friendSenderRelationship, db);
-        friends.addAll(UserUtil
-                .getAllSenderUsers(friendReceiverRelationship, db));
-
+        List<UserRelationship> friendRelationships =
+                db.userRelationshipDao().getByIDAndType(user.getId(), UserDBAction.FRIENDS);
+        List<User> friends = new ArrayList<>();
+        User friend;
+        for(UserRelationship friendRelationship:friendRelationships){
+            if(user.getId() == friendRelationship.getReceiverID()){
+                friend = db.userDao().getUserById(friendRelationship.getSenderID());
+            }else{
+                friend = db.userDao().getUserById(friendRelationship.getReceiverID());
+            }
+            if(friend != null)
+                friends.add(friend);
+        }
         return EncryptUtil.decryptAll(friends);
     }
     @Override
     public List<User> getUserFriendRequestList(User user) {
-        List<UserRelationship> requestRelationship = db.userRelationshipDao()
+        List<UserRelationship> requestRelationships = db.userRelationshipDao()
                 .getByReceiverIDAndType(user.getId(), UserDBAction.REQUESTED);
-        return getAllSenderUsers(requestRelationship, db);
+
+        List<User> requests = new ArrayList<>();
+        User request;
+        for(UserRelationship requestRelationship:requestRelationships){
+            request = db.userDao().getUserById(requestRelationship.getSenderID());
+            if(request != null)
+                requests.add(request);
+        }
+
+        return requests;
     }
     @Override
     public List<User> getUserBlockList(User user) {
-        List<UserRelationship> blockRelationship = db.userRelationshipDao()
+        List<UserRelationship> blockRelationships = db.userRelationshipDao()
                 .getBySenderIDAndType(user.getId(), UserDBAction.BLOCKED);
-        return getAllReceiverUsers(blockRelationship, db);
+
+        List<User> blockedUsers = new ArrayList<>();
+        User blockedUser;
+        for(UserRelationship blockRelationship : blockRelationships){
+            blockedUser = db.userDao().getUserById(blockRelationship.getReceiverID());
+            if(blockedUser != null)
+                blockedUsers.add(blockedUser);
+        }
+
+        return blockedUsers;
     }
 
     @Override

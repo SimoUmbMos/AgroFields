@@ -36,6 +36,7 @@ public class UserContactsFragment
 
     private final List<User> friendList = new ArrayList<>();
     private final List<User> data = new ArrayList<>();
+    private int pagesCount;
     private UserViewModel vmUsers;
     private boolean isSearching;
 
@@ -69,9 +70,6 @@ public class UserContactsFragment
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-    @Override public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
     @Override public boolean onQueryTextChange(String query) {
         if(getActivity() != null){
             String search = query.trim();
@@ -79,13 +77,16 @@ public class UserContactsFragment
             if(!search.isEmpty()){
                 //todo show result
                 AsyncTask.execute(()->{
-                    List<User> searchList = vmUsers.searchUser(query);
-                    getActivity().runOnUiThread(()->searchUpdate(searchList));
+                    int pageNumber = vmUsers.getSearchPageCount(query);
+                    getActivity().runOnUiThread(()->searchUpdate(pageNumber,query));
                 });
             }else{
-                getActivity().runOnUiThread(()->searchUpdate(null));
+                getActivity().runOnUiThread(()->searchUpdate(0,query));
             }
         }
+        return false;
+    }
+    @Override public boolean onQueryTextSubmit(String query) {
         return false;
     }
     @Override public boolean onBackPressed() {
@@ -105,6 +106,7 @@ public class UserContactsFragment
     }
     private void initData() {
         isSearching = false;
+        pagesCount = 0;
     }
     private void initFragment() {
 
@@ -127,16 +129,22 @@ public class UserContactsFragment
             viewUpdate();
         }
     }
-    private void searchUpdate(List<User> searchList) {
+    private void searchUpdate(int pageNumber, String query) {
         data.clear();
-        if(searchList != null){
+        if(query.length() > 3){
+            pagesCount = pageNumber;
             isSearching = true;
-            data.addAll(searchList);
+            if(pagesCount > 0){
+                    asyncGetFirstDataFromSearch(query);
+            }else{
+                viewUpdate();
+            }
         }else{
+            pagesCount = 0;
             isSearching = false;
             data.addAll(friendList);
+            viewUpdate();
         }
-        viewUpdate();
     }
     private void viewUpdate(){
         //notifyDataChanged
@@ -155,5 +163,12 @@ public class UserContactsFragment
         }else{
             binding.tvContactAction.setVisibility(View.VISIBLE);
         }
+    }
+    private void asyncGetFirstDataFromSearch(String query) {
+        AsyncTask.execute(()->{
+            data.clear();
+            data.addAll(vmUsers.searchUser(query,0));
+            viewUpdate();
+        });
     }
 }

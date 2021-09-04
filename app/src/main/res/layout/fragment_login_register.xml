@@ -11,30 +11,33 @@
         android:id="@+id/tvLoginLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/llLoginRegisterData"
+        app:layout_constraintStart_toStartOf="@+id/llLoginRegisterData"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/login_label" />
-    <LinearLayout android:id="@+id/llLoginRegisterData"
+
+    <LinearLayout
+        android:id="@+id/llLoginRegisterData"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/llLoginButtons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLoginLabel"
         app:theme="@style/TextInputFields">
-        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginUserNameLayout"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etLoginUserNameLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
-            app:errorEnabled="true"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLoginUserName"
@@ -42,19 +45,19 @@
                 android:layout_height="wrap_content"
                 android:autofillHints="Username"
                 android:hint="@string/username_hint"
-                android:inputType="textPersonName"
-                android:visibility="visible" />
+                android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout android:id="@+id/etLoginMainPasswordLayout"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etLoginMainPasswordLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
-            app:passwordToggleEnabled="true"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etLoginMainPassword"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLoginMainPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Password"
@@ -67,9 +70,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true"
             app:passwordToggleEnabled="true">
 
@@ -87,9 +87,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -97,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Email"
-                android:hint="@string/email_hint"
+                android:hint="@string/email_hint_login"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,9 +103,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -125,9 +119,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_field_margin_start"
-            android:layout_marginEnd="@dimen/login_field_margin_end"
-            android:layout_marginBottom="@dimen/login_field_margin_bottom"
             app:counterEnabled="true"
             app:counterMaxLength="10"
             app:errorEnabled="true">
@@ -137,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Phone"
-                android:hint="@string/phone_hint"
+                android:hint="@string/phone_hint_login"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,11 +137,10 @@
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/login_button_margin_start_big"
-            android:layout_marginEnd="@dimen/login_button_margin_end_big"
             android:text="@string/register_button"
             android:textAllCaps="false"
-            app:theme="@style/BorderlessButtonStyle"/>
+            android:layout_marginTop="5dp"
+            app:theme="@style/BorderlessButtonStyle" />
     </LinearLayout>
     <LinearLayout android:id="@+id/llLoginButtons"
         android:layout_width="0dp"
@@ -166,7 +156,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_big"
-            android:layout_marginTop="@dimen/login_button_margin_top"
             android:layout_marginEnd="@dimen/login_button_margin_end_small"
             android:layout_marginBottom="@dimen/login_button_margin_bottom"
             android:layout_weight="1"
@@ -180,7 +169,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_small"
-            android:layout_marginTop="@dimen/login_button_margin_top"
             android:layout_marginEnd="@dimen/login_button_margin_end_big"
             android:layout_marginBottom="@dimen/login_button_margin_bottom"
             android:layout_weight="1"
@@ -194,12 +182,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/login_button_margin_start_big"
-            android:layout_marginTop="@dimen/login_button_margin_top"
             android:layout_marginEnd="@dimen/login_button_margin_end_big"
             android:layout_marginBottom="@dimen/login_button_margin_bottom"
             android:layout_weight="1"
             android:text="@string/login"
             android:textAllCaps="false"
-            app:theme="@style/BorderlessButtonStyle"/>
+            app:theme="@style/BorderlessButtonStyle" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

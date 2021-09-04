@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.databinding.ViewLandListBinding;
+import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
@@ -33,7 +33,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     @Override
     public LandListAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_land_list,parent,false);
+                .inflate(R.layout.view_holder_land,parent,false);
         return new LandListAdapterViewHolder(view);
     }
 
@@ -74,10 +74,10 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
         void onLandLongClick(Land land);
     }
     protected static class LandListAdapterViewHolder  extends RecyclerView.ViewHolder {
-        public final ViewLandListBinding binding;
+        public final ViewHolderLandBinding binding;
         public LandListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = ViewLandListBinding.bind(itemView);
+            binding = ViewHolderLandBinding.bind(itemView);
         }
     }
 }

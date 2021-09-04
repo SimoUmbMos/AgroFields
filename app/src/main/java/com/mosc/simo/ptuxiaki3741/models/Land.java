@@ -65,29 +65,20 @@ public class Land implements Parcelable {
         }
     }
 
-
     @Override
-    public int hashCode() {
-        if(this.getData() != null){
-            return Objects.hash(this.getData().getId());
-        }
-        return -1;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Land land = (Land) o;
+        if(data == null && land.data == null)
+            return true;
+        if(data == null || land.data == null)
+            return false;
+        return data.equals(land.data);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if(o == null) {
-            return false;
-        } else if (!(o instanceof Land)) {
-            return false;
-        } else {
-            if(this.getData() == null && ((Land) o).getData() == null){
-                return true;
-            }else if(this.getData() != null && ((Land) o).getData() != null){
-                return ((Land) o).getData().getId() == this.getData().getId();
-            }else{
-                return false;
-            }
-        }
+    public int hashCode() {
+        return Objects.hash(data);
     }
 }

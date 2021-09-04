@@ -654,7 +654,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                             toggleMapLock();
                         }
                         setTitle(
-                                getResources().getString(R.string.move_img),
+                                getString(R.string.move_img),
                                 save -> saveAction(),
                                 reset -> undo()
                         );
@@ -665,7 +665,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 case Zoom:
                     if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
                         setTitle(
-                                getResources().getString(R.string.zoom_img),
+                                getString(R.string.zoom_img),
                                 save -> saveAction(),
                                 reset -> undo(),
                                 plus -> plusAction(),
@@ -678,7 +678,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 case Alpha:
                     if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
                         setTitle(
-                                getResources().getString(R.string.opacity_img),
+                                getString(R.string.opacity_img),
                                 save -> saveAction(),
                                 reset -> undo(),
                                 plus -> plusAction(),
@@ -691,7 +691,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 case Rotate:
                     if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
                         setTitle(
-                                getResources().getString(R.string.rotate_img),
+                                getString(R.string.rotate_img),
                                 save -> saveAction(),
                                 reset -> undo(),
                                 plus -> plusAction(),
@@ -703,14 +703,14 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                     break;
                 case AddEnd:
                     setTitle(
-                            getResources().getString(R.string.create_point),
+                            getString(R.string.create_point),
                             save -> saveAction(),
                             reset -> undo()
                     );
                     break;
                 case AddBetween:
                     setTitle(
-                            getResources().getString(R.string.create_between_points),
+                            getString(R.string.create_between_points),
                             save -> saveAction(),
                             reset -> undo()
                     );
@@ -718,14 +718,14 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                     break;
                 case Edit:
                     setTitle(
-                            getResources().getString(R.string.edit_point),
+                            getString(R.string.edit_point),
                             save -> saveAction(),
                             reset -> undo()
                     );
                     break;
                 case Delete:
                     setTitle(
-                            getResources().getString(R.string.delete_point),
+                            getString(R.string.delete_point),
                             save -> saveAction(),
                             reset -> undo()
                     );

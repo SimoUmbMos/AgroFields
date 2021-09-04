@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
-import com.mosc.simo.ptuxiaki3741.databinding.ViewLandHistoryItemBinding;
-import com.mosc.simo.ptuxiaki3741.models.LandHistoryList;
-import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryBinding;
+import com.mosc.simo.ptuxiaki3741.models.LandHistory;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 
 import java.text.DateFormat;
@@ -25,12 +25,12 @@ import java.util.Locale;
 public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryListAdapter.ItemViewHolder>{
     private static final int TextViewMargin = 8;
     private final DateFormat dateFormat;
-    private final List<LandHistoryList> data;
+    private final List<LandHistory> data;
     private final OnRecordClick onRecordClick;
     private final OnHeaderClick onHeaderClick;
     private final String[] values;
     public LandHistoryListAdapter(
-            List<LandHistoryList> list,
+            List<LandHistory> list,
             String[] values,
             OnHeaderClick onHeaderClick,
             OnRecordClick onRecordClick
@@ -45,7 +45,7 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     @NonNull @Override public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.view_land_history_item,
+                R.layout.view_holder_history,
                 parent,
                 false
         );
@@ -67,17 +67,16 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     }
 
     private void setupViewHolder(@NonNull ItemViewHolder holder, int position) {
-        LandHistoryList item = data.get(position);
-        String title = item.getLand().getData().getTitle()+
+        LandHistory item = data.get(position);
+        String title = item.getLandData().getTitle()+
                 " #"+
-                EncryptUtil.convert4digit(item.getLand().getData().getId());
-        if(item.getLandRecords().get(item.getLandRecords().size()-1).getLandData()
-                .getActionID() == LandDBAction.DELETE
+                EncryptUtil.convert4digit(item.getLandData().getId());
+        if(item.getData().get(item.getData().size()-1).getActionID() == LandDBAction.DELETE
         )
             title = title + " - " +values[3];
         holder.binding.tvLandTitle.setText(title);
         holder.binding.tlHistoryRoot.removeAllViews();
-        for(LandRecord record : item.getLandRecords()){
+        for(LandDataRecord record : item.getData()){
             TableRow tr = new TableRow(holder.binding.getRoot().getContext());
             TableLayout.LayoutParams params= new TableLayout.LayoutParams(
                     TableLayout.LayoutParams.MATCH_PARENT,
@@ -102,9 +101,9 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
             tv1.setLayoutParams(params1);
             tv2.setLayoutParams(params2);
 
-            tv1.setText(dateFormat.format(record.getLandData().getDate()));
+            tv1.setText(dateFormat.format(record.getDate()));
             String action;
-            switch (record.getLandData().getActionID()){
+            switch (record.getActionID()){
                 case CREATE:
                     action = values[0];
                     break;
@@ -139,15 +138,15 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        public final ViewLandHistoryItemBinding binding;
+        public final ViewHolderHistoryBinding binding;
         public ItemViewHolder(@NonNull View view) {
             super(view);
-            binding = ViewLandHistoryItemBinding.bind(view);
+            binding = ViewHolderHistoryBinding.bind(view);
         }
     }
 
     public interface OnRecordClick{
-        void onRecordClick(LandRecord record);
+        void onRecordClick(LandDataRecord record);
     }
     public interface OnHeaderClick{
         void onHeaderClick(int pos);

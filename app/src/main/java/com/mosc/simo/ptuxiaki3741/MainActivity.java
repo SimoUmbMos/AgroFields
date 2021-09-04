@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
     private boolean doubleBackToExitPressedOnce = false;
+    private ActivityMainBinding binding;
 
     public static RoomDatabase getRoomDb(Context context){
         return Room.databaseBuilder(context,
@@ -40,11 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         fragmentBackPress = () -> true;
-        Toolbar toolbar = findViewById(R.id.tbMainActivity);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.tbMainActivity);
         if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setTitle(null);
         }
     }
@@ -73,11 +71,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fcvNavHostFragment);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         init();
         initViewModels();
+        navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fcvNavHostFragment);
     }
     @Override
     public void onBackPressed() {

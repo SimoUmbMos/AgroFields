@@ -20,7 +20,7 @@
                 android:id="@+id/toolbar_action_edit_land_info"
                 android:icon="@drawable/menu_ic_edit"
                 android:orderInCategory="1"
-                android:title="@string/edit"
+                android:title="@string/edit_info"
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>

@@ -8,6 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.Pager;
+import androidx.paging.PagingConfig;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
+    private static final int PAGE_SIZE = 50;
     private static final String sharedPreferenceKey = "currUser";
     private static final long sharedPreferenceDefault = -1;
 
@@ -126,11 +131,17 @@ public class UserViewModel extends AndroidViewModel {
         currUser.postValue(null);
     }
 
-    public List<User> searchUser(String search){
+    public List<User> searchUser(String search, int page){
         if(currUser.getValue() != null){
-            return userRepository.userSearch(currUser.getValue(), search);
+            return userRepository.userSearch(currUser.getValue(), search, page);
         }
-        return new ArrayList<>();
+        return null;
+    }
+    public int getSearchPageCount(String search){
+        if(currUser.getValue() != null){
+            return userRepository.searchPageCount(currUser.getValue(), search);
+        }
+        return -1;
     }
 
     public List<User> getFriends(){

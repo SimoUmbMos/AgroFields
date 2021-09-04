@@ -9,6 +9,7 @@
   <color name="colorError">#B00020</color>
   <color name="colorSurface">#EDEDED</color>
   <color name="colorBackground">#EDEDED</color>
+  <color name="actionModeBackground">#81c784</color>
   <!--Night theme color-->
   <color name="colorPrimaryNight">#1f1f1f</color>
   <color name="colorPrimaryVariantNight">#81c784</color>
@@ -18,6 +19,7 @@
   <color name="colorErrorNight">#F9718A</color>
   <color name="colorSurfaceNight">#121212</color>
   <color name="colorBackgroundNight">#121212</color>
+  <color name="actionModeBackgroundNight">#1f1f1f</color>
 
   <!--Light theme text color-->
   <color name="colorOnPrimary">#000000</color>

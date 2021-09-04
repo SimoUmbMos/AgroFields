@@ -1,43 +1,40 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
-import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.LandRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandUtil {
-    public static Land getLandFromLandRecord(LandRecord record){
+public final class LandUtil {
+    private LandUtil(){}
+
+    public static LandData getLandDataFromLandRecord(LandDataRecord record){
         if(record != null){
-            if(record.getLandData() != null){
-                LandDataRecord dataRecord = record.getLandData();
-                LandData data = new LandData(
-                        dataRecord.getLandID(),
-                        dataRecord.getLandCreatorID(),
-                        dataRecord.getLandTitle(),
-                        record.getLandData().getBorder()
-                );
-                return new Land(data);
-            }
+            return new LandData(
+                    record.getLandID(),
+                    record.getLandCreatorID(),
+                    record.getLandTitle(),
+                    record.getBorder()
+            );
         }
         return null;
     }
 
-    public static List<List<LandRecord>> splitLandRecordByLand(List<LandRecord> r){
+    public static List<LandHistory> splitLandRecordByLand(List<LandDataRecord> r){
         if(r != null){
-            List<LandRecord> records = new ArrayList<>(r);
-            List<List<LandRecord>> recordsList = new ArrayList<>();
-            List<LandRecord> tempRecordsList;
-            LandRecord tempRecord;
+            List<LandDataRecord> records = new ArrayList<>(r);
+            List<List<LandDataRecord>> recordsList = new ArrayList<>();
+            List<LandDataRecord> tempRecordsList;
+            LandDataRecord tempRecord;
             boolean exist;
-            for(LandRecord record : records){
-                if(record.getLandData() != null){
+            for(LandDataRecord record : records){
+                if(record != null){
                     exist = false;
-                    for(List<LandRecord> tempRecords : recordsList){
+                    for(List<LandDataRecord> tempRecords : recordsList){
                         tempRecord = tempRecords.get(0);
-                        if(tempRecord.getLandData().getLandID() == record.getLandData().getLandID()){
+                        if(tempRecord.getLandID() == record.getLandID()){
                             tempRecords.add(record);
                             exist = true;
                             break;
@@ -51,8 +48,23 @@ public class LandUtil {
                     }
                 }
             }
-            return recordsList;
+            List<LandHistory> result = new ArrayList<>();
+            for(List<LandDataRecord> dataRecordList:recordsList){
+                result.add(new LandHistory(dataRecordList));
+            }
+            return result;
         }
         return new ArrayList<>();
+    }
+
+    public static boolean areSameLandHistory(LandHistory oldItem, LandHistory newItem) {
+        if(oldItem.getLandData() == null && newItem.getLandData() == null )
+            return true;
+        if(oldItem.getLandData() == null || newItem.getLandData() == null )
+            return false;
+        return oldItem.getLandData().getId() == newItem.getLandData().getId();
+    }
+    public static boolean areSameLandHistoryContent(LandHistory oldItem, LandHistory newItem) {
+        return ListUtils.arraysMatch(oldItem.getData(),newItem.getData());
     }
 }

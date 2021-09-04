@@ -3,7 +3,6 @@ package com.mosc.simo.ptuxiaki3741.backend.repositorys;
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandRepository;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.LandRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -37,24 +36,15 @@ public class LandRepositoryImpl implements LandRepository {
         return new Land(landData);
     }
     @Override
-    public List<LandRecord> getLandRecordsByLand(Land land) {
-        List<LandRecord> landRecords = new ArrayList<>();
+    public List<LandDataRecord> getLandRecordsByLand(Land land) {
         if(land.getData() != null){
-            List<LandDataRecord> landDataRecords = db.landHistoryDao().getLandRecordByLandID(land.getData().getId());
-            for(LandDataRecord landDataRecord : landDataRecords){
-                landRecords.add(new LandRecord(landDataRecord));
-            }
+            return db.landHistoryDao().getLandRecordByLandID(land.getData().getId());
         }
-        return landRecords;
+        return new ArrayList<>();
     }
     @Override
-    public List<LandRecord> getLandRecordsByUser(User user) {
-        List<LandRecord> landRecords = new ArrayList<>();
-        List<LandDataRecord> landDataRecords = db.landHistoryDao().getLandRecordsByUserId(user.getId());
-        for(LandDataRecord landDataRecord : landDataRecords){
-            landRecords.add(new LandRecord(landDataRecord));
-        }
-        return landRecords;
+    public List<LandDataRecord> getLandRecordsByUser(User user) {
+        return db.landHistoryDao().getLandRecordsByUserId(user.getId());
     }
 
     @Override
@@ -78,11 +68,9 @@ public class LandRepositoryImpl implements LandRepository {
         return land;
     }
     @Override
-    public void saveLandRecord(LandRecord landRecord) {
-        LandDataRecord landRecordData = landRecord.getLandData();
-        long LRid = db.landHistoryDao().insert(landRecordData);
-        landRecordData.setId(LRid);
-        landRecord.setLandData(landRecordData);
+    public void saveLandRecord(LandDataRecord landRecord) {
+        long LRid = db.landHistoryDao().insert(landRecord);
+        landRecord.setId(LRid);
     }
 
     @Override

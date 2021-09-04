@@ -7,6 +7,8 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -20,10 +22,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class EncryptUtil {
+public final class EncryptUtil {
     public static final String
             TAG = "EncryptUtil",
             divider = "::encoded::";
+    private EncryptUtil(){}
+
     public static String convert4digit(long id){
         Random random = new Random();
         random.setSeed((id*4)/2);
@@ -34,10 +38,25 @@ public class EncryptUtil {
             return null;
         try {
             byte[] data = s.getBytes(StandardCharsets.UTF_8);
-            KeyGenerator keygen = KeyGenerator.getInstance("BLOWFISH");
-            keygen.init(256);
-            SecretKey key = keygen.generateKey();
+            SecretKey key = getKeyGenerator().generateKey();
             Cipher cipher = getCipher(Cipher.ENCRYPT_MODE,key);
+            byte[] cipherText = cipher.doFinal(data);
+            String keyString = encodeToString(keyToString(key));
+            if( keyString != null){
+                return encodeToString(cipherText) + divider + keyString;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "encryptString: ",e);
+        }
+        return s;
+    }
+    public static String encryptString(String s,boolean isChaCha20){
+        if(s == null)
+            return null;
+        try {
+            byte[] data = s.getBytes(StandardCharsets.UTF_8);
+            SecretKey key = getKeyGenerator().generateKey();
+            Cipher cipher = getCipher(Cipher.ENCRYPT_MODE,key,isChaCha20);
             byte[] cipherText = cipher.doFinal(data);
             String keyString = encodeToString(keyToString(key));
             if( keyString != null){
@@ -121,6 +140,24 @@ public class EncryptUtil {
         }
         return s;
     }
+    public static String decryptString(String s,boolean isChaCha){
+        if(s == null)
+            return null;
+        if(!s.contains(divider))
+            return s;
+        try {
+            int index = s.indexOf(divider);
+            String encodedCipherText = s.substring(0,index);
+            String encodedKeyText = s.substring(index+divider.length());
+            SecretKey key = getKey(decode(encodedKeyText));
+            byte[] data = decode(encodedCipherText);
+            Cipher cipher = getCipher(Cipher.DECRYPT_MODE,key,isChaCha);
+            return new String(cipher.doFinal(data),StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Log.e(TAG, "decryptString: ",e);
+        }
+        return s;
+    }
     public static void decryptCurrUser(User u){
         if(u.getEmail() != null){
             if(u.getEmail().contains(divider)){
@@ -152,10 +189,28 @@ public class EncryptUtil {
         }
         return result;
     }
-
+    //
+    private static KeyGenerator getKeyGenerator() throws NoSuchAlgorithmException {
+        KeyGenerator keygen;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            keygen = KeyGenerator.getInstance("ChaCha20");
+            keygen.init(256, SecureRandom.getInstanceStrong());
+        }else{
+            keygen = KeyGenerator.getInstance("BLOWFISH");
+            keygen.init(256);
+        }
+        return keygen;
+    }
     //cipher getter
     private static Cipher getCipher(int mode,SecretKey key) throws Exception{
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            return getCipherChaCha20(mode,key);
+        }else{
+            return getCipherBlowfish(mode,key);
+        }
+    }
+    private static Cipher getCipher(int mode,SecretKey key,boolean isChaCha20) throws Exception{
+        if(isChaCha20){
             return getCipherChaCha20(mode,key);
         }else{
             return getCipherBlowfish(mode,key);

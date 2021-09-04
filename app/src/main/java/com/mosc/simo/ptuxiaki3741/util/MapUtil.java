@@ -1,6 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
-
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,8 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MapUtil {
+public final class MapUtil {
     public static final String TAG = "MapUtil";
+    private MapUtil(){}
 
     public static Address findLocation(Context c, String a){
         if(a != null){

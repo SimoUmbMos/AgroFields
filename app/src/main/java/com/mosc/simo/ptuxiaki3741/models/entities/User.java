@@ -114,22 +114,19 @@ public class User implements Parcelable,Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(id, username);
     }
 
     @Override
     public boolean equals(Object o) {
-        if(o == null) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        if(username == null && user.username == null )
+            return true;
+        if(username == null || user.username == null )
             return false;
-        } else if (!(o instanceof User)) {
-            return false;
-        } else {
-            if(username != null){
-                return ((User) o).getId() == this.getId();
-            }else{
-                return false;
-            }
-        }
+        return id == user.id && username.equals(user.username);
     }
 
     @Override

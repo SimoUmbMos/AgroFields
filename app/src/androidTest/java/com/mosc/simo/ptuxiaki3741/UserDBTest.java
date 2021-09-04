@@ -22,6 +22,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
 public class UserDBTest {
@@ -52,7 +54,7 @@ public class UserDBTest {
             resetDB();
         }
 
-        testCreateUsers();
+        testCreateUsers(6);
         testEditUsers();
         testCreateFriendRequests();
         testDeclineFriendRequests();
@@ -60,24 +62,43 @@ public class UserDBTest {
         testBlock();
         testUserSearch();
     }
+    @Test
+    public void testSearch(){
+        if(firstStart){
+            firstStart = false;
+        }else{
+            resetDB();
+        }
+        long start,end;
+        start = System.currentTimeMillis();
+        testCreateUsers(10000);
+        end = System.currentTimeMillis();
+        end = end - start;
+        Log.v(TAG,"time for creation: "+end+"ms");
+        start = System.currentTimeMillis();
+        testLargeSearch();
+        end = System.currentTimeMillis();
+        end = end - start;
+        Log.v(TAG,"time for search: "+end+"ms");
+    }
 
-    private void testCreateUsers() {
+    private void testCreateUsers(int size) {
         User temp;
-        int size = 6;
         for(int i = 0 ; i < size ; i++){
             temp = new User("test"+(i+1), "test"+(i+1));
-            userRepository.saveNewUser(EncryptUtil.encryptWithPassword(temp));
+            userRepository.saveNewUser(temp);
+            //userRepository.saveNewUser(EncryptUtil.encryptWithPassword(temp));
         }
-        users.clear();
-        users.addAll(userRepository.getUsers());
-        assertEquals(size,users.size());
-        for(User user : users){
-            assertEquals(-1,user.getPassword().indexOf("user"));
-        }
+//       users.clear();
+//      users.addAll(userRepository.getUsers());
+//        assertEquals(size,users.size());
+//        for(User user : users){
+//            assertEquals(-1,user.getPassword().indexOf("user"));
+//        }
     }
     private void testEditUsers() {
         String email = "test@test.com";
-        String phone = "6969696969";
+        String phone = "";
 
         User temp = users.get(0);
         String firstPassword = temp.getPassword();
@@ -156,19 +177,85 @@ public class UserDBTest {
         checkBlockList(0,users.get(5));
     }
     private void testUserSearch() {
-        List<User> result0 = userRepository.userSearch(users.get(0),"test");
-        List<User> result1 = userRepository.userSearch(users.get(1),"test");
-        List<User> result2 = userRepository.userSearch(users.get(2),"test");
-        List<User> result3 = userRepository.userSearch(users.get(3),"test");
-        List<User> result4 = userRepository.userSearch(users.get(4),"test");
-        List<User> result5 = userRepository.userSearch(users.get(5),"test");
+        long singlePageSpeed, singleDataSpeed, pageSpeed, dataSpeed;
 
-        assertEquals(5,result0.size());
-        assertEquals(5,result1.size());
-        assertEquals(3,result2.size());
-        assertEquals(3,result3.size());
-        assertEquals(4,result4.size());
-        assertEquals(4,result5.size());
+        long start = System.currentTimeMillis();
+        long pages0 = userRepository.searchPageCount(users.get(0),"test");
+        singlePageSpeed = System.currentTimeMillis();
+        long pages1 = userRepository.searchPageCount(users.get(1),"test");
+        long pages2 = userRepository.searchPageCount(users.get(2),"test");
+        long pages3 = userRepository.searchPageCount(users.get(3),"test");
+        long pages4 = userRepository.searchPageCount(users.get(4),"test");
+        long pages5 = userRepository.searchPageCount(users.get(5),"test");
+        long pagesNull = userRepository.searchPageCount(users.get(0),"nul");
+        long pagesNotNull = userRepository.searchPageCount(users.get(0),"null");
+        pageSpeed = System.currentTimeMillis();
+
+        singlePageSpeed = singlePageSpeed - start;
+        pageSpeed = pageSpeed - start;
+
+        assertEquals(1,pages0); //1
+        assertEquals(1,pages1); //2
+        assertEquals(1,pages2); //3
+        assertEquals(1,pages3); //4
+        assertEquals(1,pages4); //5
+        assertEquals(1,pages5); //6
+        assertEquals(-1,pagesNull); //6
+        assertEquals(0,pagesNotNull); //6
+
+        start = System.currentTimeMillis();
+        List<User> result0 = userRepository.userSearch(users.get(0),"test",0);
+        singleDataSpeed = System.currentTimeMillis();
+        List<User> result1 = userRepository.userSearch(users.get(1),"test",0);
+        List<User> result2 = userRepository.userSearch(users.get(2),"test",0);
+        List<User> result3 = userRepository.userSearch(users.get(3),"test",0);
+        List<User> result4 = userRepository.userSearch(users.get(4),"test",0);
+        List<User> result5 = userRepository.userSearch(users.get(5),"test",0);
+        List<User> resultNull = userRepository.userSearch(users.get(0),"nul",0);
+        List<User> resultNotNull = userRepository.userSearch(users.get(0),"null",0);
+        dataSpeed = System.currentTimeMillis();
+
+        singleDataSpeed = singleDataSpeed - start;
+        dataSpeed = dataSpeed - start;
+
+        assertEquals(5,result0.size()); //1
+        assertEquals(5,result1.size()); //2
+        assertEquals(3,result2.size()); //3
+        assertEquals(3,result3.size()); //4
+        assertEquals(4,result4.size()); //5
+        assertEquals(4,result5.size()); //6
+        assertNull(resultNull);
+        assertNotNull(resultNotNull);
+
+        Log.d(TAG, "single page speeds: "+singlePageSpeed+"ms");
+        Log.d(TAG, "all page speeds: "+pageSpeed+"ms");
+        Log.d(TAG, "single data speeds: "+singleDataSpeed+"ms");
+        Log.d(TAG, "all data speeds: "+dataSpeed+"ms");
+
+    }
+    private void testLargeSearch() {
+        User user = userRepository.searchUserByID(1);
+        if(user != null){
+            long singlePageSpeed, singleDataSpeed;
+
+            long start = System.currentTimeMillis();
+            int pages0 = userRepository.searchPageCount(user,"test");
+            singlePageSpeed = System.currentTimeMillis();
+            singlePageSpeed = singlePageSpeed - start;
+
+            start = System.currentTimeMillis();
+            List<User> result0 = userRepository.userSearch(user,"test",pages0 - 1);
+            singleDataSpeed = System.currentTimeMillis();
+            singleDataSpeed = singleDataSpeed - start;
+
+
+
+            Log.d(TAG, "page count speed: "+singlePageSpeed+"ms");
+            Log.d(TAG, "data retrieve speeds: "+singleDataSpeed+"ms");
+
+            assertEquals(200,pages0);
+            assertEquals(49,result0.size());
+        }
     }
 
     private void checkFriendList(int size,User user){

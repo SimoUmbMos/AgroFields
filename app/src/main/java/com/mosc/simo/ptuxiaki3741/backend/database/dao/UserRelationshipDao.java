@@ -26,6 +26,9 @@ public interface UserRelationshipDao {
     @Query("SELECT * FROM `UserRelationships` WHERE `ReceiverID` = :id AND Type = :type")
     List<UserRelationship> getByReceiverIDAndType(long id, UserDBAction type);
 
+    @Query("SELECT * FROM `UserRelationships` WHERE (`ReceiverID` = :id OR `SenderID` = :id) AND Type = :type")
+    List<UserRelationship> getByIDAndType(long id, UserDBAction type);
+
     @Delete
     void deleteAll(List<UserRelationship> userRelationships);
 

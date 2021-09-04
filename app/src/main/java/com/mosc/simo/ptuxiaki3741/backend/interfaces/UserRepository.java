@@ -1,5 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.backend.interfaces;
 
+import androidx.paging.DataSource;
+import androidx.paging.Pager;
+
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
@@ -10,7 +13,8 @@ public interface UserRepository {
     User searchUserByID(long id);
     User searchUserByUserName(String username);
     User searchUserByUserNameAndPassword(String username, String password);
-    List<User> userSearch(User user, String Username);
+    int searchPageCount(User user, String Username);
+    List<User> userSearch(User user, String Username,int page);
 
     UserFriendRequestStatus sendFriendRequest(User currUser, User receiver);
     boolean acceptFriendRequest(User currUser, User sender);
