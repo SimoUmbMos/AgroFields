@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -209,12 +210,14 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                         }
                         @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                             initActionMenu(menu);
+                            setCheckableRecycleView(true);
                             return true;
                         }
                         @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item){
                             return menuItemClick(item);
                         }
                         @Override public void onDestroyActionMode(ActionMode mode) {
+                            setCheckableRecycleView(false);
                             setState(LandListMenuState.NormalState);
                         }
                     };
@@ -226,6 +229,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 actionMenu.finish();
                 actionMenu = null;
             }
+
         }
     }
 
@@ -392,6 +396,11 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //ui
+    @SuppressLint("NotifyDataSetChanged")
+    private void setCheckableRecycleView(boolean showCheckBox){
+        adapter.setShowCheckMark(showCheckBox);
+        adapter.notifyDataSetChanged();
+    }
     private void setState(LandListMenuState state) {
         this.state = state;
         updateMenu(state);

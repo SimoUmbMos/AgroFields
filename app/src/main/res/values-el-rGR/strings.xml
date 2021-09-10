@@ -4,13 +4,6 @@
     <string name="app_name">Δήλωση αγροκτημάτων</string>
     <string name="loading_list">Η λίστα φορτώνεται</string>
     <string name="empty_list">Η λίστα είναι αδεία</string>
-
-    <!-- Import Activity -->
-    <string name="title_activity_import">Χάρτης</string>
-
-    <!-- Main Activity -->
-    <string name="double_tap_exit">Πατήστε ξανά για έξοδο</string>
-
     <!-- Login Fragment -->
     <string name="login_label">Login</string>
     <string name="register_label">Create Account</string>
@@ -35,18 +28,22 @@
     <string name="register_password_not_match_error">Password don\'t match</string>
     <string name="register_phone_exist_error">Phone exist\'s</string>
     <string name="register_phone_length_error">Phone length is invalid</string>
-
     <!-- Main Menu Fragment -->
     <string name="main_menu_label_land_number">Αριθμός χωραφιών:</string>
     <string name="main_menu_label_land_area">Έκταση χωραφιών:</string>
     <string name="main_menu_label_owned_lands">Ιδιόκτητα χωράφια:</string>
     <string name="main_menu_label_shared_lands">Κοινόχρηστα χωράφια:</string>
-    <string name="main_menu_label_contact">Αριθμός επαφών:</string>
+    <string name="main_menu_label_requests">Αριθμός αιτημάτων:</string>
+    <string name="requests">αιτήματα</string>
+    <string name="request">αίτημα</string>
     <string name="main_menu_lands_button">Χωράφια</string>
     <string name="main_menu_history_button">Ιστορικό</string>
     <string name="main_menu_profile_button">Προφίλ</string>
     <string name="main_menu_contacts_button">Επαφές</string>
-
+    <string name="iv_desc_land_button">Χωράφια</string>
+    <string name="iv_desc_history_button">Ιστορικό</string>
+    <string name="iv_desc_profile_button">Προφίλ</string>
+    <string name="iv_desc_contacts_button">Επαφές</string>
     <!-- Land Menu Fragment -->
     <string name="contextual_menu_land_label">Select Land\'s</string>
     <string name="select_all">Select All</string>
@@ -61,7 +58,6 @@
     <string name="export">Export</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
-
     <!-- Land Info Fragment -->
     <string name="land_info_title">Land Info</string>
     <string name="land_name">Land Name</string>
@@ -70,7 +66,6 @@
     <string name="edit_land_label">Edit Land Name</string>
     <string name="submit_info">Submit</string>
     <string name="cancel_info">Cancel</string>
-
     <!-- Land Map Fragment -->
     <string name="change_terrain_type">change terrain type</string>
     <string name="fabSave">save edits</string>
@@ -104,7 +99,6 @@
     <string name="import_label">Import</string>
     <string name="app_actions_group_title">Land Info Actions</string>
     <string name="edit_info">Edit Land Info</string>
-
     <!-- History Menu Fragment -->
     <string name="land_history">Ιστορικό αγροκτημάτων</string>
     <string name="land_action_created">Δημιουργήθηκε</string>
@@ -112,7 +106,14 @@
     <string name="land_action_restored">Επαναφέρθηκε</string>
     <string name="land_action_deleted">Διαγράφηκε</string>
     <string name="toggle_history_list">Εναλλαγή λίστας</string>
-
+    <!-- User Contacts Fragment -->
+    <string name="contacts_title">Η Επαφές μου</string>
+    <string name="search_user_hint">Αναζήτηση χρήστη</string>
+    <string name="list_result">αποτέλεσμα</string>
+    <string name="list_results">αποτελέσματα</string>
+    <string name="empty_search">Κανένα αποτέλεσμα</string>
+    <string name="contacts">Επαφές</string>
+    <string name="contact">Eπαφή</string>
     <!-- User Profile Fragment -->
     <string name="profile_bar_label">Το προφίλ μου</string>
     <string name="email_hint_user_profile">Email</string>
@@ -120,10 +121,9 @@
     <string name="save_user">Αποθηκεύση</string>
     <string name="edit_user">Επεξεργασία</string>
     <string name="logout">Αποσύνδεση</string>
-
-    <!-- User Contacts Fragment -->
-    <string name="search_user_hint">Αναζήτηση χρήστη</string>
-    <string name="list_result">αποτέλεσμα</string>
-    <string name="list_results">αποτελέσματα</string>
-    <string name="empty_search">Κανένα αποτέλεσμα</string>
+    <!-- Import Activity -->
+    <string name="title_activity_import">Χάρτης</string>
+    <!-- Main Activity -->
+    <string name="double_tap_exit">Πατήστε ξανά για έξοδο</string>
+    <!-- Unsorted -->
 </resources>

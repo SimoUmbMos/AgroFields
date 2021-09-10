@@ -1,8 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.backend.interfaces;
 
-import androidx.paging.DataSource;
-import androidx.paging.Pager;
-
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 

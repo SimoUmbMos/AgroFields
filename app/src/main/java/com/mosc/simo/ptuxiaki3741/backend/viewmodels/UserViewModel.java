@@ -8,10 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.paging.DataSource;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.Pager;
-import androidx.paging.PagingConfig;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
@@ -25,15 +21,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
-    private static final int PAGE_SIZE = 50;
     private static final String sharedPreferenceKey = "currUser";
     private static final long sharedPreferenceDefault = -1;
 
     private final MutableLiveData<User> currUser = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> friends = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> friendRequests = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> blocks = new MutableLiveData<>();
 
     private final UserRepositoryImpl userRepository;
     private final LandRepositoryImpl landRepository;
     private SharedPreferences sharedPref;
+
+    public LiveData<User> getCurrUser(){
+        return currUser;
+    }
+    public MutableLiveData<List<User>> getFriendList(){
+        return friends;
+    }
+    public MutableLiveData<List<User>> getFriendRequestList(){
+        return friendRequests;
+    }
+    public MutableLiveData<List<User>> getBlockList(){
+        return blocks;
+    }
 
     public UserViewModel(@NonNull Application application) {
         super(application);
@@ -43,13 +54,28 @@ public class UserViewModel extends AndroidViewModel {
     }
     public void init(SharedPreferences sharedPref){
         this.sharedPref = sharedPref;
-        initCurrUser();
+        AsyncTask.execute(()->{
+            initCurrUser();
+            if(currUser.getValue() != null){
+                populateCurrUserRelativeLists();
+            }else{
+                clearCurrUserRelativeLists();
+            }
+        });
     }
     private void initCurrUser() {
-        AsyncTask.execute(()->{
-            User user = loadCurrUser();
-            currUser.postValue(user);
-        });
+        User user = loadCurrUser();
+        currUser.postValue(user);
+    }
+    private void populateCurrUserRelativeLists() {
+        friends.postValue(getFriends());
+        friendRequests.postValue(getFriendRequests());
+        blocks.postValue(getBlocks());
+    }
+    private void clearCurrUserRelativeLists(){
+        friends.postValue(new ArrayList<>());
+        friendRequests.postValue(new ArrayList<>());
+        blocks.postValue(new ArrayList<>());
     }
     private User loadCurrUser() {
         long uid = getUidFromMemory();
@@ -58,10 +84,6 @@ public class UserViewModel extends AndroidViewModel {
             clearUidFromMemory();
         }
         return user;
-    }
-
-    public LiveData<User> getCurrUser(){
-        return currUser;
     }
 
     private void clearUidFromMemory(){
@@ -122,6 +144,7 @@ public class UserViewModel extends AndroidViewModel {
                     userRepository.searchUserByID(user.getId())
             );
             currUser.postValue(decryptedUser);
+            populateCurrUserRelativeLists();
         }else{
             logout();
         }
@@ -129,6 +152,7 @@ public class UserViewModel extends AndroidViewModel {
     public void logout() {
         clearUidFromMemory();
         currUser.postValue(null);
+        clearCurrUserRelativeLists();
     }
 
     public List<User> searchUser(String search, int page){
@@ -144,20 +168,20 @@ public class UserViewModel extends AndroidViewModel {
         return -1;
     }
 
-    public List<User> getFriends(){
+    private List<User> getFriends(){
         if(currUser.getValue() != null){
             return userRepository.getUserFriendList(currUser.getValue());
         }
         return new ArrayList<>();
     }
-    public List<User> getFriendRequests(){
+    private List<User> getFriendRequests(){
         List<User> result = new ArrayList<>();
         if(currUser.getValue() != null){
             result = userRepository.getUserFriendRequestList(currUser.getValue());
         }
         return result;
     }
-    public List<User> getBlocks(){
+    private List<User> getBlocks(){
         List<User> result = new ArrayList<>();
         if(currUser.getValue() != null){
             result = userRepository.getUserBlockList(currUser.getValue());

@@ -1,38 +1,53 @@
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <item name="colorPrimary">@color/colorPrimaryNight</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryVariantNight</item>
-        <item name="colorOnPrimary">@color/colorOnPrimaryNight</item>
-        <item name="colorSecondary">@color/colorSecondaryNight</item>
-        <item name="colorSecondaryVariant">@color/colorSecondaryVariantNight</item>
-        <item name="colorOnSecondary">@color/colorOnSecondaryNight</item>
-        <item name="colorError">@color/colorErrorNight</item>
-        <item name="colorOnError">@color/colorOnErrorNight</item>
-        <item name="colorSurface">@color/colorSurfaceNight</item>
-        <item name="android:colorBackground">@color/colorBackgroundNight</item>
-        <item name="colorOnSurface">@color/colorOnSurfaceNight</item>
-        <item name="colorOnBackground">@color/colorOnBackgroundNight</item>
-        <item name="android:textColor">@color/textColorNight</item>
-        <item name="actionModeBackground">@color/actionModeBackgroundNight</item>
+        <!-- Primary -->
+        <item name="colorPrimary">@color/backgroundColor</item>
+        <item name="colorOnPrimary">@color/textColor</item>
+
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/backgroundColor</item>
+        <item name="colorOnSecondary">@color/textColor</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/errorTextColor</item>
+
+        <!-- Menu -->
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorPrimaryDark">@color/backgroundColor</item>
+        <item name="actionModeBackground">@color/backgroundColor</item>
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="android:textColorSecondary">@color/textColor</item>
+        <item name="colorControlNormal">@color/textColor</item>
+
+        <!-- Background -->
+        <item name="colorSurface">@color/backgroundColor</item>
+        <item name="android:colorBackground">@color/backgroundColor</item>
+        <item name="colorOnSurface">@color/textColor</item>
+        <item name="colorOnBackground">@color/textColor</item>
+        <item name="android:textColor">@color/textColor</item>
 
         <item name="fontFamily">@font/main_font</item>
         <item name="android:fontFamily">@font/main_font</item>
         <item name="windowActionModeOverlay">true</item>
     </style>
+
+    <!-- menu styles -->
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
     </style>
     <style name="DrawerNavigationStyle" parent="AppTheme">
-        <item name="colorSurface">@color/colorSurfaceNight</item>
-        <item name="android:colorBackground">@color/colorBackgroundNight</item>
+        <item name="colorSurface">@color/backgroundColor</item>
+        <item name="android:colorBackground">@color/backgroundColor</item>
     </style>
+
+    <!-- fields styles -->
     <style name="TextInputFields" parent="AppTheme">
-        <item name="colorPrimary">@color/textColorNight</item>
+        <item name="colorPrimary">@color/textColor</item>
     </style>
     <style name="BorderlessButtonStyle" parent="AppTheme">
-        <item name="colorPrimary">@color/textColorNight</item>
+        <item name="colorPrimary">@color/textColor</item>
     </style>
 </resources>

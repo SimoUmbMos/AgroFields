@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add"
-        android:textColor="?attr/colorOnPrimary"
-        app:drawableTint="?attr/colorOnPrimary"
-        app:drawableTopCompat="@drawable/menu_ic_add" />
+        android:textColor="@color/textColor"
+        app:drawableTint="@color/textColor"
+        app:drawableTopCompat="@drawable/ic_menu_add" />
 </LinearLayout>

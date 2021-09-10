@@ -129,10 +129,10 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
         }
         if(item.isVisible()){
             holder.binding.tlHistoryRoot.setVisibility(View.VISIBLE);
-            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_menu_close, 0);
+            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_item_close, 0);
         }else{
             holder.binding.tlHistoryRoot.setVisibility(View.GONE);
-            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_menu_open, 0);
+            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_item_open, 0);
         }
         holder.binding.tvLandTitle.setOnClickListener(v->onHeaderClick.onHeaderClick(position));
     }

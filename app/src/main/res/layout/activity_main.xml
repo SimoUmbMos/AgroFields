@@ -18,9 +18,9 @@
         <androidx.appcompat.widget.Toolbar android:id="@+id/tbMainActivity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/colorPrimary"
+            android:background="@color/backgroundColor"
             android:layoutDirection="inherit"
-            app:titleTextColor="?attr/colorOnPrimary" />
+            app:titleTextColor="@color/textColor" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView

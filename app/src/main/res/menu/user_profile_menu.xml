@@ -5,6 +5,6 @@
         android:orderInCategory="1"
         android:title="@string/logout"
         app:actionLayout="@layout/menu_view_logout"
-        app:iconTint="?attr/colorOnPrimary"
+        app:iconTint="@color/textColor"
         app:showAsAction="always" />
 </menu>

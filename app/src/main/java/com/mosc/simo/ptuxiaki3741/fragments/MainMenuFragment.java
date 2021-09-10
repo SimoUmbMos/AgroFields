@@ -1,17 +1,20 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,6 +29,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,10 +38,12 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
 
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
+    private List<User> friendRequests;
     private User currUser;
 
     private FragmentMenuMainBinding binding;
     private ActionBar actionBar;
+    private Menu menu;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,6 +53,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
         initViewModels();
         initObservers();
@@ -56,10 +63,22 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         super.onDestroyView();
         binding = null;
     }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.request_menu, menu);
+        this.menu = menu;
+        updateMenu();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
     @Override public boolean onBackPressed() {
         return true;
     }
 
+    private void initData(){
+        friendRequests = new ArrayList<>();
+    }
     private void initActivity() {
         MainActivity mainActivity = (MainActivity) getActivity();
         actionBar = null;
@@ -70,13 +89,15 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         if(actionBar != null){
             actionBar.setTitle("");
             actionBar.show();
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
         }
     }
     private void initFragment() {
-        binding.btnMainMenuList.setOnClickListener(v -> toListMenu(getActivity()));
-        binding.btnMainMenuHistory.setOnClickListener(v -> toLandHistory(getActivity()));
-        binding.btnMainMenuProfile.setOnClickListener(v -> toProfile(getActivity()));
-        binding.btnMainMenuContacts.setOnClickListener(v -> toUserContacts(getActivity()));
+        binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
+        binding.btnHistory.setOnClickListener(v -> toLandHistory(getActivity()));
+        binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
+        binding.btnProfile.setOnClickListener(v -> toProfile(getActivity()));
     }
     private void initViewModels() {
         if(getActivity() != null){
@@ -88,6 +109,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         if(vmUsers != null){
             currUser = vmUsers.getCurrUser().getValue();
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
+            vmUsers.getFriendRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
         }
     }
@@ -95,22 +117,32 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     private void onCurrUserUpdate(User user) {
         currUser = user;
         if(currUser != null){
-            if(binding != null){
+            if(actionBar != null){
                 actionBar.setTitle(currUser.getUsername());
-                AsyncTask.execute(()->{
-                    String display = String.valueOf(vmUsers.getFriends().size());
-                    if(getActivity() != null)
-                        getActivity().runOnUiThread(()-> {
-                            if(binding != null){
-                                binding.tvMainMenuContactsNumber.setText(display);
-                            }
-                        });
-                });
             }
         }else{
             toLogin(getActivity());
         }
     }
+    private void onFriendRequestListUpdate(List<User> requests) {
+        friendRequests.clear();
+        if(requests != null)
+            friendRequests.addAll(requests);
+
+        updateMenu();
+    }
+
+    private void updateMenu() {
+        if(menu != null && getContext() != null){
+            MenuItem item = menu.findItem(R.id.menu_item_request);
+            if(friendRequests.size() > 0){
+                item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request_notification));
+            }else{
+                item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request));
+            }
+        }
+    }
+
     private void onLandUpdate(List<Land> lands) {
         if(binding != null){
             if(lands != null){

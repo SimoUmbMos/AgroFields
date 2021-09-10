@@ -502,7 +502,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 mMap.getUiSettings().setZoomControlsEnabled(true);
                 mMap.getUiSettings().setCompassEnabled(true);
                 binding.btnLandTerrain.setVisibility(View.VISIBLE);
-                miLock.setIcon(R.drawable.menu_ic_unlocked);
+                miLock.setIcon(R.drawable.ic_drawer_menu_unlocked);
             }else{
                 mMap.getUiSettings().setRotateGesturesEnabled(false);
                 mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -510,7 +510,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 mMap.getUiSettings().setZoomControlsEnabled(false);
                 mMap.getUiSettings().setCompassEnabled(false);
                 binding.btnLandTerrain.setVisibility(View.GONE);
-                miLock.setIcon(R.drawable.menu_ic_locked);
+                miLock.setIcon(R.drawable.ic_drawer_menu_map_locked);
             }
         }
         if(this.mapStatus != LandActionStates.Disable && this.mapStatus != LandActionStates.Move){

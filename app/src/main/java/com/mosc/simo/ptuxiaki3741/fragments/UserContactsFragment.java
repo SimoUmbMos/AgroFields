@@ -1,6 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,7 +8,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,18 +28,15 @@ import java.util.List;
 
 public class UserContactsFragment
         extends Fragment
-        implements FragmentBackPress, SearchView.OnQueryTextListener
-{
+        implements FragmentBackPress, SearchView.OnQueryTextListener {
     public static final String TAG = "UserContactsFragment";
 
     private final List<User> friendList = new ArrayList<>();
     private final List<User> data = new ArrayList<>();
-    private int pagesCount;
-    private UserViewModel vmUsers;
+    private String lastQuery;
     private boolean isSearching;
 
     private FragmentUserContactsBinding binding;
-    private ActionBar actionBar;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
@@ -71,104 +66,99 @@ public class UserContactsFragment
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onQueryTextChange(String query) {
-        if(getActivity() != null){
-            String search = query.trim();
-            Log.d(TAG, "onQueryTextChange: "+search);
-            if(!search.isEmpty()){
-                //todo show result
-                AsyncTask.execute(()->{
-                    int pageNumber = vmUsers.getSearchPageCount(query);
-                    getActivity().runOnUiThread(()->searchUpdate(pageNumber,query));
-                });
-            }else{
-                getActivity().runOnUiThread(()->searchUpdate(0,query));
-            }
-        }
-        return false;
+        search(query.trim());
+        return true;
     }
     @Override public boolean onQueryTextSubmit(String query) {
-        return false;
+        return true;
     }
     @Override public boolean onBackPressed() {
+        if(isSearching){
+            search("");
+            return false;
+        }
         return true;
     }
 
+    //init
     private void initActivity() {
         MainActivity activity = (MainActivity) getActivity();
         if(activity != null){
             activity.setOnBackPressed(this);
-            actionBar = activity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle("");
-            actionBar.show();
+            ActionBar actionBar = activity.getSupportActionBar();
+            if(actionBar != null){
+                actionBar.setTitle(getString(R.string.contacts_title));
+                actionBar.show();
+            }
         }
     }
     private void initData() {
         isSearching = false;
-        pagesCount = 0;
+        lastQuery="";
     }
     private void initFragment() {
 
     }
     private void initViewModels() {
         if(getActivity() != null){
-            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::userUpdate);
+            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            vmUsers.getFriendList().observe(getViewLifecycleOwner(),this::friendListUpdate);
         }
     }
 
-    private void userUpdate(User user) {
-        friendList.clear();
-        if(user != null){
-            AsyncTask.execute(()->{
-                friendList.addAll(vmUsers.getFriends());
-                viewUpdate();
-            });
-        }else{
-            viewUpdate();
-        }
-    }
-    private void searchUpdate(int pageNumber, String query) {
+    //search methods
+    private void search(String query){
+        lastQuery=query;
         data.clear();
-        if(query.length() > 3){
-            pagesCount = pageNumber;
-            isSearching = true;
-            if(pagesCount > 0){
-                    asyncGetFirstDataFromSearch(query);
-            }else{
-                viewUpdate();
-            }
-        }else{
-            pagesCount = 0;
+        if(lastQuery.isEmpty()){
             isSearching = false;
             data.addAll(friendList);
-            viewUpdate();
+        }else{
+            isSearching = true;
+            data.addAll(searchFriends());
         }
+        viewUpdate();
     }
-    private void viewUpdate(){
-        //notifyDataChanged
+    private List<User> searchFriends(){
+        List<User> result = new ArrayList<>();
+        for(User friend : friendList){
+            if(friend.getUsername().contains(lastQuery))
+                result.add(friend);
+        }
+        return result;
+    }
+
+    //observers
+    private void friendListUpdate(List<User> users) {
+        friendList.clear();
+        if(users != null){
+            friendList.addAll(users);
+        }
+        data.clear();
         if(isSearching){
-            binding.tvContactAction.setText(getString(R.string.empty_search));
+            data.addAll(searchFriends());
         }else{
-            binding.tvContactAction.setText(getString(R.string.empty_list));
+            data.addAll(friendList);
         }
-        String display;
-        if(data.size()>1){
-            display = data.size()+" "+getString(R.string.list_results);
-            binding.tvContactAction.setText(display);
-        }else if(data.size() == 1){
-            display = data.size()+" "+getString(R.string.list_result);
-            binding.tvContactAction.setText(display);
-        }else{
-            binding.tvContactAction.setVisibility(View.VISIBLE);
-        }
+        viewUpdate();
     }
-    private void asyncGetFirstDataFromSearch(String query) {
-        AsyncTask.execute(()->{
-            data.clear();
-            data.addAll(vmUsers.searchUser(query,0));
-            viewUpdate();
-        });
+
+    //ui
+    private void viewUpdate(){
+        if(data.size() > 0){
+            String display;
+            if(data.size()>1){
+                display = data.size()+" "+getString(R.string.list_results);
+            }else{
+                display = data.size()+" "+getString(R.string.list_result);
+            }
+            binding.tvContactAction.setText(display);
+        }else{
+            if(isSearching){
+                binding.tvContactAction.setText(getString(R.string.empty_search));
+            }else{
+                binding.tvContactAction.setText(getString(R.string.empty_list));
+            }
+        }
     }
 }

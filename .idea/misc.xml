@@ -3,15 +3,54 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable-anydpi/ic_profile.xml" value="0.18703703703703703" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable-xxhdpi/ic_menu_open.xml" value="0.3880208333333333" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_contacts.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_history.xml" value="0.22552083333333334" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_lands.xml" value="0.22552083333333334" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_profile.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_check.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_add.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_add_between.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_add_img.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_alpha_img.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_between.xml" value="0.26666666666666666" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_map_locked.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_remove_img.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_icon.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_item_check.xml" value="0.22552083333333334" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_item_close.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_item_open.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_main_menu_history.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_main_menu_land.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_main_menu_lands.xml" value="0.38697916666666665" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_marker.xml" value="2.328125" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_markplace.xml" value="2.328125" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add.xml" value="0.26666666666666666" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add_request.xml" value="0.3880208333333333" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add_request_notification.xml" value="0.3880208333333333" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_close.xml" value="0.3880208333333333" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_delete.xml" value="0.26666666666666666" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_mapmode.xml" value="0.26666666666666666" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_menu.xml" value="0.26666666666666666" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_open.xml" value="0.3880208333333333" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_search.xml" value="2.328125" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_search.xml" value="0.38697916666666665" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_add.xml" value="0.3880208333333333" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_check.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_delete.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_edit.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_export.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_import.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_layer_clear.xml" value="0.1814814814814815" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_locked.xml" value="0.3880208333333333" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_logout.xml" value="0.3880208333333333" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_menu.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_minus.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_move_img.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_plus.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_reset.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_save.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_select_all.xml" value="0.1814814814814815" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_import.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_main.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_main_content.xml" value="0.371875" />
@@ -23,14 +62,23 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map_content.xml" value="0.20885416666666667" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_login_register.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu.xml" value="0.18645833333333334" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_history.xml" value="0.25833333333333336" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.25" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_user_contacts.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_user_profile.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_add.xml" value="0.25052083333333336" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_delete.xml" value="0.25052083333333336" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_export.xml" value="0.25052083333333336" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_logout.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_history.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_land.xml" value="0.1787037037037037" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_land_checkable.xml" value="0.19537037037037036" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_user.xml" value="0.2125" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_land_history_item.xml" value="0.31431159420289856" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_land_list.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/contextual_list_menu.xml" value="0.3671875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/request_menu.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/search_menu.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/user_profile_menu.xml" value="0.371875" />
       </map>

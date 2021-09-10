@@ -6,137 +6,324 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.MainMenuFragment">
+
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toTopOf="parent">
+
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:weightSum="2">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="8dp"
+                android:layout_weight="1"
                 android:text="@string/main_menu_label_land_number"
                 android:textAlignment="textEnd" />
-            <TextView android:id="@+id/tvMainMenuLandNumber"
+
+            <TextView
+                android:id="@+id/tvMainMenuLandNumber"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                android:layout_weight="1" />
         </TableRow>
+
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:weightSum="2">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="8dp"
+                android:layout_weight="1"
                 android:text="@string/main_menu_label_land_area"
                 android:textAlignment="textEnd" />
-            <TextView android:id="@+id/tvMainMenuLandArea"
+
+            <TextView
+                android:id="@+id/tvMainMenuLandArea"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                android:layout_weight="1" />
         </TableRow>
+
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:weightSum="2">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="8dp"
+                android:layout_weight="1"
                 android:text="@string/main_menu_label_owned_lands"
                 android:textAlignment="textEnd" />
-            <TextView android:id="@+id/tvMainMenuOwnedLands"
+
+            <TextView
+                android:id="@+id/tvMainMenuOwnedLands"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                android:layout_weight="1" />
         </TableRow>
+
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:weightSum="2">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_margin="8dp"
+                android:layout_weight="1"
                 android:text="@string/main_menu_label_shared_lands"
                 android:textAlignment="textEnd" />
-            <TextView android:id="@+id/tvMainMenuSharedLands"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="8dp" />
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="8dp"
-                android:text="@string/main_menu_label_contact"
-                android:textAlignment="textEnd" />
 
-            <TextView android:id="@+id/tvMainMenuContactsNumber"
+            <TextView
+                android:id="@+id/tvMainMenuSharedLands"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                android:layout_weight="1" />
         </TableRow>
     </TableLayout>
-    <Button android:id="@+id/btnMainMenuList"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/main_menu_lands_button"
-        app:layout_constraintEnd_toEndOf="@+id/tableLayout"
-        app:layout_constraintHorizontal_bias="0.448"
-        app:layout_constraintStart_toStartOf="@+id/tableLayout"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
-    <Button android:id="@+id/btnMainMenuHistory"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/main_menu_history_button"
-        app:layout_constraintEnd_toEndOf="@+id/tableLayout"
-        app:layout_constraintHorizontal_bias="0.448"
-        app:layout_constraintStart_toStartOf="@+id/tableLayout"
-        app:layout_constraintTop_toBottomOf="@+id/btnMainMenuList" />
-    <Button android:id="@+id/btnMainMenuContacts"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/main_menu_contacts_button"
-        app:layout_constraintEnd_toEndOf="@+id/tableLayout"
-        app:layout_constraintHorizontal_bias="0.448"
-        app:layout_constraintStart_toStartOf="@+id/tableLayout"
-        app:layout_constraintTop_toBottomOf="@+id/btnMainMenuHistory" />
-    <Button android:id="@+id/btnMainMenuProfile"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/main_menu_profile_button"
-        app:layout_constraintEnd_toEndOf="@+id/tableLayout"
-        app:layout_constraintHorizontal_bias="0.448"
-        app:layout_constraintStart_toStartOf="@+id/tableLayout"
-        app:layout_constraintTop_toBottomOf="@+id/btnMainMenuContacts" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_lands"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:strokeColor="@color/textColor"
+            app:strokeWidth="3dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:clickable="false">
+
+                <ImageView
+                    android:id="@+id/imgLands"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_button_lands"
+                    app:layout_constraintBottom_toTopOf="@+id/tvLandsLabel"
+                    app:layout_constraintDimensionRatio="2:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/iv_desc_land_button" />
+
+                <TextView
+                    android:id="@+id/tvLandsLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_menu_lands_button"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_history"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:strokeColor="@color/textColor"
+            app:strokeWidth="3dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:clickable="false">
+
+                <ImageView
+                    android:id="@+id/imgHistory"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_button_history"
+                    app:layout_constraintBottom_toTopOf="@+id/tvHistoryLabel"
+                    app:layout_constraintDimensionRatio="2:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/iv_desc_history_button" />
+
+                <TextView
+                    android:id="@+id/tvHistoryLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_menu_history_button"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_profile"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            app:layout_constraintVertical_bias="0.0"
+            app:strokeColor="@color/textColor"
+            app:strokeWidth="3dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:clickable="false">
+
+                <ImageView
+                    android:id="@+id/imgProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_button_profile"
+                    app:layout_constraintBottom_toTopOf="@+id/tvProfileLabel"
+                    app:layout_constraintDimensionRatio="2:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/iv_desc_profile_button" />
+
+                <TextView
+                    android:id="@+id/tvProfileLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_menu_profile_button"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_contacts"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            app:layout_constraintVertical_bias="0.0"
+            app:strokeColor="@color/textColor"
+            app:strokeWidth="3dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:clickable="false">
+
+                <ImageView
+                    android:id="@+id/imgContacts"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_button_contacts"
+                    app:layout_constraintBottom_toTopOf="@+id/tvContactsLabel"
+                    app:layout_constraintDimensionRatio="2:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/iv_desc_contacts_button" />
+
+                <TextView
+                    android:id="@+id/tvContactsLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_menu_contacts_button"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

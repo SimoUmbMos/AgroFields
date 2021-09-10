@@ -65,5 +65,7 @@
         android:text="@string/edit_user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/llUserProfileData"
-        app:layout_constraintStart_toStartOf="@+id/llUserProfileData" />
+        app:layout_constraintStart_toStartOf="@+id/llUserProfileData"
+        style="?android:attr/buttonBarButtonStyle"
+        app:theme="@style/BorderlessButtonStyle"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

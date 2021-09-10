@@ -3,7 +3,6 @@
     <string name="app_name">Land Declaration</string>
     <string name="loading_list">List is loading</string>
     <string name="empty_list">List is empty</string>
-
     <!-- Login Fragment -->
     <string name="login_label">Login</string>
     <string name="register_label">Create Account</string>
@@ -28,7 +27,22 @@
     <string name="register_password_not_match_error">Password don\'t match</string>
     <string name="register_phone_exist_error">Phone exist\'s</string>
     <string name="register_phone_length_error">Phone length is invalid</string>
-
+    <!-- Main Menu Fragment -->
+    <string name="main_menu_label_land_number">Number Of Lands:</string>
+    <string name="main_menu_label_land_area">Lands Area:</string>
+    <string name="main_menu_label_owned_lands">Owned Lands:</string>
+    <string name="main_menu_label_shared_lands">Shared Lands:</string>
+    <string name="main_menu_label_requests">Requests Number:</string>
+    <string name="requests">Requests</string>
+    <string name="request">Request</string>
+    <string name="main_menu_lands_button">Lands</string>
+    <string name="main_menu_history_button">History</string>
+    <string name="main_menu_profile_button">Profile</string>
+    <string name="main_menu_contacts_button">Contacts</string>
+    <string name="iv_desc_land_button">Lands</string>
+    <string name="iv_desc_history_button">History</string>
+    <string name="iv_desc_profile_button">Profile</string>
+    <string name="iv_desc_contacts_button">Contacts</string>
     <!-- Land Menu Fragment -->
     <string name="contextual_menu_land_label">Select Land\'s</string>
     <string name="select_all">Select All</string>
@@ -43,7 +57,6 @@
     <string name="export">Export</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
-
     <!-- Land Info Fragment -->
     <string name="land_info_title">Land Info</string>
     <string name="land_name">Land Name</string>
@@ -52,7 +65,6 @@
     <string name="edit_land_label">Edit Land Name</string>
     <string name="submit_info">Submit</string>
     <string name="cancel_info">Cancel</string>
-
     <!-- Land Map Fragment -->
     <string name="change_terrain_type">change terrain type</string>
     <string name="fabSave">save edits</string>
@@ -86,7 +98,6 @@
     <string name="import_label">Import</string>
     <string name="app_actions_group_title">Land Info Actions</string>
     <string name="edit_info">Edit Land Info</string>
-
     <!-- History Menu Fragment -->
     <string name="land_history">Lands History</string>
     <string name="land_action_created">Created</string>
@@ -94,13 +105,14 @@
     <string name="land_action_restored">Restored</string>
     <string name="land_action_deleted">Deleted</string>
     <string name="toggle_history_list">Toggle List</string>
-
     <!-- User Contacts Fragment -->
+    <string name="contacts_title">My Contacts</string>
     <string name="search_user_hint">Search User</string>
     <string name="list_result">result</string>
     <string name="list_results">result\'s</string>
     <string name="empty_search">No result</string>
-
+    <string name="contacts">Contacts</string>
+    <string name="contact">Contact</string>
     <!-- User Profile Fragment -->
     <string name="profile_bar_label">My Profile</string>
     <string name="email_hint_user_profile">Email</string>
@@ -108,21 +120,10 @@
     <string name="save_user">Save</string>
     <string name="edit_user">Edit</string>
     <string name="logout">Logout</string>
-
-    <!-- Main Menu Fragment -->
-    <string name="main_menu_label_land_number">Number Of Lands:</string>
-    <string name="main_menu_label_land_area">Lands Area:</string>
-    <string name="main_menu_label_owned_lands">Owned Lands:</string>
-    <string name="main_menu_label_shared_lands">Shared Lands:</string>
-    <string name="main_menu_label_contact">Contacts Number:</string>
-    <string name="main_menu_lands_button">Lands</string>
-    <string name="main_menu_history_button">History</string>
-    <string name="main_menu_profile_button">Profile</string>
-    <string name="main_menu_contacts_button">Contacts</string>
-
     <!-- Import Activity -->
     <string name="title_activity_import">Map</string>
-
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
+    <!-- Unsorted -->
+
 </resources>

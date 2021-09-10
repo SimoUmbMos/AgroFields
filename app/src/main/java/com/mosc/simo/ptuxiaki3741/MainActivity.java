@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.tbMainActivity);
         if(getSupportActionBar() != null){
             getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
     }
 
@@ -65,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         this.fragmentBackPress = fragmentBackPress;
     }
 
@@ -77,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
         initViewModels();
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fcvNavHostFragment);
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
     @Override
     public void onBackPressed() {

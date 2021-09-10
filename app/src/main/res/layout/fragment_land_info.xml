@@ -10,16 +10,13 @@
     <TextView
         android:id="@+id/tvLandInfoLabel"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="?attr/colorPrimary"
+        android:layout_height="?attr/actionBarSize"
         android:fontFamily="sans-serif-light"
         android:gravity="center|center_horizontal|center_vertical"
         android:text="@string/land_info_title"
         android:textAlignment="center"
-        android:textColor="?attr/colorOnPrimary"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/glLandInfoVertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,11 +25,11 @@
         android:id="@+id/tvLandInfoActionLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/llLandInfoData"
         app:layout_constraintStart_toStartOf="@+id/llLandInfoData"
-        app:layout_constraintTop_toTopOf="@+id/glLandInfoVertical" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLandInfoLabel" />
 
     <LinearLayout
         android:id="@+id/llLandInfoData"
@@ -95,7 +92,9 @@
         android:text="@string/submit_info"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/llLandInfoData"
-        app:layout_constraintStart_toStartOf="@+id/glLandInfoHorizontal" />
+        app:layout_constraintStart_toStartOf="@+id/glLandInfoHorizontal"
+        style="?android:attr/buttonBarButtonStyle"
+        app:theme="@style/BorderlessButtonStyle"/>
 
     <Button
         android:id="@+id/btnLandInfoCancel"
@@ -106,15 +105,12 @@
         android:text="@string/cancel_info"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/glLandInfoHorizontal"
-        app:layout_constraintStart_toStartOf="@+id/llLandInfoData" />
+        app:layout_constraintStart_toStartOf="@+id/llLandInfoData"
+        style="?android:attr/buttonBarButtonStyle"
+        app:theme="@style/BorderlessButtonStyle"/>
     <androidx.constraintlayout.widget.Guideline android:id="@+id/glLandInfoHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
-    <androidx.constraintlayout.widget.Guideline android:id="@+id/glLandInfoVertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="56dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

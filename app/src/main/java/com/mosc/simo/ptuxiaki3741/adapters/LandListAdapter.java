@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
+import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandCheckableBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
@@ -16,55 +17,106 @@ import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import java.util.List;
 
 
-public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandListAdapterViewHolder>{
-
+public class LandListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    private static final int LIST_DEFAULT = 1,LIST_CHECKABLE = 2;
     private final List<Land> data;
     private final OnLandClick onLandClick;
     private final OnLandLongClick onLandLongClick;
+    private boolean showCheckMark;
 
-    public LandListAdapter(List<Land> data, OnLandClick onLandClick,
-                           OnLandLongClick onLandLongClick){
+    public LandListAdapter(
+            List<Land> data,
+            OnLandClick onLandClick,
+            OnLandLongClick onLandLongClick
+    ){
         this.data = data;
         this.onLandClick = onLandClick;
         this.onLandLongClick = onLandLongClick;
+        this.showCheckMark = false;
+    }
+    public void setShowCheckMark(
+            boolean showCheckMark
+    ){
+        this.showCheckMark = showCheckMark;
     }
 
-    @NonNull
-    @Override
-    public LandListAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_holder_land,parent,false);
-        return new LandListAdapterViewHolder(view);
+    @NonNull @Override public RecyclerView.ViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType
+    ) {
+        if(viewType == LIST_CHECKABLE){
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.view_holder_land_checkable,parent,false);
+            return new LandItemCheckable(view);
+        }else{
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.view_holder_land,parent,false);
+            return new LandItem(view);
+        }
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull LandListAdapterViewHolder holder, int position) {
+    @Override public void onBindViewHolder(
+            @NonNull RecyclerView.ViewHolder holder,
+            int position
+    ) {
         if(data.size()>position){
             Land land = data.get(position);
             LandData landData = land.getData();
             if(landData != null){
                 String display = landData.getTitle()+" #"+ EncryptUtil.convert4digit(landData.getId());
-                holder.binding.tvLandTitle.setText(display);
+                if(holder.getItemViewType() == LIST_CHECKABLE){
+                    LandItemCheckable item = (LandItemCheckable) holder;
+                    item.binding.ctvLandName.setText(display);
+                    item.binding.ctvLandName.setChecked(land.isSelected());
+                    item.binding.ctvLandName.setOnClickListener(v ->
+                            onLandClick.onLandClick(land)
+                    );
+                    item.binding.ctvLandName.setOnLongClickListener(v -> {
+                        onLandLongClick.onLandLongClick(land);
+                        return true;
+                    });
+                }else{
+                    LandItem item = (LandItem) holder;
+                    item.binding.ctvLandName.setText(display);
+                    item.binding.ctvLandName.setOnClickListener(v ->
+                            onLandClick.onLandClick(land)
+                    );
+                    item.binding.ctvLandName.setOnLongClickListener(v -> {
+                        onLandLongClick.onLandLongClick(land);
+                        return true;
+                    });
+                }
             }
-            if(!land.isSelected()){
-                holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-            }
-            holder.binding.llContainer.setOnClickListener(v ->
-                    onLandClick.onLandClick(land)
-            );
-            holder.binding.llContainer.setOnLongClickListener(v -> {
-                onLandLongClick.onLandLongClick(land);
-                return true;
-            });
         }
     }
 
-    @Override
-    public int getItemCount() {
+    @Override public int getItemCount() {
         if(data != null)
             return data.size();
         else
             return 0;
+    }
+    @Override public int getItemViewType(
+            int position
+    ) {
+        if(showCheckMark)
+            return LIST_CHECKABLE;
+        return LIST_DEFAULT;
+    }
+
+    protected static class LandItem extends RecyclerView.ViewHolder {
+        public final ViewHolderLandBinding binding;
+        public LandItem(@NonNull View itemView) {
+            super(itemView);
+            binding = ViewHolderLandBinding.bind(itemView);
+        }
+    }
+    protected static class LandItemCheckable extends RecyclerView.ViewHolder {
+        public final ViewHolderLandCheckableBinding binding;
+        public LandItemCheckable(@NonNull View itemView) {
+            super(itemView);
+            binding = ViewHolderLandCheckableBinding.bind(itemView);
+        }
     }
 
     public interface OnLandClick{
@@ -72,12 +124,5 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandLi
     }
     public interface OnLandLongClick{
         void onLandLongClick(Land land);
-    }
-    protected static class LandListAdapterViewHolder  extends RecyclerView.ViewHolder {
-        public final ViewHolderLandBinding binding;
-        public LandListAdapterViewHolder(@NonNull View itemView) {
-            super(itemView);
-            binding = ViewHolderLandBinding.bind(itemView);
-        }
     }
 }
