@@ -4,5 +4,7 @@
   <color name="backgroundColor">#EDEEF0</color>
   <color name="errorTextColor">#EDEEF0</color>
   <color name="accentColor">#F9718A</color>
+  <color name="polygonStroke">#C071f9e0</color>
+  <color name="polygonFill">#4071f9e0</color>
   <color name="textColor">#3A595C</color>
 </resources>

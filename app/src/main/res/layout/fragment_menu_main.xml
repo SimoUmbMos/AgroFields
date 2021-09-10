@@ -7,101 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MainMenuFragment">
 
-    <TableLayout
-        android:id="@+id/tableLayout"
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcvMap"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:text="@string/main_menu_label_land_number"
-                android:textAlignment="textEnd" />
-
-            <TextView
-                android:id="@+id/tvMainMenuLandNumber"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:text="@string/main_menu_label_land_area"
-                android:textAlignment="textEnd" />
-
-            <TextView
-                android:id="@+id/tvMainMenuLandArea"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:text="@string/main_menu_label_owned_lands"
-                android:textAlignment="textEnd" />
-
-            <TextView
-                android:id="@+id/tvMainMenuOwnedLands"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:text="@string/main_menu_label_shared_lands"
-                android:textAlignment="textEnd" />
-
-            <TextView
-                android:id="@+id/tvMainMenuSharedLands"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1" />
-        </TableRow>
-    </TableLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/textColor"
+        app:strokeWidth="3dp">
+        <androidx.fragment.app.FragmentContainerView android:id="@+id/mainMenuMap"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView android:id="@+id/mainMenuAction"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/main_menu_loading"
+            android:gravity="center"/>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"

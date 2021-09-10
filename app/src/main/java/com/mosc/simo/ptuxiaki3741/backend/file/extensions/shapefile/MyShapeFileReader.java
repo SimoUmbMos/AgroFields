@@ -3,6 +3,8 @@ package com.mosc.simo.ptuxiaki3741.backend.file.extensions.shapefile;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.nocrala.tools.gis.data.esri.shapefile.ShapeFileReader;
 import org.nocrala.tools.gis.data.esri.shapefile.ValidationPreferences;
@@ -21,8 +23,8 @@ import java.util.List;
 
 public class MyShapeFileReader {
     public static final String TAG = "MyShapeFileReader";
-    public static List<List<LatLng>> exec(InputStream is){
-        List<List<LatLng>> result = new ArrayList<>();
+    public static List<Land> exec(InputStream is){
+        List<Land> result = new ArrayList<>();
         try {
             ValidationPreferences prefs = new ValidationPreferences();
             prefs.setMaxNumberOfPointsPerShape(100000);
@@ -71,11 +73,11 @@ public class MyShapeFileReader {
         return result;
     }
 
-    private static void readFromShape(List<List<LatLng>> result, PointData[] pointsOfPart) {
+    private static void readFromShape(List<Land> result, PointData[] pointsOfPart) {
         List<LatLng> tempList = new ArrayList<>();
         for (PointData point : pointsOfPart) {
             tempList.add(new LatLng(point.getY(), point.getX()));
         }
-        result.add(tempList);
+        result.add(new Land(new LandData(tempList)));
     }
 }

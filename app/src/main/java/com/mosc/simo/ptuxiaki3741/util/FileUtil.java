@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
@@ -89,7 +90,7 @@ public final class FileUtil {
                         isGML(ctx, response) ||
                         isShapeFile(ctx, response);
     }
-    public static List<List<LatLng>> handleFile(Context ctx, Intent result) {
+    public static List<Land> handleFile(Context ctx, Intent result) {
         if(fileIsValid(ctx, result)){
             Uri uri = result.getData();
             switch (getFileType(ctx, result)){
@@ -100,7 +101,9 @@ public final class FileUtil {
                 case GEOJSON:
                     return handleJson(ctx, uri);
                 case GML:
-                    return handleGML(ctx, uri);
+                    List<Land> lands = handleGML(ctx, uri);
+                    Log.d("debug", "handleFile gml size: "+lands.size());
+                    return lands;
             }
         }
         return new ArrayList<>();
@@ -175,7 +178,7 @@ public final class FileUtil {
         }
         return displayName;
     }
-    private static List<List<LatLng>> handleKml(Context ctx, Uri uri) {
+    private static List<Land> handleKml(Context ctx, Uri uri) {
         try{
             return KmlFileReader.exec(ctx.getContentResolver().openInputStream(uri));
         }catch (Exception e){
@@ -183,7 +186,7 @@ public final class FileUtil {
         }
         return new ArrayList<>();
     }
-    private static List<List<LatLng>> handleJson(Context ctx, Uri uri) {
+    private static List<Land> handleJson(Context ctx, Uri uri) {
         try{
             return GeoJsonReader.exec(ctx.getContentResolver().openInputStream(uri));
         }catch (Exception e){
@@ -192,7 +195,7 @@ public final class FileUtil {
         return new ArrayList<>();
     }
 
-    private static List<List<LatLng>> handleGML(Context ctx, Uri uri) {
+    private static List<Land> handleGML(Context ctx, Uri uri) {
         try{
             return GMLReader.exec(ctx.getContentResolver().openInputStream(uri));
         }catch (Exception e){
@@ -200,7 +203,7 @@ public final class FileUtil {
         }
         return new ArrayList<>();
     }
-    private static List<List<LatLng>> handleShapeFile(Context ctx, Uri uri) {
+    private static List<Land> handleShapeFile(Context ctx, Uri uri) {
         try{
             return MyShapeFileReader.exec(ctx.getContentResolver().openInputStream(uri));
         }catch (Exception e){

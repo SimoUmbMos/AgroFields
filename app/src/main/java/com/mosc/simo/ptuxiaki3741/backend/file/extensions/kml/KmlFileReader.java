@@ -1,6 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,13 +21,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 
 public class KmlFileReader {
-    public static List<List<LatLng>> exec(InputStream is){
-        List<List<LatLng>> border_fragment = new ArrayList<>();
+    public static List<Land> exec(InputStream is){
+        List<Land> border_fragment = new ArrayList<>();
         try {
             DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = docBuilder.parse(is);
             NodeList polygonTags, outerBoundaryTags, coordList;
             Element polygon,outerBoundary;
+            List<LatLng> positions = new ArrayList<>();
 
             if (document == null) return border_fragment;
 
@@ -44,12 +47,12 @@ public class KmlFileReader {
                             for (int z = 0; z < coordList.getLength(); z++) {
                                 String[] coordinatePairs = coordList.item(z).getFirstChild()
                                         .getNodeValue().trim().split(" ");
-                                List<LatLng> positions = new ArrayList<>();
+                                positions.clear();
                                 for (String coord : coordinatePairs) {
                                     positions.add(new LatLng(Double.parseDouble(coord.split(",")[1]),
                                             Double.parseDouble(coord.split(",")[0])));
                                 }
-                                border_fragment.add(positions);
+                                border_fragment.add(new Land(new LandData(positions)));
                             }
 
                         }

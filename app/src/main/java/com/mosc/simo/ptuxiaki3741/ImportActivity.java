@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -70,7 +72,9 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
                         onUserUpdate(MainActivity.getRoomDb(this).userDao().getUserById(id))
                 );
             }
-            polyList.addAll(FileUtil.handleFile(getApplicationContext(),intent));
+            List<Land> fileLands = FileUtil.handleFile(getApplicationContext(),intent);
+            for(Land fileLand : fileLands)
+                polyList.add(fileLand.getData().getBorder());
         }else{
             Log.d(TAG, "init: intent null");
             setResult(RESULT_CANCELED);
@@ -135,12 +139,17 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         onUserUpdate(curUser);
     }
     private void showPointsOnMap(){
+        int strokeColor = ContextCompat.getColor(this, R.color.polygonStroke);
+        int fillColor = ContextCompat.getColor(this, R.color.polygonFill);
+
         if(polyList.size() > 0){
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for(List<LatLng> points : polyList){
                 mMap.addPolygon(new PolygonOptions()
                         .clickable(true)
                         .addAll(points)
+                        .strokeColor(strokeColor)
+                        .fillColor(fillColor)
                 );
                 for(LatLng point : points){
                     builder.include(point);

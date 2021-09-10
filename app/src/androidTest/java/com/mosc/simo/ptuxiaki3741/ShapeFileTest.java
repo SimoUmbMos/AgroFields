@@ -4,8 +4,8 @@ import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.shapefile.MyShapeFileReader;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +32,11 @@ public class ShapeFileTest {
     public void testInputStreamExist(){
         assertNotEquals(null,in);
         if(in != null){
-            List<List<LatLng>> lands  = MyShapeFileReader.exec(in);
+            List<Land> lands  = MyShapeFileReader.exec(in);
             Log.d(TAG, "lands size: "+lands.size());
             Log.d(TAG, " ");
-            for(List<LatLng> land : lands){
-                Log.d(TAG, "land size: "+land.size());
+            for(Land land : lands){
+                Log.d(TAG, "land size: "+land.getData().getBorder());
                 Log.d(TAG, " ");
             }
         }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -22,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -466,8 +468,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     //map relative
     private void drawMap() {
         mMap.clear();
+        int strokeColor,fillColor;
+        if(getContext() != null){
+            strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
+            fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
+        }else{
+            strokeColor = Color.argb(192,0,0,255);
+            fillColor = Color.argb(51,0,0,255);
+        }
         if(points.size() > 0){
-            mMap.addPolygon(new PolygonOptions().addAll(points));
+            mMap.addPolygon(new PolygonOptions()
+                    .addAll(points)
+                    .strokeColor(strokeColor)
+                    .fillColor(fillColor)
+            );
         }else if(address != null){
             asyncMoveCameraOnLocation(getActivity());
         }

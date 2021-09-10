@@ -6,6 +6,8 @@ import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.helper.Coordin
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.model.FeatureCollection;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.model.Features;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.model.Geometry;
+import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeoJsonReader {
-    public static List<List<LatLng>> exec(InputStream inputStream){
+    public static List<Land> exec(InputStream inputStream){
         String json = getStringFromInputStream(inputStream);
         FeatureCollection featureCollection = new Gson().fromJson(json, FeatureCollection.class);
         return onFeatureCollectionGet(featureCollection);
@@ -35,12 +37,12 @@ public class GeoJsonReader {
         return sb.toString();
     }
 
-    private static List<List<LatLng>> onFeatureCollectionGet(FeatureCollection featureCollection) {
+    private static List<Land> onFeatureCollectionGet(FeatureCollection featureCollection) {
         return getListsForFeatureCollection(featureCollection);
     }
 
-    private static List<List<LatLng>> getListsForFeatureCollection(FeatureCollection featureCollection) {
-        List<List<LatLng>> result = new ArrayList<>();
+    private static List<Land> getListsForFeatureCollection(FeatureCollection featureCollection) {
+        List<Land> result = new ArrayList<>();
         if (featureCollection != null) {
             if (featureCollection.getCrs() != null) {
                 String epsgCode =
@@ -66,44 +68,57 @@ public class GeoJsonReader {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<List<LatLng>> extractShape(Geometry geometry, CoordinatesConverter coordinatesConverter) {
+    private static List<Land> extractShape(Geometry geometry, CoordinatesConverter coordinatesConverter) {
         try {
             Object coordinates;
-            List<List<LatLng>> result= new ArrayList<>();
+            List<Land> result= new ArrayList<>();
+            List<List<LatLng>> temp;
             switch (geometry.getType()) {
                 case "Polygon":
                     coordinates = geometry.getCoordinates();
                     List<List<List<Double>>> PolygonList =
                             (List<List<List<Double>>>) coordinates;
-                    result.add(toPolygon(PolygonList,coordinatesConverter));
+                    result.add(new Land(new LandData(toPolygon(PolygonList,coordinatesConverter))));
                     return result;
                 case "MultiPolygon":
                     coordinates = geometry.getCoordinates();
                     List<List<List<List<Double>>>> MultiPolygonList =
                             (List<List<List<List<Double>>>>) coordinates;
-                    return toMultiPolygon(MultiPolygonList,coordinatesConverter);
+                    temp = toMultiPolygon(MultiPolygonList,coordinatesConverter);
+                    for(List<LatLng> temp2 : temp){
+                        result.add(new Land(new LandData(temp2)));
+                    }
+                    return result;
                 case "LineString":
                     coordinates = geometry.getCoordinates();
                     List<List<Double>> LineStringList =
                             (List<List<Double>>) coordinates;
-                    result.add(toLineString(LineStringList,coordinatesConverter));
+                    result.add(new Land(new LandData(toLineString(LineStringList,coordinatesConverter))));
                     return result;
                 case "MultiLineString":
                     coordinates = geometry.getCoordinates();
                     List<List<List<Double>>> MultiLineStringList =
                             (List<List<List<Double>>>) coordinates;
-                    return toMultiLineString(MultiLineStringList,coordinatesConverter);
+                    temp = toMultiLineString(MultiLineStringList,coordinatesConverter);
+                    for(List<LatLng> temp2 : temp){
+                        result.add(new Land(new LandData(temp2)));
+                    }
+                    return result;
                 case "Point":
                     coordinates = geometry.getCoordinates();
                     List<Double> PointList =
                             (List<Double>) coordinates;
-                    result.add(toPoint(PointList,coordinatesConverter));
+                    result.add(new Land(new LandData(toPoint(PointList,coordinatesConverter))));
                     return result;
                 case "MultiPoint":
                     coordinates = geometry.getCoordinates();
                     List<List<Double>> MultiPointList =
                             (List<List<Double>>) coordinates;
-                    return toMultiPoint(MultiPointList,coordinatesConverter);
+                    temp = toMultiPoint(MultiPointList,coordinatesConverter);
+                    for(List<LatLng> temp2 : temp){
+                        result.add(new Land(new LandData(temp2)));
+                    }
+                    return result;
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -111,44 +126,57 @@ public class GeoJsonReader {
         return new ArrayList<>();
     }
     @SuppressWarnings("unchecked")
-    private static List<List<LatLng>> extractShape(Geometry geometry) {
+    private static List<Land> extractShape(Geometry geometry) {
         try {
             Object coordinates;
-            List<List<LatLng>> result= new ArrayList<>();
+            List<Land> result= new ArrayList<>();
+            List<List<LatLng>> temp;
             switch (geometry.getType()) {
                 case "Polygon":
                     coordinates = geometry.getCoordinates();
                     List<List<List<Double>>> PolygonList =
                             (List<List<List<Double>>>) coordinates;
-                    result.add(toPolygon(PolygonList));
+                    result.add(new Land(new LandData(toPolygon(PolygonList))));
                     return result;
                 case "MultiPolygon":
                     coordinates = geometry.getCoordinates();
                     List<List<List<List<Double>>>> MultiPolygonList =
                             (List<List<List<List<Double>>>>) coordinates;
-                    return toMultiPolygon(MultiPolygonList);
+                    temp = toMultiPolygon(MultiPolygonList);
+                    for(List<LatLng> temp2 : temp){
+                        result.add(new Land(new LandData(temp2)));
+                    }
+                    return result;
                 case "LineString":
                     coordinates = geometry.getCoordinates();
                     List<List<Double>> LineStringList =
                             (List<List<Double>>) coordinates;
-                    result.add(toLineString(LineStringList));
+                    result.add(new Land(new LandData(toLineString(LineStringList))));
                     return result;
                 case "MultiLineString":
                     coordinates = geometry.getCoordinates();
                     List<List<List<Double>>> MultiLineStringList =
                             (List<List<List<Double>>>) coordinates;
-                    return toMultiLineString(MultiLineStringList);
+                    temp = toMultiLineString(MultiLineStringList);
+                    for(List<LatLng> temp2 : temp){
+                        result.add(new Land(new LandData(temp2)));
+                    }
+                    return result;
                 case "Point":
                     coordinates = geometry.getCoordinates();
                     List<Double> PointList =
                             (List<Double>) coordinates;
-                    result.add(toPoint(PointList));
+                    result.add(new Land(new LandData(toPoint(PointList))));
                     return result;
                 case "MultiPoint":
                     coordinates = geometry.getCoordinates();
                     List<List<Double>> MultiPointList =
                             (List<List<Double>>) coordinates;
-                    return toMultiPoint(MultiPointList);
+                temp = toMultiPoint(MultiPointList);
+                for(List<LatLng> temp2 : temp){
+                    result.add(new Land(new LandData(temp2)));
+                }
+                return result;
             }
         }catch (Exception e){
             e.printStackTrace();

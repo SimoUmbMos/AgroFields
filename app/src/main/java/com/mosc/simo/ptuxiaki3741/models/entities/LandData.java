@@ -34,6 +34,17 @@ public class LandData implements Parcelable {
         border = in.createTypedArrayList(LatLng.CREATOR);
     }
     @Ignore
+    public LandData(List<LatLng> border) {
+        this.id = -1;
+        this.creator_id = -1;
+        this.title = "";
+        if(border != null){
+            this.border = new ArrayList<>(border);
+        }else{
+            this.border = new ArrayList<>();
+        }
+    }
+    @Ignore
     public LandData(long creator_id, String title) {
         this.id = -1;
         this.creator_id = creator_id;

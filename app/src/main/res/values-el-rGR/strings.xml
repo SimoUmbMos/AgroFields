@@ -44,6 +44,8 @@
     <string name="iv_desc_history_button">Ιστορικό</string>
     <string name="iv_desc_profile_button">Προφίλ</string>
     <string name="iv_desc_contacts_button">Επαφές</string>
+    <string name="main_menu_loading">Φόρτωση..</string>
+    <string name="main_menu_no_lands">Δεν υπάρχουν χωράφια για εμφάνιση.</string>
     <!-- Land Menu Fragment -->
     <string name="contextual_menu_land_label">Select Land\'s</string>
     <string name="select_all">Select All</string>

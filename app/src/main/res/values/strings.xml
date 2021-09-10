@@ -43,6 +43,8 @@
     <string name="iv_desc_history_button">History</string>
     <string name="iv_desc_profile_button">Profile</string>
     <string name="iv_desc_contacts_button">Contacts</string>
+    <string name="main_menu_loading">Loading..</string>
+    <string name="main_menu_no_lands">No Land to show.</string>
     <!-- Land Menu Fragment -->
     <string name="contextual_menu_land_label">Select Land\'s</string>
     <string name="select_all">Select All</string>
