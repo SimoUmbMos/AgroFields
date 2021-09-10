@@ -3,6 +3,6 @@
   <color name="colorError">#B00020</color>
   <color name="backgroundColor">#EDEEF0</color>
   <color name="errorTextColor">#EDEEF0</color>
-  <color name="notificationColor">#F9718A</color>
+  <color name="accentColor">#F9718A</color>
   <color name="textColor">#3A595C</color>
 </resources>

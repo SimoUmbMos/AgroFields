@@ -15,14 +15,6 @@ import java.io.Writer;
 import java.util.List;
 
 public class KmlFileExporter {
-    public static final XMLOutputProcessor XMLOUTPUT = new AbstractXMLOutputProcessor() {
-        @Override
-        protected void printDeclaration(final Writer out, final FormatStack fStack) throws IOException {
-            write(out, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-            write(out, fStack.getLineSeparator());
-        }
-    };
-
     public static Document kmlFileExporter(String key,List<ExportFieldModel> exportFieldList){
         Document doc = new Document();
         try{

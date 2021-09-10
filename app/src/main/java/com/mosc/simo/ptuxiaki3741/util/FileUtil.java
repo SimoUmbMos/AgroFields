@@ -22,15 +22,29 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import org.jdom2.Document;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jdom2.output.support.AbstractXMLOutputProcessor;
+import org.jdom2.output.support.FormatStack;
+import org.jdom2.output.support.XMLOutputProcessor;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter.XMLOUTPUT;
-
 public final class FileUtil {
+    public static final XMLOutputProcessor XMLOUTPUT = new AbstractXMLOutputProcessor() {
+        @Override
+        protected void printDeclaration(
+                final Writer out,
+                final FormatStack fStack
+        ) throws IOException {
+            write(out, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+            write(out, fStack.getLineSeparator());
+        }
+    };
     private FileUtil(){}
 
     public static String landsToKmlString(List<Land> lands,String label) {
@@ -47,6 +61,12 @@ public final class FileUtil {
         landToExportModel(lands, exportFieldModels);
         JSONObject export = GeoJsonExporter.geoJsonExport(exportFieldModels);
         return export.toString();
+    }
+    public static String landsToGmlString(List<Land> lands) {
+        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
+        landToExportModel(lands, exportFieldModels);
+        //todo: gml exporter
+        return "";
     }
     public static Intent getFilePickerIntent(LandFileState state) {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
@@ -196,4 +216,15 @@ public final class FileUtil {
             return "";
     }
 
+    public static boolean createFile(String output, String fileName, File path) throws IOException {
+        if(!output.isEmpty() && !fileName.isEmpty()){
+            File mFile = new File(path, fileName);
+            FileWriter writer = new FileWriter(mFile);
+            writer.append(output);
+            writer.flush();
+            writer.close();
+            return true;
+        }
+        return false;
+    }
 }

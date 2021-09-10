@@ -43,7 +43,6 @@ import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -362,7 +361,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 }
                 if( pathExist || isPathCreated ){
                     String output="";
-                    boolean doAction = true;
                     switch(action){
                         case KML:
                             output = FileUtil.landsToKmlString(lands,fileName);
@@ -373,17 +371,11 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                             fileName = fileName+".json";
                             break;
                         case GML:
-                            //TODO: GML
-                        default:
-                            doAction = false;
+                            output = FileUtil.landsToGmlString(lands);
+                            fileName = fileName+".gml";
                             break;
                     }
-                    if(doAction){
-                        File mFile = new File(path, fileName);
-                        FileWriter writer = new FileWriter(mFile);
-                        writer.append(output);
-                        writer.flush();
-                        writer.close();
+                    if(FileUtil.createFile(output, fileName, path)){
                         Toast.makeText(getContext(), getString(R.string.file_created), Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(getContext(), getString(R.string.file_not_created), Toast.LENGTH_SHORT).show();
@@ -453,7 +445,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             }
             dialogChecked = 0;
             String[] dataTypes = {"KML","GeoJson","GML"};
-            dialog = new MaterialAlertDialogBuilder(getContext())
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setTitle(getString(R.string.file_type_select_title))
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
                     .setOnDismissListener(dialog -> setState(LandListMenuState.NormalState))
@@ -482,7 +474,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                     dialog.dismiss();
                 dialog = null;
             }
-            dialog = new MaterialAlertDialogBuilder(getContext())
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
                     .setTitle(getString(R.string.delete_lands_title))
                     .setMessage(getString(R.string.delete_lands_text))
                     .setOnDismissListener(dialog -> setState(LandListMenuState.NormalState))

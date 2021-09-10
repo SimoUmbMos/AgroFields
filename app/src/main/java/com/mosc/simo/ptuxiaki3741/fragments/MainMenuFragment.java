@@ -70,6 +70,10 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_item_request) {
+            toRequestMenu(getActivity());
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
@@ -135,15 +139,18 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     private void updateMenu() {
         if(menu != null && getContext() != null){
             MenuItem item = menu.findItem(R.id.menu_item_request);
-            if(friendRequests.size() > 0){
-                item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request_notification));
-            }else{
-                item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request));
+            if(item != null){
+                if(friendRequests.size() > 0){
+                    item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request_notification));
+                }else{
+                    item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request));
+                }
             }
         }
     }
 
     private void onLandUpdate(List<Land> lands) {
+        //todo: change with google maps
         if(binding != null){
             if(lands != null){
                 double areaSum = 0;
@@ -231,5 +238,15 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 if(nav != null)
                     nav.navigate(R.id.mainMenuToUserContacts);
             });
+    }
+    public void toRequestMenu(@Nullable Activity activity) {
+        if(activity != null){
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                if(nav != null){
+                    //todo: nav.navigate(R.id.mainMenuToUserRequests);
+                }
+            });
+        }
     }
 }

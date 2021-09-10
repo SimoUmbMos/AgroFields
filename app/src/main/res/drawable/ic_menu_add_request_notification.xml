@@ -20,5 +20,5 @@
       android:strokeLineCap="round"/>
   <path
       android:pathData="M14,18.9711a5,5.0289 0,1 0,10 0a5,5.0289 0,1 0,-10 0z"
-      android:fillColor="@color/notificationColor"/>
+      android:fillColor="@color/accentColor"/>
 </vector>

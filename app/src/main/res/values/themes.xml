@@ -27,6 +27,9 @@
         <item name="colorOnBackground">@color/textColor</item>
         <item name="android:textColor">@color/textColor</item>
 
+        <!-- Accent -->
+        <item name="colorAccent">@color/accentColor</item>
+
         <item name="fontFamily">@font/main_font</item>
         <item name="android:fontFamily">@font/main_font</item>
         <item name="windowActionModeOverlay">true</item>
@@ -49,5 +52,49 @@
     </style>
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
+    </style>
+
+    <!-- dialog -->
+    <style name="MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- text -->
+        <item name="materialAlertDialogTitleTextStyle">@style/NormalAlertDialogTitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
+        <item name="android:checkedTextViewStyle">@style/AlertDialogCheckedTextView</item>
+        <!-- buttons -->
+        <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButtonStyle</item>
+        <!-- background -->
+        <item name="android:background">@color/backgroundColor</item>
+    </style>
+    <style name="ErrorMaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- text -->
+        <item name="materialAlertDialogTitleTextStyle">@style/ErrorAlertDialogTitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
+        <item name="android:checkedTextViewStyle">@style/AlertDialogCheckedTextView</item>
+        <!-- buttons -->
+        <item name="buttonBarPositiveButtonStyle">@style/ErrorAlertDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/ErrorAlertDialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/ErrorAlertDialogButtonStyle</item>
+        <!-- background -->
+        <item name="android:background">@color/backgroundColor</item>
+    </style>
+    <style name="NormalAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/accentColor</item>
+    </style>
+    <style name="ErrorAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/colorError</item>
+    </style>
+    <style name="AlertDialogTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+    <style name="AlertDialogCheckedTextView" parent="@style/Widget.MaterialComponents.CheckedTextView">
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+    <style name="AlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+    <style name="ErrorAlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorError</item>
     </style>
 </resources>
