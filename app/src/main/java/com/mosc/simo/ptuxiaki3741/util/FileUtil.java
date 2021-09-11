@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonReader;
+import com.mosc.simo.ptuxiaki3741.backend.file.extensions.gml.GMLExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.gml.GMLReader;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileReader;
@@ -64,10 +65,13 @@ public final class FileUtil {
         return export.toString();
     }
     public static String landsToGmlString(List<Land> lands) {
-        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
-        landToExportModel(lands, exportFieldModels);
-        //todo: gml exporter
-        return "";
+        Document document = GMLExporter.exportList(lands);
+        XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
+        String result = xmOut.outputString(document);
+        result = result.replace("<gml:coordinates","<gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\"");
+        result = result.replace("<wfs:FeatureCollection","<wfs:FeatureCollection xmlns=\"http://www.opengis.net/wfs\"");
+        result = result.replace("xmlns:schemaLocation","xsi:schemaLocation");
+        return result;
     }
     public static Intent getFilePickerIntent(LandFileState state) {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
