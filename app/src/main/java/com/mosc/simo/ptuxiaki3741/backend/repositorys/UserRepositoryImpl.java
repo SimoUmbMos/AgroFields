@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
-    private static final int PAGE_SIZE = 50;
     private final RoomDatabase db;
 
     public UserRepositoryImpl(RoomDatabase db) {
@@ -38,31 +37,16 @@ public class UserRepositoryImpl implements UserRepository {
         return db.userDao().getUserByUserNameAndPassword(username, encryptedPassword);
     }
     @Override
-    public int searchPageCount(User searchUser, String search) {
+    public List<User> userSearch(User searchUser, String search) {
         if(search.length() > 3 && searchUser != null){
-            int n = db.userDao().searchResultCount(searchUser.getId(),search,UserDBAction.BLOCKED);
-            if(n > 0)
-                return (int) Math.ceil(n / (PAGE_SIZE * 1.0));
-            else
-                return 0;
-        }
-        return -1;
-    }
-    @Override
-    public List<User> userSearch(User searchUser, String search, int p) {
-        if(search.length() > 3 && searchUser != null){
-            int page;
-            if(p > 0)
-                page = p * PAGE_SIZE;
-            else
-                page = 0;
-            return db.userDao().searchUserByUserName(
+            List<User> result = db.userDao().searchUserByUserName(
                     searchUser.getId(),
-                    search,
-                    PAGE_SIZE,
-                    page,
-                    UserDBAction.BLOCKED
+                    search
             );
+            removeUsers(searchUser, result, UserDBAction.BLOCKED);
+            removeUsers(searchUser, result, UserDBAction.REQUESTED);
+            removeUsers(searchUser, result, UserDBAction.FRIENDS);
+            return result;
         }
         return null;
     }
@@ -204,6 +188,24 @@ public class UserRepositoryImpl implements UserRepository {
         if(user != null){
             db.userRelationshipDao().deleteByUserID(user.getId());
             db.userDao().delete(user);
+        }
+    }
+
+    private void removeUsers(User searchUser, List<User> result, UserDBAction type) {
+        if(result.size() > 0){
+            List<UserRelationship> relationships = db.userRelationshipDao().getByIDAndType(
+                    searchUser.getId(),
+                    type
+            );
+            List<User> removeList = new ArrayList<>();
+            for(UserRelationship relationship : relationships){
+                if(relationship.getReceiverID() == searchUser.getId()){
+                    removeList.add(db.userDao().getUserById(relationship.getSenderID()));
+                }else{
+                    removeList.add(db.userDao().getUserById(relationship.getReceiverID()));
+                }
+            }
+            result.removeAll(removeList);
         }
     }
 

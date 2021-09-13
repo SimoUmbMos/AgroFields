@@ -36,6 +36,9 @@
         <action
             android:id="@+id/mainMenuToUserContacts"
             app:destination="@id/UserContactsFragment" />
+        <action
+            android:id="@+id/mainMenuToUserRequests"
+            app:destination="@id/userRequestFragment" />
     </fragment>
     <fragment android:id="@+id/LandInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LandInfoFragment"
@@ -95,4 +98,9 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserContactsFragment"
         android:label="fragment_user_contacts"
         tools:layout="@layout/fragment_user_contacts" />
+    <fragment
+        android:id="@+id/userRequestFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserRequestFragment"
+        android:label="fragment_user_request"
+        tools:layout="@layout/fragment_user_request" />
 </navigation>

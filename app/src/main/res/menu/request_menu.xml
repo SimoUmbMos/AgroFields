@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_item_request"
         android:orderInCategory="1"
-        android:title="@string/requests"
+        android:title="@string/main_menu_requests"
         app:icon="@drawable/ic_menu_add_request"
         app:iconTint="@color/textColor"
         app:showAsAction="always" />

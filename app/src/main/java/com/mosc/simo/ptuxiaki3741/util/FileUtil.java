@@ -68,9 +68,8 @@ public final class FileUtil {
         Document document = GMLExporter.exportList(lands);
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
         String result = xmOut.outputString(document);
-        result = result.replace("<gml:coordinates","<gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\"");
-        result = result.replace("<wfs:FeatureCollection","<wfs:FeatureCollection xmlns=\"http://www.opengis.net/wfs\"");
         result = result.replace("xmlns:schemaLocation","xsi:schemaLocation");
+        result = result.replace(" standalone=\"yes\"","");
         return result;
     }
     public static Intent getFilePickerIntent(LandFileState state) {

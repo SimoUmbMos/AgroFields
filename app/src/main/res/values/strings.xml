@@ -33,8 +33,7 @@
     <string name="main_menu_label_owned_lands">Owned Lands:</string>
     <string name="main_menu_label_shared_lands">Shared Lands:</string>
     <string name="main_menu_label_requests">Requests Number:</string>
-    <string name="requests">Requests</string>
-    <string name="request">Request</string>
+    <string name="main_menu_requests">User requests</string>
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_history_button">History</string>
     <string name="main_menu_profile_button">Profile</string>
@@ -122,6 +121,11 @@
     <string name="save_user">Save</string>
     <string name="edit_user">Edit</string>
     <string name="logout">Logout</string>
+    <!-- User Requests Fragment -->
+    <string name="request_title">Requests</string>
+    <string name="no_requests">No requests found</string>
+    <string name="requests">Requests</string>
+    <string name="request">Request</string>
     <!-- Import Activity -->
     <string name="title_activity_import">Map</string>
     <!-- Main Activity -->

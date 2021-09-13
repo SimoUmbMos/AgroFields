@@ -34,8 +34,7 @@
     <string name="main_menu_label_owned_lands">Ιδιόκτητα χωράφια:</string>
     <string name="main_menu_label_shared_lands">Κοινόχρηστα χωράφια:</string>
     <string name="main_menu_label_requests">Αριθμός αιτημάτων:</string>
-    <string name="requests">αιτήματα</string>
-    <string name="request">αίτημα</string>
+    <string name="main_menu_requests">Αιτήματα χρήστη</string>
     <string name="main_menu_lands_button">Χωράφια</string>
     <string name="main_menu_history_button">Ιστορικό</string>
     <string name="main_menu_profile_button">Προφίλ</string>
@@ -123,6 +122,11 @@
     <string name="save_user">Αποθηκεύση</string>
     <string name="edit_user">Επεξεργασία</string>
     <string name="logout">Αποσύνδεση</string>
+    <!-- User Requests Fragment -->
+    <string name="request_title">Requests</string>
+    <string name="no_requests">No requests found</string>
+    <string name="requests">αιτήματα</string>
+    <string name="request">αίτημα</string>
     <!-- Import Activity -->
     <string name="title_activity_import">Χάρτης</string>
     <!-- Main Activity -->

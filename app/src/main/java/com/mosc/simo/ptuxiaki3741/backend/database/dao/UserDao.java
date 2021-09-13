@@ -16,21 +16,10 @@ public interface UserDao {
     @Query("SELECT * FROM `Users` ")
     List<User> getUsers();
 
-    @Query("SELECT Users.* FROM Users " +
-            "WHERE Users.Username GLOB  '*' || :search || '*' AND Users.id != :searcherID "+
-
-            "AND Users.id NOT IN (" +
-            "SELECT UserRelationships.SenderID FROM UserRelationships " +
-            "WHERE ReceiverID = :searcherID " +
-            "AND Type = :type) " +
-
-            "AND Users.id NOT IN (" +
-            "SELECT UserRelationships.ReceiverID FROM UserRelationships " +
-            "WHERE SenderID = :searcherID " +
-            "AND Type = :type) "+
-            "LIMIT :page_size OFFSET :offset"
+    @Query("SELECT * FROM Users " +
+            "WHERE Username GLOB  '*' || :search || '*' AND id != :searcherID "
     )
-    List<User> searchUserByUserName(long searcherID, String search, int page_size, int offset, UserDBAction type);
+    List<User> searchUserByUserName(long searcherID, String search);
 
     @Query("SELECT COUNT(*) FROM Users " +
             "WHERE Users.Username GLOB  '*' || :search || '*' AND Users.id != :searcherID "+

@@ -109,9 +109,10 @@ public class UserDBTest {
     }
     private void testCreateFriendRequests(){
         userRepository.sendFriendRequest(users.get(1),users.get(0));  // 2 has request friend 1
-        userRepository.sendFriendRequest(users.get(2),users.get(0));  // 3 has request friend 1
 
+        userRepository.sendFriendRequest(users.get(2),users.get(0));  // 3 has request friend 1
         userRepository.sendFriendRequest(users.get(2),users.get(1));  // 3 has request friend 2
+
         userRepository.sendFriendRequest(users.get(3),users.get(1));  // 4 has request friend 2
         userRepository.sendFriendRequest(users.get(5),users.get(1));  // 6 has request friend 2
 
@@ -158,58 +159,32 @@ public class UserDBTest {
         checkBlockList(0,users.get(5));
     }
     private void testUserSearch() {
-        long singlePageSpeed, singleDataSpeed, pageSpeed, dataSpeed;
+        long singleDataSpeed, dataSpeed;
 
         long start = System.currentTimeMillis();
-        long pages0 = userRepository.searchPageCount(users.get(0),"test");
-        singlePageSpeed = System.currentTimeMillis();
-        long pages1 = userRepository.searchPageCount(users.get(1),"test");
-        long pages2 = userRepository.searchPageCount(users.get(2),"test");
-        long pages3 = userRepository.searchPageCount(users.get(3),"test");
-        long pages4 = userRepository.searchPageCount(users.get(4),"test");
-        long pages5 = userRepository.searchPageCount(users.get(5),"test");
-        long pagesNull = userRepository.searchPageCount(users.get(0),"nul");
-        long pagesNotNull = userRepository.searchPageCount(users.get(0),"null");
-        pageSpeed = System.currentTimeMillis();
-
-        singlePageSpeed = singlePageSpeed - start;
-        pageSpeed = pageSpeed - start;
-
-        assertEquals(1,pages0); //1
-        assertEquals(1,pages1); //2
-        assertEquals(1,pages2); //3
-        assertEquals(1,pages3); //4
-        assertEquals(1,pages4); //5
-        assertEquals(1,pages5); //6
-        assertEquals(-1,pagesNull); //6
-        assertEquals(0,pagesNotNull); //6
-
-        start = System.currentTimeMillis();
-        List<User> result0 = userRepository.userSearch(users.get(0),"test",0);
+        List<User> result0 = userRepository.userSearch(users.get(0),"test");
         singleDataSpeed = System.currentTimeMillis();
-        List<User> result1 = userRepository.userSearch(users.get(1),"test",0);
-        List<User> result2 = userRepository.userSearch(users.get(2),"test",0);
-        List<User> result3 = userRepository.userSearch(users.get(3),"test",0);
-        List<User> result4 = userRepository.userSearch(users.get(4),"test",0);
-        List<User> result5 = userRepository.userSearch(users.get(5),"test",0);
-        List<User> resultNull = userRepository.userSearch(users.get(0),"nul",0);
-        List<User> resultNotNull = userRepository.userSearch(users.get(0),"null",0);
+        List<User> result1 = userRepository.userSearch(users.get(1),"test");
+        List<User> result2 = userRepository.userSearch(users.get(2),"test");
+        List<User> result3 = userRepository.userSearch(users.get(3),"test");
+        List<User> result4 = userRepository.userSearch(users.get(4),"test");
+        List<User> result5 = userRepository.userSearch(users.get(5),"test");
+        List<User> resultNull = userRepository.userSearch(users.get(0),"nul");
+        List<User> resultNotNull = userRepository.userSearch(users.get(0),"null");
         dataSpeed = System.currentTimeMillis();
 
         singleDataSpeed = singleDataSpeed - start;
         dataSpeed = dataSpeed - start;
 
-        assertEquals(5,result0.size()); //1
-        assertEquals(5,result1.size()); //2
-        assertEquals(3,result2.size()); //3
+        assertEquals(4,result0.size()); //1
+        assertEquals(3,result1.size()); //2
+        assertEquals(2,result2.size()); //3
         assertEquals(3,result3.size()); //4
         assertEquals(4,result4.size()); //5
         assertEquals(4,result5.size()); //6
         assertNull(resultNull);
         assertNotNull(resultNotNull);
 
-        Log.d(TAG, "single page speeds: "+singlePageSpeed+"ms");
-        Log.d(TAG, "all page speeds: "+pageSpeed+"ms");
         Log.d(TAG, "single data speeds: "+singleDataSpeed+"ms");
         Log.d(TAG, "all data speeds: "+dataSpeed+"ms");
 

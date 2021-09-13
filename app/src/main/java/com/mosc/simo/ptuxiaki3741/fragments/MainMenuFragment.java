@@ -340,7 +340,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
                 if(nav != null){
-                    //todo: nav.navigate(R.id.mainMenuToUserRequests);
+                    nav.navigate(R.id.mainMenuToUserRequests);
                 }
             });
         }
