@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.backend.viewmodels;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
+    private static final String TAG ="UserViewModel";
     private static final String sharedPreferenceKey = "currUser";
     private static final long sharedPreferenceDefault = -1;
 
@@ -54,28 +56,23 @@ public class UserViewModel extends AndroidViewModel {
     }
     public void init(SharedPreferences sharedPref){
         this.sharedPref = sharedPref;
-        AsyncTask.execute(()->{
-            initCurrUser();
-            if(currUser.getValue() != null){
-                populateCurrUserRelativeLists();
-            }else{
-                clearCurrUserRelativeLists();
-            }
-        });
+        AsyncTask.execute(this::initCurrUser);
     }
     private void initCurrUser() {
         User user = loadCurrUser();
         currUser.postValue(user);
+        populateCurrUserRelativeLists(user);
     }
-    private void populateCurrUserRelativeLists() {
-        friends.postValue(getFriends());
-        friendRequests.postValue(getFriendRequests());
-        blocks.postValue(getBlocks());
-    }
-    private void clearCurrUserRelativeLists(){
-        friends.postValue(new ArrayList<>());
-        friendRequests.postValue(new ArrayList<>());
-        blocks.postValue(new ArrayList<>());
+    private void populateCurrUserRelativeLists(User user) {
+        if(user != null){
+            friends.postValue(getFriends(user));
+            friendRequests.postValue(getFriendRequests(user));
+            blocks.postValue(getBlocks(user));
+        }else{
+            friends.postValue(new ArrayList<>());
+            friendRequests.postValue(new ArrayList<>());
+            blocks.postValue(new ArrayList<>());
+        }
     }
     private User loadCurrUser() {
         long uid = getUidFromMemory();
@@ -119,6 +116,7 @@ public class UserViewModel extends AndroidViewModel {
         if(user != null){
             boolean isCurrUser = user.equals(currUser.getValue());
             landRepository.deleteLandsByUser(user);
+            userRepository.deleteAllRelationships(user);
             userRepository.deleteUser(user);
             if(isCurrUser){
                 logout();
@@ -144,7 +142,7 @@ public class UserViewModel extends AndroidViewModel {
                     userRepository.searchUserByID(user.getId())
             );
             currUser.postValue(decryptedUser);
-            populateCurrUserRelativeLists();
+            populateCurrUserRelativeLists(decryptedUser);
         }else{
             logout();
         }
@@ -152,7 +150,7 @@ public class UserViewModel extends AndroidViewModel {
     public void logout() {
         clearUidFromMemory();
         currUser.postValue(null);
-        clearCurrUserRelativeLists();
+        populateCurrUserRelativeLists(null);
     }
 
     public List<User> searchUser(String search){
@@ -162,54 +160,78 @@ public class UserViewModel extends AndroidViewModel {
         return null;
     }
 
-    private List<User> getFriends(){
-        if(currUser.getValue() != null){
-            return userRepository.getUserFriendList(currUser.getValue());
+    private List<User> getFriends(User user){
+        if(user != null){
+            Log.d(TAG, "getFriends: USER NOT NULL");
+            return userRepository.getUserFriendList(user);
         }
+        Log.d(TAG, "getFriends: USER NULL");
         return new ArrayList<>();
     }
-    private List<User> getFriendRequests(){
-        List<User> result = new ArrayList<>();
-        if(currUser.getValue() != null){
-            result = userRepository.getUserFriendRequestList(currUser.getValue());
+    private List<User> getFriendRequests(User user){
+        if(user != null){
+            Log.d(TAG, "getFriendRequests: USER NOT NULL");
+            return userRepository.getUserFriendRequestList(user);
         }
-        return result;
+        Log.d(TAG, "getFriendRequests: USER NULL");
+        return new ArrayList<>();
     }
-    private List<User> getBlocks(){
-        List<User> result = new ArrayList<>();
-        if(currUser.getValue() != null){
-            result = userRepository.getUserBlockList(currUser.getValue());
+    private List<User> getBlocks(User user){
+        if(user != null){
+            Log.d(TAG, "getBlocks: USER NOT NULL");
+            return userRepository.getUserBlockList(user);
         }
-        return result;
+        Log.d(TAG, "getBlocks: USER NULL");
+        return new ArrayList<>();
+    }
+
+    public void refreshLists(){
+        populateCurrUserRelativeLists(currUser.getValue());
     }
 
     public UserFriendRequestStatus sendFriendRequest(User user){
         if(currUser.getValue() != null && user != null){
-            return userRepository.sendFriendRequest(currUser.getValue(),user);
+            switch (userRepository.sendFriendRequest(currUser.getValue(),user)){
+                case ACCEPTED:
+                    populateCurrUserRelativeLists(currUser.getValue());
+                    return UserFriendRequestStatus.ACCEPTED;
+                case REQUESTED:
+                    return UserFriendRequestStatus.REQUESTED;
+            }
         }
         return UserFriendRequestStatus.REQUEST_FAILED;
     }
     public boolean acceptRequest(User user){
         if(currUser.getValue() != null && user != null){
-            return userRepository.acceptFriendRequest(currUser.getValue(),user);
+            if(userRepository.acceptFriendRequest(currUser.getValue(),user)){
+                populateCurrUserRelativeLists(currUser.getValue());
+                return true;
+            }
         }
         return false;
     }
     public boolean declineRequest(User user){
         if(currUser.getValue() != null && user != null){
-            return userRepository.declineFriendRequest(currUser.getValue(),user);
+            if(userRepository.declineFriendRequest(currUser.getValue(),user)){
+                populateCurrUserRelativeLists(currUser.getValue());
+                return true;
+            }
         }
         return false;
     }
     public boolean deleteFriend(User user){
         if(currUser.getValue() != null && user != null){
-            return userRepository.deleteFriend(currUser.getValue(),user);
+            if(userRepository.deleteFriend(currUser.getValue(),user)){
+                populateCurrUserRelativeLists(currUser.getValue());
+                return true;
+            }
         }
         return false;
     }
     public void blockUser(User user){
         if(currUser.getValue() != null && user != null){
             userRepository.blockUser(currUser.getValue(),user);
+            populateCurrUserRelativeLists(currUser.getValue());
         }
     }
 }

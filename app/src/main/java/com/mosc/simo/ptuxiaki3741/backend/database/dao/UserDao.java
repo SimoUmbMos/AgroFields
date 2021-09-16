@@ -21,20 +21,15 @@ public interface UserDao {
     )
     List<User> searchUserByUserName(long searcherID, String search);
 
-    @Query("SELECT COUNT(*) FROM Users " +
-            "WHERE Users.Username GLOB  '*' || :search || '*' AND Users.id != :searcherID "+
-
-            "AND Users.id NOT IN (" +
-            "SELECT UserRelationships.SenderID FROM UserRelationships " +
-            "WHERE ReceiverID = :searcherID " +
-            "AND Type = :type) " +
-
-            "AND Users.id NOT IN (" +
-            "SELECT UserRelationships.ReceiverID FROM UserRelationships " +
-            "WHERE SenderID = :searcherID " +
-            "AND Type = :type) "
+    @Query("SELECT u.* FROM Users u,UserRelationships ur " +
+            "WHERE u.id = ur.SenderID and ur.ReceiverID = :receiverID and ur.Type = :type"
     )
-    int searchResultCount(long searcherID, String search, UserDBAction type);
+    List<User> getUsersByReceiverIDAndType(long receiverID, UserDBAction type);
+
+    @Query("SELECT u.* FROM Users u,UserRelationships ur " +
+            "WHERE u.id = ur.ReceiverID and ur.SenderID = :receiverID and ur.Type = :type"
+    )
+    List<User> getUsersBySenderIDAndType(long receiverID, UserDBAction type);
 
     @Query("SELECT * FROM `Users` " +
             "WHERE `id` = :id")

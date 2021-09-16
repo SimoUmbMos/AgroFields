@@ -26,5 +26,5 @@ public interface UserRepository {
     User saveNewUser(User user);
     void editUser(User user);
     void deleteUser(User user);
-
+    void deleteAllRelationships(User user);
 }

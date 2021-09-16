@@ -3,6 +3,7 @@
     <string name="app_name">Land Declaration</string>
     <string name="loading_list">List is loading</string>
     <string name="empty_list">List is empty</string>
+    <string name="refresh">Refresh</string>
     <!-- Login Fragment -->
     <string name="login_label">Login</string>
     <string name="register_label">Create Account</string>
@@ -126,6 +127,17 @@
     <string name="no_requests">No requests found</string>
     <string name="requests">Requests</string>
     <string name="request">Request</string>
+    <string name="no_result">No result</string>
+    <string name="results">Results</string>
+    <string name="result">Result</string>
+    <string name="request_sent">Request sent</string>
+    <string name="request_send_error">Something goes wrong with your request</string>
+    <string name="accept_request">Request accepted</string>
+    <string name="accept_request_error">Something goes wrong, try again</string>
+    <string name="decline_request">Request declined</string>
+    <string name="decline_request_error">Something goes wrong, try again</string>
+    <string name="fabAccept">Accept Contact</string>
+    <string name="fabDeny">Deny Contact</string>
     <!-- Import Activity -->
     <string name="title_activity_import">Map</string>
     <!-- Main Activity -->

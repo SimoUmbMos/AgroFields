@@ -118,50 +118,35 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public List<User> getUserFriendList(User user) {
-        List<UserRelationship> friendRelationships =
-                db.userRelationshipDao().getByIDAndType(user.getId(), UserDBAction.FRIENDS);
-        List<User> friends = new ArrayList<>();
-        User friend;
-        for(UserRelationship friendRelationship:friendRelationships){
-            if(user.getId() == friendRelationship.getReceiverID()){
-                friend = db.userDao().getUserById(friendRelationship.getSenderID());
-            }else{
-                friend = db.userDao().getUserById(friendRelationship.getReceiverID());
-            }
-            if(friend != null)
-                friends.add(friend);
-        }
+        List<User> friends = db.userDao().getUsersByReceiverIDAndType(
+                user.getId(),
+                UserDBAction.FRIENDS
+        );
+        friends.addAll(db.userDao().getUsersBySenderIDAndType(
+                user.getId(),
+                UserDBAction.FRIENDS
+        ));
         return EncryptUtil.decryptAll(friends);
     }
     @Override
     public List<User> getUserFriendRequestList(User user) {
-        List<UserRelationship> requestRelationships = db.userRelationshipDao()
-                .getByReceiverIDAndType(user.getId(), UserDBAction.REQUESTED);
-
-        List<User> requests = new ArrayList<>();
-        User request;
-        for(UserRelationship requestRelationship:requestRelationships){
-            request = db.userDao().getUserById(requestRelationship.getSenderID());
-            if(request != null)
-                requests.add(request);
+        if(user != null){
+            return db.userDao().getUsersByReceiverIDAndType(
+                    user.getId(),
+                    UserDBAction.REQUESTED
+            );
         }
-
-        return requests;
+        return new ArrayList<>();
     }
     @Override
     public List<User> getUserBlockList(User user) {
-        List<UserRelationship> blockRelationships = db.userRelationshipDao()
-                .getBySenderIDAndType(user.getId(), UserDBAction.BLOCKED);
-
-        List<User> blockedUsers = new ArrayList<>();
-        User blockedUser;
-        for(UserRelationship blockRelationship : blockRelationships){
-            blockedUser = db.userDao().getUserById(blockRelationship.getReceiverID());
-            if(blockedUser != null)
-                blockedUsers.add(blockedUser);
+        if(user != null){
+            return db.userDao().getUsersBySenderIDAndType(
+                    user.getId(),
+                    UserDBAction.BLOCKED
+            );
         }
-
-        return blockedUsers;
+        return new ArrayList<>();
     }
 
     @Override
@@ -189,6 +174,12 @@ public class UserRepositoryImpl implements UserRepository {
             db.userRelationshipDao().deleteByUserID(user.getId());
             db.userDao().delete(user);
         }
+    }
+    @Override
+    public void deleteAllRelationships(User user) {
+        db.userRelationshipDao().deleteAll(
+                db.userRelationshipDao().getByID(user.getId())
+        );
     }
 
     private void removeUsers(User searchUser, List<User> result, UserDBAction type) {

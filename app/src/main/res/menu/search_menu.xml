@@ -7,4 +7,11 @@
         app:iconTint="@color/textColor"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="android.widget.SearchView" />
+    <item android:id="@+id/menu_item_refresh"
+        android:title="@string/refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        app:iconTint="@color/textColor"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.widget.SearchView" />
+
 </menu>

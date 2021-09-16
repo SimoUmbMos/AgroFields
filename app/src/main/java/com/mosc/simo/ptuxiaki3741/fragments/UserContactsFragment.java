@@ -1,5 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +21,7 @@ import android.widget.SearchView;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.adapters.UserContactsAdapter;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserContactsBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
@@ -31,10 +35,15 @@ public class UserContactsFragment
         implements FragmentBackPress, SearchView.OnQueryTextListener {
     public static final String TAG = "UserContactsFragment";
 
-    private final List<User> friendList = new ArrayList<>();
-    private final List<User> data = new ArrayList<>();
+    private UserViewModel vmUsers;
+    private SearchView searchView;
+    private ActionBar actionBar;
+
+    private final List<User> contactList = new ArrayList<>();
+    private final List<User> displayData = new ArrayList<>();
+    private UserContactsAdapter adapter;
     private String lastQuery;
-    private boolean isSearching;
+    private boolean isSearching,isSearchOpen;
 
     private FragmentUserContactsBinding binding;
 
@@ -46,10 +55,11 @@ public class UserContactsFragment
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initActivity();
         initData();
-        initFragment();
+        initActivity();
         initViewModels();
+        initFragment();
+        initObservers();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -58,11 +68,13 @@ public class UserContactsFragment
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem menuSearch = menu.findItem( R.id.menu_item_search);
-        SearchView searchView = (SearchView) menuSearch.getActionView();
+        searchView = (SearchView) menuSearch.getActionView();
         searchView.setOnQueryTextListener(this);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_item_refresh)
+            refresh();
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onQueryTextChange(String query) {
@@ -73,55 +85,88 @@ public class UserContactsFragment
         return true;
     }
     @Override public boolean onBackPressed() {
-        if(isSearching){
-            search("");
+        if(isSearchOpen){
+            clearSearch();
             return false;
         }
         return true;
     }
 
     //init
+    private void initData() {
+        isSearching = false;
+        isSearchOpen = false;
+        lastQuery="";
+        adapter=new UserContactsAdapter(displayData,this::onContactClick);
+    }
     private void initActivity() {
         MainActivity activity = (MainActivity) getActivity();
         if(activity != null){
             activity.setOnBackPressed(this);
-            ActionBar actionBar = activity.getSupportActionBar();
+            actionBar = activity.getSupportActionBar();
             if(actionBar != null){
                 actionBar.setTitle(getString(R.string.contacts_title));
                 actionBar.show();
             }
         }
     }
-    private void initData() {
-        isSearching = false;
-        lastQuery="";
-    }
-    private void initFragment() {
-
-    }
     private void initViewModels() {
         if(getActivity() != null){
-            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getFriendList().observe(getViewLifecycleOwner(),this::friendListUpdate);
+            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         }
+    }
+    private void initFragment() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                getContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+        );
+        binding.rvContactList.setLayoutManager(layoutManager);
+        binding.rvContactList.setHasFixedSize(true);
+        binding.rvContactList.setAdapter(adapter);
+    }
+    private void initObservers() {
+        if(vmUsers != null){
+            vmUsers.getFriendList().observe(getViewLifecycleOwner(),this::onContactListUpdate);
+        }
+    }
+
+    private void refresh(){
+        if(vmUsers != null)
+            AsyncTask.execute(()->vmUsers.refreshLists());
     }
 
     //search methods
     private void search(String query){
-        lastQuery=query;
-        data.clear();
+        lastQuery=query.trim();
+        displayData.clear();
         if(lastQuery.isEmpty()){
+            isSearchOpen = false;
             isSearching = false;
-            data.addAll(friendList);
+            displayData.addAll(contactList);
         }else{
+            isSearchOpen = true;
             isSearching = true;
-            data.addAll(searchFriends());
+            displayData.addAll(searchFriends());
         }
+        viewUpdate();
+    }
+    private void clearSearch(){
+        if(searchView != null){
+            searchView.setQuery("", false);
+            searchView.clearFocus();
+            searchView.onActionViewCollapsed();
+        }
+        isSearching = false;
+        isSearchOpen = false;
+        lastQuery = "";
+        displayData.clear();
+        displayData.addAll(contactList);
         viewUpdate();
     }
     private List<User> searchFriends(){
         List<User> result = new ArrayList<>();
-        for(User friend : friendList){
+        for(User friend : contactList){
             if(friend.getUsername().contains(lastQuery))
                 result.add(friend);
         }
@@ -129,36 +174,60 @@ public class UserContactsFragment
     }
 
     //observers
-    private void friendListUpdate(List<User> users) {
-        friendList.clear();
+    private void onContactListUpdate(List<User> users) {
+        contactList.clear();
         if(users != null){
-            friendList.addAll(users);
+            contactList.addAll(users);
         }
-        data.clear();
+        displayData.clear();
         if(isSearching){
-            data.addAll(searchFriends());
+            displayData.addAll(searchFriends());
         }else{
-            data.addAll(friendList);
+            displayData.addAll(contactList);
         }
         viewUpdate();
     }
+    private void onContactClick(User user){
+
+    }
 
     //ui
+    @SuppressLint("NotifyDataSetChanged")
     private void viewUpdate(){
-        if(data.size() > 0){
-            String display;
-            if(data.size()>1){
-                display = data.size()+" "+getString(R.string.list_results);
+        if(actionBar != null){
+            if(isSearching){
+                actionBar.setTitle(lastQuery);
             }else{
-                display = data.size()+" "+getString(R.string.list_result);
+                actionBar.setTitle(getString(R.string.contacts_title));
             }
-            binding.tvContactAction.setText(display);
+        }
+        boolean disableRv = false;
+        if(displayData.size() > 0){
+            if(isSearching){
+                binding.tvContactAction.setVisibility(View.VISIBLE);
+                String display;
+                if(displayData.size()>1){
+                    display = displayData.size()+" "+getString(R.string.list_results);
+                }else{
+                    display = displayData.size()+" "+getString(R.string.list_result);
+                }
+                binding.tvContactAction.setText(display);
+            }else{
+                binding.tvContactAction.setVisibility(View.GONE);
+            }
         }else{
+            disableRv = true;
+            binding.tvContactAction.setVisibility(View.VISIBLE);
             if(isSearching){
                 binding.tvContactAction.setText(getString(R.string.empty_search));
             }else{
                 binding.tvContactAction.setText(getString(R.string.empty_list));
             }
         }
+        adapter.notifyDataSetChanged();
+        if(disableRv)
+            binding.rvContactList.setVisibility(View.GONE);
+        else
+            binding.rvContactList.setVisibility(View.VISIBLE);
     }
 }

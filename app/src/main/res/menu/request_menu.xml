@@ -5,6 +5,5 @@
         android:orderInCategory="1"
         android:title="@string/main_menu_requests"
         app:icon="@drawable/ic_menu_add_request"
-        app:iconTint="@color/textColor"
         app:showAsAction="always" />
 </menu>
