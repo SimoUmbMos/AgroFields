@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
@@ -40,12 +40,13 @@ public class UserRequestFragment
 
     private FragmentUserRequestBinding binding;
     private SearchView searchView;
+    private MenuItem menuRefresh;
     private ActionBar actionBar;
 
-    private UserViewModel vmUsers;
-    private UserRequestAdapter adapter;
     private List<User> requests;
     private List<UserRequest> displayData;
+    private UserViewModel vmUsers;
+    private UserRequestAdapter adapter;
 
     private boolean isSearching,isSearchOpen;
     private String lastSearchText;
@@ -70,10 +71,23 @@ public class UserRequestFragment
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
         MenuItem menuSearch = menu.findItem( R.id.menu_item_search);
+        menuRefresh = menu.findItem( R.id.menu_item_refresh);
         searchView = (SearchView) menuSearch.getActionView();
         searchView.setOnQueryTextListener(this);
-        super.onCreateOptionsMenu(menu, inflater);
+        searchView.setOnSearchClickListener(v -> {
+            isSearchOpen = true;
+            menu.findItem(R.id.menu_item_refresh).setVisible(false);
+        });
+        searchView.setOnCloseListener(() -> {
+            isSearchOpen = isSearching;
+            menu.findItem(R.id.menu_item_refresh).setVisible(!isSearching);
+            return false;
+        });
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_item_refresh)
@@ -159,12 +173,12 @@ public class UserRequestFragment
             isSearching = query.length() > 3;
         }
 
-        displayData.clear();
         if(isSearching){
             lastSearchText = query;
             AsyncTask.execute(()->{
                 if(vmUsers != null){
                     List<User> temps  = new ArrayList<>(vmUsers.searchUser(lastSearchText));
+                    displayData.clear();
                     for(User temp : temps){
                         displayData.add(new UserRequest(temp,false));
                     }
@@ -274,11 +288,15 @@ public class UserRequestFragment
             updateUi();
         }
     }
+
+
     @SuppressLint("NotifyDataSetChanged")
     private void updateUi(){
         String display;
         boolean disableRv = false;
         if(isSearching){
+            if(menuRefresh != null)
+                menuRefresh.setVisible(false);
             if(actionBar != null){
                 actionBar.setTitle(lastSearchText);
             }
@@ -292,10 +310,11 @@ public class UserRequestFragment
             }
 
         }else{
+            if(menuRefresh != null)
+                menuRefresh.setVisible(true);
             if(actionBar != null){
                 actionBar.setTitle(getString(R.string.request_title));
             }
-
             if(requests.size() == 0){
                 display = getString(R.string.no_requests);
                 disableRv = true;

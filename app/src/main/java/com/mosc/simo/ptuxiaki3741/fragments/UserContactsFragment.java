@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -35,13 +35,15 @@ public class UserContactsFragment
         implements FragmentBackPress, SearchView.OnQueryTextListener {
     public static final String TAG = "UserContactsFragment";
 
-    private UserViewModel vmUsers;
     private SearchView searchView;
+    private MenuItem menuRefresh;
     private ActionBar actionBar;
 
-    private final List<User> contactList = new ArrayList<>();
-    private final List<User> displayData = new ArrayList<>();
+    private List<User> contactList;
+    private List<User> displayData;
+    private UserViewModel vmUsers;
     private UserContactsAdapter adapter;
+
     private String lastQuery;
     private boolean isSearching,isSearchOpen;
 
@@ -67,10 +69,23 @@ public class UserContactsFragment
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
         MenuItem menuSearch = menu.findItem( R.id.menu_item_search);
+        menuRefresh = menu.findItem( R.id.menu_item_refresh);
         searchView = (SearchView) menuSearch.getActionView();
         searchView.setOnQueryTextListener(this);
-        super.onCreateOptionsMenu(menu, inflater);
+        searchView.setOnSearchClickListener(v -> {
+            isSearchOpen = true;
+            menu.findItem(R.id.menu_item_refresh).setVisible(false);
+        });
+        searchView.setOnCloseListener(() -> {
+            isSearchOpen = isSearching;
+            menu.findItem(R.id.menu_item_refresh).setVisible(!isSearching);
+            return false;
+        });
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_item_refresh)
@@ -94,6 +109,8 @@ public class UserContactsFragment
 
     //init
     private void initData() {
+        contactList = new ArrayList<>();
+        displayData = new ArrayList<>();
         isSearching = false;
         isSearchOpen = false;
         lastQuery="";
@@ -188,23 +205,21 @@ public class UserContactsFragment
         viewUpdate();
     }
     private void onContactClick(User user){
-
+        //todo: navigate to contact profile
     }
 
     //ui
     @SuppressLint("NotifyDataSetChanged")
     private void viewUpdate(){
-        if(actionBar != null){
-            if(isSearching){
-                actionBar.setTitle(lastQuery);
-            }else{
-                actionBar.setTitle(getString(R.string.contacts_title));
-            }
-        }
         boolean disableRv = false;
-        if(displayData.size() > 0){
-            if(isSearching){
-                binding.tvContactAction.setVisibility(View.VISIBLE);
+        if(isSearching){
+            if(menuRefresh != null)
+                menuRefresh.setVisible(false);
+            if(actionBar != null){
+                actionBar.setTitle(lastQuery);
+            }
+            binding.tvContactAction.setVisibility(View.VISIBLE);
+            if(displayData.size() > 0){
                 String display;
                 if(displayData.size()>1){
                     display = displayData.size()+" "+getString(R.string.list_results);
@@ -213,15 +228,21 @@ public class UserContactsFragment
                 }
                 binding.tvContactAction.setText(display);
             }else{
-                binding.tvContactAction.setVisibility(View.GONE);
+                binding.tvContactAction.setText(getString(R.string.empty_search));
+                disableRv = true;
             }
         }else{
-            disableRv = true;
-            binding.tvContactAction.setVisibility(View.VISIBLE);
-            if(isSearching){
-                binding.tvContactAction.setText(getString(R.string.empty_search));
+            if(menuRefresh != null)
+                menuRefresh.setVisible(true);
+            if(actionBar != null){
+                actionBar.setTitle(getString(R.string.contacts_title));
+            }
+            if(displayData.size() > 0){
+                binding.tvContactAction.setVisibility(View.GONE);
             }else{
+                binding.tvContactAction.setVisibility(View.VISIBLE);
                 binding.tvContactAction.setText(getString(R.string.empty_list));
+                disableRv = true;
             }
         }
         adapter.notifyDataSetChanged();
