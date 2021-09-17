@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserContactsBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,8 +207,8 @@ public class UserContactsFragment
         }
         viewUpdate();
     }
-    private void onContactClick(User user){
-        //todo: navigate to contact profile
+    private void onContactClick(User contact){
+        toContactProfile(getActivity(),contact);
     }
 
     //ui
@@ -250,5 +253,17 @@ public class UserContactsFragment
             binding.rvContactList.setVisibility(View.GONE);
         else
             binding.rvContactList.setVisibility(View.VISIBLE);
+    }
+
+
+    public void toContactProfile(@Nullable Activity activity, User contact) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.UserContactsFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(ContactProfileFragment.CONTACT_PROFILE_ARG,contact);
+                if(nav != null)
+                    nav.navigate(R.id.userContactstoContactProfile,bundle);
+            });
     }
 }

@@ -97,10 +97,19 @@
         android:id="@+id/UserContactsFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserContactsFragment"
         android:label="fragment_user_contacts"
-        tools:layout="@layout/fragment_user_contacts" />
+        tools:layout="@layout/fragment_user_contacts" >
+        <action
+            android:id="@+id/userContactstoContactProfile"
+            app:destination="@id/contactProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/userRequestFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserRequestFragment"
         android:label="fragment_user_request"
         tools:layout="@layout/fragment_user_request" />
+    <fragment
+        android:id="@+id/contactProfileFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ContactProfileFragment"
+        android:label="fragment_contact_profile"
+        tools:layout="@layout/fragment_contact_profile" />
 </navigation>

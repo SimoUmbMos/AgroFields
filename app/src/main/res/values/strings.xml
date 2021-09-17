@@ -1,9 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Common -->
     <string name="app_name">Land Declaration</string>
     <string name="loading_list">List is loading</string>
     <string name="empty_list">List is empty</string>
     <string name="refresh">Refresh</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="clipboard_message">Text Copied</string>
     <!-- Login Fragment -->
     <string name="login_label">Login</string>
     <string name="register_label">Create Account</string>
@@ -57,8 +61,6 @@
     <string name="add">Add</string>
     <string name="delete">Delete</string>
     <string name="export">Export</string>
-    <string name="accept">Accept</string>
-    <string name="cancel">Cancel</string>
     <!-- Land Info Fragment -->
     <string name="land_info_title">Land Info</string>
     <string name="land_name">Land Name</string>
@@ -115,6 +117,12 @@
     <string name="empty_search">No result</string>
     <string name="contacts">Contacts</string>
     <string name="contact">Contact</string>
+    <!-- Contact Profile Fragment -->
+    <string name="contact_share_land">Share Land</string>
+    <string name="contact_delete_title">Delete Contact</string>
+    <string name="contact_delete_message">Are you sure you want to delete this contact</string>
+    <string name="deleted_contact">Contact Deleted</string>
+    <string name="deleted_contact_error">Something was goes wrong, try again</string>
     <!-- User Profile Fragment -->
     <string name="profile_bar_label">My Profile</string>
     <string name="email_hint_user_profile">Email</string>
@@ -142,6 +150,4 @@
     <string name="title_activity_import">Map</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
-    <!-- Unsorted -->
-
 </resources>
