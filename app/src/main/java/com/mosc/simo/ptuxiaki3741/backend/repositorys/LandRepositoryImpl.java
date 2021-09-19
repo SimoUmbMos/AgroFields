@@ -77,12 +77,8 @@ public class LandRepositoryImpl implements LandRepository {
     @Override
     public void deleteLand(Land land) {
         LandData landData = land.getData();
+        db.sharedLandDao().deleteByLandID(landData.getId());
         db.landDao().delete(landData);
-    }
-    @Override
-    public void deleteAllLandsByUser(User user) {
-        db.landDao().deleteByUID(user.getId());
-        db.sharedLandDao().deleteByUserID(user.getId());
     }
 
     @Override

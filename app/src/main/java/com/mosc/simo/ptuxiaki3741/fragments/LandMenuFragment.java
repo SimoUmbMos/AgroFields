@@ -331,7 +331,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             }
         }
         if(deleteLands.size()>0 && currUser != null){
-            AsyncTask.execute(()->vmLands.removeLands(deleteLands,currUser));
+            AsyncTask.execute(()->vmLands.removeLands(deleteLands));
         }
     }
 

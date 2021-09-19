@@ -290,7 +290,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void initViewModel() {
         if(getActivity() != null){
             UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::setCurrUser);
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
         }
     }
     private void initViews() {
@@ -339,7 +339,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
 
     //land and user data getter setter
-    private void setCurrUser(User user) {
+    private void onUserUpdate(User user) {
         currUser = user;
     }
     private Land getLand() {
@@ -454,7 +454,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         Land currLand = getLand();
         if(getActivity() != null){
             LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-            vmLands.saveLand(currLand,currUser);
+            vmLands.saveLand(currLand);
         }
     }
 

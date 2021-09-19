@@ -14,7 +14,6 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 
@@ -22,18 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
-    private static final String TAG ="UserViewModel";
     private static final String sharedPreferenceKey = "currUser";
     private static final long sharedPreferenceDefault = -1;
+
+    public static final String TAG ="UserViewModel";
+
+    private final UserRepositoryImpl userRepository;
+    private SharedPreferences sharedPref;
 
     private final MutableLiveData<User> currUser = new MutableLiveData<>();
     private final MutableLiveData<List<User>> friends = new MutableLiveData<>();
     private final MutableLiveData<List<User>> friendRequests = new MutableLiveData<>();
     private final MutableLiveData<List<User>> blocks = new MutableLiveData<>();
-
-    private final UserRepositoryImpl userRepository;
-    private final LandRepositoryImpl landRepository;
-    private SharedPreferences sharedPref;
 
     public LiveData<User> getCurrUser(){
         return currUser;
@@ -52,7 +51,6 @@ public class UserViewModel extends AndroidViewModel {
         super(application);
         RoomDatabase db = MainActivity.getRoomDb(application.getApplicationContext());
         userRepository = new UserRepositoryImpl(db);
-        landRepository = new LandRepositoryImpl(db);
     }
     public void init(SharedPreferences sharedPref){
         this.sharedPref = sharedPref;
@@ -115,7 +113,6 @@ public class UserViewModel extends AndroidViewModel {
     public void deleteUser(User user){
         if(user != null){
             boolean isCurrUser = user.equals(currUser.getValue());
-            landRepository.deleteAllLandsByUser(user);
             userRepository.deleteUser(user);
             if(isCurrUser){
                 logout();

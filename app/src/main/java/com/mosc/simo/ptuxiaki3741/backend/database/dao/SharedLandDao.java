@@ -27,5 +27,6 @@ public interface SharedLandDao {
     void deleteAll(List<SharedLand> sharedLand);
     @Query("DELETE FROM SharedLands WHERE UserID = :uid")
     void deleteByUserID(long uid);
-
+    @Query("DELETE FROM SharedLands WHERE LandID = :lid")
+    void deleteByLandID(long lid);
 }

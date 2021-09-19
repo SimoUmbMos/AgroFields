@@ -176,6 +176,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteUser(User user){
         if(user != null){
+            db.sharedLandDao().deleteByUserID(user.getId());
+            db.landDao().deleteByUID(user.getId());
             db.userRelationshipDao().deleteByUserID(user.getId());
             db.userDao().delete(user);
         }
