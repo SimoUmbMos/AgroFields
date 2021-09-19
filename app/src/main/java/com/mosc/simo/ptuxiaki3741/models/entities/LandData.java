@@ -20,7 +20,7 @@ public class LandData implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "CreatorID")
-    private final long creator_id;
+    private long creator_id;
     @ColumnInfo(name = "Title")
     private String title;
     @ColumnInfo(name = "Border")
@@ -101,6 +101,9 @@ public class LandData implements Parcelable {
 
     public void setId(long id) {
         this.id = id;
+    }
+    public void setCreator_id(long creator_id) {
+        this.creator_id = creator_id;
     }
     public void setTitle(String title) {
         this.title = title;

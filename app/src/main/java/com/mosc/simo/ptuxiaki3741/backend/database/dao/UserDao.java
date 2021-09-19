@@ -21,13 +21,15 @@ public interface UserDao {
     )
     List<User> searchUserByUserName(long searcherID, String search);
 
-    @Query("SELECT u.* FROM Users u,UserRelationships ur " +
-            "WHERE u.id = ur.SenderID and ur.ReceiverID = :receiverID and ur.Type = :type"
+    @Query("SELECT u.* FROM Users u " +
+            "INNER JOIN UserRelationships ur ON u.id = ur.SenderID " +
+            "WHERE ur.ReceiverID = :receiverID AND ur.Type = :type"
     )
     List<User> getUsersByReceiverIDAndType(long receiverID, UserDBAction type);
 
-    @Query("SELECT u.* FROM Users u,UserRelationships ur " +
-            "WHERE u.id = ur.ReceiverID and ur.SenderID = :receiverID and ur.Type = :type"
+    @Query("SELECT u.* FROM Users u " +
+            "INNER JOIN UserRelationships ur ON u.id = ur.ReceiverID " +
+            "WHERE ur.SenderID = :receiverID and ur.Type = :type"
     )
     List<User> getUsersBySenderIDAndType(long receiverID, UserDBAction type);
 

@@ -18,5 +18,11 @@ public interface LandRepository {
     void saveLandRecord(LandDataRecord landRecord);
 
     void deleteLand(Land land);
-    void deleteLandsByUser(User user);
+    void deleteAllLandsByUser(User user);
+
+    void addSharedLand(Land land,User user);
+    void removeSharedLand(Land land,User user);
+    List<Land> getSharedLandsToUser(User owner,User sharedUser);
+    List<Land> getSharedLandsToOtherUsers(User user);
+    List<Land> getSharedLands(User user);
 }

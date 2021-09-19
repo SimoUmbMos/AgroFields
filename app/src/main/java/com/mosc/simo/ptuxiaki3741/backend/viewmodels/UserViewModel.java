@@ -76,7 +76,7 @@ public class UserViewModel extends AndroidViewModel {
     }
     private User loadCurrUser() {
         long uid = getUidFromMemory();
-        User user = userRepository.searchUserByID(uid);
+        User user = userRepository.getUserByID(uid);
         if(user == null){
             clearUidFromMemory();
         }
@@ -106,7 +106,7 @@ public class UserViewModel extends AndroidViewModel {
             userRepository.editUser(user);
             if(isCurrUser){
                 User decryptedUser = EncryptUtil.decrypt(
-                        userRepository.searchUserByID(user.getId())
+                        userRepository.getUserByID(user.getId())
                 );
                 this.currUser.postValue(decryptedUser);
             }
@@ -115,8 +115,7 @@ public class UserViewModel extends AndroidViewModel {
     public void deleteUser(User user){
         if(user != null){
             boolean isCurrUser = user.equals(currUser.getValue());
-            landRepository.deleteLandsByUser(user);
-            userRepository.deleteAllRelationships(user);
+            landRepository.deleteAllLandsByUser(user);
             userRepository.deleteUser(user);
             if(isCurrUser){
                 logout();
@@ -125,13 +124,13 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public User checkCredentials(User user) {
-        return userRepository.searchUserByUserNameAndPassword(
+        return userRepository.getUserByUserNameAndPassword(
                 user.getUsername(),
                 user.getPassword()
         );
     }
     public User checkUserNameCredentials(User user) {
-        return userRepository.searchUserByUserName(
+        return userRepository.getUserByUserName(
                 user.getUsername()
         );
     }
@@ -139,7 +138,7 @@ public class UserViewModel extends AndroidViewModel {
         if(user != null){
             putUidToMemory(user.getId());
             User decryptedUser = EncryptUtil.decrypt(
-                    userRepository.searchUserByID(user.getId())
+                    userRepository.getUserByID(user.getId())
             );
             currUser.postValue(decryptedUser);
             populateCurrUserRelativeLists(decryptedUser);
@@ -231,6 +230,12 @@ public class UserViewModel extends AndroidViewModel {
     public void blockUser(User user){
         if(currUser.getValue() != null && user != null){
             userRepository.blockUser(currUser.getValue(),user);
+            populateCurrUserRelativeLists(currUser.getValue());
+        }
+    }
+    public void removeBlock(User user){
+        if(currUser.getValue() != null && user != null){
+            userRepository.removeBlock(currUser.getValue(),user);
             populateCurrUserRelativeLists(currUser.getValue());
         }
     }

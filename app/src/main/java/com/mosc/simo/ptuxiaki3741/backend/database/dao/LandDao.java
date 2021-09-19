@@ -21,12 +21,27 @@ public interface LandDao {
     @Query("SELECT * FROM LandData WHERE `CreatorID` = :uid")
     List<LandData> getLandByCreatorId(long uid);
 
-    @Query("DELETE FROM LandData WHERE `CreatorID` = :uid")
-    void deleteByUID(long uid);
+    @Query("SELECT l.* FROM LandData l " +
+            "INNER JOIN SharedLands s ON l.id = s.LandID " +
+            "WHERE s.UserID = :uid")
+    List<LandData> getUserSharedLands(long uid);
+
+    @Query("SELECT l.* FROM LandData l " +
+            "INNER JOIN SharedLands s ON l.id = s.LandID " +
+            "WHERE l.CreatorID = :ownerID " +
+            "AND s.UserID = :sharedId ")
+    List<LandData> getSharedLandsToUser(long ownerID, long sharedId);
+
+    @Query("SELECT l.* FROM LandData l " +
+            "INNER JOIN SharedLands s ON l.id = s.LandID " +
+            "WHERE l.CreatorID = :ownerID ")
+    List<LandData> getSharedLandsToOtherUsers(long ownerID);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandData land);
 
     @Delete
     void delete(LandData land);
+    @Query("DELETE FROM LandData WHERE `CreatorID` = :uid")
+    void deleteByUID(long uid);
 }

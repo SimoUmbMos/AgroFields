@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User searchUserByID(long id){
+    public User getUserByID(long id){
         User u = db.userDao().getUserById(id);
         if(u != null){
             return EncryptUtil.decrypt(u);
@@ -28,14 +28,15 @@ public class UserRepositoryImpl implements UserRepository {
         return null;
     }
     @Override
-    public User searchUserByUserName(String username) {
+    public User getUserByUserName(String username) {
         return db.userDao().getUserByUserName(username);
     }
     @Override
-    public User searchUserByUserNameAndPassword(String username, String password) {
+    public User getUserByUserNameAndPassword(String username, String password) {
         String encryptedPassword = EncryptUtil.encryptPassword(password);
         return db.userDao().getUserByUserNameAndPassword(username, encryptedPassword);
     }
+
     @Override
     public List<User> userSearch(User searchUser, String search) {
         if(search.length() > 3 && searchUser != null){
@@ -111,11 +112,15 @@ public class UserRepositoryImpl implements UserRepository {
         deleteUserRelationship(currUser,otherUser);
         saveUserRelationship(currUser,otherUser,UserDBAction.BLOCKED);
     }
-
     @Override
-    public List<User> getUsers(){
-        return db.userDao().getUsers();
+    public void removeBlock(User currUser, User otherUser){
+        db.userRelationshipDao().deleteByIDsAndType(
+                currUser.getId(),
+                otherUser.getId(),
+                UserDBAction.BLOCKED
+        );
     }
+
     @Override
     public List<User> getUserFriendList(User user) {
         List<User> friends = db.userDao().getUsersByReceiverIDAndType(
@@ -174,12 +179,6 @@ public class UserRepositoryImpl implements UserRepository {
             db.userRelationshipDao().deleteByUserID(user.getId());
             db.userDao().delete(user);
         }
-    }
-    @Override
-    public void deleteAllRelationships(User user) {
-        db.userRelationshipDao().deleteAll(
-                db.userRelationshipDao().getByID(user.getId())
-        );
     }
 
     private void removeUsers(User searchUser, List<User> result, UserDBAction type) {
