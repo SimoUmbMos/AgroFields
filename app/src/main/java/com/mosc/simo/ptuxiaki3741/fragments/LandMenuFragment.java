@@ -74,7 +74,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         initViewModel();
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.list_menu, menu);
+        inflater.inflate(R.menu.land_list_menu, menu);
         initMenu(menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -196,7 +196,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 if(activity != null){
                     ActionMode.Callback callback = new ActionMode.Callback() {
                         @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                            mode.getMenuInflater().inflate(R.menu.contextual_list_menu,menu);
+                            mode.getMenuInflater().inflate(R.menu.land_list_contextual_menu,menu);
                             switch (state){
                                 case MultiSelectState:
                                 case MultiDeleteState:

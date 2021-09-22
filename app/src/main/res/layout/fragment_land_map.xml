@@ -176,5 +176,5 @@
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
         app:theme="@style/DrawerNavigationStyle"
-        app:menu="@menu/map_side_menu" />
+        app:menu="@menu/land_map_side_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

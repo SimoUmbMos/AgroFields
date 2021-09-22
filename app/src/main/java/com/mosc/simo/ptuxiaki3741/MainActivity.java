@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
@@ -22,21 +23,46 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 public class MainActivity extends AppCompatActivity {
     private static final int doubleTapBack = 2750;
     private static final String TAG = "MainActivity";
+    private static final String isForceKey = "is_force_theme";
+    private static final String isDarkKey = "is_dark_theme";
+
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
     private boolean doubleBackToExitPressedOnce = false;
     private ActivityMainBinding binding;
 
+    @Override protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        init();
+        initViewModels();
+        navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fcvNavHostFragment);
+    }
+    @Override public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+    @Override public void onBackPressed() {
+        if(fragmentBackPress.onBackPressed()){
+            if(navHostFragment.getChildFragmentManager().getBackStackEntryCount() == 0){
+                if (doubleBackToExitPressedOnce) {
+                    super.onBackPressed();
+                    return;
+                }
+                showToast(getResources().getText(R.string.double_tap_exit));
+                doubleBackToExitPressedOnce = true;
+                new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, doubleTapBack);
+            }else{
+                super.onBackPressed();
+            }
+        }
+    }
+
     public static RoomDatabase getRoomDb(Context context){
         return Room.databaseBuilder(context,
                 RoomDatabase.class, "Main_db").fallbackToDestructiveMigration().build();
-    }
-
-    public void showToast(CharSequence text) {
-        showToast(text.toString());
-    }
-    public void showToast(String text) {
-        Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
     }
 
     private void init() {
@@ -47,13 +73,29 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        if(sharedPref.getBoolean(isForceKey, false)){
+            if(sharedPref.getBoolean(isDarkKey, false)){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
     }
-
     private void initViewModels() {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         userViewModel.init(sharedPref);
         userViewModel.getCurrUser().observe(this,this::onUserUpdate);
+    }
+
+    public void showToast(CharSequence text) {
+        showToast(text.toString());
+    }
+    public void showToast(String text) {
+        Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
     }
 
     private void onUserUpdate(User user) {
@@ -72,37 +114,5 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         this.fragmentBackPress = fragmentBackPress;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        init();
-        initViewModels();
-        navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fcvNavHostFragment);
-    }
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-    @Override
-    public void onBackPressed() {
-        if(fragmentBackPress.onBackPressed()){
-            if(navHostFragment.getChildFragmentManager().getBackStackEntryCount() == 0){
-                if (doubleBackToExitPressedOnce) {
-                    super.onBackPressed();
-                    return;
-                }
-                showToast(getResources().getText(R.string.double_tap_exit));
-                doubleBackToExitPressedOnce = true;
-                new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, doubleTapBack);
-            }else{
-                super.onBackPressed();
-            }
-        }
     }
 }

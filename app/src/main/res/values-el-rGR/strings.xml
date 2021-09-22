@@ -39,6 +39,7 @@
     <string name="main_menu_label_shared_lands">Κοινόχρηστα χωράφια:</string>
     <string name="main_menu_label_requests">Αριθμός αιτημάτων:</string>
     <string name="main_menu_requests">Αιτήματα χρήστη</string>
+    <string name="main_menu_settings">Ρυθμίσεις</string>
     <string name="main_menu_lands_button">Χωράφια</string>
     <string name="main_menu_history_button">Ιστορικό</string>
     <string name="main_menu_profile_button">Προφίλ</string>
@@ -69,7 +70,8 @@
     <string name="edit_land_label">Edit Land Name</string>
     <string name="submit_info">Submit</string>
     <string name="cancel_info">Cancel</string>
-    <!-- Land Map Fragment --><string name="change_terrain_type">change terrain type</string>
+    <!-- Land Map Fragment -->
+    <string name="change_terrain_type">change terrain type</string>
     <string name="fabSave">save edits</string>
     <string name="fabReset">reset edits</string>
     <string name="fabPlus">plus edit</string>
@@ -103,6 +105,8 @@
     <string name="land_actions_group_title">Land Actions</string>
     <string name="delete_land">Delete Land</string>
     <string name="edit_land_name">Edit Land Name</string>
+    <string name="delete_land_title">Delete Land</string>
+    <string name="delete_land_text">Are you sure you want to delete this land?</string>
     <!-- History Menu Fragment -->
     <string name="land_history">Ιστορικό αγροκτημάτων</string>
     <string name="land_action_created">Δημιουργήθηκε</string>

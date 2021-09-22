@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -79,6 +81,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private FragmentLandMapBinding binding;
     private GoogleMap mMap;
     private Menu menu;
+    private AlertDialog dialog;
 
     private List<LatLng> points,startPoints;
     private List<List<LatLng>> undoList;
@@ -108,7 +111,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.map_menu, menu);
+        inflater.inflate(R.menu.land_map_menu, menu);
         this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -452,16 +455,9 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             finish(getActivity());
         }
     }
-    private void restoreLand() {
-        if(isValidToRestore()){
-            restoreToVM();
-            finish(getActivity());
-        }
-    }
-    private void deleteLand(){
-        binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
-        removeFromVM();
-        finish(getActivity());
+    private boolean isValidToSave() {
+        return points.size() > 2 &&
+                currLand != null;
     }
     private void addToVM() {
         currLand.getData().setBorder(points);
@@ -470,6 +466,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             vmLands.saveLand(currLand);
         }
     }
+
+    //restore relative
+    private void restoreLand() {
+        if(isValidToRestore()){
+            restoreToVM();
+            finish(getActivity());
+        }
+    }
+    private boolean isValidToRestore() {
+        if(isValidToSave() && currUser != null){
+            return currLand.getData().getCreator_id() == currUser.getId();
+        }
+        return false;
+    }
     private void restoreToVM() {
         currLand.getData().setBorder(points);
         if(getActivity() != null){
@@ -477,21 +487,37 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             vmLands.restoreLand(currLand);
         }
     }
+
+    //delete relative
+    private void deleteLand(){
+        binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
+        showDeleteLandDialog();
+    }
+    private void showDeleteLandDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
+                    .setTitle(getString(R.string.delete_land_title))
+                    .setMessage(getString(R.string.delete_land_text))
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> deleteLandActions())
+                    .create();
+            dialog.show();
+        }
+    }
+    private void deleteLandActions(){
+        removeFromVM();
+        finish(getActivity());
+    }
     private void removeFromVM() {
         if(getActivity() != null && currLand.getData().getId() >= 0){
             LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmLands.removeLand(currLand);
         }
-    }
-    private boolean isValidToSave() {
-        return points.size() > 2 &&
-                currLand != null;
-    }
-    private boolean isValidToRestore() {
-        if(isValidToSave() && currUser != null){
-            return currLand.getData().getCreator_id() == currUser.getId();
-        }
-        return false;
     }
 
     //file relative

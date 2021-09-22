@@ -77,17 +77,22 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.request_menu, menu);
+        inflater.inflate(R.menu.main_menu_menu, menu);
         this.menu = menu;
         updateMenu();
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_item_request) {
-            toRequestMenu(getActivity());
-            return true;
+        switch (item.getItemId()){
+            case (R.id.menu_item_request):
+                toRequestMenu(getActivity());
+                return true;
+            case (R.id.menu_item_app_settings):
+                //todo: app settings
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
         return true;
