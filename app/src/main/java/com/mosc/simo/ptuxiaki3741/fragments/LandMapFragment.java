@@ -38,7 +38,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapBinding;
@@ -54,21 +53,13 @@ import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LandMapFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
     public static final String TAG = "LandFragment";
-    public static final String argLand = "land",
-            argAddress = "address",
-            argDisplayMode = "display_mode",
-            argShowRestore = "show_restore";
-
-    public static final double distanceToMapActionKM = 100;
-    private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
-            maxZoom = 7f, minZoom = 0.1f, addressZoom = 10;
-    public static final int defaultPadding = 64;
 
     private LandActionStates mapStatus;
     private LandFileState fileState;
@@ -185,7 +176,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         ){
             Intent intent = FileUtil.parseFile(getContext(),result.getData());
             if(intent != null){
-                intent.putExtra(ImportActivity.userName,currUser.getId());
+                intent.putExtra(AppValues.userNameImportActivity,currUser.getId());
                 importLauncher.launch(intent);
             }
         }
@@ -204,7 +195,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         if (result.getResultCode() == Activity.RESULT_OK) {
             if(result.getData() != null){
                 ParcelablePolygon polygon = (ParcelablePolygon) result.getData().getExtras()
-                        .get(ImportActivity.resName);
+                        .get(AppValues.resNameImportActivity);
                 points.clear();
                 points.addAll(polygon.getPoints());
                 drawMap();
@@ -231,23 +222,23 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     //init relative
     private void initData(){
         if(getArguments() != null){
-            if(getArguments().containsKey(argLand)) {
-                currLand = getArguments().getParcelable(argLand);
+            if(getArguments().containsKey(AppValues.argLandLandMapFragment)) {
+                currLand = getArguments().getParcelable(AppValues.argLandLandMapFragment);
             }else {
                 currLand = null;
             }
-            if(getArguments().containsKey(argAddress)) {
-                address = getArguments().getString(argAddress);
+            if(getArguments().containsKey(AppValues.argAddressLandMapFragment)) {
+                address = getArguments().getString(AppValues.argAddressLandMapFragment);
             }else {
                 address = null;
             }
-            if(getArguments().containsKey(argDisplayMode)) {
-                displayOnly = getArguments().getBoolean(argDisplayMode);
+            if(getArguments().containsKey(AppValues.argDisplayModeLandMapFragment)) {
+                displayOnly = getArguments().getBoolean(AppValues.argDisplayModeLandMapFragment);
             }else{
                 displayOnly = false;
             }
-            if(getArguments().containsKey(argShowRestore)) {
-                showRestore = getArguments().getBoolean(argShowRestore);
+            if(getArguments().containsKey(AppValues.argShowRestoreLandMapFragment)) {
+                showRestore = getArguments().getBoolean(AppValues.argShowRestoreLandMapFragment);
             }else{
                 showRestore = false;
             }
@@ -436,7 +427,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandInfoFragment.argLand,currLand);
+                bundle.putParcelable(AppValues.argLandInfoFragment,currLand);
                 if(nav != null)
                     nav.navigate(R.id.landMapToLandInfo,bundle);
             });
@@ -556,7 +547,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                     builder.build(),
-                    defaultPadding
+                    AppValues.defaultPadding
             ));
         }
     }
@@ -619,7 +610,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void editPoint(LatLng latLng) {
         int index = MapUtil.closestPoint(points,latLng);
         if(index > -1 && index < points.size()){
-            if(distanceToMapActionKM >= MapUtil.distanceBetween(points.get(index),latLng)){
+            if(AppValues.distanceToMapActionKM >= MapUtil.distanceBetween(points.get(index),latLng)){
                 addPointsToUndo();
                 points.set(index,latLng);
             }
@@ -628,7 +619,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void deletePoint(LatLng latLng) {
         int index = MapUtil.closestPoint(points,latLng);
         if(index > -1 && index < points.size()){
-            if(distanceToMapActionKM >= MapUtil.distanceBetween(points.get(index),latLng)){
+            if(AppValues.distanceToMapActionKM >= MapUtil.distanceBetween(points.get(index),latLng)){
                 addPointsToUndo();
                 points.remove(index);
             }
@@ -648,7 +639,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void selectFirstPointForBetween(LatLng latLng) {
         index1 = MapUtil.closestPoint(points,latLng);
         if(index1 > -1 && index1 < points.size()){
-            if(MapUtil.distanceBetween(latLng,points.get(index1)) > distanceToMapActionKM){
+            if(MapUtil.distanceBetween(latLng,points.get(index1)) > AppValues.distanceToMapActionKM){
                 index1 = -1;
             }
         }else{
@@ -658,7 +649,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void selectSecondPointForBetween(LatLng latLng) {
         index2 = MapUtil.closestPoint(points,latLng);
         if(index2 > -1 && index2 < points.size()){
-            if(MapUtil.distanceBetween(latLng,points.get(index2)) < distanceToMapActionKM){
+            if(MapUtil.distanceBetween(latLng,points.get(index2)) < AppValues.distanceToMapActionKM){
                 checkIndexBetween();
             }else{
                 index2 = -1;
@@ -933,20 +924,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             switch (mapStatus){
                 case Rotate:
                     binding.ivLandOverlay.animate()
-                            .rotationBy(stepRotate)
+                            .rotationBy(AppValues.stepRotate)
                             .setDuration(0).start();
                     break;
                 case Alpha:
                     binding.ivLandOverlay.animate()
-                            .alphaBy(stepOpacity)
+                            .alphaBy(AppValues.stepOpacity)
                             .setDuration(0).start();
                     break;
                 case Zoom:
-                    if((zoom+stepZoom)<maxZoom){
-                        zoom+=stepZoom;
+                    if((zoom+AppValues.stepZoom)<AppValues.maxZoom){
+                        zoom+=AppValues.stepZoom;
                         binding.ivLandOverlay.animate()
-                                .scaleXBy(stepZoom)
-                                .scaleYBy(stepZoom)
+                                .scaleXBy(AppValues.stepZoom)
+                                .scaleYBy(AppValues.stepZoom)
                                 .setDuration(0).start();
                     }
                     break;
@@ -958,20 +949,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             switch (mapStatus){
                 case Rotate:
                     binding.ivLandOverlay.animate()
-                            .rotationBy(-stepRotate)
+                            .rotationBy(-AppValues.stepRotate)
                             .setDuration(0).start();
                     break;
                 case Alpha:
                     binding.ivLandOverlay.animate()
-                            .alphaBy(-stepOpacity)
+                            .alphaBy(-AppValues.stepOpacity)
                             .setDuration(0).start();
                     break;
                 case Zoom:
-                    if((zoom-stepZoom)>minZoom){
-                        zoom-=stepZoom;
+                    if((zoom-AppValues.stepZoom)>AppValues.minZoom){
+                        zoom-=AppValues.stepZoom;
                         binding.ivLandOverlay.animate()
-                                .scaleXBy(-stepZoom)
-                                .scaleYBy(-stepZoom)
+                                .scaleXBy(-AppValues.stepZoom)
+                                .scaleYBy(-AppValues.stepZoom)
                                 .setDuration(0).start();
                     }
                     break;
@@ -1156,7 +1147,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                             if(mMap != null)
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(location.getLatitude(),location.getLongitude()),
-                                        addressZoom
+                                        AppValues.addressZoom
                                 ));
                         });
                     }

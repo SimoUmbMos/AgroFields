@@ -30,6 +30,7 @@ import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,9 +196,9 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandHistoryFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandMapFragment.argLand,land);
-                bundle.putBoolean(LandMapFragment.argDisplayMode,true);
-                bundle.putBoolean(LandMapFragment.argShowRestore,true);
+                bundle.putParcelable(AppValues.argLandLandMapFragment,land);
+                bundle.putBoolean(AppValues.argDisplayModeLandMapFragment,true);
+                bundle.putBoolean(AppValues.argShowRestoreLandMapFragment,true);
                 if(nav != null)
                     nav.navigate(R.id.landHistoryToLandMap,bundle);
             });

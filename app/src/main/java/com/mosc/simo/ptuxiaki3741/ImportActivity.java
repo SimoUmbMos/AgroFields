@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -29,7 +30,7 @@ import java.util.List;
 
 public class ImportActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnPolygonClickListener {
     public static final String TAG = "ImportActivity";
-    public static final String resName = "polygon", userName = "userid";
+
     private List<List<LatLng>> polyList;
     private User curUser;
     private GoogleMap mMap;
@@ -53,7 +54,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         if(curUser != null){
             Intent returnIntent;
             returnIntent = new Intent();
-            returnIntent.putExtra(resName,new ParcelablePolygon(polygon.getPoints()));
+            returnIntent.putExtra(AppValues.resNameImportActivity,new ParcelablePolygon(polygon.getPoints()));
             setResult(RESULT_OK,returnIntent);
             finish();
         }
@@ -67,7 +68,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
             Log.d(TAG, "init: intent not null");
             if(intent.getExtras() != null){
                 Log.d(TAG, "init: intent extra not null");
-                long id = intent.getExtras().getLong(userName,-1);
+                long id = intent.getExtras().getLong(AppValues.userNameImportActivity,-1);
                 AsyncTask.execute(()->
                         onUserUpdate(MainActivity.getRoomDb(this).userDao().getUserById(id))
                 );
@@ -107,7 +108,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
             if(polyList.size() == 1){
                 Intent returnIntent;
                 returnIntent = new Intent();
-                returnIntent.putExtra(resName,new ParcelablePolygon(polyList.get(0)));
+                returnIntent.putExtra(AppValues.resNameImportActivity,new ParcelablePolygon(polyList.get(0)));
                 setResult(RESULT_OK,returnIntent);
                 finish();
             }

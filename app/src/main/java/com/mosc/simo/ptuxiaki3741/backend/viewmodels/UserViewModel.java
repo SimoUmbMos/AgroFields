@@ -16,14 +16,12 @@ import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
-    private static final String sharedPreferenceKey = "currUser";
-    private static final long sharedPreferenceDefault = -1;
-
     public static final String TAG ="UserViewModel";
 
     private final UserRepositoryImpl userRepository;
@@ -83,16 +81,19 @@ public class UserViewModel extends AndroidViewModel {
 
     private void clearUidFromMemory(){
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.remove(sharedPreferenceKey);
+        editor.remove(AppValues.sharedPreferenceKeyUserViewModel);
         editor.apply();
     }
     private void putUidToMemory(long id){
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(sharedPreferenceKey, id);
+        editor.putLong(AppValues.sharedPreferenceKeyUserViewModel, id);
         editor.apply();
     }
     private long getUidFromMemory() {
-        return sharedPref.getLong(sharedPreferenceKey, sharedPreferenceDefault);
+        return sharedPref.getLong(
+                AppValues.sharedPreferenceKeyUserViewModel,
+                AppValues.sharedPreferenceDefaultUserViewModel
+        );
     }
 
     public User saveNewUser(User user){

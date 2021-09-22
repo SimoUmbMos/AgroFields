@@ -27,11 +27,10 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentContactProfileBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class ContactProfileFragment extends Fragment implements FragmentBackPress {
-    public static final String CONTACT_PROFILE_ARG = "user";
-
     private FragmentContactProfileBinding binding;
     private AlertDialog dialog;
 
@@ -65,8 +64,8 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
 
     private void initData(){
         if (getArguments() != null) {
-            if(getArguments().containsKey(CONTACT_PROFILE_ARG)){
-                contact = getArguments().getParcelable(CONTACT_PROFILE_ARG);
+            if(getArguments().containsKey(AppValues.CONTACT_PROFILE_ARG)){
+                contact = getArguments().getParcelable(AppValues.CONTACT_PROFILE_ARG);
             }
         }
         if(contact == null)

@@ -19,12 +19,10 @@ import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int doubleTapBack = 2750;
     private static final String TAG = "MainActivity";
-    private static final String isForceKey = "is_force_theme";
-    private static final String isDarkKey = "is_dark_theme";
 
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
@@ -53,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 showToast(getResources().getText(R.string.double_tap_exit));
                 doubleBackToExitPressedOnce = true;
-                new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, doubleTapBack);
+                new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, AppValues.doubleTapBack);
             }else{
                 super.onBackPressed();
             }
@@ -73,17 +71,9 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        if(sharedPref.getBoolean(isForceKey, false)){
-            if(sharedPref.getBoolean(isDarkKey, false)){
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            }else{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        }else{
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        }
+        checkThemeSettings();
     }
+
     private void initViewModels() {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -114,5 +104,18 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         this.fragmentBackPress = fragmentBackPress;
+    }
+
+    public void checkThemeSettings() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        if(sharedPref.getBoolean(AppValues.isForceKey, false)){
+            if(sharedPref.getBoolean(AppValues.isDarkKey, false)){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
     }
 }

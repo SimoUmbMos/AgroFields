@@ -41,6 +41,7 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.io.File;
 import java.io.IOException;
@@ -492,7 +493,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandMapFragment.argLand,land);
+                bundle.putParcelable(AppValues.argLandLandMapFragment,land);
                 if(nav != null)
                     nav.navigate(R.id.landCollectionToLandMap,bundle);
             });
@@ -502,7 +503,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandInfoFragment.argLand,null);
+                bundle.putParcelable(AppValues.argLandInfoFragment,null);
                 if(nav != null)
                     nav.navigate(R.id.landCollectionToLandInfo,bundle);
             });

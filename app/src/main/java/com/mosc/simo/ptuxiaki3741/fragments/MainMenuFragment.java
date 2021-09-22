@@ -38,13 +38,13 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="MenuFragment";
-    public static final int defaultPadding = 16;
 
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
@@ -88,7 +88,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 toRequestMenu(getActivity());
                 return true;
             case (R.id.menu_item_app_settings):
-                //todo: app settings
+                toSettings(getActivity());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -253,7 +253,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 if(size > 0){
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                             builder.build(),
-                            defaultPadding
+                            AppValues.defaultPadding
                     ));
                 }else{
                     binding.mainMenuMap.setVisibility(View.GONE);
@@ -294,7 +294,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                     builder.build(),
-                    defaultPadding
+                    AppValues.defaultPadding
             ));
         }
     }
@@ -330,6 +330,14 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
                 if(nav != null)
                     nav.navigate(R.id.mainMenuToLogin);
+            });
+    }
+    public void toSettings(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                if(nav != null)
+                    nav.navigate(R.id.mainMenuToAppSettings);
             });
     }
     public void toUserContacts(@Nullable Activity activity) {

@@ -29,6 +29,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserContactsBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -261,7 +262,7 @@ public class UserContactsFragment
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.UserContactsFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(ContactProfileFragment.CONTACT_PROFILE_ARG,contact);
+                bundle.putParcelable(AppValues.CONTACT_PROFILE_ARG,contact);
                 if(nav != null)
                     nav.navigate(R.id.userContactstoContactProfile,bundle);
             });

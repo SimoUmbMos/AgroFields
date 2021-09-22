@@ -33,10 +33,10 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class LandInfoFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
-    public static final String argLand = "land";
 
     private Land land;
     private User currUser;
@@ -73,8 +73,8 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
 
     private void initData() {
         if(getArguments() != null){
-            if(getArguments().containsKey(argLand)){
-                land = getArguments().getParcelable(argLand);
+            if(getArguments().containsKey(AppValues.argLandInfoFragment)){
+                land = getArguments().getParcelable(AppValues.argLandInfoFragment);
             }else{
                 land = null;
             }
@@ -240,7 +240,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandInfoFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandMapFragment.argLand,land);
+                bundle.putParcelable(AppValues.argLandLandMapFragment,land);
                 if(nav != null)
                     nav.navigate(R.id.landInfoToLandMap,bundle);
             });
@@ -250,8 +250,8 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandInfoFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandMapFragment.argLand,land);
-                bundle.putString(LandMapFragment.argAddress,address);
+                bundle.putParcelable(AppValues.argLandLandMapFragment,land);
+                bundle.putString(AppValues.argAddressLandMapFragment,address);
                 if(nav != null)
                     nav.navigate(R.id.landInfoToLandMap,bundle);
             });

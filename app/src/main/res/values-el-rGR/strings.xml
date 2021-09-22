@@ -151,8 +151,17 @@
     <string name="decline_request_error">Something goes wrong, try again</string>
     <string name="fabAccept">Accept Contact</string>
     <string name="fabDeny">Deny Contact</string>
-    <!-- Import Activity -->
-    <string name="title_activity_import">Χάρτης</string>
+    <!-- App Settings Fragment-->
+    <string name="app_settings_title">Ρυθμίσεις</string>
+    <string name="factory_reset">Factory Reset</string>
+    <string name="select_theme_title">Select App Style</string>
+    <string-array name="theme_styles">
+        <item>System Default</item>
+        <item>Light Theme</item>
+        <item>Dark Theme</item>
+    </string-array>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε ξανά για έξοδο</string>
+    <!-- Import Activity -->
+    <string name="title_activity_import">Χάρτης</string>
 </resources>
