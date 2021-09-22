@@ -6,20 +6,17 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.mosc.simo.ptuxiaki3741.backend.database.RoomValues;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 
 import java.util.List;
 
 @Dao
 public interface LandHistoryDao {
-    @Query("SELECT * FROM LandDataRecord " +
-            "Where `LandID` = :lid " +
-            "ORDER BY `Date`, `LandTitle`")
+    @Query(RoomValues.LandHistoryDaoValues.GetLandRecordByLandID)
     List<LandDataRecord> getLandRecordByLandID(long lid);
 
-    @Query("SELECT * FROM LandDataRecord " +
-            "Where `CreatorID` = :uid " +
-            "ORDER BY `LandID`, `Date`, `LandTitle`")
+    @Query(RoomValues.LandHistoryDaoValues.GetLandRecordsByUserId)
     List<LandDataRecord> getLandRecordsByUserId(long uid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -14,19 +14,7 @@
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
-    <item android:title="@string/app_actions_group_title"
-        android:id="@+id/group_map_app_actions">
-        <menu>
-            <item
-                android:id="@+id/toolbar_action_edit_land_info"
-                android:icon="@drawable/ic_drawer_menu_edit"
-                app:iconTint="@color/textColor"
-                android:orderInCategory="1"
-                android:title="@string/edit_info"
-                app:showAsAction="ifRoom|withText" />
-        </menu>
-    </item>
-    <item android:title="@string/land_actions_group_title"
+    <item android:title="@string/points_actions_group_title"
         android:id="@+id/group_map_menu_core_actions">
         <menu>
             <item
@@ -122,6 +110,25 @@
                 app:iconTint="@color/textColor"
                 android:orderInCategory="1"
                 android:title="@string/import_label"
+                app:showAsAction="ifRoom|withText" />
+        </menu>
+    </item>
+    <item android:title="@string/land_actions_group_title"
+        android:id="@+id/group_map_menu_land_actions">
+        <menu>
+            <item
+                android:id="@+id/toolbar_action_edit_land_info"
+                android:icon="@drawable/ic_drawer_menu_edit"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="1"
+                android:title="@string/edit_land_name"
+                app:showAsAction="ifRoom|withText" />
+            <item
+                android:id="@+id/toolbar_action_delete_land"
+                android:icon="@drawable/ic_menu_delete"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="2"
+                android:title="@string/delete_land"
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>

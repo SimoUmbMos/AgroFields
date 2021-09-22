@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.mosc.simo.ptuxiaki3741.backend.database.RoomValues;
 import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
 
@@ -13,34 +14,20 @@ import java.util.List;
 
 @Dao
 public interface UserRelationshipDao {
-
-    @Query("SELECT * FROM `UserRelationships` WHERE " +
-            "(`SenderID` = :id1 AND `ReceiverID` = :id2) OR " +
-            "(`SenderID` = :id2 AND `ReceiverID` = :id1)")
+    @Query(RoomValues.UserRelationshipDaoValues.GetByIDs)
     List<UserRelationship> getByIDs(long id1, long id2);
 
-    @Query("SELECT * FROM `UserRelationships` WHERE `SenderID` = :id AND Type = :type")
-    List<UserRelationship> getBySenderIDAndType(long id, UserDBAction type);
-
-    @Query("SELECT * FROM `UserRelationships` WHERE `ReceiverID` = :id AND Type = :type")
-    List<UserRelationship> getByReceiverIDAndType(long id, UserDBAction type);
-
-    @Query("SELECT * FROM `UserRelationships` WHERE (`ReceiverID` = :id OR `SenderID` = :id) AND Type = :type")
+    @Query(RoomValues.UserRelationshipDaoValues.GetByIDAndType)
     List<UserRelationship> getByIDAndType(long id, UserDBAction type);
-
-    @Query("SELECT * FROM `UserRelationships` WHERE (`ReceiverID` = :id OR `SenderID` = :id)")
-    List<UserRelationship> getByID(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(UserRelationship userRelationship);
 
     @Delete
     void deleteAll(List<UserRelationship> userRelationships);
-    @Query("DELETE FROM `UserRelationships` " +
-            "WHERE `SenderID` = :uid OR `ReceiverID` = :uid")
+    @Query(RoomValues.UserRelationshipDaoValues.DeleteByUserID)
     void deleteByUserID(long uid);
-    @Query("DELETE FROM `UserRelationships` " +
-            "WHERE `ReceiverID` = :rid AND `SenderID` = :sid AND Type = :type")
+    @Query(RoomValues.UserRelationshipDaoValues.DeleteByIDsAndType)
     void deleteByIDsAndType(long rid, long sid, UserDBAction type);
 
 }

@@ -15,5 +15,11 @@
             android:orderInCategory="2"
             android:title="@string/save_land"
             app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/menu_item_restore_land"
+            android:icon="@drawable/ic_menu_restore"
+            android:orderInCategory="3"
+            android:title="@string/restore_land"
+            app:showAsAction="ifRoom" />
     </group>
 </menu>

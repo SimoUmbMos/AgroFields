@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.mosc.simo.ptuxiaki3741.backend.database.RoomValues;
 import com.mosc.simo.ptuxiaki3741.models.entities.SharedLand;
 
 import java.util.List;
@@ -13,9 +14,7 @@ import java.util.List;
 @Dao
 public interface SharedLandDao {
 
-    @Query("SELECT s.* FROM SharedLands s " +
-            "WHERE s.LandID = :lid " +
-            "AND s.UserID = :uid")
+    @Query(RoomValues.SharedLandDaoValues.GetSharedLandsByUidAndLid)
     List<SharedLand> getSharedLandsByUidAndLid(long uid, long lid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,8 +24,8 @@ public interface SharedLandDao {
     void delete(SharedLand sharedLand);
     @Delete
     void deleteAll(List<SharedLand> sharedLand);
-    @Query("DELETE FROM SharedLands WHERE UserID = :uid")
+    @Query(RoomValues.SharedLandDaoValues.DeleteByUserID)
     void deleteByUserID(long uid);
-    @Query("DELETE FROM SharedLands WHERE LandID = :lid")
+    @Query(RoomValues.SharedLandDaoValues.DeleteByLandID)
     void deleteByLandID(long lid);
 }

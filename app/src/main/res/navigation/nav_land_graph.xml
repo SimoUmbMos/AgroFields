@@ -55,12 +55,6 @@
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
         <action
-            android:id="@+id/landMapToListMenu"
-            app:destination="@id/LandCollectionFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/LandCollectionFragment"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/landMapToLandInfo"
             app:destination="@id/LandInfoFragment" />
     </fragment>

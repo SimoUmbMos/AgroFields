@@ -41,7 +41,6 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     private Land land;
     private User currUser;
     private FragmentLandInfoBinding binding;
-    private boolean isNew = false;
 
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                                                  @Nullable ViewGroup container,
@@ -77,16 +76,10 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
             if(getArguments().containsKey(argLand)){
                 land = getArguments().getParcelable(argLand);
             }else{
-                land = new Land();
+                land = null;
             }
         }else{
-            land = new Land();
-        }
-        if(new Land().equals(land)){
             land = null;
-            isNew = true;
-        }else{
-            isNew = false;
         }
     }
     private void initActivity(){
@@ -153,12 +146,14 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
 
         String landLabel;
         if(land == null){
-            landLabel = getResources().getString(R.string.create_land_label);
+            landLabel = getString(R.string.create_land_label);
             binding.etLandInfoAddress.setEnabled(true);
         }else{
-            landLabel = getResources().getString(R.string.edit_land_label);
+            landLabel = getString(R.string.edit_land_label);
             binding.etLandInfoName.setText(land.getData().getTitle());
+            binding.etLandInfoAddress.setText("");
             binding.etLandInfoAddress.setEnabled(false);
+            binding.etLandInfoAddressLayout.setVisibility(View.GONE);
             asyncFindAddress(getActivity(),land);
         }
         binding.tvLandInfoActionLabel.setText(landLabel);
@@ -214,22 +209,19 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
                 "[^a-zA-Z0-9]", " ");
         landName = landName.trim().replaceAll(" +", " ");
         if(!landName.isEmpty()){
-            if(isNew){
-                submitAdd(landName, address);
-            }else{
-                submitEdit(landName);
+            submit(landName, address);
+        }
+    }
+    private void submit(String landName, String address) {
+        if(land == null){
+            if(currUser != null){
+                LandData landData = new LandData(currUser.getId(),landName);
+                toLandMap(getActivity(),new Land(landData),address);
             }
+        }else{
+            land.getData().setTitle(landName);
+            toLandMap(getActivity(),land);
         }
-    }
-    private void submitAdd(String landName, String address) {
-        if(currUser != null){
-            LandData landData = new LandData(currUser.getId(),landName);
-            toLandMap(getActivity(),new Land(landData),address);
-        }
-    }
-    private void submitEdit(String landName) {
-        land.getData().setTitle(landName);
-        toLandMap(getActivity(),land);
     }
 
     //cancel

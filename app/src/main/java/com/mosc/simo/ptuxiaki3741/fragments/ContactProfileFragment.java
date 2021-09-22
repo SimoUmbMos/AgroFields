@@ -129,6 +129,12 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
                 startActivity(intent);
             });
         }
+
+        binding.btnContactShareLand.setOnClickListener(v->toShareLandList());
+    }
+
+    private void toShareLandList() {
+        //todo: nav share land list
     }
 
     private void goBack(){

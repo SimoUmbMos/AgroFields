@@ -247,6 +247,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
         this.data.addAll(data);
         adapter.notifyItemRangeInserted(0,data.size());
+        updateUi();
     }
     private void onVMStatusChange(ViewModelStatus status){
         if(status == ViewModelStatus.LOADING){
@@ -500,9 +501,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
-                Land land = new Land();
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandInfoFragment.argLand,land);
+                bundle.putParcelable(LandInfoFragment.argLand,null);
                 if(nav != null)
                     nav.navigate(R.id.landCollectionToLandInfo,bundle);
             });

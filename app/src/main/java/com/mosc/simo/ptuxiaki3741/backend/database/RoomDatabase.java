@@ -21,12 +21,11 @@ import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
         LandData.class,
         SharedLand.class,
         LandDataRecord.class
-}, version = RoomDatabase.DATABASE_VERSION)
+}, version = RoomValues.DATABASE_VERSION)
 @TypeConverters({
         DBTypesConverter.class
 })
 public abstract class RoomDatabase extends androidx.room.RoomDatabase {
-    public static final int DATABASE_VERSION = 22;
     public abstract UserDao userDao();
     public abstract LandDao landDao();
     public abstract LandHistoryDao landHistoryDao();

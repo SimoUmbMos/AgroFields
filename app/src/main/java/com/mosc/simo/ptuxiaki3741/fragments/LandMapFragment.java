@@ -44,7 +44,6 @@ import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
@@ -61,7 +60,8 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     public static final String TAG = "LandFragment";
     public static final String argLand = "land",
             argAddress = "address",
-            argDisplayMode = "display_mode";
+            argDisplayMode = "display_mode",
+            argShowRestore = "show_restore";
 
     public static final double distanceToMapActionKM = 100;
     private static final float stepOpacity = 0.03f, stepRotate = 1f, stepZoom = 0.03f,
@@ -72,7 +72,8 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private LandFileState fileState;
     private float zoom, dx, dy, x, y;
     private int index1, index2, index3;
-    private boolean displayOnly = false;
+    private boolean displayOnly = false,
+            showRestore = false;
 
     public ActionBar actionBar;
     private FragmentLandMapBinding binding;
@@ -83,8 +84,8 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private List<List<LatLng>> undoList;
     private User currUser;
     private String address;
-    private long currLandID;
-    private String title,displayTitle;
+    private Land currLand;
+    private String displayTitle;
 
     // overrides
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
@@ -109,8 +110,11 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.map_menu, menu);
         this.menu = menu;
-        setupMenuItems();
         super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        setupMenuItems();
+        super.onPrepareOptionsMenu(menu);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(menuItemClick(item)){
@@ -223,12 +227,11 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
 
     //init relative
     private void initData(){
-        Land currLand;
         if(getArguments() != null){
             if(getArguments().containsKey(argLand)) {
                 currLand = getArguments().getParcelable(argLand);
             }else {
-                currLand = new Land();
+                currLand = null;
             }
             if(getArguments().containsKey(argAddress)) {
                 address = getArguments().getString(argAddress);
@@ -240,28 +243,38 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             }else{
                 displayOnly = false;
             }
+            if(getArguments().containsKey(argShowRestore)) {
+                showRestore = getArguments().getBoolean(argShowRestore);
+            }else{
+                showRestore = false;
+            }
         }else{
-            currLand = new Land();
+            currLand = null;
             address = null;
             displayOnly = false;
+            showRestore = false;
         }
         points = new ArrayList<>();
-        if(!new Land().equals(currLand)){
-            currLandID = currLand.getData().getId();
-            title = currLand.getData().getTitle();
-            displayTitle = title;
-            if(currLandID != -1){
-                displayTitle = displayTitle + " #"+ EncryptUtil.convert4digit(currLandID);
-            }
-            if(currLand.getData().getBorder().size()>0){
-                points.addAll(currLand.getData().getBorder());
-                if(points.get(0).equals(points.get(points.size()-1)))
-                    points.remove(points.size()-1);
-            }
-        }else{
-            currLandID = -1;
-            title = "";
+        if(currLand == null){
+            finish(getActivity());
         }
+
+        Menu tempMenu = binding.navLandMenu.getMenu();
+        MenuItem deleteLandItem = tempMenu.findItem(R.id.toolbar_action_delete_land);
+        displayTitle = currLand.getData().getTitle();
+        if(currLand.getData().getId() != -1){
+            displayTitle += " #"+ EncryptUtil.convert4digit(currLand.getData().getId());
+            if(deleteLandItem != null)
+                deleteLandItem.setEnabled(true);
+        }else{
+            if(deleteLandItem != null)
+                deleteLandItem.setEnabled(false);
+        }
+        points.addAll(currLand.getData().getBorder());
+        if(points.size()>0)
+            if(points.get(0).equals(points.get(points.size()-1)))
+                points.remove(points.size()-1);
+
         startPoints = new ArrayList<>(points);
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
@@ -342,15 +355,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void onUserUpdate(User user) {
         currUser = user;
     }
-    private Land getLand() {
-        Land currLand;
-        if(currLandID >= 0){
-            currLand = new Land(new LandData(currLandID,currUser.getId(),title,points));
-        }else{
-            currLand = new Land(new LandData(currUser.getId(),title,points));
-        }
-        return currLand;
-    }
 
     //menu relative
     private boolean menuItemClick(MenuItem menuItem) {
@@ -359,7 +363,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 toggleDrawer(true);
                 return true;
             case (R.id.menu_item_save_land):
-                save();
+                saveLand();
+                return true;
+            case (R.id.menu_item_restore_land):
+                restoreLand();
                 return true;
             case (R.id.toolbar_action_toggle_map_lock):
                 toggleMapLock();
@@ -403,6 +410,9 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             case (R.id.toolbar_action_import):
                 toImportFile();
                 return true;
+            case (R.id.toolbar_action_delete_land):
+                deleteLand();
+                return true;
             default:
                 toggleDrawer(false);
                 return false;
@@ -410,21 +420,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
 
     //navigation relative
-    public void toMenu(@Nullable Activity activity) {
+    public void finish(Activity activity) {
         if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
-                if(nav != null)
-                    nav.navigate(R.id.landMapToListMenu);
+            activity.runOnUiThread(()->{
+                    binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
+                    binding.clLandControls.setVisibility(View.GONE);
+                    activity.onBackPressed();
             });
     }
-    public void toInfo(@Nullable Activity activity) {
+    public void toInfo(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
-                Land land = getLand();
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(LandInfoFragment.argLand,land);
+                bundle.putParcelable(LandInfoFragment.argLand,currLand);
                 if(nav != null)
                     nav.navigate(R.id.landMapToLandInfo,bundle);
             });
@@ -437,25 +446,52 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
 
     //save relative
-    private void save() {
+    private void saveLand() {
         if(isValidToSave()){
-            saveToVM();
-            toMenu(getActivity());
+            addToVM();
+            finish(getActivity());
         }
     }
-    private boolean isValidToSave() {
-        return
-                !displayOnly &&
-                points.size() > 2 &&
-                !title.trim().isEmpty() &&
-                currUser != null;
+    private void restoreLand() {
+        if(isValidToRestore()){
+            restoreToVM();
+            finish(getActivity());
+        }
     }
-    private void saveToVM() {
-        Land currLand = getLand();
+    private void deleteLand(){
+        binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
+        removeFromVM();
+        finish(getActivity());
+    }
+    private void addToVM() {
+        currLand.getData().setBorder(points);
         if(getActivity() != null){
             LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmLands.saveLand(currLand);
         }
+    }
+    private void restoreToVM() {
+        currLand.getData().setBorder(points);
+        if(getActivity() != null){
+            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands.restoreLand(currLand);
+        }
+    }
+    private void removeFromVM() {
+        if(getActivity() != null && currLand.getData().getId() >= 0){
+            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands.removeLand(currLand);
+        }
+    }
+    private boolean isValidToSave() {
+        return points.size() > 2 &&
+                currLand != null;
+    }
+    private boolean isValidToRestore() {
+        if(isValidToSave() && currUser != null){
+            return currLand.getData().getCreator_id() == currUser.getId();
+        }
+        return false;
     }
 
     //file relative
@@ -1052,6 +1088,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         if(menu != null){
             MenuItem menuToggle = menu.findItem(R.id.menu_item_toggle_drawer);
             MenuItem menuSave = menu.findItem(R.id.menu_item_save_land);
+            MenuItem menuRestore = menu.findItem(R.id.menu_item_restore_land);
             if(menuToggle != null){
                 menuToggle.setVisible(!displayOnly);
                 menuToggle.setEnabled(!displayOnly);
@@ -1059,6 +1096,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             if(menuSave != null){
                 menuSave.setVisible(!displayOnly);
                 menuSave.setEnabled(!displayOnly);
+            }
+            if(menuRestore != null){
+                menuRestore.setVisible(showRestore);
+                menuRestore.setEnabled(showRestore);
             }
         }
     }
@@ -1085,11 +1126,13 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 Address location = MapUtil.findLocation(getContext(),address);
                 if(location != null){
                     if(location.hasLatitude() && location.hasLongitude()){
-                        activity.runOnUiThread(()->
+                        activity.runOnUiThread(()-> {
+                            if(mMap != null)
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(location.getLatitude(),location.getLongitude()),
                                         addressZoom
-                                )));
+                                ));
+                        });
                     }
                 }
             });

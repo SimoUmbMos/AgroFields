@@ -197,6 +197,7 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(LandMapFragment.argLand,land);
                 bundle.putBoolean(LandMapFragment.argDisplayMode,true);
+                bundle.putBoolean(LandMapFragment.argShowRestore,true);
                 if(nav != null)
                     nav.navigate(R.id.landHistoryToLandMap,bundle);
             });

@@ -78,9 +78,10 @@
     <string name="land_imageView">show img above map</string>
     <string name="open_menu">Open Menu</string>
     <string name="save_land">Save Land</string>
+    <string name="restore_land">Restore Land</string>
     <string name="map_view_actions_group_title">Map Actions</string>
     <string name="lock_map">Lock map</string>
-    <string name="land_actions_group_title">Land Actions</string>
+    <string name="points_actions_group_title">Points Actions</string>
     <string name="create_point">Add Point</string>
     <string name="create_between_points">Add Between Points</string>
     <string name="selectFirstPoint">select first point</string>
@@ -100,8 +101,9 @@
     <string name="opacity_img">Change Opacity</string>
     <string name="file_actions_group_title">File Actions</string>
     <string name="import_label">Import</string>
-    <string name="app_actions_group_title">Land Info Actions</string>
-    <string name="edit_info">Edit Land Info</string>
+    <string name="land_actions_group_title">Land Actions</string>
+    <string name="delete_land">Delete Land</string>
+    <string name="edit_land_name">Edit Land Name</string>
     <!-- History Menu Fragment -->
     <string name="land_history">Lands History</string>
     <string name="land_action_created">Created</string>

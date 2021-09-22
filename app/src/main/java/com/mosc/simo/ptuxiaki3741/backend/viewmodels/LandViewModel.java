@@ -126,10 +126,6 @@ public class LandViewModel extends AndroidViewModel {
                 LandDBAction action;
                 if(land.getData().getId() != -1){
                     action = LandDBAction.UPDATE;
-                    Land temp = landRepository.getLand(land.getData().getId());
-                    if(temp.getData().getCreator_id() != land.getData().getCreator_id()){
-                        land.getData().setCreator_id(temp.getData().getCreator_id());
-                    }
                 }else{
                     action = LandDBAction.CREATE;
                 }
@@ -145,6 +141,72 @@ public class LandViewModel extends AndroidViewModel {
                         new Date()
                 );
                 landRepository.saveLandRecord(landRecord);
+                loadLandsRecords(currUser);
+                status.postValue(ViewModelStatus.FULLY_LOADED);
+            });
+        }
+    }
+    public void restoreLand(Land land) {
+        if(currUser != null && land != null){
+            status.postValue(ViewModelStatus.LOADING);
+            lands.postValue(new ArrayList<>());
+            sharedLands.postValue(new ArrayList<>());
+            landsHistory.postValue(new ArrayList<>());
+            AsyncTask.execute(()->{
+
+                if(land.getData().getId() != -1){
+                    LandDBAction action = LandDBAction.RESTORE;
+                    Land newLand = landRepository.saveLand(land);
+                    LandDataRecord landRecord = new LandDataRecord(
+                            newLand.getData(),
+                            currUser,
+                            action,
+                            new Date()
+                    );
+                    landRepository.saveLandRecord(landRecord);
+                }
+
+                loadLands(currUser);
+                status.postValue(ViewModelStatus.LOADED_LANDS);
+                loadLandsRecords(currUser);
+                status.postValue(ViewModelStatus.FULLY_LOADED);
+            });
+        }
+    }
+    public void removeLand(Land removeLand) {
+        if(currUser != null && removeLand != null){
+            status.postValue(ViewModelStatus.LOADING);
+            lands.postValue(new ArrayList<>());
+            sharedLands.postValue(new ArrayList<>());
+            landsHistory.postValue(new ArrayList<>());
+            AsyncTask.execute(()-> {
+                boolean isShared = false;
+                LandDataRecord landRecord;
+                List<LandDataRecord> landRecords = new ArrayList<>();
+                if(removeLand.getData() != null){
+                    if(removeLand.getData().getCreator_id() == currUser.getId()){
+                        landRecord = new LandDataRecord(
+                                removeLand.getData(),
+                                currUser,
+                                LandDBAction.DELETE,
+                                new Date()
+                        );
+                        landRecords.add(landRecord);
+                    }else{
+                        isShared = true;
+                    }
+                }
+                if(isShared){
+                    landRepository.removeSharedLand(removeLand,currUser);
+                }else{
+                    landRepository.deleteLand(removeLand);
+                }
+                loadLands(currUser);
+                status.postValue(ViewModelStatus.LOADED_LANDS);
+
+                for(LandDataRecord temp:landRecords){
+                    landRepository.saveLandRecord(temp);
+                }
                 loadLandsRecords(currUser);
                 status.postValue(ViewModelStatus.FULLY_LOADED);
             });
