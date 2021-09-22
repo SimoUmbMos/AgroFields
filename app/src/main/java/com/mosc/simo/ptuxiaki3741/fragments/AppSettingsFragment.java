@@ -82,13 +82,13 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 R.array.theme_styles, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.svTheme.setAdapter(adapter);
-        int pos = 0;//default
+        int pos = 0;
         if(sharedPref != null){
             if(sharedPref.getBoolean(AppValues.isForceKey, false)){
-                if(sharedPref.getBoolean(AppValues.isDarkKey, false)){
-                    pos=2;//dark
+                if(!sharedPref.getBoolean(AppValues.isDarkKey, false)){
+                    pos=1;
                 }else{
-                    pos=1;//light
+                    pos=2;
                 }
             }
         }
@@ -126,7 +126,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void factoryReset(){
-        binding.svTheme.setSelection(0);
+        binding.svTheme.setSelection(0,false);
         if(sharedPref != null){
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.remove(AppValues.isForceKey);
