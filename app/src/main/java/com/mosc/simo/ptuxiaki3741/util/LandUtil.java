@@ -16,7 +16,8 @@ public final class LandUtil {
                     record.getLandID(),
                     record.getLandCreatorID(),
                     record.getLandTitle(),
-                    record.getBorder()
+                    record.getBorder(),
+                    record.getHoles()
             );
         }
         return null;

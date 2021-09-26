@@ -69,7 +69,7 @@ public class UserRequestAdapter extends RecyclerView.Adapter<UserRequestAdapter.
     }
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder{
-        public ViewHolderUserRequestBinding binding;
+        public final ViewHolderUserRequestBinding binding;
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = ViewHolderUserRequestBinding.bind(itemView);

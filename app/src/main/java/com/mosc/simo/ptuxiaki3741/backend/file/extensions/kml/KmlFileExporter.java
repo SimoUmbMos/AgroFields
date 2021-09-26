@@ -1,21 +1,17 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
+import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.jdom2.output.support.AbstractXMLOutputProcessor;
-import org.jdom2.output.support.FormatStack;
-import org.jdom2.output.support.XMLOutputProcessor;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
 
 public class KmlFileExporter {
-    public static Document kmlFileExporter(String key,List<ExportFieldModel> exportFieldList){
+    public static Document kmlFileExporter(String key,List<Land> lands){
         Document doc = new Document();
         try{
             Element root = createElement("kml");
@@ -24,10 +20,12 @@ public class KmlFileExporter {
             document.addContent(createSchemaHeader(key));
             folder.addContent(createFolderHeader(key));
             Element placeMark;
-            for(int i = 0;i<exportFieldList.size();i++){
-                placeMark = createPlaceMarkHeader(key,exportFieldList.get(i), i+1);
-                placeMark.addContent(createGeometry(exportFieldList.get(i).getPointsList()));
+            int i = 0;
+            for(Land land : lands){
+                placeMark = createPlaceMarkHeader(key, land, i+1);
+                placeMark.addContent(createGeometry(land.getData()));
                 folder.addContent(placeMark);
+                i++;
             }
             document.addContent(folder);
             root.addContent(document);
@@ -38,32 +36,49 @@ public class KmlFileExporter {
         return doc;
     }
 
-    private static Element createGeometry(List<List<LatLng>> pointsList) {
+    private static Element createGeometry(LandData data) {
         Element multiGeometry = createElement("MultiGeometry"),
-                polygon, outerBoundaryIs, linearRing, tessellate, coordinates;
+                polygon = createElement("Polygon"),
+                outerBoundaryIs, innerBoundaryIs, linearRing, coordinates;
         StringBuilder coordinatesString = new StringBuilder();
-        for(int i=0;i<pointsList.size();i++){
-            coordinatesString.setLength(0);
-            polygon = createElement("Polygon");
-            outerBoundaryIs = createElement("outerBoundaryIs");
+        int holesNumber = 0;
+
+        outerBoundaryIs = createElement("outerBoundaryIs");
+        linearRing = createElement("LinearRing");
+        coordinates = createElement("coordinates");
+        for(LatLng point : data.getBorder()){
+            coordinatesString
+                    .append(point.longitude)
+                    .append(",")
+                    .append(point.latitude)
+                    .append(" ");
+        }
+        coordinates.addContent(coordinatesString.toString());
+        linearRing.addContent(coordinates);
+        outerBoundaryIs.addContent(linearRing);
+
+        innerBoundaryIs = createElement("innerBoundaryIs");
+        for(List<LatLng> hole : data.getHoles()){
             linearRing = createElement("LinearRing");
-            tessellate = createElement("tessellate");
-            tessellate.addContent("1");
             coordinates = createElement("coordinates");
-            for(int j=0;j<pointsList.get(i).size();j++){
+            coordinatesString.setLength(0);
+            for(LatLng point : hole){
                 coordinatesString
-                        .append(pointsList.get(i).get(j).longitude)
+                        .append(point.longitude)
                         .append(",")
-                        .append(pointsList.get(i).get(j).latitude)
+                        .append(point.latitude)
                         .append(" ");
             }
             coordinates.addContent(coordinatesString.toString());
-            linearRing.addContent(tessellate);
             linearRing.addContent(coordinates);
-            outerBoundaryIs.addContent(linearRing);
-            polygon.addContent(outerBoundaryIs);
-            multiGeometry.addContent(polygon);
+            innerBoundaryIs.addContent(linearRing);
+            holesNumber++;
         }
+
+        polygon.addContent(outerBoundaryIs);
+        if(holesNumber != 0)
+            polygon.addContent(innerBoundaryIs);
+        multiGeometry.addContent(polygon);
         return multiGeometry;
     }
 
@@ -95,7 +110,7 @@ public class KmlFileExporter {
         schema.addContent(simpleField);
         return schema;
     }
-    private static Element createPlaceMarkHeader(String key, ExportFieldModel exportFieldList, int i){
+    private static Element createPlaceMarkHeader(String key, Land land, int i){
         Element placeMark;
         Element extendedData;
         Element schemaData;
@@ -107,7 +122,7 @@ public class KmlFileExporter {
         schemaData.setAttribute("schemaUrl","#"+key+"_1");
         simpleData = createElement("SimpleData");
         simpleData.setAttribute("name","PER");
-        simpleData.addContent(exportFieldList.getTitle());
+        simpleData.addContent(land.getData().getTitle());
         schemaData.addContent(simpleData);
         extendedData.addContent(schemaData);
         placeMark.addContent(extendedData);

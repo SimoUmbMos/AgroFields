@@ -50,11 +50,7 @@ public final class FileUtil {
     private FileUtil(){}
 
     public static String landsToKmlString(List<Land> lands,String label) {
-        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
-        landToExportModel(lands, exportFieldModels);
-        Document document = KmlFileExporter.kmlFileExporter(
-                label, exportFieldModels
-        );
+        Document document = KmlFileExporter.kmlFileExporter(label, lands);
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
         return xmOut.outputString(document);
     }

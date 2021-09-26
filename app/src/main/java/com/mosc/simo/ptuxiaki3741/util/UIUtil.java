@@ -12,9 +12,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.mosc.simo.ptuxiaki3741.R;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public final class UIUtil {
     private UIUtil(){}
 

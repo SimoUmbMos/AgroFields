@@ -26,19 +26,32 @@ public class KmlFileReader {
         try {
             DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = docBuilder.parse(is);
-            NodeList polygonTags, outerBoundaryTags, coordList;
-            Element polygon,outerBoundary;
-            List<LatLng> positions = new ArrayList<>();
+
+            NodeList polygonTags;
+            NodeList outerBoundaryTags;
+            NodeList innerBoundaryTags;
+
+            NodeList coordList;
+
+            Element polygon;
+            Element outerBoundary;
+            Element innerBoundary;
+
+            List<List<LatLng>> holes = new ArrayList<>();
+            List<LatLng> hole = new ArrayList<>();
+            List<LatLng> border = new ArrayList<>();
 
             if (document == null) return border_fragment;
 
-            //get polygon
             polygonTags = document.getElementsByTagName("Polygon");
             for(int i = 0; i < polygonTags.getLength(); i++){
                 if (polygonTags.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     polygon = (Element) polygonTags.item(i);
-                    outerBoundaryTags = polygon.getElementsByTagName("outerBoundaryIs");
 
+                    border.clear();
+                    holes.clear();
+
+                    outerBoundaryTags = polygon.getElementsByTagName("outerBoundaryIs");
                     for(int j = 0; j < outerBoundaryTags.getLength(); j++){
                         if (outerBoundaryTags.item(j).getNodeType() == Node.ELEMENT_NODE) {
                             outerBoundary = (Element) outerBoundaryTags.item(j);
@@ -47,20 +60,38 @@ public class KmlFileReader {
                             for (int z = 0; z < coordList.getLength(); z++) {
                                 String[] coordinatePairs = coordList.item(z).getFirstChild()
                                         .getNodeValue().trim().split(" ");
-                                positions.clear();
                                 for (String coord : coordinatePairs) {
-                                    positions.add(new LatLng(Double.parseDouble(coord.split(",")[1]),
+                                    border.add(new LatLng(Double.parseDouble(coord.split(",")[1]),
                                             Double.parseDouble(coord.split(",")[0])));
                                 }
-                                border_fragment.add(new Land(new LandData(positions)));
                             }
 
                         }
                     }
 
+                    innerBoundaryTags = polygon.getElementsByTagName("innerBoundaryIs");
+                    for(int j = 0; j < innerBoundaryTags.getLength(); j++){
+                        if (innerBoundaryTags.item(j).getNodeType() == Node.ELEMENT_NODE) {
+                            innerBoundary = (Element) innerBoundaryTags.item(j);
+
+                            coordList = innerBoundary.getElementsByTagName("coordinates");
+                            for (int z = 0; z < coordList.getLength(); z++) {
+                                String[] coordinatePairs = coordList.item(z).getFirstChild()
+                                        .getNodeValue().trim().split(" ");
+
+                                hole.clear();
+                                for (String coord : coordinatePairs) {
+                                    hole.add(new LatLng(Double.parseDouble(coord.split(",")[1]),
+                                            Double.parseDouble(coord.split(",")[0])));
+                                }
+                                holes.add(new ArrayList<>(hole));
+                            }
+                        }
+                    }
+
+                    border_fragment.add(new Land(new LandData(border,holes)));
                 }
             }
-
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();

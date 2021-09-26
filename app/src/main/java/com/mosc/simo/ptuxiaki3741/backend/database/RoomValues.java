@@ -1,7 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.database;
 
 public final class RoomValues {
-    public static final int DATABASE_VERSION = 22;
+    public static final int DATABASE_VERSION = 23;
     public static final class LandDaoValues{
         public static final String GetLands
                 = "SELECT * FROM LandData";

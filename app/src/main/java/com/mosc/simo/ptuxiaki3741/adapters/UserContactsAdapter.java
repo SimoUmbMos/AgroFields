@@ -51,7 +51,7 @@ public class UserContactsAdapter extends RecyclerView.Adapter<UserContactsAdapte
     }
 
     public static class ViewHolder  extends RecyclerView.ViewHolder{
-        public ViewHolderUserContactBinding binding;
+        public final ViewHolderUserContactBinding binding;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = ViewHolderUserContactBinding.bind(itemView);

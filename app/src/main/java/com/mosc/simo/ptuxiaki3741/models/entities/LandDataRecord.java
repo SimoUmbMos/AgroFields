@@ -32,30 +32,41 @@ public class LandDataRecord {
     private final Date date;
     @ColumnInfo(name = "LandBorder")
     private final List<LatLng> border;
+    @ColumnInfo(name = "LandHoles")
+    private final List<List<LatLng>> holes;
 
     @Ignore
     public LandDataRecord(LandData land, User user, LandDBAction actionID, Date date) {
         this.landID = land.getId();
         this.landCreatorID = land.getCreator_id();
         this.landTitle = land.getTitle();
-        this.border = new ArrayList<>(land.getBorder());
         this.userID = user.getId();
         this.actionID = actionID;
         this.date = date;
+        this.border = new ArrayList<>();
+        this.holes = new ArrayList<>();
+        setBorder(land.getBorder());
+        setHoles(land.getHoles());
     }
     @Ignore
-    public LandDataRecord(long id,LandData land, long userID, LandDBAction actionID, Date date) {
+    public LandDataRecord(long id, LandData land, long userID, LandDBAction actionID, Date date) {
         this.id = id;
         this.landID = land.getId();
         this.landCreatorID = land.getCreator_id();
         this.landTitle = land.getTitle();
-        this.border = new ArrayList<>(land.getBorder());
         this.userID = userID;
         this.actionID = actionID;
         this.date = date;
+        this.border = new ArrayList<>();
+        this.holes = new ArrayList<>();
+        setBorder(land.getBorder());
+        setHoles(land.getHoles());
     }
 
-    public LandDataRecord(long id, long landID, long landCreatorID, String landTitle, long userID, LandDBAction actionID, Date date,List<LatLng> border) {
+    public LandDataRecord(long id, long landID, long landCreatorID, String landTitle, long userID,
+                          LandDBAction actionID, Date date,
+                          List<LatLng> border, List<List<LatLng>> holes
+    ) {
         this.id = id;
         this.landID = landID;
         this.landCreatorID = landCreatorID;
@@ -63,7 +74,10 @@ public class LandDataRecord {
         this.userID = userID;
         this.actionID = actionID;
         this.date = date;
-        this.border = new ArrayList<>(border);
+        this.border = new ArrayList<>();
+        this.holes = new ArrayList<>();
+        setBorder(border);
+        setHoles(holes);
     }
 
     public long getId() {
@@ -90,9 +104,21 @@ public class LandDataRecord {
     public List<LatLng> getBorder() {
         return border;
     }
+    public List<List<LatLng>> getHoles() {
+        return this.holes;
+    }
 
     public void setId(long id) {
         this.id = id;
+    }
+    private void setBorder(List<LatLng> border){
+        this.border.clear();
+        if(border != null)
+            this.border.addAll(border);
+    }
+    private void setHoles(List<List<LatLng>> holes){
+        this.holes.clear();
+        this.holes.addAll(holes);
     }
 
     @Override
@@ -108,11 +134,12 @@ public class LandDataRecord {
                 actionID == that.actionID &&
                 landTitle.equals(that.landTitle) &&
                 date.equals(that.date) &&
-                ListUtils.arraysMatch(border,that.border);
+                ListUtils.arraysMatch(border,that.border) &&
+                ListUtils.arraysMatch(holes,that.holes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, landID, landCreatorID, userID, actionID, landTitle, date, border);
+        return Objects.hash(id, landID, landCreatorID, userID, actionID, landTitle, date, border,holes);
     }
 }

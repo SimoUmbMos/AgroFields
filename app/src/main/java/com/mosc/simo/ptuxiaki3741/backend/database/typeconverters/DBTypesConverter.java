@@ -30,17 +30,6 @@ public class DBTypesConverter {
         return action.ordinal();
     }
     @TypeConverter
-    public static LatLng latLngStringToLatLng(String latLng) {
-        String[] latLngArray =  latLng.split(",");
-        double latitude = Double.parseDouble(latLngArray[0]);
-        double longitude = Double.parseDouble(latLngArray[1]);
-        return new LatLng(latitude,longitude);
-    }
-    @TypeConverter
-    public static String latLngToLatLngString(LatLng latLng) {
-        return latLng.latitude+","+latLng.longitude;
-    }
-    @TypeConverter
     public static Date fromTimestamp(Long value) {
         return value == null ? null : new Date(value);
     }
@@ -57,5 +46,15 @@ public class DBTypesConverter {
     public static String pointsToString(List<LatLng> points) {
         Gson gson = new Gson();
         return gson.toJson(points);
+    }
+    @TypeConverter
+    public static List<List<LatLng>> stringToHolesList(String holes) {
+        Type listType = new TypeToken<List<List<LatLng>>>() {}.getType();
+        return new Gson().fromJson(holes, listType);
+    }
+    @TypeConverter
+    public static String holesListToString(List<List<LatLng>> holes) {
+        Gson gson = new Gson();
+        return gson.toJson(holes);
     }
 }

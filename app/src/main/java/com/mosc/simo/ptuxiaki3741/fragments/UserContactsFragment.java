@@ -264,7 +264,7 @@ public class UserContactsFragment
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.CONTACT_PROFILE_ARG,contact);
                 if(nav != null)
-                    nav.navigate(R.id.userContactstoContactProfile,bundle);
+                    nav.navigate(R.id.userContactsToContactProfile,bundle);
             });
     }
 }

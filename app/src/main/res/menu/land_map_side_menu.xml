@@ -117,17 +117,24 @@
         android:id="@+id/group_map_menu_land_actions">
         <menu>
             <item
-                android:id="@+id/toolbar_action_edit_land_info"
+                android:id="@+id/toolbar_action_make_land_editable"
                 android:icon="@drawable/ic_drawer_menu_edit"
                 app:iconTint="@color/textColor"
                 android:orderInCategory="1"
+                android:title="@string/make_land_editable"
+                app:showAsAction="ifRoom|withText" />
+            <item
+                android:id="@+id/toolbar_action_edit_land_info"
+                android:icon="@drawable/ic_drawer_menu_edit"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="2"
                 android:title="@string/edit_land_name"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_delete_land"
                 android:icon="@drawable/ic_menu_delete"
                 app:iconTint="@color/textColor"
-                android:orderInCategory="2"
+                android:orderInCategory="3"
                 android:title="@string/delete_land"
                 app:showAsAction="ifRoom|withText" />
         </menu>

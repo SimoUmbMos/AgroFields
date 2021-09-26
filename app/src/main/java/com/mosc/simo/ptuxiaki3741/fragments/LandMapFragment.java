@@ -44,7 +44,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapBinding;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
@@ -75,6 +75,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private AlertDialog dialog;
 
     private List<LatLng> points,startPoints;
+    private List<List<LatLng>> holes,startHoles;
     private List<List<LatLng>> undoList;
     private User currUser;
     private String address;
@@ -194,12 +195,17 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private void importResult(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK) {
             if(result.getData() != null){
-                ParcelablePolygon polygon = (ParcelablePolygon) result.getData().getExtras()
+                Land tempLand = (Land) result.getData().getExtras()
                         .get(AppValues.resNameImportActivity);
-                points.clear();
-                points.addAll(polygon.getPoints());
-                drawMap();
-                zoomOnPoints();
+                if(tempLand != null){
+                    if(tempLand.getData() != null){
+                        points.clear();
+                        holes.clear();
+                        points.addAll(tempLand.getData().getBorder());
+                        holes.addAll(tempLand.getData().getHoles());
+                        saveLand();
+                    }
+                }
             }
         }
     }
@@ -249,27 +255,33 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             showRestore = false;
         }
         points = new ArrayList<>();
+        holes = new ArrayList<>();
         if(currLand == null){
             finish(getActivity());
         }
 
-        Menu tempMenu = binding.navLandMenu.getMenu();
-        MenuItem deleteLandItem = tempMenu.findItem(R.id.toolbar_action_delete_land);
         displayTitle = currLand.getData().getTitle();
         if(currLand.getData().getId() != -1){
             displayTitle += " #"+ EncryptUtil.convert4digit(currLand.getData().getId());
-            if(deleteLandItem != null)
-                deleteLandItem.setEnabled(true);
-        }else{
-            if(deleteLandItem != null)
-                deleteLandItem.setEnabled(false);
         }
+
         points.addAll(currLand.getData().getBorder());
-        if(points.size()>0)
+        if(points.size()>1)
             if(points.get(0).equals(points.get(points.size()-1)))
                 points.remove(points.size()-1);
 
         startPoints = new ArrayList<>(points);
+
+        holes.addAll(currLand.getData().getHoles());
+        for(List<LatLng> hole : holes){
+            if(hole.size()>1)
+                if(hole.get(0).equals(hole.get(hole.size()-1)))
+                    hole.remove(hole.size()-1);
+        }
+        startHoles = new ArrayList<>(holes);
+
+        setupSideMenu();
+
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
         currUser = null;
@@ -407,6 +419,9 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             case (R.id.toolbar_action_delete_land):
                 deleteLand();
                 return true;
+            case(R.id.toolbar_action_make_land_editable):
+                makeLandEditable();
+                return true;
             default:
                 toggleDrawer(false);
                 return false;
@@ -452,6 +467,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
     private void addToVM() {
         currLand.getData().setBorder(points);
+        currLand.getData().setHoles(holes);
         if(getActivity() != null){
             LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmLands.saveLand(currLand);
@@ -473,6 +489,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
     private void restoreToVM() {
         currLand.getData().setBorder(points);
+        currLand.getData().setHoles(holes);
         if(getActivity() != null){
             LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmLands.restoreLand(currLand);
@@ -529,12 +546,13 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             strokeColor = Color.argb(192,0,0,255);
             fillColor = Color.argb(51,0,0,255);
         }
-        if(points.size() > 0){
-            mMap.addPolygon(new PolygonOptions()
-                    .addAll(points)
-                    .strokeColor(strokeColor)
-                    .fillColor(fillColor)
-            );
+        PolygonOptions options = MapUtil.getPolygonOptions(
+                new Land(new LandData(points,holes)),
+                strokeColor,
+                fillColor
+        );
+        if(options != null){
+            mMap.addPolygon(options);
         }else if(address != null){
             asyncMoveCameraOnLocation(getActivity());
         }
@@ -823,6 +841,11 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             if(mapStatus == LandActionStates.ResetAll){
                 points.clear();
                 points.addAll(startPoints);
+                if(startHoles.size()>0){
+                    holes.clear();
+                    holes.addAll(startHoles);
+                    setupSideMenu();
+                }
                 drawMap();
             }else if(
                 mapStatus == LandActionStates.Move &&
@@ -886,6 +909,13 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             undoList.clear();
         }
         undoList.add(new ArrayList<>(points));
+    }
+    private void makeLandEditable(){
+        if(holes.size()>0){
+            holes.clear();
+            setupSideMenu();
+            drawMap();
+        }
     }
 
     //img relative
@@ -1119,6 +1149,26 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 menuRestore.setEnabled(showRestore);
             }
         }
+    }
+    private void setupSideMenu(){
+        Menu tempMenu = binding.navLandMenu.getMenu();
+
+        tempMenu.findItem(R.id.toolbar_action_delete_land)
+                .setEnabled(currLand.getData().getId() != -1);
+
+        tempMenu.findItem(R.id.toolbar_action_make_land_editable).setEnabled(holes.size()>0);
+
+        tempMenu.findItem(R.id.toolbar_action_add_on_end).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_add_between).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_edit).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_delete).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_clean).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_add_img).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_remove_img).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_move_img).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_zoom_img).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_rotate_img).setEnabled(!(holes.size()>0));
+        tempMenu.findItem(R.id.toolbar_action_opacity_img).setEnabled(!(holes.size()>0));
     }
     private void asyncFindLocation() {
         AsyncTask.execute(()->{

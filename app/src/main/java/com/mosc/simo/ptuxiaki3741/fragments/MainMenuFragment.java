@@ -35,6 +35,7 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
@@ -238,13 +239,10 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Land land:lands){
-                    mMap.addPolygon(new PolygonOptions()
-                            .addAll(land.getData().getBorder())
-                            .clickable(true)
-                            .strokeColor(strokeColor)
-                            .fillColor(fillColor)
-                            .zIndex(0.5f)
-                    );
+                    PolygonOptions options = MapUtil.getPolygonOptions(land,strokeColor,fillColor);
+                    if(options != null){
+                        mMap.addPolygon(options);
+                    }
                     for(LatLng point: land.getData().getBorder()){
                         builder.include(point);
                         size++;
@@ -268,7 +266,6 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     private void drawMap(Polygon polygon){
         drawPolygon = true;
         if(mMap != null){
-            mMap.clear();
             int strokeColor,fillColor;
             if(getContext() != null){
                 strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
@@ -277,25 +274,29 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 strokeColor = Color.argb(192,0,0,255);
                 fillColor = Color.argb(51,0,0,255);
             }
-            mMap.addPolygon(new PolygonOptions()
-                    .addAll(polygon.getPoints())
-                    .strokeColor(strokeColor)
-                    .fillColor(fillColor)
-                    .clickable(true)
+            PolygonOptions options = MapUtil.getPolygonOptions(
+                    new Land(new LandData(polygon.getPoints(),polygon.getHoles())),
+                    strokeColor,
+                    fillColor
             );
-            mMap.addMarker(new MarkerOptions()
-                    .position(MapUtil.getPolygonCenter(polygon.getPoints()))
-                    .draggable(false)
-            );
+            if(options != null){
+                mMap.clear();
+                mMap.addPolygon(options);
+                mMap.addMarker(new MarkerOptions()
+                        .position(MapUtil.getPolygonCenter(polygon.getPoints()))
+                        .draggable(false)
+                );
 
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(LatLng point:polygon.getPoints()){
-                builder.include(point);
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for(LatLng point:polygon.getPoints()){
+                    builder.include(point);
+                }
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                        builder.build(),
+                        AppValues.defaultPadding
+                ));
             }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                    builder.build(),
-                    AppValues.defaultPadding
-            ));
+
         }
     }
 

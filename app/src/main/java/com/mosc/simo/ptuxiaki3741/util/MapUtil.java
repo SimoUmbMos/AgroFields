@@ -11,8 +11,10 @@ import com.esri.arcgisruntime.geometry.PointCollection;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -25,6 +27,23 @@ import java.util.Locale;
 public final class MapUtil {
     public static final String TAG = "MapUtil";
     private MapUtil(){}
+
+    public static PolygonOptions getPolygonOptions(Land land, int strokeColor, int  fillColor){
+        if(land.getData() == null)
+            return null;
+        if(land.getData().getBorder().size() == 0)
+            return null;
+        PolygonOptions options = new PolygonOptions();
+        options.addAll(land.getData().getBorder());
+        options.clickable(true);
+        options.strokeColor(strokeColor);
+        options.fillColor(fillColor);
+        for(List<LatLng> hole : land.getData().getHoles()){
+            if(hole.size()>0)
+                options.addHole(hole);
+        }
+        return options;
+    }
 
     public static Address findLocation(Context c, String a){
         if(a != null){

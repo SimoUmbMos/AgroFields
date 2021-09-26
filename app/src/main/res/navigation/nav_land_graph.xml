@@ -94,7 +94,7 @@
         android:label="fragment_user_contacts"
         tools:layout="@layout/fragment_user_contacts" >
         <action
-            android:id="@+id/userContactstoContactProfile"
+            android:id="@+id/userContactsToContactProfile"
             app:destination="@id/contactProfileFragment" />
     </fragment>
     <fragment android:id="@+id/userRequestFragment"

@@ -29,13 +29,13 @@ public class GMLReader {
             factory.setNamespaceAware(true);
             XmlPullParser  parser = factory.newPullParser();
             parser.setInput(new StringReader(s.replace("&","&amp;")));
-            String tagname;
+            String tagName;
             Land temp;
             int eventType = parser.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                tagname = parser.getName();
+                tagName = parser.getName();
                 if (eventType == XmlPullParser.START_TAG) {
-                    if (tagname.equalsIgnoreCase("Polygon")){
+                    if (tagName.equalsIgnoreCase("Polygon")){
                         temp = parsePolygon(parser);
                         if(temp != null)
                             border_fragment.add(temp);
@@ -51,20 +51,20 @@ public class GMLReader {
     }
 
     private static Land parsePolygon(XmlPullParser parser) throws XmlPullParserException, IOException {
-        String tagname;
+        String tagName;
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            tagname = parser.getName();
+            tagName = parser.getName();
             switch (eventType){
                 case XmlPullParser.START_TAG:
-                    if(tagname.equalsIgnoreCase("outerBoundaryIs")){
+                    if(tagName.equalsIgnoreCase("outerBoundaryIs")){
                         return parserOuterBoundary(parser);
-                    }else if(tagname.equalsIgnoreCase("exterior")){
+                    }else if(tagName.equalsIgnoreCase("exterior")){
                         return parserExterior(parser);
                     }
                     break;
                 case XmlPullParser.END_TAG:
-                    if(tagname.equalsIgnoreCase("Polygon"))
+                    if(tagName.equalsIgnoreCase("Polygon"))
                         return null;
                     break;
                 default:
@@ -76,18 +76,18 @@ public class GMLReader {
     }
 
     private static Land parserOuterBoundary(XmlPullParser parser) throws XmlPullParserException, IOException{
-        String tagname;
+        String tagName;
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            tagname = parser.getName();
+            tagName = parser.getName();
             switch (eventType){
                 case XmlPullParser.START_TAG:
-                    if(tagname.equalsIgnoreCase("coordinates")){
+                    if(tagName.equalsIgnoreCase("coordinates")){
                         return parseCoordinates(parser);
                     }
                     break;
                 case XmlPullParser.END_TAG:
-                    if(tagname.equalsIgnoreCase("outerBoundaryIs")){
+                    if(tagName.equalsIgnoreCase("outerBoundaryIs")){
                         return null;
                     }
                     break;
@@ -99,25 +99,25 @@ public class GMLReader {
         return null;
     }
     private static Land parserExterior(XmlPullParser parser) throws XmlPullParserException, IOException {
-        String tagname;
+        String tagName;
         String srsDimension="2";
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            tagname = parser.getName();
+            tagName = parser.getName();
             switch (eventType){
                 case XmlPullParser.START_TAG:
-                    if(tagname.equalsIgnoreCase("LinearRing")){
+                    if(tagName.equalsIgnoreCase("LinearRing")){
                         for(int i = 0; i < parser.getAttributeCount();i++){
                             if(parser.getAttributeName(i).equalsIgnoreCase("srsDimension")){
                                 srsDimension = parser.getAttributeValue(i);
                             }
                         }
-                    }else if(tagname.equalsIgnoreCase("posList")){
+                    }else if(tagName.equalsIgnoreCase("posList")){
                         return parsePosList(parser,srsDimension);
                     }
                     break;
                 case XmlPullParser.END_TAG:
-                    if(tagname.equalsIgnoreCase("exterior")){
+                    if(tagName.equalsIgnoreCase("exterior")){
                         return null;
                     }
                     break;

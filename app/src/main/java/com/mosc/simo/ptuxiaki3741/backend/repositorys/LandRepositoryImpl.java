@@ -52,6 +52,9 @@ public class LandRepositoryImpl implements LandRepository {
     public Land saveLand(Land land){
         LandData landData = land.getData();
         if(landData != null){
+            if(landData.getCreator_id() == -1){
+                return land;
+            }
             long id;
             if(landData.getId() != -1){
                 id = db.landDao().insert(landData);
@@ -60,7 +63,8 @@ public class LandRepositoryImpl implements LandRepository {
                         false,
                         landData.getCreator_id(),
                         landData.getTitle(),
-                        landData.getBorder()
+                        landData.getBorder(),
+                        landData.getHoles()
                 ));
             }
             landData.setId(id);

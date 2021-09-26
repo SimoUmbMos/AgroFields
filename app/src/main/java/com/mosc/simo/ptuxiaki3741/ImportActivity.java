@@ -19,9 +19,10 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
-import com.mosc.simo.ptuxiaki3741.models.ParcelablePolygon;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
@@ -31,7 +32,7 @@ import java.util.List;
 public class ImportActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnPolygonClickListener {
     public static final String TAG = "ImportActivity";
 
-    private List<List<LatLng>> polyList;
+    private List<Land> landList;
     private User curUser;
     private GoogleMap mMap;
 
@@ -54,7 +55,10 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         if(curUser != null){
             Intent returnIntent;
             returnIntent = new Intent();
-            returnIntent.putExtra(AppValues.resNameImportActivity,new ParcelablePolygon(polygon.getPoints()));
+            returnIntent.putExtra(
+                    AppValues.resNameImportActivity,
+                    new Land(new LandData(polygon.getPoints(),polygon.getHoles()))
+            );
             setResult(RESULT_OK,returnIntent);
             finish();
         }
@@ -62,7 +66,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
 
     private void init(){
         curUser = null;
-        polyList = new ArrayList<>();
+        landList = new ArrayList<>();
         Intent intent = getIntent();
         if(intent != null){
             Log.d(TAG, "init: intent not null");
@@ -74,8 +78,7 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
                 );
             }
             List<Land> fileLands = FileUtil.handleFile(getApplicationContext(),intent);
-            for(Land fileLand : fileLands)
-                polyList.add(fileLand.getData().getBorder());
+            landList.addAll(fileLands);
         }else{
             Log.d(TAG, "init: intent null");
             setResult(RESULT_CANCELED);
@@ -105,10 +108,10 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
     private void onUserUpdate(User user) {
         curUser = user;
         if(user != null){
-            if(polyList.size() == 1){
+            if(landList.size() == 1){
                 Intent returnIntent;
                 returnIntent = new Intent();
-                returnIntent.putExtra(AppValues.resNameImportActivity,new ParcelablePolygon(polyList.get(0)));
+                returnIntent.putExtra(AppValues.resNameImportActivity,landList.get(0));
                 setResult(RESULT_OK,returnIntent);
                 finish();
             }
@@ -142,21 +145,23 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
     private void showPointsOnMap(){
         int strokeColor = ContextCompat.getColor(this, R.color.polygonStroke);
         int fillColor = ContextCompat.getColor(this, R.color.polygonFill);
+        int num = 0;
 
-        if(polyList.size() > 0){
+        if(landList.size() > 0){
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(List<LatLng> points : polyList){
-                mMap.addPolygon(new PolygonOptions()
-                        .clickable(true)
-                        .addAll(points)
-                        .strokeColor(strokeColor)
-                        .fillColor(fillColor)
-                );
-                for(LatLng point : points){
-                    builder.include(point);
+            for(Land land : landList){
+                PolygonOptions options = MapUtil.getPolygonOptions(land,strokeColor,fillColor);
+                if(options != null){
+                    Polygon polygon = mMap.addPolygon(options);
+                    for(LatLng point : polygon.getPoints()){
+                        builder.include(point);
+                        num++;
+                    }
                 }
             }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 64));
+            if(num > 0){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPadding));
+            }
         }
     }
 }
