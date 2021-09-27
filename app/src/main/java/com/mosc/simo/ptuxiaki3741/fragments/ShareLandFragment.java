@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandWithShare;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentShareLandBinding;
@@ -24,13 +26,19 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ShareLandFragment extends Fragment implements FragmentBackPress {
     private FragmentShareLandBinding binding;
 
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
 
-    private User contact;
+    private User contact, currUser;
+    private List<Land> lands;
+    private List<LandWithShare> sharedLands;
+    private List<LandWithShare> data;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent,
                              Bundle savedInstanceState) {
@@ -66,6 +74,9 @@ public class ShareLandFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initData(){
+        lands = new ArrayList<>();
+        sharedLands = new ArrayList<>();
+        data = new ArrayList<>();
         if (getArguments() != null) {
             if(getArguments().containsKey(AppValues.SHARE_LAND_ARG)){
                 contact = getArguments().getParcelable(AppValues.SHARE_LAND_ARG);
@@ -92,12 +103,54 @@ public class ShareLandFragment extends Fragment implements FragmentBackPress {
             vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
         }
     }
-    //todo: fill initFragment, initObservers methods
     private void initFragment(){
-
+        //todo
     }
     private void initObservers(){
+        if(vmUsers != null){
+            onCurrUserUpdate(vmUsers.getCurrUser().getValue());
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
+        }
+        if(vmLands != null){
+            vmLands.getSharedLands().observe(getViewLifecycleOwner(),this::onSharedLandsUpdate);
+            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandsUpdate);
+        }
+    }
 
+    //onUpdate
+    private void onCurrUserUpdate(User currUser) {
+        this.currUser = currUser;
+    }
+    private void onSharedLandsUpdate(List<LandWithShare> sharedLands) {
+        this.sharedLands.clear();
+        if(sharedLands != null){
+            for(LandWithShare sharedLand : sharedLands){
+                if(sharedLand.getSharedData().getUserID() == contact.getId())
+                    this.sharedLands.add(sharedLand);
+            }
+        }
+        onDataUpdate();
+    }
+    private void onLandsUpdate(List<Land> lands) {
+        this.lands.clear();
+        if(lands != null){
+            for(Land land : lands){
+                if(land.getData().getCreator_id() == currUser.getId())
+                    this.lands.add(land);
+            }
+        }
+        onDataUpdate();
+    }
+    private void onDataUpdate() {
+        data.clear();
+        if(lands.size()>0){
+            if(sharedLands.size()>0){
+
+            }else{
+
+            }
+        }
+        //todo
     }
 
     //UI

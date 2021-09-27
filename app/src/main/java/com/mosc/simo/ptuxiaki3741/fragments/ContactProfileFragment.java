@@ -18,6 +18,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -59,9 +60,15 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
         binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        //todo: create menu for contact profile
-        inflater.inflate(R.menu.empty_menu, menu);
+        inflater.inflate(R.menu.contact_profile_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_item_remove_contact){
+            removeContact();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
         return true;
@@ -147,7 +154,6 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
             getActivity().onBackPressed();
     }
 
-    //todo: call method from menu item
     private void removeContact(){
         if(getContext() != null){
             if(dialog != null){

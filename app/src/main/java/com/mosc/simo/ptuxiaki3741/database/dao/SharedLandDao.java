@@ -13,6 +13,10 @@ import java.util.List;
 
 @Dao
 public interface SharedLandDao {
+    @Query("SELECT * FROM SharedLands " +
+            "WHERE LandID = :lid " +
+            "AND UserID = :uid")
+    List<SharedLand> getSharedLandsByUidAndLid(long uid, long lid);
 
     @Query("SELECT SharedLands.* " +
             "FROM LandData INNER JOIN SharedLands ON LandData.id = SharedLands.LandID " +
@@ -31,16 +35,9 @@ public interface SharedLandDao {
             "WHERE LandData.CreatorID = :ownerID")
     List<LandWithShare> getSharedLandsToOtherUsers(long ownerID);
 
-    @Query("SELECT * FROM SharedLands " +
-            "WHERE LandID = :lid " +
-            "AND UserID = :uid")
-    List<SharedLand> getSharedLandsByUidAndLid(long uid, long lid);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(SharedLand sharedLand);
 
-    @Delete
-    void delete(SharedLand sharedLand);
     @Delete
     void deleteAll(List<SharedLand> sharedLand);
     @Query("DELETE FROM SharedLands " +

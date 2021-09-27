@@ -12,15 +12,14 @@ import java.util.List;
 
 @Dao
 public interface LandDao {
+    @Query("SELECT * FROM LandData " +
+            "WHERE id = :lid")
+    LandData getLandData(long lid);
 
     @Query("SELECT land.* " +
             "FROM LandData land INNER JOIN SharedLands share ON land.id = share.LandID " +
             "WHERE share.UserID = :uid")
     List<LandData> getUserSharedLands(long uid);
-
-    @Query("SELECT * FROM LandData " +
-            "WHERE id = :lid")
-    LandData getLandData(long lid);
 
     @Query("SELECT * FROM LandData " +
             "WHERE CreatorID = :uid")
