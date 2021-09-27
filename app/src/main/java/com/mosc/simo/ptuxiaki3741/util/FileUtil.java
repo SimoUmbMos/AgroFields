@@ -7,16 +7,14 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.ImportActivity;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonExporter;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.geojson.GeoJsonReader;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.gml.GMLExporter;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.gml.GMLReader;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileExporter;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.kml.KmlFileReader;
-import com.mosc.simo.ptuxiaki3741.backend.file.extensions.shapefile.MyShapeFileReader;
-import com.mosc.simo.ptuxiaki3741.backend.file.helper.ExportFieldModel;
+import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
+import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
+import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
+import com.mosc.simo.ptuxiaki3741.file.gml.GMLReader;
+import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileExporter;
+import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileReader;
+import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.models.Land;
@@ -55,9 +53,7 @@ public final class FileUtil {
         return xmOut.outputString(document);
     }
     public static String landsToGeoJsonString(List<Land> lands) {
-        List<ExportFieldModel> exportFieldModels = new ArrayList<>();
-        landToExportModel(lands, exportFieldModels);
-        JSONObject export = GeoJsonExporter.geoJsonExport(exportFieldModels);
+        JSONObject export = GeoJsonExporter.geoJsonExport(lands);
         return export.toString();
     }
     public static String landsToGmlString(List<Land> lands) {
@@ -126,18 +122,6 @@ public final class FileUtil {
         else if(isGML(ctx, result))
             return FileType.GML;
         return FileType.NONE;
-    }
-    private static void landToExportModel(List<Land> lands, List<ExportFieldModel> exportFieldModels) {
-        List<List<LatLng>> points2 = new ArrayList<>();
-        for(Land land : lands){
-            points2.clear();
-            points2.add(new ArrayList<>(land.getData().getBorder()));
-            exportFieldModels.add(new ExportFieldModel(
-                    land.getData().getTitle(),
-                    String.valueOf(land.getData().hashCode()),
-                    points2
-            ));
-        }
     }
     private static boolean isKML(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));

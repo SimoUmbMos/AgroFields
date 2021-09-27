@@ -1,6 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
