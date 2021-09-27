@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.UserContactsAdapter;
-import com.mosc.simo.ptuxiaki3741.backend.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserContactsBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;

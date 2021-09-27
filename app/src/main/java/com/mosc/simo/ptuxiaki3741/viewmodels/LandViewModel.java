@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.backend.viewmodels;
+package com.mosc.simo.ptuxiaki3741.viewmodels;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -12,7 +12,7 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.enums.ViewModelStatus;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.backend.repositorys.LandRepositoryImpl;
+import com.mosc.simo.ptuxiaki3741.repositorys.implement.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 

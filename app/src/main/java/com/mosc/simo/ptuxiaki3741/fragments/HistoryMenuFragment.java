@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuHistoryBinding;
 import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryListAdapter;
 import com.mosc.simo.ptuxiaki3741.enums.ViewModelStatus;

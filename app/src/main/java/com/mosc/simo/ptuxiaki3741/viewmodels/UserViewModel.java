@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.backend.viewmodels;
+package com.mosc.simo.ptuxiaki3741.viewmodels;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -14,7 +14,7 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.backend.repositorys.UserRepositoryImpl;
+import com.mosc.simo.ptuxiaki3741.repositorys.implement.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 

@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.backend.interfaces;
+package com.mosc.simo.ptuxiaki3741.repositorys.interfaces;
 
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;

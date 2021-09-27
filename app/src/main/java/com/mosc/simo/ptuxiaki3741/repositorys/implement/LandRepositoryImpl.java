@@ -1,7 +1,7 @@
-package com.mosc.simo.ptuxiaki3741.backend.repositorys;
+package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
-import com.mosc.simo.ptuxiaki3741.backend.interfaces.LandRepository;
+import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.LandRepository;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
