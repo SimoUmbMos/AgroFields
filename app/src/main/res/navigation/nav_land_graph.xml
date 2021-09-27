@@ -95,16 +95,24 @@
         tools:layout="@layout/fragment_user_contacts" >
         <action
             android:id="@+id/userContactsToContactProfile"
-            app:destination="@id/contactProfileFragment" />
+            app:destination="@id/ContactProfileFragment" />
     </fragment>
     <fragment android:id="@+id/userRequestFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserRequestFragment"
         android:label="fragment_user_request"
         tools:layout="@layout/fragment_user_request" />
-    <fragment android:id="@+id/contactProfileFragment"
+    <fragment android:id="@+id/ContactProfileFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.ContactProfileFragment"
         android:label="fragment_contact_profile"
-        tools:layout="@layout/fragment_contact_profile" />
+        tools:layout="@layout/fragment_contact_profile" >
+        <action
+            android:id="@+id/contactProfileToShareLand"
+            app:destination="@id/shareLandFragment" />
+    </fragment>
+    <fragment android:id="@+id/shareLandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ShareLandFragment"
+        android:label="fragment_share_land"
+        tools:layout="@layout/fragment_share_land" />
     <fragment android:id="@+id/appSettingsFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.AppSettingsFragment"
         android:label="fragment_app_settings"

@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -55,6 +57,7 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
         binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        //todo: create menu for contact profile
         inflater.inflate(R.menu.empty_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -133,7 +136,7 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
     }
 
     private void toShareLandList() {
-        //todo: nav share land list
+        toSharedLands(getActivity());
     }
 
     private void goBack(){
@@ -141,6 +144,7 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
             getActivity().onBackPressed();
     }
 
+    //todo: call method from menu item
     private void removeContact(){
         if(getContext() != null){
             if(dialog != null){
@@ -178,5 +182,16 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
                 }
             });
         }
+    }
+
+    public void toSharedLands(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.ContactProfileFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppValues.SHARE_LAND_ARG,contact);
+                if(nav != null)
+                    nav.navigate(R.id.contactProfileToShareLand,bundle);
+            });
     }
 }

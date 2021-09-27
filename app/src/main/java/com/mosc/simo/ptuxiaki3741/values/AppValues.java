@@ -8,6 +8,8 @@ public final class AppValues {
     public static final int defaultPadding = 64;
     /* Contact Profile Fragment Values */
     public static final String CONTACT_PROFILE_ARG = "user";
+    /* Share Land Fragment Values */
+    public static final String SHARE_LAND_ARG = "user";
     /* Land Info Fragment Values */
     public static final String argLandInfoFragment = "land";
     /* Land Map Fragment Values*/

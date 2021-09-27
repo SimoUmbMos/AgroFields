@@ -20,7 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
@@ -53,8 +52,8 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
         super.onViewCreated(view, savedInstanceState);
         initData();
         initActivity();
+        initFragment();
         initViewModel();
-        initView();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -94,56 +93,7 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
             actionBar.hide();
         }
     }
-    private void initViewModel(){
-        if(getActivity() != null){
-            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            currUser = vmUsers.getCurrUser().getValue();
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-        }
-    }
-    private void initView() {
-        binding.etLandInfoName.setOnEditorActionListener((v, actionId, event) -> {
-            if (
-                    actionId == EditorInfo.IME_ACTION_DONE &&
-                    binding.etLandInfoName.getText()!=null &&
-                    binding.etLandInfoAddress.getText()!=null
-            ) {
-                onSubmit(
-                        binding.etLandInfoName.getText().toString(),
-                        binding.etLandInfoAddress.getText().toString()
-                );
-                return true;
-            }
-            return false;
-        });
-        binding.etLandInfoAddress.setOnEditorActionListener((v, actionId, event) -> {
-            if (
-                    actionId == EditorInfo.IME_ACTION_DONE &&
-                    binding.etLandInfoName.getText()!=null &&
-                    binding.etLandInfoAddress.getText()!=null
-            ) {
-                onSubmit(
-                        binding.etLandInfoName.getText().toString(),
-                        binding.etLandInfoAddress.getText().toString()
-                );
-                return true;
-            }
-            return false;
-        });
-        binding.btnLandInfoSubmit.setOnClickListener(v->{
-            if(
-                    binding.etLandInfoName.getText()!=null &&
-                    binding.etLandInfoAddress.getText()!=null
-            ){
-                onSubmit(
-                        binding.etLandInfoName.getText().toString(),
-                        binding.etLandInfoAddress.getText().toString()
-                );
-            }
-        });
-
-        binding.btnLandInfoCancel.setOnClickListener(v->onCancel());
-
+    private void initFragment() {
         String landLabel;
         if(land == null){
             landLabel = getString(R.string.create_land_label);
@@ -157,15 +107,18 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
             asyncFindAddress(getActivity(),land);
         }
         binding.tvLandInfoActionLabel.setText(landLabel);
+        binding.btnLandInfoSubmit.setOnClickListener(v->onSubmit());
+        binding.btnLandInfoCancel.setOnClickListener(v->onCancel());
+    }
+    private void initViewModel(){
+        if(getActivity() != null){
+            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
+        }
     }
 
     //ui
     private void onCurrUserUpdate(User user) {
-        if(user != null){
-            Log.d(TAG, "onUserUpdate: user not null");
-        }else{
-            Log.d(TAG, "onUserUpdate: user null");
-        }
         currUser = user;
     }
     private void closeKeyboard() {
@@ -203,8 +156,17 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     }
 
     //submit
-    public void onSubmit(String landName,String address) {
+    public void onSubmit() {
         closeKeyboard();
+        String landName = "";
+        String address = "";
+        if(binding.etLandInfoName.getText()!=null){
+            landName = binding.etLandInfoName.getText().toString();
+        }
+        if(binding.etLandInfoAddress.getText()!=null){
+            address = binding.etLandInfoAddress.getText().toString();
+        }
+
         landName = landName.replaceAll(
                 "[^a-zA-Z0-9]", " ");
         landName = landName.trim().replaceAll(" +", " ");
