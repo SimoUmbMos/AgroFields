@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.repositorys.interfaces;
 
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandWithShare;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
@@ -9,6 +10,7 @@ import java.util.List;
 public interface LandRepository {
 
     List<Land> searchLandsByUser(User user);
+    List<Land> getSharedLands(User user);
 
     Land getLand(long lid);
     List<LandDataRecord> getLandRecordsByLand(Land land);
@@ -19,9 +21,9 @@ public interface LandRepository {
 
     void deleteLand(Land land);
 
-    void addSharedLand(Land land,User user);
-    void removeSharedLand(Land land,User user);
-    List<Land> getSharedLandsToUser(User owner,User sharedUser);
-    List<Land> getSharedLandsToOtherUsers(User user);
-    List<Land> getSharedLands(User user);
+    void addSharedLand(User user, Land land);
+    void removeSharedLand(User user, Land land);
+    void removeAllSharedLands(User user1, User user2);
+    List<LandWithShare> getSharedLandsToUser(User owner, User sharedUser);
+    List<LandWithShare> getSharedLandsToOtherUsers(User user);
 }

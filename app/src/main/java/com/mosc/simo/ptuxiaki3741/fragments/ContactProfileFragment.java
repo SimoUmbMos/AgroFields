@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentContactProfileBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
@@ -37,6 +38,7 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
     private AlertDialog dialog;
 
     private UserViewModel vmUsers;
+    private LandViewModel vmLands;
     private User contact;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -87,6 +89,7 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
     }
     private void initViewModel(){
         if(getActivity() != null){
+            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         }
     }
@@ -168,17 +171,20 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
             AsyncTask.execute(()->{
                 String display;
                 if(vmUsers.deleteFriend(contact)){
-                    goBack();
+                    vmLands.removeAllSharedLandsWithUser(contact);
                     display = getString(R.string.deleted_contact);
                 }else{
                     display = getString(R.string.deleted_contact_error);
                 }
                 if(getActivity() != null){
-                    getActivity().runOnUiThread(()-> Toast.makeText(
-                            getActivity(),
-                            display,
-                            Toast.LENGTH_SHORT
-                    ).show());
+                    getActivity().runOnUiThread(()-> {
+                        Toast.makeText(
+                                getActivity(),
+                                display,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        goBack();
+                    });
                 }
             });
         }

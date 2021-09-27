@@ -14,6 +14,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.SharedLand;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.backend.database.typeconverters.DBTypesConverter;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 @Database(entities = {
         User.class,
@@ -21,7 +22,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
         LandData.class,
         SharedLand.class,
         LandDataRecord.class
-}, version = RoomValues.DATABASE_VERSION)
+}, version = AppValues.DATABASE_VERSION)
 @TypeConverters({
         DBTypesConverter.class
 })

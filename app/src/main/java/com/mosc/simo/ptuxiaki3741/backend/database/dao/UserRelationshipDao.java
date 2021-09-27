@@ -6,18 +6,20 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.RoomValues;
-import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
+import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
 
 import java.util.List;
 
 @Dao
 public interface UserRelationshipDao {
-    @Query(RoomValues.UserRelationshipDaoValues.GetByIDs)
+    @Query("SELECT * FROM UserRelationships " +
+            "WHERE (SenderID = :id1 AND ReceiverID = :id2) " +
+            "OR (SenderID = :id2 AND ReceiverID = :id1)")
     List<UserRelationship> getByIDs(long id1, long id2);
 
-    @Query(RoomValues.UserRelationshipDaoValues.GetByIDAndType)
+    @Query("SELECT * FROM UserRelationships " +
+            "WHERE (ReceiverID = :id OR SenderID = :id) AND Type = :type")
     List<UserRelationship> getByIDAndType(long id, UserDBAction type);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,9 +27,14 @@ public interface UserRelationshipDao {
 
     @Delete
     void deleteAll(List<UserRelationship> userRelationships);
-    @Query(RoomValues.UserRelationshipDaoValues.DeleteByUserID)
+    @Query("DELETE FROM UserRelationships " +
+            "WHERE SenderID = :uid " +
+            "OR ReceiverID = :uid")
     void deleteByUserID(long uid);
-    @Query(RoomValues.UserRelationshipDaoValues.DeleteByIDsAndType)
+    @Query("DELETE FROM UserRelationships " +
+            "WHERE ReceiverID = :rid " +
+            "AND SenderID = :sid " +
+            "AND Type = :type")
     void deleteByIDsAndType(long rid, long sid, UserDBAction type);
 
 }

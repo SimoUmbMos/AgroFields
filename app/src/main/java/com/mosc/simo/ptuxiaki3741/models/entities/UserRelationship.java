@@ -3,7 +3,7 @@ package com.mosc.simo.ptuxiaki3741.models.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
-import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
+import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
 
 import java.util.Date;
 

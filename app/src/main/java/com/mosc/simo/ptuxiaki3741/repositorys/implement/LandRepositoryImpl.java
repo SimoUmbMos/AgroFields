@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 
 import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.models.LandWithShare;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.LandRepository;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -87,64 +88,80 @@ public class LandRepositoryImpl implements LandRepository {
 
     @Override
     public List<Land> getSharedLands(User user) {
-        List<Land> r = new ArrayList<>();
+        List<Land> lands = new ArrayList<>();
         List<LandData> t = db.landDao().getUserSharedLands(user.getId());
         if(t != null)
-            for(LandData t2 : t){
-                r.add(new Land(t2));
+            for(LandData t1:t){
+                lands.add(new Land(t1));
             }
-        return r;
+        return lands;
     }
     @Override
-    public List<Land> getSharedLandsToOtherUsers(User user) {
-        List<Land> r = new ArrayList<>();
-        List<LandData> t = db.landDao().getSharedLandsToOtherUsers(user.getId());
-        if(t != null)
-            for(LandData t2 : t){
-                r.add(new Land(t2));
-            }
-        return r;
+    public List<LandWithShare> getSharedLandsToOtherUsers(User user) {
+        return db.sharedLandDao().getSharedLandsToOtherUsers(user.getId());
     }
     @Override
-    public List<Land> getSharedLandsToUser(User owner, User sharedUser) {
-        List<Land> r = new ArrayList<>();
-        List<LandData> t = db.landDao().getSharedLandsToUser(owner.getId(),sharedUser.getId());
-        if(t != null)
-            for(LandData t2 : t){
-                r.add(new Land(t2));
-            }
-        return r;
+    public List<LandWithShare> getSharedLandsToUser(User owner, User sharedUser) {
+        return db.sharedLandDao().getSharedLandsToUser(owner.getId(),sharedUser.getId());
     }
     @Override
-    public void addSharedLand(Land land, User user) {
-        List<SharedLand> r = db.sharedLandDao().getSharedLandsByUidAndLid(
-                user.getId(),
-                land.getData().getId()
-        );
+    public void addSharedLand(User user, Land land) {
+        if(user == null)
+            return;
+        if(land == null)
+            return;
+        if(land.getData() == null)
+            return;
 
-        if(r != null)
-            if(r.size() > 0)
+        List<SharedLand> sharedLands =
+                db.sharedLandDao().getSharedLandsByUidAndLid(user.getId(),land.getData().getId());
+
+        if(sharedLands != null){
+            if(sharedLands.size()>0){
                 return;
+            }
+        }
 
-        SharedLand sharedLand = new SharedLand(
-                user.getId(),
-                land.getData().getId()
-        );
-        db.sharedLandDao().insert(sharedLand);
+        SharedLand entry = new SharedLand(user.getId(), land.getData().getId());
+        db.sharedLandDao().insert(entry);
     }
     @Override
-    public void removeSharedLand(Land land, User user) {
-        List<SharedLand> r = db.sharedLandDao().getSharedLandsByUidAndLid(
-                user.getId(),
-                land.getData().getId()
-        );
-
-        if(r == null)
+    public void removeSharedLand(User user, Land land) {
+        if(user == null)
             return;
-        if(r.size() == 0)
+        if(land == null)
+            return;
+        if(land.getData() == null)
             return;
 
-        db.sharedLandDao().deleteAll(r);
+        List<SharedLand> sharedLands =
+                db.sharedLandDao().getSharedLandsByUidAndLid(user.getId(),land.getData().getId());
+
+        if(sharedLands != null){
+            if(sharedLands.size()>0){
+                db.sharedLandDao().deleteAll(sharedLands);
+            }
+        }
     }
+    @Override
+    public void removeAllSharedLands(User user1, User user2) {
+        if(user1 == null)
+            return;
+        if(user2 == null)
+            return;
 
+        List<SharedLand> sharedLands = new ArrayList<>();
+        List<SharedLand> temp1 =
+                db.sharedLandDao().getSharedLandsByCreatorIDAndUid(user1.getId(),user2.getId());
+        List<SharedLand> temp2 =
+                db.sharedLandDao().getSharedLandsByCreatorIDAndUid(user1.getId(),user2.getId());
+
+        if(temp1 != null)
+            sharedLands.addAll(temp1);
+        if(temp2 != null)
+            sharedLands.addAll(temp2);
+
+        if(sharedLands.size() > 0)
+            db.sharedLandDao().deleteAll(sharedLands);
+    }
 }

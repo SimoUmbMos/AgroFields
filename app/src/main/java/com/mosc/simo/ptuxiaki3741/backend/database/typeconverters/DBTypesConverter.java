@@ -5,8 +5,8 @@ import androidx.room.TypeConverter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mosc.simo.ptuxiaki3741.backend.enums.LandDBAction;
-import com.mosc.simo.ptuxiaki3741.backend.enums.UserDBAction;
+import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
 
 import java.lang.reflect.Type;
 import java.util.Date;

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "SharedLands")
 public class SharedLand {
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private long sid;
     @ColumnInfo(name = "UserID")
     private long userID;
     @ColumnInfo(name = "LandID")
@@ -19,18 +19,18 @@ public class SharedLand {
         this.userID = userID;
         this.landID = landID;
     }
-    public SharedLand(long id, long userID, long landID){
-        this.id = id;
+    public SharedLand(long sid, long userID, long landID){
+        this.sid = sid;
         this.userID = userID;
         this.landID = landID;
     }
 
-    public long getId() {
-        return id;
+    public long getSid() {
+        return sid;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setSid(long sid) {
+        this.sid = sid;
     }
 
     public long getUserID() {

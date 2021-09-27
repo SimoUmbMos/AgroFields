@@ -6,36 +6,32 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.RoomValues;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import java.util.List;
 
 @Dao
 public interface LandDao {
-    @Query(RoomValues.LandDaoValues.GetLands)
-    List<LandData> getLands();
 
-    @Query(RoomValues.LandDaoValues.GetLandData)
-    LandData getLandData(long lid);
-
-    @Query(RoomValues.LandDaoValues.GetLandByCreatorId)
-    List<LandData> getLandByCreatorId(long uid);
-
-    @Query(RoomValues.LandDaoValues.GetUserSharedLands)
+    @Query("SELECT land.* " +
+            "FROM LandData land INNER JOIN SharedLands share ON land.id = share.LandID " +
+            "WHERE share.UserID = :uid")
     List<LandData> getUserSharedLands(long uid);
 
-    @Query(RoomValues.LandDaoValues.GetSharedLandsToUser)
-    List<LandData> getSharedLandsToUser(long ownerID, long sharedId);
+    @Query("SELECT * FROM LandData " +
+            "WHERE id = :lid")
+    LandData getLandData(long lid);
 
-    @Query(RoomValues.LandDaoValues.GetSharedLandsToOtherUsers)
-    List<LandData> getSharedLandsToOtherUsers(long ownerID);
+    @Query("SELECT * FROM LandData " +
+            "WHERE CreatorID = :uid")
+    List<LandData> getLandByCreatorId(long uid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandData land);
 
     @Delete
     void delete(LandData land);
-    @Query(RoomValues.LandDaoValues.DeleteByUID)
+    @Query("DELETE FROM LandData " +
+            "WHERE CreatorID = :uid")
     void deleteByUID(long uid);
 }

@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.RoomValues;
+import com.mosc.simo.ptuxiaki3741.models.LandWithShare;
 import com.mosc.simo.ptuxiaki3741.models.entities.SharedLand;
 
 import java.util.List;
@@ -14,7 +14,26 @@ import java.util.List;
 @Dao
 public interface SharedLandDao {
 
-    @Query(RoomValues.SharedLandDaoValues.GetSharedLandsByUidAndLid)
+    @Query("SELECT SharedLands.* " +
+            "FROM LandData INNER JOIN SharedLands ON LandData.id = SharedLands.LandID " +
+            "WHERE LandData.CreatorID = :uid1 " +
+            "AND SharedLands.UserID = :uid2")
+    List<SharedLand> getSharedLandsByCreatorIDAndUid(long uid1, long uid2);
+
+    @Query("SELECT LandData.* , SharedLands.* " +
+            "FROM LandData INNER JOIN SharedLands ON LandData.id = SharedLands.LandID " +
+            "WHERE LandData.CreatorID = :ownerID " +
+            "AND SharedLands.UserID = :sharedId")
+    List<LandWithShare> getSharedLandsToUser(long ownerID, long sharedId);
+
+    @Query("SELECT LandData.* , SharedLands.* " +
+            "FROM LandData INNER JOIN SharedLands ON LandData.id = SharedLands.LandID " +
+            "WHERE LandData.CreatorID = :ownerID")
+    List<LandWithShare> getSharedLandsToOtherUsers(long ownerID);
+
+    @Query("SELECT * FROM SharedLands " +
+            "WHERE LandID = :lid " +
+            "AND UserID = :uid")
     List<SharedLand> getSharedLandsByUidAndLid(long uid, long lid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,8 +43,10 @@ public interface SharedLandDao {
     void delete(SharedLand sharedLand);
     @Delete
     void deleteAll(List<SharedLand> sharedLand);
-    @Query(RoomValues.SharedLandDaoValues.DeleteByUserID)
+    @Query("DELETE FROM SharedLands " +
+            "WHERE UserID = :uid")
     void deleteByUserID(long uid);
-    @Query(RoomValues.SharedLandDaoValues.DeleteByLandID)
+    @Query("DELETE FROM SharedLands " +
+            "WHERE LandID = :lid")
     void deleteByLandID(long lid);
 }
