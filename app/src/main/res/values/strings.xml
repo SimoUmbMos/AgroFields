@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- not translatable -->
+    <!-- Degree Info Fragment-->
+    <string name="degree_info_title" translatable="false">Χαρτογράφηση αγροκτήματος με συμμετοχή θέσης, ορίων και παρεμβολής με χάρτες</string>
+    <string name="degree_info_par1" translatable="false">Σκοπός της πτυχιακής αυτής είναι σχεδίαση μια εφαρμογής σε κινητό τηλέφωνο και σε υπολογιστή γραφείου η οποία θα επιτρέπει αγρότες να χαρτογραφούν τα αγροκτήματα τους. Η Εφαρμογή θα επιτρέπει τον χρήστη όχι μόνο να ορίσει την τοποθεσία στο google maps αλλά να ορίσει τα σύνορα και τους ιδιοκτήτες όπως και την δυνατότητα παρεμβολής χαρτών με αγροτική υπηρεσία και ΤΟΕΒ. Αποτέλεσμα αυτής της εφαρμογής θα είναι ένα προϊόν το οποίο θα δίνει μια ξεκάθαρη εικόνα στον αγρότη για το χαρτογραφικό υπόβαθρο του αγροκτήματος του, καθώς και η μεταφορά δεδομένων σε άλλα συστήματα όπως εξαγωγή χάρτη σε άλλες εφαρμογές θα του επιτρέψει την έγκυρη επίλυση προβλημάτων με οργανισμούς και διαχειριστή αγροκτήματος.</string>
+    <string name="degree_info_par2" translatable="false">Η εφαρμογή θα επιτρέπει την έτοιμη εισαγωγή και εξαγωγή χωραφιών από το κτήμα καθώς και τις δυνατότητες διαίρεσης και πρόσθεσης γειτονικών κτημάτων. Ύπαρξη δυνατότητας ιστορικού για το πότε δημιουργήθηκε και από ποιον θα είναι βασικά ιστορικά δεδομένα που αφορούν άλλες εφαρμογές.</string>
+    <string name="degree_info_par3" translatable="false">Η εργασία αφορά έναν ή δύο σπουδαστές.</string>
+    <string name="degree_info_par4" translatable="false">Παραδοτέο το βιβλίο της πτυχιακής</string>
+    <string name="degree_info_par5" translatable="false">Απαιτούμενος εξοπλισμός : Java, Eclipse, Android Studio, MySQL</string>
+    <string name="degree_info_sign" translatable="false">Δρ. Θεόδωρος Λάντζος</string>
+    <!-- translatable -->
     <!-- Common -->
     <string name="app_name">Land Declaration</string>
     <string name="loading_list">List is loading</string>
@@ -150,6 +160,7 @@
     <string name="fabDeny">Deny Contact</string>
     <!-- App Settings Fragment-->
     <string name="app_settings_title">Settings</string>
+    <string name="degree_info">Degree Info</string>
     <string name="factory_reset">Factory Reset</string>
     <string name="select_theme_title">Select App Style</string>
     <string-array name="theme_styles">
@@ -157,6 +168,8 @@
         <item>Light Theme</item>
         <item>Dark Theme</item>
     </string-array>
+    <!-- Degree Info Fragment-->
+    <string name="degree_info_menu_title">Degree Info</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
     <!-- Import Activity -->

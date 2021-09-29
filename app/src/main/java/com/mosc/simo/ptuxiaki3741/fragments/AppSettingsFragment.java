@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +24,7 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentAppSettingsBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class AppSettingsFragment extends Fragment implements FragmentBackPress{
@@ -49,11 +52,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_item_factory_reset){
-            factoryReset();
-            return true;
+        switch (item.getItemId()){
+            case (R.id.menu_item_factory_reset):
+                factoryReset();
+                return true;
+            case (R.id.menu_item_degree_info):
+                toDegreeInfo(getActivity());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
         return true;
@@ -136,5 +144,13 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         MainActivity activity = (MainActivity) getActivity();
         if(activity != null)
             activity.checkThemeSettings();
+    }
+    public void toDegreeInfo(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.AppSettingsFragment);
+                if(nav != null)
+                    nav.navigate(R.id.appSettingsToDegreeInfo);
+            });
     }
 }

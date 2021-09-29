@@ -40,7 +40,7 @@
             android:id="@+id/mainMenuToUserRequests"
             app:destination="@id/userRequestFragment" />
         <action android:id="@+id/mainMenuToAppSettings"
-            app:destination="@id/appSettingsFragment" />
+            app:destination="@id/AppSettingsFragment" />
     </fragment>
     <fragment android:id="@+id/LandInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LandInfoFragment"
@@ -107,14 +107,21 @@
         tools:layout="@layout/fragment_contact_profile" >
         <action
             android:id="@+id/contactProfileToShareLand"
-            app:destination="@id/shareLandFragment" />
+            app:destination="@id/ShareLandFragment" />
     </fragment>
-    <fragment android:id="@+id/shareLandFragment"
+    <fragment android:id="@+id/ShareLandFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.ShareLandFragment"
         android:label="fragment_share_land"
         tools:layout="@layout/fragment_share_land" />
-    <fragment android:id="@+id/appSettingsFragment"
+    <fragment android:id="@+id/AppSettingsFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.AppSettingsFragment"
         android:label="fragment_app_settings"
-        tools:layout="@layout/fragment_app_settings" />
+        tools:layout="@layout/fragment_app_settings" >
+        <action android:id="@+id/appSettingsToDegreeInfo"
+            app:destination="@id/DegreeInfoFragment" />
+    </fragment>
+    <fragment android:id="@+id/DegreeInfoFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.DegreeInfoFragment"
+        android:label="fragment_degree_info"
+        tools:layout="@layout/fragment_degree_info" />
 </navigation>
