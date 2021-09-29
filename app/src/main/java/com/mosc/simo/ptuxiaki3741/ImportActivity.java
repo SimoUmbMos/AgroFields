@@ -1,13 +1,18 @@
 package com.mosc.simo.ptuxiaki3741;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +23,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
+import com.mosc.simo.ptuxiaki3741.enums.ImportAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
@@ -25,33 +31,33 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImportActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnPolygonClickListener {
+public class ImportActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnPolygonClickListener {
     public static final String TAG = "ImportActivity";
-
     private List<Land> landList;
     private User curUser;
     private GoogleMap mMap;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState){
+    @Override protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         ActivityImportBinding binding = ActivityImportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        init();
-        initView();
+        init(binding);
     }
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap){
+    @Override public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+    @Override public void onMapReady(@NonNull GoogleMap googleMap){
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         initMap();
     }
-    @Override
-    public void onPolygonClick(@NonNull Polygon polygon){
+    @Override public void onPolygonClick(@NonNull Polygon polygon){
         if(curUser != null){
             Intent returnIntent;
             returnIntent = new Intent();
@@ -64,31 +70,68 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
-    private void init(){
-        curUser = null;
-        landList = new ArrayList<>();
+    private void init(ActivityImportBinding binding){
+        setSupportActionBar(binding.tbImportActivity);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        initThemeSettings();
+        initData();
+        initActivity();
+    }
+    public void initThemeSettings() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        if(sharedPref.getBoolean(AppValues.isForceKey, false)){
+            if(sharedPref.getBoolean(AppValues.isDarkKey, false)){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
+    }
+    private void initData(){
+        ImportAction action = ImportAction.VIEW;
         Intent intent = getIntent();
         if(intent != null){
-            Log.d(TAG, "init: intent not null");
+            List<Land> fileLands = new ArrayList<>(
+                    FileUtil.handleFile(getApplicationContext(),intent)
+            );
             if(intent.getExtras() != null){
-                Log.d(TAG, "init: intent extra not null");
-                long id = intent.getExtras().getLong(AppValues.userNameImportActivity,-1);
-                AsyncTask.execute(()->
-                        onUserUpdate(MainActivity.getRoomDb(this).userDao().getUserById(id))
-                );
+                if(intent.getExtras().containsKey(AppValues.userNameImportActivity)){
+                    action = ImportAction.IMPORT;
+                    long id = intent.getExtras().getLong(AppValues.userNameImportActivity,-1);
+                    AsyncTask.execute(()->{
+                        UserViewModel userViewModel =
+                                new ViewModelProvider(this).get(UserViewModel.class);
+                        onUserUpdate(userViewModel.getUserByID(id));
+                    });
+                }
+                if(intent.getExtras().containsKey(AppValues.actionImportActivity)){
+                    if(intent.getExtras().getBoolean(
+                            AppValues.actionImportActivity,
+                            false
+                    )){
+                        action = ImportAction.ADD;
+                    }else{
+                        action = ImportAction.SUBTRACT;
+                    }
+                }
             }
-            List<Land> fileLands = FileUtil.handleFile(getApplicationContext(),intent);
-            landList.addAll(fileLands);
+            landList = new ArrayList<>(fileLands);
         }else{
-            Log.d(TAG, "init: intent null");
             setResult(RESULT_CANCELED);
             finish();
         }
+        initActionBar(action);
     }
-    private void initView(){
+    private void initActivity(){
         if(UIUtil.isGooglePlayServicesAvailable(this)){
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.ImportActivityRoot);
+                    .findFragmentById(R.id.ImportActivityMap);
             if(mapFragment != null){
                 mapFragment.getMapAsync(this);
             }else{
@@ -98,6 +141,34 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         }else{
             setResult(RESULT_CANCELED);
             finish();
+        }
+    }
+    private void initActionBar(ImportAction action) {
+        if(getSupportActionBar() != null){
+            switch (action){
+                case IMPORT:
+                    getSupportActionBar().show();
+                    getSupportActionBar().setTitle(
+                            getString(R.string.import_activity_import_action)
+                    );
+                    break;
+                case ADD:
+                    getSupportActionBar().show();
+                    getSupportActionBar().setTitle(
+                            getString(R.string.import_activity_add_action)
+                    );
+                    break;
+                case SUBTRACT:
+                    getSupportActionBar().show();
+                    getSupportActionBar().setTitle(
+                            getString(R.string.import_activity_subtract_action)
+                    );
+                    break;
+                case VIEW:
+                default:
+                    getSupportActionBar().hide();
+                    break;
+            }
         }
     }
     private void initMap(){

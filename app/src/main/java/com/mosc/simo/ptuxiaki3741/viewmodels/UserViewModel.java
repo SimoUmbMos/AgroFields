@@ -72,7 +72,7 @@ public class UserViewModel extends AndroidViewModel {
     }
     private User loadCurrUser() {
         long uid = getUidFromMemory();
-        User user = userRepository.getUserByID(uid);
+        User user = getUserByID(uid);
         if(user == null){
             clearUidFromMemory();
         }
@@ -96,6 +96,9 @@ public class UserViewModel extends AndroidViewModel {
         );
     }
 
+    public User getUserByID(long uid){
+        return userRepository.getUserByID(uid);
+    }
     public User saveNewUser(User user){
         return userRepository.saveNewUser(user);
     }
@@ -105,7 +108,7 @@ public class UserViewModel extends AndroidViewModel {
             userRepository.editUser(user);
             if(isCurrUser){
                 User decryptedUser = EncryptUtil.decrypt(
-                        userRepository.getUserByID(user.getId())
+                        getUserByID(user.getId())
                 );
                 this.currUser.postValue(decryptedUser);
             }

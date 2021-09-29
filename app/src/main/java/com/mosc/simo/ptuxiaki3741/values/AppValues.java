@@ -33,4 +33,5 @@ public final class AppValues {
     /* Import Activity Values */
     public static final String resNameImportActivity = "polygon";
     public static final String userNameImportActivity = "userid";
+    public static final String actionImportActivity = "action";
 }

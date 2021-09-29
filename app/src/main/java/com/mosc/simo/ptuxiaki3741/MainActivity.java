@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
@@ -22,8 +21,6 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
     private boolean doubleBackToExitPressedOnce = false;
@@ -89,11 +86,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onUserUpdate(User user) {
-        if(user != null){
-            Log.d(TAG, "onUserUpdate: user not null");
-        }else{
-            Log.d(TAG, "onUserUpdate: user null");
-        }
         LandViewModel landViewModel = new ViewModelProvider(this).get(LandViewModel.class);
         landViewModel.init(user);
     }
