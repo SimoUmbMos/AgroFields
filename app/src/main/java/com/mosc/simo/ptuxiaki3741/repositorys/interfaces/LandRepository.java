@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.repositorys.interfaces;
 
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandWithShare;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
@@ -21,8 +22,8 @@ public interface LandRepository {
 
     void deleteLand(Land land);
 
-    void addSharedLand(User user, Land land);
-    void removeSharedLand(User user, Land land);
+    void addSharedLand(User user, LandData landData);
+    void removeSharedLand(User user, LandData landData);
     void removeAllSharedLands(User user1, User user2);
     List<LandWithShare> getSharedLandsToUser(User owner, User sharedUser);
     List<LandWithShare> getSharedLandsToOtherUsers(User user);

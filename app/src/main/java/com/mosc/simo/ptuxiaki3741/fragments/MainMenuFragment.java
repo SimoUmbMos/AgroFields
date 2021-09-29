@@ -52,7 +52,6 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     private List<User> friendRequests;
     private List<Land> lands;
     private GoogleMap mMap;
-    private User currUser;
     private boolean drawPolygon;
 
     private FragmentMenuMainBinding binding;
@@ -127,12 +126,10 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     }
     private void initObservers() {
         if(vmUsers != null){
-            currUser = vmUsers.getCurrUser().getValue();
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
             vmUsers.getFriendRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
         }
         if(vmLands != null){
-            onLandUpdate(vmLands.getLands().getValue());
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
         }
     }
@@ -151,18 +148,20 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initMap(GoogleMap googleMap){
-        binding.mainMenuMap.setVisibility(View.INVISIBLE);
-        binding.mainMenuAction.setVisibility(View.VISIBLE);
-        binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
-        mMap = googleMap;
-        
-        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        googleMap.getUiSettings().setRotateGesturesEnabled(false);
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        googleMap.getUiSettings().setZoomGesturesEnabled(false);
-        googleMap.setOnMapClickListener(this::OnMapClick);
-        googleMap.setOnPolygonClickListener(this::OnPolygonClick);
-        googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
+        if(binding != null){
+            binding.mainMenuMap.setVisibility(View.INVISIBLE);
+            binding.mainMenuAction.setVisibility(View.VISIBLE);
+            binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
+            mMap = googleMap;
+
+            googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            googleMap.getUiSettings().setRotateGesturesEnabled(false);
+            googleMap.getUiSettings().setScrollGesturesEnabled(false);
+            googleMap.getUiSettings().setZoomGesturesEnabled(false);
+            googleMap.setOnMapClickListener(this::OnMapClick);
+            googleMap.setOnPolygonClickListener(this::OnPolygonClick);
+            googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
+        }
     }
 
     //menu
@@ -181,10 +180,9 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
 
     //observers
     private void onCurrUserUpdate(User user) {
-        currUser = user;
-        if(currUser != null){
+        if(user != null){
             if(actionBar != null){
-                actionBar.setTitle(currUser.getUsername());
+                actionBar.setTitle(user.getUsername());
             }
         }else{
             toLogin(getActivity());
@@ -207,10 +205,12 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
 
     //map
     private void mapFullLoaded(){
-        binding.mainMenuMap.setVisibility(View.VISIBLE);
-        binding.mainMenuAction.setVisibility(View.GONE);
-        binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
-        drawMap();
+        if(binding != null){
+            binding.mainMenuMap.setVisibility(View.VISIBLE);
+            binding.mainMenuAction.setVisibility(View.GONE);
+            binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
+            drawMap();
+        }
     }
     private void OnPolygonClick(Polygon polygon){
         Log.d(TAG, "OnPolygonClick: ");
@@ -239,7 +239,12 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Land land:lands){
-                    PolygonOptions options = MapUtil.getPolygonOptions(land,strokeColor,fillColor);
+                    PolygonOptions options = MapUtil.getPolygonOptions(
+                            land,
+                            strokeColor,
+                            fillColor,
+                            true
+                    );
                     if(options != null){
                         mMap.addPolygon(options);
                     }
@@ -277,7 +282,8 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
             PolygonOptions options = MapUtil.getPolygonOptions(
                     new Land(new LandData(polygon.getPoints(),polygon.getHoles())),
                     strokeColor,
-                    fillColor
+                    fillColor,
+                    true
             );
             if(options != null){
                 mMap.clear();

@@ -35,7 +35,6 @@ import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandListActionState;
 import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.adapters.LandListAdapter;
-import com.mosc.simo.ptuxiaki3741.enums.ViewModelStatus;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -110,6 +109,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initFragment() {
+        binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -123,18 +123,13 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 this::onLandLongClick
         );
         binding.rvLandList.setAdapter(adapter);
-        onVMStatusChange(ViewModelStatus.LOADING);
     }
     private void initViewModel() {
         if(getActivity() != null){
             UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            onUserChange(vmUsers.getCurrUser().getValue());
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserChange);
             vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-            onDataChange(vmLands.getLands().getValue());
-            onVMStatusChange(vmLands.getStatus().getValue());
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onDataChange);
-            vmLands.getStatus().observe(getViewLifecycleOwner(),this::onVMStatusChange);
         }
     }
     private void initMenu(Menu menu){
@@ -250,16 +245,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         adapter.notifyItemRangeInserted(0,data.size());
         updateUi();
     }
-    private void onVMStatusChange(ViewModelStatus status){
-        if(status == ViewModelStatus.LOADING){
-            binding.tvLandListActionLabel.setText(getResources().getString(R.string.loading_list));
-            binding.tvLandListActionLabel.setVisibility(View.VISIBLE);
-            binding.rvLandList.setVisibility(View.GONE);
-        }else{
-            binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
-            updateUi();
-        }
-    }
     private void onLandClick(Land land) {
         if(state != LandListMenuState.NormalState) {
             toggleSelectOnPosition(data.indexOf(land));
@@ -339,7 +324,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     //data
     private void deleteSelectedLands(){
-        onVMStatusChange(ViewModelStatus.LOADING);
         removeSelectedLands();
     }
     private void exportSelectedLands(FileType action){

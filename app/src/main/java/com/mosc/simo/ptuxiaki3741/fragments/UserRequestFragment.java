@@ -151,10 +151,6 @@ public class UserRequestFragment
     }
     private void initObservers(){
         if(vmUsers != null){
-            if(vmUsers.getFriendRequestList().getValue() != null){
-                requests.addAll(vmUsers.getFriendRequestList().getValue());
-            }
-            updateUi();
             vmUsers.getFriendRequestList().observe(getViewLifecycleOwner(),this::updateRequests);
         }
     }

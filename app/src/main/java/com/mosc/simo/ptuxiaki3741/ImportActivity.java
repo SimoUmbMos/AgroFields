@@ -150,7 +150,12 @@ public class ImportActivity extends FragmentActivity implements OnMapReadyCallba
         if(landList.size() > 0){
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for(Land land : landList){
-                PolygonOptions options = MapUtil.getPolygonOptions(land,strokeColor,fillColor);
+                PolygonOptions options = MapUtil.getPolygonOptions(
+                        land,
+                        strokeColor,
+                        fillColor,
+                        true
+                );
                 if(options != null){
                     Polygon polygon = mMap.addPolygon(options);
                     for(LatLng point : polygon.getPoints()){

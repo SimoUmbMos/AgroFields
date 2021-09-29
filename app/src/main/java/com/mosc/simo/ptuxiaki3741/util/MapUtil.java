@@ -28,14 +28,19 @@ public final class MapUtil {
     public static final String TAG = "MapUtil";
     private MapUtil(){}
 
-    public static PolygonOptions getPolygonOptions(Land land, int strokeColor, int  fillColor){
+    public static PolygonOptions getPolygonOptions(
+            Land land,
+            int strokeColor,
+            int  fillColor,
+            boolean isClickable
+    ){
         if(land.getData() == null)
             return null;
         if(land.getData().getBorder().size() == 0)
             return null;
         PolygonOptions options = new PolygonOptions();
         options.addAll(land.getData().getBorder());
-        options.clickable(true);
+        options.clickable(isClickable);
         options.strokeColor(strokeColor);
         options.fillColor(fillColor);
         for(List<LatLng> hole : land.getData().getHoles()){

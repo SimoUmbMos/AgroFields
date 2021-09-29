@@ -105,16 +105,14 @@ public class LandRepositoryImpl implements LandRepository {
         return db.sharedLandDao().getSharedLandsToUser(owner.getId(),sharedUser.getId());
     }
     @Override
-    public void addSharedLand(User user, Land land) {
+    public void addSharedLand(User user, LandData landData) {
         if(user == null)
             return;
-        if(land == null)
-            return;
-        if(land.getData() == null)
+        if(landData == null)
             return;
 
         List<SharedLand> sharedLands =
-                db.sharedLandDao().getSharedLandsByUidAndLid(user.getId(),land.getData().getId());
+                db.sharedLandDao().getSharedLandsByUidAndLid(user.getId(),landData.getId());
 
         if(sharedLands != null){
             if(sharedLands.size()>0){
@@ -122,20 +120,18 @@ public class LandRepositoryImpl implements LandRepository {
             }
         }
 
-        SharedLand entry = new SharedLand(user.getId(), land.getData().getId());
+        SharedLand entry = new SharedLand(user.getId(), landData.getId());
         db.sharedLandDao().insert(entry);
     }
     @Override
-    public void removeSharedLand(User user, Land land) {
+    public void removeSharedLand(User user, LandData landData) {
         if(user == null)
             return;
-        if(land == null)
-            return;
-        if(land.getData() == null)
+        if(landData == null)
             return;
 
         List<SharedLand> sharedLands =
-                db.sharedLandDao().getSharedLandsByUidAndLid(user.getId(),land.getData().getId());
+                db.sharedLandDao().getSharedLandsByUidAndLid(user.getId(),landData.getId());
 
         if(sharedLands != null){
             if(sharedLands.size()>0){

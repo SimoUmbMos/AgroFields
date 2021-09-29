@@ -346,11 +346,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setCompassEnabled(true);
         googleMap.setOnMapClickListener(this::processClick);
-        googleMap.setOnMapLongClickListener(this::processClick);
-        googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
         binding.btnLandTerrain.setOnClickListener(v -> changeMapType());
         if(displayOnly)
             toggleMapLock();
+        googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
     }
     private void mapFullLoaded() {
         drawMap();
@@ -549,7 +548,8 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         PolygonOptions options = MapUtil.getPolygonOptions(
                 new Land(new LandData(points,holes)),
                 strokeColor,
-                fillColor
+                fillColor,
+                false
         );
         if(options != null){
             mMap.addPolygon(options);

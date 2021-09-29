@@ -82,7 +82,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         if(getActivity() != null){
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
-            onUserUpdate(vmUsers.getCurrUser().getValue());
         }
     }
     private void init() {
