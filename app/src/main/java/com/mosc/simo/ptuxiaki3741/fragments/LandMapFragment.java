@@ -363,7 +363,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
 
     //menu relative
     private boolean menuItemClick(MenuItem menuItem) {
-        //todo: remove and add from file to land
         switch (menuItem.getItemId()){
             case (R.id.menu_item_toggle_drawer):
                 toggleDrawer(true);
@@ -415,6 +414,12 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 return true;
             case (R.id.toolbar_action_import):
                 toImportFile();
+                return true;
+            case (R.id.toolbar_action_add_to_land):
+                //todo: add from file to land
+                return true;
+            case (R.id.toolbar_action_remove_from_land):
+                //todo: remove from file to land
                 return true;
             case (R.id.toolbar_action_delete_land):
                 deleteLand();

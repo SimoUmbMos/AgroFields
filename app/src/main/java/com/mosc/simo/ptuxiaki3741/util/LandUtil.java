@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
@@ -9,6 +10,40 @@ import java.util.List;
 
 public final class LandUtil {
     private LandUtil(){}
+
+    public static LandData subtractLandData(LandData landData1, LandData landData2){
+        List<List<LatLng>> holes = new ArrayList<>();
+        List<LatLng> newHole = new ArrayList<>(landData2.getBorder());
+
+        for(List<LatLng> hole:landData1.getHoles()){
+            if(MapUtil.disjoint(hole, newHole)){
+                holes.add(hole);
+            }else{
+                newHole = MapUtil.union(hole,newHole);
+            }
+        }
+        List<LatLng> newBorder = MapUtil.difference(
+                landData1.getBorder(),
+                newHole
+        );
+        if(newBorder.size() > 0){
+            double area1 = MapUtil.area(landData1.getBorder());
+            double area3 = MapUtil.area(newBorder);
+            if(area1 == area3) {
+                holes.add(newHole);
+                newBorder = landData1.getBorder();
+            }
+        }else{
+            holes = new ArrayList<>();
+        }
+        return new LandData(
+                landData1.getId(),
+                landData1.getCreator_id(),
+                landData1.getTitle(),
+                newBorder,
+                holes
+        );
+    }
 
     public static LandData getLandDataFromLandRecord(LandDataRecord record){
         if(record != null){

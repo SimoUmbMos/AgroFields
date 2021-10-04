@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -134,7 +135,10 @@ public final class MapUtil {
                 if( p.get(0) != p.get(p.size()-1)){
                     p.add(p.get(0));
                 }
-                return SphericalUtil.computeArea(p);
+                double area = SphericalUtil.computeArea(p);
+                DecimalFormat df = new DecimalFormat("#.######");
+                String areaString = df.format(area);
+                return Double.parseDouble(areaString);
             }
         }
         return 0;
@@ -249,9 +253,13 @@ public final class MapUtil {
             if(polygon1 != null & polygon2 != null){
                 Geometry p3 = GeometryEngine.difference(polygon1,polygon2);
                 JSONObject jsonObj = new JSONObject(p3.toJson());
-                JSONArray points = jsonObj.getJSONArray("rings").getJSONArray(0);
-                for(int i=0;i<points.length()-1;i++){
-                    polygon3Borders.add(new LatLng(points.getJSONArray(i).getDouble(0),points.getJSONArray(i).getDouble(1)));
+                if(jsonObj.has("rings")){
+                    if(jsonObj.getJSONArray("rings").length()>0){
+                        JSONArray points = jsonObj.getJSONArray("rings").getJSONArray(0);
+                        for(int i=0;i<points.length()-1;i++){
+                            polygon3Borders.add(new LatLng(points.getJSONArray(i).getDouble(0),points.getJSONArray(i).getDouble(1)));
+                        }
+                    }
                 }
             }
         }catch (Exception e){

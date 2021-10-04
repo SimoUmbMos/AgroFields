@@ -107,6 +107,8 @@
     <string name="opacity_img">Change Opacity</string>
     <string name="file_actions_group_title">File Actions</string>
     <string name="import_label">Import</string>
+    <string name="add_to_land_label">Add Land From File</string>
+    <string name="remove_from_land_label">Subtract Land From File</string>
     <string name="land_actions_group_title">Land Actions</string>
     <string name="delete_land">Delete Land</string>
     <string name="make_land_editable">Make Land Editable</string>
