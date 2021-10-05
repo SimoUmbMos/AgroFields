@@ -8,6 +8,8 @@ public final class AppValues {
     public static final long sharedPreferenceDefaultUserViewModel = -1;
     /* Common Values*/
     public static final int defaultPadding = 64;
+    /* Loading Fragment Values*/
+    public static final int loading_delay = 100;
     /* Contact Profile Fragment Values */
     public static final String CONTACT_PROFILE_ARG = "user";
     /* Share Land Fragment Values */

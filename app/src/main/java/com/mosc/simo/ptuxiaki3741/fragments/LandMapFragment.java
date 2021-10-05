@@ -41,12 +41,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapBinding;
+import com.mosc.simo.ptuxiaki3741.enums.ImportAction;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
@@ -63,6 +65,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
 
     private LandActionStates mapStatus;
     private LandFileState fileState;
+    private ImportAction importAction;
     private float zoom, dx, dy, x, y;
     private int index1, index2, index3;
     private boolean displayOnly = false,
@@ -154,33 +157,38 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
 
     //ActivityResultLauncher relative
-    private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::fileResult
+    private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::onRequestPermissionsResult
     );
     private final ActivityResultLauncher<Intent> imgFileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             this::imgFileResult
     );
+    private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            this::fileResult
+    );
     private final ActivityResultLauncher<Intent> importLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             this::importResult
     );
-    private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            this::onRequestPermissionsResult
-    );
-    private void fileResult(ActivityResult result) {
-        if (
-                result.getResultCode() == Activity.RESULT_OK &&
-                result.getData() != null
-        ){
-            Intent intent = FileUtil.parseFile(getContext(),result.getData());
-            if(intent != null){
-                intent.putExtra(AppValues.userNameImportActivity,currUser.getId());
-                importLauncher.launch(intent);
+    private void onRequestPermissionsResult(Boolean result) {
+        toggleDrawer(false);
+        if(result){
+            Intent intent = FileUtil.getFilePickerIntent(fileState);
+            switch (fileState){
+                case Img:
+                    imgFileLauncher.launch(intent);
+                    break;
+                case File_Import:
+                case File_Add:
+                case File_Subtract:
+                    fileLauncher.launch(intent);
+                    break;
             }
         }
+        fileState = LandFileState.Disable;
     }
     private void imgFileResult(ActivityResult result) {
         if (
@@ -192,6 +200,19 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             }
         }
     }
+    private void fileResult(ActivityResult result) {
+        if (
+                result.getResultCode() == Activity.RESULT_OK &&
+                        result.getData() != null
+        ){
+            Intent intent = FileUtil.parseFile(getContext(),result.getData());
+            if(intent != null){
+                intent.putExtra(AppValues.userNameImportActivity,currUser.getId());
+                intent.putExtra(AppValues.actionImportActivity,importAction);
+                importLauncher.launch(intent);
+            }
+        }
+    }
     private void importResult(ActivityResult result) {
         if (result.getResultCode() == Activity.RESULT_OK) {
             if(result.getData() != null){
@@ -199,30 +220,47 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                         .get(AppValues.resNameImportActivity);
                 if(tempLand != null){
                     if(tempLand.getData() != null){
-                        points.clear();
-                        holes.clear();
-                        points.addAll(tempLand.getData().getBorder());
-                        holes.addAll(tempLand.getData().getHoles());
-                        saveLand();
+                        switch (importAction){
+                            case IMPORT:
+                                afterImportFileAction(tempLand.getData());
+                                break;
+                            case ADD:
+                                afterAddFileAction(tempLand.getData());
+                                break;
+                            case SUBTRACT:
+                                afterSubtractFileAction(tempLand.getData());
+                                break;
+                        }
                     }
                 }
             }
         }
+        importAction = ImportAction.NONE;
     }
-    private void onRequestPermissionsResult(Boolean result) {
-        toggleDrawer(false);
-        if(result){
-            Intent intent = FileUtil.getFilePickerIntent(fileState);
-            switch (fileState){
-                case File:
-                    fileLauncher.launch(intent);
-                    break;
-                case Img:
-                    imgFileLauncher.launch(intent);
-                    break;
-            }
-        }
-        fileState = LandFileState.Disable;
+    private void afterImportFileAction(LandData data){
+        points.clear();
+        holes.clear();
+        points.addAll(data.getBorder());
+        holes.addAll(data.getHoles());
+        saveLand();
+    }
+    private void afterAddFileAction(LandData dataToAdd){
+        LandData curr = new LandData(points,holes);
+        LandData result = LandUtil.uniteLandData(curr,dataToAdd);
+        points.clear();
+        holes.clear();
+        points.addAll(result.getBorder());
+        holes.addAll(result.getHoles());
+        saveLand();
+    }
+    private void afterSubtractFileAction(LandData dataToSubtract){
+        LandData curr = new LandData(points,holes);
+        LandData result = LandUtil.subtractLandData(curr,dataToSubtract);
+        points.clear();
+        holes.clear();
+        points.addAll(result.getBorder());
+        holes.addAll(result.getHoles());
+        saveLand();
     }
 
     //init relative
@@ -284,6 +322,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
 
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
+        importAction = ImportAction.NONE;
         currUser = null;
     }
     private void initActivity() {
@@ -416,10 +455,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 toImportFile();
                 return true;
             case (R.id.toolbar_action_add_to_land):
-                //todo: add from file to land
+                toImportAddFile();
                 return true;
             case (R.id.toolbar_action_remove_from_land):
-                //todo: remove from file to land
+                toImportSubtractFile();
                 return true;
             case (R.id.toolbar_action_delete_land):
                 deleteLand();
@@ -453,7 +492,13 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             });
     }
     private void toImportFile(){
-        importFile(LandFileState.File);
+        importFile(LandFileState.File_Import);
+    }
+    private void toImportAddFile(){
+        importFile(LandFileState.File_Add);
+    }
+    private void toImportSubtractFile(){
+        importFile(LandFileState.File_Subtract);
     }
     private void toImportImg(){
         importFile(LandFileState.Img);
@@ -536,6 +581,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     //file relative
     public void importFile(LandFileState state) {
         fileState = state;
+        switch (fileState){
+            case File_Import:
+                importAction = ImportAction.IMPORT;
+                break;
+            case File_Add:
+                importAction = ImportAction.ADD;
+                break;
+            case File_Subtract:
+                importAction = ImportAction.SUBTRACT;
+                break;
+            default:
+                importAction = ImportAction.NONE;
+                break;
+        }
         String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
         permissionLauncher.launch(permission);
     }

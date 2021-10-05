@@ -473,7 +473,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     //navigate
     public void toLandEdit(@Nullable Activity activity, Land land) {
-        //todo: (idea) create middle fragment from menu to edit
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);

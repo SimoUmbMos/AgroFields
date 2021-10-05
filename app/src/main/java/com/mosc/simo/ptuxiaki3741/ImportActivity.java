@@ -99,24 +99,22 @@ public class ImportActivity extends AppCompatActivity implements OnMapReadyCallb
                     FileUtil.handleFile(getApplicationContext(),intent)
             );
             if(intent.getExtras() != null){
-                if(intent.getExtras().containsKey(AppValues.userNameImportActivity)){
+                if(intent.hasExtra(AppValues.actionImportActivity)){
+                    action = (ImportAction) intent.getSerializableExtra(AppValues.actionImportActivity);
+                }else{
                     action = ImportAction.IMPORT;
-                    long id = intent.getExtras().getLong(AppValues.userNameImportActivity,-1);
+                }
+                if(action == ImportAction.NONE){
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+                if(intent.hasExtra(AppValues.userNameImportActivity)){
+                    long id = intent.getLongExtra(AppValues.userNameImportActivity,-1);
                     AsyncTask.execute(()->{
                         UserViewModel userViewModel =
                                 new ViewModelProvider(this).get(UserViewModel.class);
                         onUserUpdate(userViewModel.getUserByID(id));
                     });
-                }
-                if(intent.getExtras().containsKey(AppValues.actionImportActivity)){
-                    if(intent.getExtras().getBoolean(
-                            AppValues.actionImportActivity,
-                            false
-                    )){
-                        action = ImportAction.ADD;
-                    }else{
-                        action = ImportAction.SUBTRACT;
-                    }
                 }
             }
             landList = new ArrayList<>(fileLands);

@@ -11,35 +11,80 @@ import java.util.List;
 public final class LandUtil {
     private LandUtil(){}
 
-    public static LandData subtractLandData(LandData landData1, LandData landData2){
-        List<List<LatLng>> holes = new ArrayList<>();
-        List<LatLng> newHole = new ArrayList<>(landData2.getBorder());
+    public static LandData uniteLandData(LandData currLandData, LandData landDataToAdd){
+        List<LatLng> newBorder = new ArrayList<>(currLandData.getBorder());
+        List<List<LatLng>> holes = new ArrayList<>(currLandData.getHoles());
 
-        for(List<LatLng> hole:landData1.getHoles()){
-            if(MapUtil.disjoint(hole, newHole)){
-                holes.add(hole);
-            }else{
-                newHole = MapUtil.union(hole,newHole);
+        if(!MapUtil.disjoint(currLandData.getBorder(),landDataToAdd.getBorder())){
+            List<LatLng> temp;
+            newBorder.clear();
+            holes.clear();
+
+            newBorder = MapUtil.union(currLandData.getBorder(),landDataToAdd.getBorder());
+            for(List<LatLng> hole:currLandData.getHoles()){
+                if(MapUtil.disjoint(hole, landDataToAdd.getBorder())){
+                    holes.add(hole);
+                }else{
+                    temp = MapUtil.difference(hole,landDataToAdd.getBorder());
+                    if(temp.size()>0)
+                        holes.add(temp);
+                }
+            }
+            for(List<LatLng> hole:landDataToAdd.getHoles()){
+                if(MapUtil.disjoint(hole, currLandData.getBorder())){
+                    holes.add(hole);
+                }else{
+                    temp = MapUtil.difference(hole,currLandData.getBorder());
+                    if(temp.size()>0)
+                        holes.add(temp);
+                }
             }
         }
-        List<LatLng> newBorder = MapUtil.difference(
-                landData1.getBorder(),
-                newHole
-        );
-        if(newBorder.size() > 0){
-            double area1 = MapUtil.area(landData1.getBorder());
-            double area3 = MapUtil.area(newBorder);
-            if(area1 == area3) {
-                holes.add(newHole);
-                newBorder = landData1.getBorder();
-            }
-        }else{
-            holes = new ArrayList<>();
-        }
+
         return new LandData(
-                landData1.getId(),
-                landData1.getCreator_id(),
-                landData1.getTitle(),
+                currLandData.getId(),
+                currLandData.getCreator_id(),
+                currLandData.getTitle(),
+                newBorder,
+                holes
+        );
+    }
+    public static LandData subtractLandData(LandData currLandData, LandData landDataToSubtract){
+        List<LatLng> newBorder = new ArrayList<>(currLandData.getBorder());
+        List<List<LatLng>> holes = new ArrayList<>(currLandData.getHoles());
+
+        if(!MapUtil.disjoint(currLandData.getBorder(),landDataToSubtract.getBorder())){
+            List<LatLng> newHole = new ArrayList<>(landDataToSubtract.getBorder());
+            newBorder.clear();
+            holes.clear();
+
+            for(List<LatLng> hole:currLandData.getHoles()){
+                if(MapUtil.disjoint(hole, newHole)){
+                    holes.add(hole);
+                }else{
+                    newHole = MapUtil.union(hole,newHole);
+                }
+            }
+            newBorder = MapUtil.difference(
+                    currLandData.getBorder(),
+                    newHole
+            );
+            if(newBorder.size() > 0){
+                double area1 = MapUtil.area(currLandData.getBorder());
+                double area3 = MapUtil.area(newBorder);
+                if(area1 == area3) {
+                    holes.add(newHole);
+                    newBorder = currLandData.getBorder();
+                }
+            }else{
+                holes = new ArrayList<>();
+            }
+        }
+
+        return new LandData(
+                currLandData.getId(),
+                currLandData.getCreator_id(),
+                currLandData.getTitle(),
                 newBorder,
                 holes
         );

@@ -3,8 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_land_graph"
-    app:startDestination="@id/LoginFragment">
-    <!--todo: (idea) create new fragment before login for loading-->
+    app:startDestination="@id/LoadingFragment">
+    <!--todo: (idea) create new fragment before land edit for land menu-->
+    <fragment android:id="@+id/LoadingFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" >
+        <action
+            android:id="@+id/loadingToLogin"
+            app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/loadingToMenu"
+            app:destination="@id/MainMenuFragment" />
+    </fragment>
     <fragment android:id="@+id/LoginFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LoginRegisterFragment"
         android:label="fragment_login_register"
