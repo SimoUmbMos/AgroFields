@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ImportActivity" >
+
     <com.google.android.material.appbar.AppBarLayout android:id="@+id/ablImportActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,6 +23,28 @@
             app:titleTextColor="@color/textColor" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ablImportActivity" />
+
+    <TextView
+        android:id="@+id/tvDisplay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/backgroundColor"
+        android:gravity="center"
+        android:text="@string/map_loading_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ablImportActivity" />
+
+    <!--
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/ImportActivityMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -31,4 +54,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ablImportActivity" />
+        -->
 </androidx.constraintlayout.widget.ConstraintLayout>

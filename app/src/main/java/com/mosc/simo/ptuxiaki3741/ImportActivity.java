@@ -2,20 +2,18 @@ package com.mosc.simo.ptuxiaki3741;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
@@ -24,80 +22,35 @@ import com.mosc.simo.ptuxiaki3741.databinding.ActivityImportBinding;
 import com.mosc.simo.ptuxiaki3741.enums.ImportAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImportActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnPolygonClickListener {
+public class ImportActivity extends AppCompatActivity {
     public static final String TAG = "ImportActivity";
-    private List<Land> landList;
-    private User curUser;
+
+    private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
+    private final List<PolygonOptions> options = new ArrayList<>();
+
+    private ActivityImportBinding binding;
     private GoogleMap mMap;
 
-    @Override protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        ActivityImportBinding binding = ActivityImportBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        init(binding);
-    }
-    @Override public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-    @Override public void onMapReady(@NonNull GoogleMap googleMap){
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        initMap();
-    }
-    @Override public void onPolygonClick(@NonNull Polygon polygon){
-        if(curUser != null){
-            Intent returnIntent;
-            returnIntent = new Intent();
-            returnIntent.putExtra(
-                    AppValues.resNameImportActivity,
-                    new Land(new LandData(polygon.getPoints(),polygon.getHoles()))
-            );
-            setResult(RESULT_OK,returnIntent);
-            finish();
-        }
-    }
+    private User curUser;
+    private ImportAction action = ImportAction.VIEW;
 
-    private void init(ActivityImportBinding binding){
-        setSupportActionBar(binding.tbImportActivity);
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle(null);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-        initThemeSettings();
+    private void init(){
         initData();
+        initActionBar();
         initActivity();
     }
-    public void initThemeSettings() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        if(sharedPref.getBoolean(AppValues.isForceKey, false)){
-            if(sharedPref.getBoolean(AppValues.isDarkKey, false)){
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            }else{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        }else{
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        }
-    }
     private void initData(){
-        ImportAction action = ImportAction.VIEW;
         Intent intent = getIntent();
         if(intent != null){
-            List<Land> fileLands = new ArrayList<>(
-                    FileUtil.handleFile(getApplicationContext(),intent)
-            );
             if(intent.getExtras() != null){
                 if(intent.hasExtra(AppValues.actionImportActivity)){
                     action = (ImportAction) intent.getSerializableExtra(AppValues.actionImportActivity);
@@ -108,39 +61,26 @@ public class ImportActivity extends AppCompatActivity implements OnMapReadyCallb
                     setResult(RESULT_CANCELED);
                     finish();
                 }
-                if(intent.hasExtra(AppValues.userNameImportActivity)){
-                    long id = intent.getLongExtra(AppValues.userNameImportActivity,-1);
-                    AsyncTask.execute(()->{
+                AsyncTask.execute(()->{
+                    long id = intent.getLongExtra(
+                            AppValues.userNameImportActivity,
+                            AppValues.sharedPreferenceDefaultUserViewModel
+                    );
+                    if(id != AppValues.sharedPreferenceDefaultUserViewModel){
                         UserViewModel userViewModel =
                                 new ViewModelProvider(this).get(UserViewModel.class);
                         onUserUpdate(userViewModel.getUserByID(id));
-                    });
-                }
+                    }
+                });
             }
-            landList = new ArrayList<>(fileLands);
-        }else{
-            setResult(RESULT_CANCELED);
-            finish();
-        }
-        initActionBar(action);
-    }
-    private void initActivity(){
-        if(UIUtil.isGooglePlayServicesAvailable(this)){
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.ImportActivityMap);
-            if(mapFragment != null){
-                mapFragment.getMapAsync(this);
-            }else{
-                setResult(RESULT_CANCELED);
-                finish();
-            }
-        }else{
-            setResult(RESULT_CANCELED);
-            finish();
         }
     }
-    private void initActionBar(ImportAction action) {
+    private void initActionBar() {
+        setSupportActionBar(binding.tbImportActivity);
         if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
             switch (action){
                 case IMPORT:
                     getSupportActionBar().show();
@@ -167,73 +107,109 @@ public class ImportActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         }
     }
-    private void initMap(){
-        mMap.setOnPolygonClickListener(this);
-        mMap.setOnMapLoadedCallback(this::onMapFullLoaded);
+    private void initActivity(){
+        lands.observe(this,this::onLandsUpdate);
+        binding.mapView.getMapAsync(this::initMap);
+    }
+    private void initMap(GoogleMap googleMap){
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setCompassEnabled(false);
+        mMap.setOnPolygonClickListener(this::onPolygonClick);
+        AsyncTask.execute(()->
+                lands.postValue(FileUtil.handleFile(getApplicationContext(),getIntent()))
+        );
+    }
+    public void onPolygonClick(@NonNull Polygon polygon){
+        if (curUser != null && (
+            action == ImportAction.IMPORT ||
+            action == ImportAction.ADD ||
+            action == ImportAction.SUBTRACT
+        )) {
+            Intent returnIntent;
+            returnIntent = new Intent();
+            returnIntent.putExtra(
+                    AppValues.resNameImportActivity,
+                    new Land(new LandData(polygon.getPoints(),polygon.getHoles()))
+            );
+            setResult(RESULT_OK,returnIntent);
+            finish();
+        }
     }
 
+    private void onLandsUpdate(List<Land> lands) {
+        if(lands != null){
+            if(lands.size()>0){
+                int strokeColor = ContextCompat.getColor(this, R.color.polygonStroke);
+                int fillColor = ContextCompat.getColor(this, R.color.polygonFill);
+                AsyncTask.execute(()->{
+                    final LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for(Land land:lands){
+                        for(LatLng point:land.getData().getBorder()){
+                            builder.include(point);
+                        }
+                        options.add(MapUtil.getPolygonOptions(
+                                land,
+                                strokeColor,
+                                fillColor,
+                                true
+                        ));
+                    }
+                    runOnUiThread(()->{
+                        for(PolygonOptions option:options){
+                            mMap.addPolygon(option);
+                        }
+                        if(options.size()>0)
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                                    builder.build(),
+                                    AppValues.defaultPadding
+                            ));
+                        binding.tvDisplay.setVisibility(View.GONE);
+                    });
+                });
+                return;
+            }
+        }
+        setResult(Activity.RESULT_CANCELED);
+        finish();
+    }
     private void onUserUpdate(User user) {
         curUser = user;
-        if(user != null){
-            if(landList.size() == 1){
-                Intent returnIntent;
-                returnIntent = new Intent();
-                returnIntent.putExtra(AppValues.resNameImportActivity,landList.get(0));
-                setResult(RESULT_OK,returnIntent);
-                finish();
-            }
-        }
-        if(mMap != null){
-            toggleMapLock(user == null);
-        }
     }
 
-    private void toggleMapLock(boolean b){
-        if(mMap != null){
-            if(b){
-                mMap.getUiSettings().setRotateGesturesEnabled(false);
-                mMap.getUiSettings().setScrollGesturesEnabled(false);
-                mMap.getUiSettings().setZoomGesturesEnabled(false);
-                mMap.getUiSettings().setZoomControlsEnabled(false);
-                mMap.getUiSettings().setCompassEnabled(false);
-            }else{
-                mMap.getUiSettings().setRotateGesturesEnabled(true);
-                mMap.getUiSettings().setScrollGesturesEnabled(true);
-                mMap.getUiSettings().setZoomGesturesEnabled(true);
-                mMap.getUiSettings().setZoomControlsEnabled(true);
-                mMap.getUiSettings().setCompassEnabled(true);
-            }
-        }
+    @Override protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        binding = ActivityImportBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        binding.mapView.onCreate(savedInstanceState);
+        init();
     }
-    private void onMapFullLoaded(){
-        showPointsOnMap();
-        onUserUpdate(curUser);
+    @Override protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        binding.mapView.onSaveInstanceState(outState);
     }
-    private void showPointsOnMap(){
-        int strokeColor = ContextCompat.getColor(this, R.color.polygonStroke);
-        int fillColor = ContextCompat.getColor(this, R.color.polygonFill);
-        int num = 0;
-
-        if(landList.size() > 0){
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(Land land : landList){
-                PolygonOptions options = MapUtil.getPolygonOptions(
-                        land,
-                        strokeColor,
-                        fillColor,
-                        true
-                );
-                if(options != null){
-                    Polygon polygon = mMap.addPolygon(options);
-                    for(LatLng point : polygon.getPoints()){
-                        builder.include(point);
-                        num++;
-                    }
-                }
-            }
-            if(num > 0){
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPadding));
-            }
-        }
+    @Override protected void onResume() {
+        super.onResume();
+        binding.mapView.onResume();
+    }
+    @Override protected void onPause() {
+        super.onPause();
+        binding.mapView.onPause();
+    }
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        binding.mapView.onDestroy();
+    }
+    @Override public void onLowMemory() {
+        super.onLowMemory();
+        binding.mapView.onLowMemory();
+    }
+    @Override public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

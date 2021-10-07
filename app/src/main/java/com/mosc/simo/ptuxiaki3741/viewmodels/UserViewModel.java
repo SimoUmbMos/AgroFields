@@ -52,10 +52,17 @@ public class UserViewModel extends AndroidViewModel {
     }
     public void init(SharedPreferences sharedPref){
         this.sharedPref = sharedPref;
-        AsyncTask.execute(this::initCurrUser);
+        AsyncTask.execute(this::initFromMemory);
     }
-    private void initCurrUser() {
-        User user = loadCurrUser();
+    private void initFromMemory() {
+        long uid = loadCurrUser();
+        initCurrUser(uid);
+    }
+    private void initCurrUser(long id) {
+        User user = null;
+        if(id != AppValues.sharedPreferenceDefaultUserViewModel){
+            user = userRepository.getUserByID(id);
+        }
         currUser.postValue(user);
         populateCurrUserRelativeLists(user);
     }
@@ -70,13 +77,12 @@ public class UserViewModel extends AndroidViewModel {
             blocks.postValue(new ArrayList<>());
         }
     }
-    private User loadCurrUser() {
+    private long loadCurrUser() {
         long uid = getUidFromMemory();
-        User user = getUserByID(uid);
-        if(user == null){
+        if(uid == AppValues.sharedPreferenceDefaultUserViewModel){
             clearUidFromMemory();
         }
-        return user;
+        return uid;
     }
 
     private void clearUidFromMemory(){

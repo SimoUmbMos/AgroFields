@@ -1,10 +1,13 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -51,6 +54,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
 
     private final List<Land> data = new ArrayList<>();
+    private final List<Land> exportLands = new ArrayList<>();
+    private FileType exportAction;
     private LandListAdapter adapter;
     private int dialogChecked;
     private LandViewModel vmLands;
@@ -94,6 +99,20 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }else{
             return true;
         }
+    }
+
+    private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::onRequestPermissionsResult
+    );
+    private void onRequestPermissionsResult(Boolean result) {
+        if(result){
+            if(exportLands.size()>0 && exportAction != FileType.NONE){
+                writeOnFile(exportLands, exportAction);
+            }
+        }
+        exportAction = FileType.NONE;
+        exportLands.clear();
     }
 
     //init
@@ -327,17 +346,17 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         removeSelectedLands();
     }
     private void exportSelectedLands(FileType action){
-        List<Land> lands = returnSelectedLands();
-        if(lands.size() > 0){
-            File path = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS
-            );
-            writeOnFile(lands, path, action);
-            deselectAllLands();
-        }
+        exportAction = action;
+        exportLands.clear();
+        exportLands.addAll(returnSelectedLands());
+        permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        deselectAllLands();
     }
-    private void writeOnFile(List<Land> lands, File path, FileType action) {
+    private void writeOnFile(List<Land> lands, FileType action) {
         if(lands.size()>0){
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS
+            );
             String fileName = (System.currentTimeMillis()/1000)+"_"+lands.size();
             try{
                 boolean isPathCreated = false, pathExist = path.exists();

@@ -7,10 +7,12 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
@@ -22,6 +24,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
     private boolean doubleBackToExitPressedOnce = false;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        checkIfCalledByFile();
         init();
         initViewModels();
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -71,12 +75,21 @@ public class MainActivity extends AppCompatActivity {
         }
         checkThemeSettings();
     }
-
     private void initViewModels() {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         AsyncTask.execute(()-> userViewModel.init(sharedPref));
         userViewModel.getCurrUser().observe(this,this::onUserUpdate);
+    }
+    private void checkIfCalledByFile(){
+        if(getIntent() != null) {
+            if (getIntent().getData() != null) {
+                Intent i = new Intent(MainActivity.this, ImportActivity.class);
+                i.setData(getIntent().getData());
+                finish();
+                startActivity(i);
+            }
+        }
     }
 
     public void showToast(CharSequence text) {

@@ -86,19 +86,21 @@ public final class FileUtil {
                         isShapeFile(ctx, response);
     }
     public static List<Land> handleFile(Context ctx, Intent result) {
-        if(fileIsValid(ctx, result)){
-            Uri uri = result.getData();
-            switch (getFileType(ctx, result)){
-                case KML:
-                    return handleKml(ctx, uri);
-                case SHAPEFILE:
-                    return handleShapeFile(ctx, uri);
-                case GEOJSON:
-                    return handleJson(ctx, uri);
-                case GML:
-                    List<Land> lands = handleGML(ctx, uri);
-                    Log.d("debug", "handleFile gml size: "+lands.size());
-                    return lands;
+        if(result != null){
+            if(fileIsValid(ctx, result)){
+                Uri uri = result.getData();
+                switch (getFileType(ctx, result)){
+                    case KML:
+                        return handleKml(ctx, uri);
+                    case SHAPEFILE:
+                        return handleShapeFile(ctx, uri);
+                    case GEOJSON:
+                        return handleJson(ctx, uri);
+                    case GML:
+                        List<Land> lands = handleGML(ctx, uri);
+                        Log.d("debug", "handleFile gml size: "+lands.size());
+                        return lands;
+                }
             }
         }
         return new ArrayList<>();

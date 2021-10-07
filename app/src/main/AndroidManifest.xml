@@ -3,7 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mosc.simo.ptuxiaki3741"
     tools:ignore="LockedOrientationActivity">
-
+    <permission
+        android:name="com.mosc.simo.ptuxiaki3741.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -12,8 +16,8 @@
         android:icon="@mipmap/app_icon"
         android:logo="@mipmap/app_icon"
         android:roundIcon="@mipmap/app_icon_round"
-        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -27,15 +31,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ImportActivity"
-            android:label="@string/title_activity_import"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true">
-            <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -203,5 +198,9 @@
                 <data android:host="*"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ImportActivity"
+            android:label="@string/title_activity_import"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 </manifest>

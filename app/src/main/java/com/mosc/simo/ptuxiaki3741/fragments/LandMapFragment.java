@@ -510,8 +510,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 importAction = ImportAction.NONE;
                 break;
         }
-        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-        permissionLauncher.launch(permission);
+        permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     //map relative
