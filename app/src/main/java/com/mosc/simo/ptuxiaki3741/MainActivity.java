@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         init();
+        initViewModels();
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fcvNavHostFragment);
-        AsyncTask.execute(this::initViewModels);
     }
     @Override public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
     private void initViewModels() {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        userViewModel.init(sharedPref);
-        runOnUiThread(()->userViewModel.getCurrUser().observe(this,this::onUserUpdate));
+        AsyncTask.execute(()-> userViewModel.init(sharedPref));
+        userViewModel.getCurrUser().observe(this,this::onUserUpdate);
     }
 
     public void showToast(CharSequence text) {
@@ -87,10 +87,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onUserUpdate(User user) {
-        AsyncTask.execute(()->{
-            LandViewModel landViewModel = new ViewModelProvider(this).get(LandViewModel.class);
-            landViewModel.init(user);
-        });
+        LandViewModel landViewModel = new ViewModelProvider(this).get(LandViewModel.class);
+        AsyncTask.execute(()-> landViewModel.init(user));
     }
 
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){

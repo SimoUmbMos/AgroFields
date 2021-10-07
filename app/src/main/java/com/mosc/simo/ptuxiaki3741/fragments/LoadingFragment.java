@@ -38,7 +38,8 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     @Override public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init();
-        initViewModel();
+        LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
+        AsyncTask.execute(()->initViewModel(lifecycleOwner));
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -63,15 +64,12 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
-    private void initViewModel(){
+    private void initViewModel(LifecycleOwner lifecycleOwner){
         if(getActivity() != null){
-            LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
-            AsyncTask.execute(()->{
-                UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-                getActivity().runOnUiThread(()->
-                        vmUsers.getCurrUser().observe(lifecycleOwner,this::onUserUpdate)
-                );
-            });
+            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            getActivity().runOnUiThread(()->
+                    vmUsers.getCurrUser().observe(lifecycleOwner,this::onUserUpdate)
+            );
         }
     }
 
