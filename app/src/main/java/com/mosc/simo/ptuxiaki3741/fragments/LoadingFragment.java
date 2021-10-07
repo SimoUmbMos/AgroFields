@@ -10,8 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +22,6 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoadingBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
-import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 public class LoadingFragment extends Fragment implements FragmentBackPress {
@@ -62,8 +59,7 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
                 actionBar.hide();
             }
         }
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(this::initViewModel, AppValues.loading_delay);
+        initViewModel();
     }
     private void initViewModel(){
         if(getActivity() != null){

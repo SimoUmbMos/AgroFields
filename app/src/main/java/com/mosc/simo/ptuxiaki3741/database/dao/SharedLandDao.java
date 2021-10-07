@@ -36,7 +36,7 @@ public interface SharedLandDao {
     List<LandWithShare> getSharedLandsToOtherUsers(long ownerID);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(SharedLand sharedLand);
+    void insert(SharedLand sharedLand);
 
     @Delete
     void deleteAll(List<SharedLand> sharedLand);

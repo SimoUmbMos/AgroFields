@@ -22,7 +22,6 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.ShareLandAdapter;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandWithShare;
-import com.mosc.simo.ptuxiaki3741.models.entities.SharedLand;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentShareLandBinding;
@@ -182,6 +181,13 @@ public class ShareLandFragment extends Fragment implements FragmentBackPress {
                     data.add(new LandWithShare(land.getData(),null));
                 }
             }
+        }
+        if(data.size()>0){
+            binding.rcSharedLand.setVisibility(View.VISIBLE);
+            binding.tvSharedLandDisplay.setVisibility(View.GONE);
+        }else{
+            binding.rcSharedLand.setVisibility(View.GONE);
+            binding.tvSharedLandDisplay.setVisibility(View.VISIBLE);
         }
         adapter.notifyDataSetChanged();
     }

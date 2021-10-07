@@ -249,7 +249,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(state != LandListMenuState.NormalState) {
             toggleSelectOnPosition(data.indexOf(land));
         }else{
-            toLandEdit(getActivity(),land);
+            toLandPreview(getActivity(),land);
         }
     }
     private void onLandLongClick(Land land) {
@@ -472,14 +472,15 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //navigate
-    public void toLandEdit(@Nullable Activity activity, Land land) {
+    public void toLandPreview(@Nullable Activity activity, Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandLandMapFragment,land);
+                bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
+                bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,false);
                 if(nav != null)
-                    nav.navigate(R.id.landCollectionToLandMap,bundle);
+                    nav.navigate(R.id.landCollectionToLandPreview,bundle);
             });
     }
     public void toLandAdd(@Nullable Activity activity) {

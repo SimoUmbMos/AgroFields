@@ -182,11 +182,10 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandHistoryFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandLandMapFragment,land);
-                bundle.putBoolean(AppValues.argDisplayModeLandMapFragment,true);
-                bundle.putBoolean(AppValues.argShowRestoreLandMapFragment,true);
+                bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
+                bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,true);
                 if(nav != null)
-                    nav.navigate(R.id.landHistoryToLandMap,bundle);
+                    nav.navigate(R.id.landHistoryToLandPreview,bundle);
             });
     }
 }

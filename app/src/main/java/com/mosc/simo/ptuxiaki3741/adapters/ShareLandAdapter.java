@@ -53,7 +53,7 @@ public class ShareLandAdapter extends RecyclerView.Adapter<ShareLandAdapter.Shar
     }
 
     protected static class ShareLandViewHolder extends RecyclerView.ViewHolder{
-        public ViewHolderShareLandCheckableBinding binding;
+        public final ViewHolderShareLandCheckableBinding binding;
         public ShareLandViewHolder(@NonNull View view) {
             super(view);
             binding = ViewHolderShareLandCheckableBinding.bind(view);

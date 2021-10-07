@@ -8,19 +8,18 @@ public final class AppValues {
     public static final long sharedPreferenceDefaultUserViewModel = -1;
     /* Common Values*/
     public static final int defaultPadding = 64;
-    /* Loading Fragment Values*/
-    public static final int loading_delay = 100;
     /* Contact Profile Fragment Values */
     public static final String CONTACT_PROFILE_ARG = "user";
     /* Share Land Fragment Values */
     public static final String SHARE_LAND_ARG = "user";
     /* Land Info Fragment Values */
     public static final String argLandInfoFragment = "land";
+    /* Land Map Preview Fragment Values*/
+    public static final String argLandLandMapPreviewFragment = "land";
+    public static final String argIsHistoryLandMapPreviewFragment= "is_history";
     /* Land Map Fragment Values*/
     public static final String argLandLandMapFragment = "land";
     public static final String argAddressLandMapFragment = "address";
-    public static final String argDisplayModeLandMapFragment = "display_mode";
-    public static final String argShowRestoreLandMapFragment = "show_restore";
     public static final double distanceToMapActionKM = 100;
     public static final float stepOpacity = 0.03f;
     public static final float stepRotate = 1f;

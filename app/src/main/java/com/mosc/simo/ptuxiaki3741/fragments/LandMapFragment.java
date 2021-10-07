@@ -68,13 +68,10 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private ImportAction importAction;
     private float zoom, dx, dy, x, y;
     private int index1, index2, index3;
-    private boolean displayOnly = false,
-            showRestore = false;
 
     public ActionBar actionBar;
     private FragmentLandMapBinding binding;
     private GoogleMap mMap;
-    private Menu menu;
     private AlertDialog dialog;
 
     private List<LatLng> points,startPoints;
@@ -107,12 +104,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.land_map_menu, menu);
-        this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        setupMenuItems();
-        super.onPrepareOptionsMenu(menu);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(menuItemClick(item)){
@@ -276,21 +268,9 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             }else {
                 address = null;
             }
-            if(getArguments().containsKey(AppValues.argDisplayModeLandMapFragment)) {
-                displayOnly = getArguments().getBoolean(AppValues.argDisplayModeLandMapFragment);
-            }else{
-                displayOnly = false;
-            }
-            if(getArguments().containsKey(AppValues.argShowRestoreLandMapFragment)) {
-                showRestore = getArguments().getBoolean(AppValues.argShowRestoreLandMapFragment);
-            }else{
-                showRestore = false;
-            }
         }else{
             currLand = null;
             address = null;
-            displayOnly = false;
-            showRestore = false;
         }
         points = new ArrayList<>();
         holes = new ArrayList<>();
@@ -338,7 +318,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         }
     }
     private void initDataToView() {
-        setupMenuItems();
         if(address == null){
             asyncFindLocation();
         }
@@ -372,27 +351,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             }
         }else{
             binding.btnLandTerrain.setVisibility(View.GONE);
-            displayOnly = true;
-            setupMenuItems();
         }
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        googleMap.setMinZoomPreference(5);
-        googleMap.setMaxZoomPreference(20);
-        googleMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-        googleMap.getUiSettings().setCompassEnabled(true);
-        googleMap.setOnMapClickListener(this::processClick);
-        binding.btnLandTerrain.setOnClickListener(v -> changeMapType());
-        if(displayOnly)
-            toggleMapLock();
-        googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
-    }
-    private void mapFullLoaded() {
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMinZoomPreference(5);
+        mMap.setMaxZoomPreference(20);
+        mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.setOnMapClickListener(this::processClick);
         drawMap();
         zoomOnPoints();
+        binding.btnLandTerrain.setOnClickListener(v -> changeMapType());
     }
 
     //land and user data getter setter
@@ -408,9 +380,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 return true;
             case (R.id.menu_item_save_land):
                 saveLand();
-                return true;
-            case (R.id.menu_item_restore_land):
-                restoreLand();
                 return true;
             case (R.id.toolbar_action_toggle_map_lock):
                 toggleMapLock();
@@ -472,38 +441,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         }
     }
 
-    //navigation relative
-    public void finish(Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()->{
-                    binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
-                    binding.clLandControls.setVisibility(View.GONE);
-                    activity.onBackPressed();
-            });
-    }
-    public void toInfo(Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandInfoFragment,currLand);
-                if(nav != null)
-                    nav.navigate(R.id.landMapToLandInfo,bundle);
-            });
-    }
-    private void toImportFile(){
-        importFile(LandFileState.File_Import);
-    }
-    private void toImportAddFile(){
-        importFile(LandFileState.File_Add);
-    }
-    private void toImportSubtractFile(){
-        importFile(LandFileState.File_Subtract);
-    }
-    private void toImportImg(){
-        importFile(LandFileState.Img);
-    }
-
     //save relative
     private void saveLand() {
         if(isValidToSave()){
@@ -521,28 +458,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         if(getActivity() != null){
             LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmLands.saveLand(currLand);
-        }
-    }
-
-    //restore relative
-    private void restoreLand() {
-        if(isValidToRestore()){
-            restoreToVM();
-            finish(getActivity());
-        }
-    }
-    private boolean isValidToRestore() {
-        if(isValidToSave() && currUser != null){
-            return currLand.getData().getCreator_id() == currUser.getId();
-        }
-        return false;
-    }
-    private void restoreToVM() {
-        currLand.getData().setBorder(points);
-        currLand.getData().setHoles(holes);
-        if(getActivity() != null){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-            vmLands.restoreLand(currLand);
         }
     }
 
@@ -1177,41 +1092,20 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         }
     }
     private void toggleDrawer(boolean toggle) {
-        if(!displayOnly){
-            if(binding != null){
-                if(toggle){
-                    binding.LandMapRoot.openDrawer(GravityCompat.END);
-                    if(
-                            mapStatus == LandActionStates.Move &&
-                                    binding.btnLandTerrain.getVisibility() != View.VISIBLE
-                    ){
-                        toggleMapLock();
-                    }
-                    if(this.mapStatus != LandActionStates.Disable){
-                        setAction(LandActionStates.Disable);
-                    }
-                }else{
-                    binding.LandMapRoot.closeDrawer(GravityCompat.END);
+        if(binding != null){
+            if(toggle){
+                binding.LandMapRoot.openDrawer(GravityCompat.END);
+                if(
+                        mapStatus == LandActionStates.Move &&
+                                binding.btnLandTerrain.getVisibility() != View.VISIBLE
+                ){
+                    toggleMapLock();
                 }
-            }
-        }
-    }
-    private void setupMenuItems(){
-        if(menu != null){
-            MenuItem menuToggle = menu.findItem(R.id.menu_item_toggle_drawer);
-            MenuItem menuSave = menu.findItem(R.id.menu_item_save_land);
-            MenuItem menuRestore = menu.findItem(R.id.menu_item_restore_land);
-            if(menuToggle != null){
-                menuToggle.setVisible(!displayOnly);
-                menuToggle.setEnabled(!displayOnly);
-            }
-            if(menuSave != null){
-                menuSave.setVisible(!displayOnly);
-                menuSave.setEnabled(!displayOnly);
-            }
-            if(menuRestore != null){
-                menuRestore.setVisible(showRestore);
-                menuRestore.setEnabled(showRestore);
+                if(this.mapStatus != LandActionStates.Disable){
+                    setAction(LandActionStates.Disable);
+                }
+            }else{
+                binding.LandMapRoot.closeDrawer(GravityCompat.END);
             }
         }
     }
@@ -1271,4 +1165,35 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         }
     }
 
+    //navigation relative
+    public void finish(Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()->{
+                binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
+                binding.clLandControls.setVisibility(View.GONE);
+                activity.onBackPressed();
+            });
+    }
+    public void toInfo(Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppValues.argLandInfoFragment,currLand);
+                if(nav != null)
+                    nav.navigate(R.id.landMapToLandInfo,bundle);
+            });
+    }
+    private void toImportFile(){
+        importFile(LandFileState.File_Import);
+    }
+    private void toImportAddFile(){
+        importFile(LandFileState.File_Add);
+    }
+    private void toImportSubtractFile(){
+        importFile(LandFileState.File_Subtract);
+    }
+    private void toImportImg(){
+        importFile(LandFileState.Img);
+    }
 }

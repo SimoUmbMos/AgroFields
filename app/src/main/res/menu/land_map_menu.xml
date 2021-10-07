@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group
-        android:id="@+id/group_map_menu_undo_redo_actions">
-        <item
-            android:id="@+id/menu_item_toggle_drawer"
-            android:orderInCategory="3"
-            android:icon="@drawable/ic_menu_menu"
-            android:title="@string/open_menu"
-            app:showAsAction="always" />
+    <group android:id="@+id/group_map_menu_undo_redo_actions">
         <item
             android:id="@+id/menu_item_save_land"
             android:icon="@drawable/ic_menu_save"
-            android:orderInCategory="2"
+            android:orderInCategory="1"
             android:title="@string/save_land"
             app:showAsAction="ifRoom" />
         <item
-            android:id="@+id/menu_item_restore_land"
-            android:icon="@drawable/ic_menu_restore"
-            android:orderInCategory="3"
-            android:title="@string/restore_land"
-            app:showAsAction="ifRoom" />
+            android:id="@+id/menu_item_toggle_drawer"
+            android:orderInCategory="2"
+            android:icon="@drawable/ic_menu_menu"
+            android:title="@string/open_menu"
+            app:showAsAction="always" />
     </group>
 </menu>

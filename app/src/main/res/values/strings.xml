@@ -75,6 +75,9 @@
     <string name="edit_land_label">Edit Land Name</string>
     <string name="submit_info">Submit</string>
     <string name="cancel_info">Cancel</string>
+    <!-- Land Map Preview Fragment -->
+    <string name="edit_land">Edit Land</string>
+    <string name="restore_land">Restore Land</string>
     <!-- Land Map Fragment -->
     <string name="change_terrain_type">change terrain type</string>
     <string name="fabSave">save edits</string>
@@ -84,7 +87,6 @@
     <string name="land_imageView">show img above map</string>
     <string name="open_menu">Open Menu</string>
     <string name="save_land">Save Land</string>
-    <string name="restore_land">Restore Land</string>
     <string name="map_view_actions_group_title">Map Actions</string>
     <string name="lock_map">Lock map</string>
     <string name="points_actions_group_title">Points Actions</string>
