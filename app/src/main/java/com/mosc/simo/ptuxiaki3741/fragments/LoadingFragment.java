@@ -1,12 +1,14 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
@@ -36,6 +38,7 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     @Override public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init();
+        initViewModel();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -59,12 +62,16 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
                 actionBar.hide();
             }
         }
-        initViewModel();
     }
     private void initViewModel(){
         if(getActivity() != null){
-            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
+            LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
+            AsyncTask.execute(()->{
+                UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+                getActivity().runOnUiThread(()->
+                        vmUsers.getCurrUser().observe(lifecycleOwner,this::onUserUpdate)
+                );
+            });
         }
     }
 
