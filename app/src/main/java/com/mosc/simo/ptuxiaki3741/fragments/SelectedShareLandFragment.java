@@ -13,6 +13,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentSelectedSharedLandBinding;
 
 public class SelectedShareLandFragment extends Fragment {
+    //todo: (idea) make toggle edit privilege
+    //todo: (idea) make change ownership
     private FragmentSelectedSharedLandBinding binding;
 
     private void initData() {

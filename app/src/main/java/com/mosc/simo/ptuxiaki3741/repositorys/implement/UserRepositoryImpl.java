@@ -2,6 +2,8 @@ package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandMemo;
+import com.mosc.simo.ptuxiaki3741.models.entities.UserMemo;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -35,6 +37,18 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUserByUserNameAndPassword(String username, String password) {
         String encryptedPassword = EncryptUtil.encryptPassword(password);
         return db.userDao().getUserByUserNameAndPassword(username, encryptedPassword);
+    }
+    @Override
+    public List<UserMemo> getUserFriendsMemosList(User user){
+        if(user != null)
+            return db.userMemoDao().getUserLandMemo(user.getId());
+        return new ArrayList<>();
+    }
+    @Override
+    public List<LandMemo> getUserLandsMemosList(User user){
+        if(user != null)
+            return db.landMemoDao().getUserLandMemo(user.getId());
+        return new ArrayList<>();
     }
 
     @Override
@@ -212,4 +226,5 @@ public class UserRepositoryImpl implements UserRepository {
                 db.userRelationshipDao().getByIDs(user1.getId(),user2.getId());
         db.userRelationshipDao().deleteAll(relationships);
     }
+
 }

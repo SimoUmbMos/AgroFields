@@ -2,7 +2,7 @@ package com.mosc.simo.ptuxiaki3741.values;
 
 public final class AppValues {
     /* DB VALUES*/
-    public static final int DATABASE_VERSION = 24;
+    public static final int DATABASE_VERSION = 25;
     /* ViewModels VALUES */
     public static final String sharedPreferenceKeyUserViewModel = "currUser";
     public static final long sharedPreferenceDefaultUserViewModel = -1;

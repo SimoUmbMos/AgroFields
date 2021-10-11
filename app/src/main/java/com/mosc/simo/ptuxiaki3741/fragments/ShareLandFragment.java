@@ -192,7 +192,6 @@ public class ShareLandFragment extends Fragment implements FragmentBackPress {
         adapter.notifyDataSetChanged();
     }
     private void onSharedLandItemClick(int pos, boolean wasChecked){
-        //todo: (idea) maybe make other fragment for edit privilege or change ownership
         LandWithShare entity = data.get(pos);
         if(wasChecked){
             vmLands.removeSharedLand(entity.getData(),contact);

@@ -33,9 +33,8 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRequestFragment
-        extends Fragment
-        implements SearchView.OnQueryTextListener, FragmentBackPress {
+public class UserRequestFragment extends Fragment implements SearchView.OnQueryTextListener, FragmentBackPress {
+    //todo: (idea) make new fragment for send request
     public static final String TAG = "UserRequestFragment";
 
     private FragmentUserRequestBinding binding;

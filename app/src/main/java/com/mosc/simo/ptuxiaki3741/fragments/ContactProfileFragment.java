@@ -35,6 +35,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class ContactProfileFragment extends Fragment implements FragmentBackPress {
+    //todo: (idea) make save memo based on user
     private FragmentContactProfileBinding binding;
     private AlertDialog dialog;
 

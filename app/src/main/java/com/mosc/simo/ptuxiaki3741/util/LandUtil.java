@@ -16,7 +16,7 @@ public final class LandUtil {
         List<List<LatLng>> holes = new ArrayList<>(currLandData.getHoles());
 
         if(!MapUtil.disjoint(currLandData.getBorder(),landDataToAdd.getBorder())){
-            List<LatLng> temp;
+            List<List<LatLng>> temp;
             newBorder.clear();
             holes.clear();
 
@@ -26,8 +26,12 @@ public final class LandUtil {
                     holes.add(hole);
                 }else{
                     temp = MapUtil.difference(hole,landDataToAdd.getBorder());
-                    if(temp.size()>0)
-                        holes.add(temp);
+                    if(temp.size()>0) {
+                        for (List<LatLng> tempHole : temp) {
+                            if (tempHole.size() > 0)
+                                holes.add(tempHole);
+                        }
+                    }
                 }
             }
             for(List<LatLng> hole:landDataToAdd.getHoles()){
@@ -35,8 +39,12 @@ public final class LandUtil {
                     holes.add(hole);
                 }else{
                     temp = MapUtil.difference(hole,currLandData.getBorder());
-                    if(temp.size()>0)
-                        holes.add(temp);
+                    if(temp.size()>0) {
+                        for (List<LatLng> tempHole : temp) {
+                            if (tempHole.size() > 0)
+                                holes.add(tempHole);
+                        }
+                    }
                 }
             }
         }
@@ -65,16 +73,21 @@ public final class LandUtil {
                     newHole = MapUtil.union(hole,newHole);
                 }
             }
-            newBorder = MapUtil.difference(
+            List<List<LatLng>> ans = MapUtil.difference(
                     currLandData.getBorder(),
                     newHole
             );
-            if(newBorder.size() > 0){
-                double area1 = MapUtil.area(currLandData.getBorder());
-                double area3 = MapUtil.area(newBorder);
-                if(area1 == area3) {
-                    holes.add(newHole);
-                    newBorder = currLandData.getBorder();
+            if(ans.size() == 1){
+                newBorder.addAll(ans.get(0));
+                if(newBorder.size()>0){
+                    double area1 = MapUtil.area(currLandData.getBorder());
+                    double area3 = MapUtil.area(newBorder);
+                    if(area1 == area3) {
+                        holes.add(newHole);
+                        newBorder = currLandData.getBorder();
+                    }
+                }else{
+                    holes = new ArrayList<>();
                 }
             }else{
                 holes = new ArrayList<>();

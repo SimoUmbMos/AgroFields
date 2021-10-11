@@ -13,7 +13,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandMemo;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.UserMemo;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -31,6 +33,8 @@ public class UserViewModel extends AndroidViewModel {
     private final MutableLiveData<List<User>> friends = new MutableLiveData<>();
     private final MutableLiveData<List<User>> friendRequests = new MutableLiveData<>();
     private final MutableLiveData<List<User>> blocks = new MutableLiveData<>();
+    private final MutableLiveData<List<UserMemo>> friendsMemos = new MutableLiveData<>();
+    private final MutableLiveData<List<LandMemo>> landsMemos = new MutableLiveData<>();
 
     public LiveData<User> getCurrUser(){
         return currUser;
@@ -43,6 +47,12 @@ public class UserViewModel extends AndroidViewModel {
     }
     public MutableLiveData<List<User>> getBlockList(){
         return blocks;
+    }
+    public MutableLiveData<List<UserMemo>> getFriendsMemoList(){
+        return friendsMemos;
+    }
+    public MutableLiveData<List<LandMemo>> getLandsMemoList(){
+        return landsMemos;
     }
 
     public UserViewModel(@NonNull Application application) {
@@ -71,10 +81,14 @@ public class UserViewModel extends AndroidViewModel {
             friends.postValue(getFriends(user));
             friendRequests.postValue(getFriendRequests(user));
             blocks.postValue(getBlocks(user));
+            friendsMemos.postValue(getFriendsMemos(user));
+            landsMemos.postValue(getLandsMemos(user));
         }else{
             friends.postValue(new ArrayList<>());
             friendRequests.postValue(new ArrayList<>());
             blocks.postValue(new ArrayList<>());
+            friendsMemos.postValue(new ArrayList<>());
+            landsMemos.postValue(new ArrayList<>());
         }
     }
     private long loadCurrUser() {
@@ -188,6 +202,22 @@ public class UserViewModel extends AndroidViewModel {
             return userRepository.getUserBlockList(user);
         }
         Log.d(TAG, "getBlocks: USER NULL");
+        return new ArrayList<>();
+    }
+    private List<UserMemo> getFriendsMemos(User user){
+        if(user != null){
+            Log.d(TAG, "getFriendsMemos: USER NOT NULL");
+            return userRepository.getUserFriendsMemosList(user);
+        }
+        Log.d(TAG, "getFriendsMemos: USER NULL");
+        return new ArrayList<>();
+    }
+    private List<LandMemo> getLandsMemos(User user){
+        if(user != null){
+            Log.d(TAG, "getLandsMemos: USER NOT NULL");
+            return userRepository.getUserLandsMemosList(user);
+        }
+        Log.d(TAG, "getLandsMemos: USER NULL");
         return new ArrayList<>();
     }
 

@@ -39,6 +39,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 public class LandMapPreviewFragment extends Fragment implements FragmentBackPress {
+    //todo: (idea) make save memo based on user
     private FragmentLandMapPreviewBinding binding;
 
     private GoogleMap mMap;

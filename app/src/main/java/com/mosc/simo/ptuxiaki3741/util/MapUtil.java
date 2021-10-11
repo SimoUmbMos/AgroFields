@@ -242,8 +242,8 @@ public final class MapUtil {
         return polygon3Borders;
     }
 
-    public static List<LatLng> difference(List<LatLng> p1, List<LatLng> p2) {
-        List<LatLng> polygon3Borders = new ArrayList<>();
+    public static List<List<LatLng>> difference(List<LatLng> p1, List<LatLng> p2) {
+        List<List<LatLng>> ans = new ArrayList<>();
 
         com.esri.arcgisruntime.geometry.Polygon
                 polygon1 = convert(p1),
@@ -254,18 +254,22 @@ public final class MapUtil {
                 Geometry p3 = GeometryEngine.difference(polygon1,polygon2);
                 JSONObject jsonObj = new JSONObject(p3.toJson());
                 if(jsonObj.has("rings")){
-                    if(jsonObj.getJSONArray("rings").length()>0){
-                        JSONArray points = jsonObj.getJSONArray("rings").getJSONArray(0);
+                    JSONArray points;
+                    List<LatLng> polygon3Borders;
+                    for(int index = 0; index<jsonObj.getJSONArray("rings").length();index++){
+                        points = jsonObj.getJSONArray("rings").getJSONArray(index);
+                        polygon3Borders = new ArrayList<>();
                         for(int i=0;i<points.length()-1;i++){
                             polygon3Borders.add(new LatLng(points.getJSONArray(i).getDouble(0),points.getJSONArray(i).getDouble(1)));
                         }
+                        ans.add(polygon3Borders);
                     }
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return polygon3Borders;
+        return ans;
     }
 
     public static List<List<LatLng>> intersections(List<LatLng> p1, List<LatLng> p2) {

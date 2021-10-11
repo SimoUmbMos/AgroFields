@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -106,13 +107,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             this::onRequestPermissionsResult
     );
     private void onRequestPermissionsResult(Boolean result) {
-        if(result){
-            if(exportLands.size()>0 && exportAction != FileType.NONE){
-                writeOnFile(exportLands, exportAction);
-            }
-        }
-        exportAction = FileType.NONE;
-        exportLands.clear();
+        exportAction(result);
     }
 
     //init
@@ -349,8 +344,21 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         exportAction = action;
         exportLands.clear();
         exportLands.addAll(returnSelectedLands());
-        permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P){
+            exportAction(true);
+        }else{
+            permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
         deselectAllLands();
+    }
+    private void exportAction(boolean result){
+        if(result){
+            if(exportLands.size()>0 && exportAction != FileType.NONE){
+                writeOnFile(exportLands, exportAction);
+            }
+        }
+        exportAction = FileType.NONE;
+        exportLands.clear();
     }
     private void writeOnFile(List<Land> lands, FileType action) {
         if(lands.size()>0){

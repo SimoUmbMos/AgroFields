@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
@@ -24,7 +23,6 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
     private boolean doubleBackToExitPressedOnce = false;
@@ -86,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
             if (getIntent().getData() != null) {
                 Intent i = new Intent(MainActivity.this, ImportActivity.class);
                 i.setData(getIntent().getData());
-                finish();
                 startActivity(i);
+                finish();
             }
         }
     }
