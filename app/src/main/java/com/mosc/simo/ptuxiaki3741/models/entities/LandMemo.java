@@ -17,15 +17,15 @@ public class LandMemo {
     String memo;
 
     @Ignore
-    public LandMemo(long lid, long uid, String memo) {
-        this.lid = lid;
+    public LandMemo(long uid, long lid, String memo) {
         this.uid = uid;
+        this.lid = lid;
         this.memo = memo;
     }
-    public LandMemo(long id, long lid, long uid, String memo) {
+    public LandMemo(long id, long uid, long lid, String memo) {
         this.id = id;
-        this.lid = lid;
         this.uid = uid;
+        this.lid = lid;
         this.memo = memo;
     }
 

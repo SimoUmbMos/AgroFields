@@ -17,6 +17,11 @@ public interface UserMemoDao {
     List<UserMemo> getUserLandMemo(long uid);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(UserMemo userMemo);
+
+    @Query("DELETE FROM UserMemos " +
+            "WHERE UserID = :uid " +
+            "AND ContactID = :cid")
+    void deleteByUsers(long uid, long cid);
     @Delete
     void delete(UserMemo userMemo);
 }
