@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
@@ -109,7 +110,10 @@ public class ImportActivity extends AppCompatActivity {
     }
     private void initActivity(){
         lands.observe(this,this::onLandsUpdate);
-        binding.mapView.getMapAsync(this::initMap);
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.mapView);
+        if(mapFragment != null)
+            mapFragment.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
         mMap = googleMap;
@@ -185,28 +189,7 @@ public class ImportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityImportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        binding.mapView.onCreate(savedInstanceState);
         init();
-    }
-    @Override protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        binding.mapView.onSaveInstanceState(outState);
-    }
-    @Override protected void onResume() {
-        super.onResume();
-        binding.mapView.onResume();
-    }
-    @Override protected void onPause() {
-        super.onPause();
-        binding.mapView.onPause();
-    }
-    @Override protected void onDestroy() {
-        super.onDestroy();
-        binding.mapView.onDestroy();
-    }
-    @Override public void onLowMemory() {
-        super.onLowMemory();
-        binding.mapView.onLowMemory();
     }
     @Override public boolean onSupportNavigateUp() {
         onBackPressed();

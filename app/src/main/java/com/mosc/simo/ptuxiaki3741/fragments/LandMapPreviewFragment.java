@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -47,56 +46,6 @@ public class LandMapPreviewFragment extends Fragment implements FragmentBackPres
     private Land currLand;
     private User currUser;
     private boolean isHistory;
-
-    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                                       Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        binding = FragmentLandMapPreviewBinding.inflate(inflater,container,false);
-        return binding.getRoot();
-    }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initData();
-        initActivity();
-        initViewModel();
-        initFragment();
-    }
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.land_map_preview_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        MenuItem editItem = menu.findItem(R.id.menu_item_edit_land);
-        MenuItem restoreItem = menu.findItem(R.id.menu_item_restore_land);
-        if(editItem != null){
-            editItem.setVisible(!isHistory);
-            editItem.setEnabled(!isHistory);
-        }
-        if(restoreItem != null){
-            restoreItem.setVisible(isHistory);
-            restoreItem.setEnabled(isHistory);
-        }
-        super.onPrepareOptionsMenu(menu);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case(R.id.menu_item_edit_land):
-                toLandEdit(getActivity());
-                return true;
-            case(R.id.menu_item_restore_land):
-                restoreLand();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    @Override public boolean onBackPressed() {
-        return true;
-    }
 
     //init relative
     private void initData(){
@@ -141,16 +90,7 @@ public class LandMapPreviewFragment extends Fragment implements FragmentBackPres
         }
     }
     private void initFragment(){
-        if(UIUtil.isGooglePlayServicesAvailable(getActivity())){
-            SupportMapFragment mapFragment =
-                    (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.landMap);
-            if (mapFragment != null) {
-                mapFragment.getMapAsync(this::initMap);
-            }
-        }else{
-            if(getActivity() != null)
-                getActivity().onBackPressed();
-        }
+        binding.mvLand.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
@@ -238,5 +178,69 @@ public class LandMapPreviewFragment extends Fragment implements FragmentBackPres
     public void finish(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(activity::onBackPressed);
+    }
+
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                                       Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        binding = FragmentLandMapPreviewBinding.inflate(inflater,container,false);
+        binding.mvLand.onCreate(savedInstanceState);
+        return binding.getRoot();
+    }
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+        initActivity();
+        initViewModel();
+        initFragment();
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding.mvLand.onDestroy();
+        binding = null;
+    }
+    @Override public void onResume() {
+        super.onResume();
+        binding.mvLand.onResume();
+    }
+    @Override public void onPause() {
+        super.onPause();
+        binding.mvLand.onPause();
+    }
+    @Override public void onLowMemory() {
+        super.onLowMemory();
+        binding.mvLand.onLowMemory();
+    }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.land_map_preview_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        MenuItem editItem = menu.findItem(R.id.menu_item_edit_land);
+        MenuItem restoreItem = menu.findItem(R.id.menu_item_restore_land);
+        if(editItem != null){
+            editItem.setVisible(!isHistory);
+            editItem.setEnabled(!isHistory);
+        }
+        if(restoreItem != null){
+            restoreItem.setVisible(isHistory);
+            restoreItem.setEnabled(isHistory);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case(R.id.menu_item_edit_land):
+                toLandEdit(getActivity());
+                return true;
+            case(R.id.menu_item_restore_land):
+                restoreLand();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override public boolean onBackPressed() {
+        return true;
     }
 }

@@ -22,10 +22,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/textColor"
         app:strokeWidth="3dp">
-        <androidx.fragment.app.FragmentContainerView android:id="@+id/mainMenuMap"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <com.google.android.gms.maps.MapView android:id="@+id/mvLands"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
         <TextView android:id="@+id/mainMenuAction"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

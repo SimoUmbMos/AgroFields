@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -57,46 +56,6 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     private FragmentMenuMainBinding binding;
     private ActionBar actionBar;
     private Menu menu;
-
-    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        binding = FragmentMenuMainBinding.inflate(inflater,container, false);
-        return binding.getRoot();
-    }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initData();
-        initActivity();
-        initViewModels();
-        initObservers();
-        initFragment();
-    }
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main_menu_menu, menu);
-        this.menu = menu;
-        updateMenu();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case (R.id.menu_item_request):
-                toRequestMenu(getActivity());
-                return true;
-            case (R.id.menu_item_app_settings):
-                toSettings(getActivity());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    @Override public boolean onBackPressed() {
-        return true;
-    }
 
     //init
     private void initData(){
@@ -138,18 +97,11 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         binding.btnHistory.setOnClickListener(v -> toLandHistory(getActivity()));
         binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
         binding.btnProfile.setOnClickListener(v -> toProfile(getActivity()));
-
-        if(UIUtil.isGooglePlayServicesAvailable(getActivity())){
-            SupportMapFragment mapFragment =
-                    (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mainMenuMap);
-            if(mapFragment != null){
-                mapFragment.getMapAsync(this::initMap);
-            }
-        }
+        binding.mvLands.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
         if(binding != null){
-            binding.mainMenuMap.setVisibility(View.INVISIBLE);
+            binding.mvLands.setVisibility(View.INVISIBLE);
             binding.mainMenuAction.setVisibility(View.VISIBLE);
             binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
             mMap = googleMap;
@@ -206,7 +158,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     //map
     private void mapFullLoaded(){
         if(binding != null){
-            binding.mainMenuMap.setVisibility(View.VISIBLE);
+            binding.mvLands.setVisibility(View.VISIBLE);
             binding.mainMenuAction.setVisibility(View.GONE);
             binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
             drawMap();
@@ -226,7 +178,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         if(mMap != null){
             mMap.clear();
             if(lands.size()>0){
-                binding.mainMenuMap.setVisibility(View.VISIBLE);
+                binding.mvLands.setVisibility(View.VISIBLE);
                 binding.mainMenuAction.setVisibility(View.GONE);
                 int strokeColor,fillColor;
                 if(getContext() != null){
@@ -259,11 +211,11 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                             AppValues.defaultPadding
                     ));
                 }else{
-                    binding.mainMenuMap.setVisibility(View.GONE);
+                    binding.mvLands.setVisibility(View.GONE);
                     binding.mainMenuAction.setVisibility(View.VISIBLE);
                 }
             }else{
-                binding.mainMenuMap.setVisibility(View.GONE);
+                binding.mvLands.setVisibility(View.GONE);
                 binding.mainMenuAction.setVisibility(View.VISIBLE);
             }
         }
@@ -364,5 +316,59 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 }
             });
         }
+    }
+
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                                       Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        binding = FragmentMenuMainBinding.inflate(inflater,container, false);
+        binding.mvLands.onCreate(savedInstanceState);
+        return binding.getRoot();
+    }
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+        initActivity();
+        initViewModels();
+        initObservers();
+        initFragment();
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding.mvLands.onDestroy();
+        binding = null;
+    }
+    @Override public void onResume() {
+        super.onResume();
+        binding.mvLands.onResume();
+    }
+    @Override public void onPause() {
+        super.onPause();
+        binding.mvLands.onPause();
+    }
+    @Override public void onLowMemory() {
+        super.onLowMemory();
+        binding.mvLands.onLowMemory();
+    }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu_menu, menu);
+        this.menu = menu;
+        updateMenu();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case (R.id.menu_item_request):
+                toRequestMenu(getActivity());
+                return true;
+            case (R.id.menu_item_app_settings):
+                toSettings(getActivity());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override public boolean onBackPressed() {
+        return true;
     }
 }

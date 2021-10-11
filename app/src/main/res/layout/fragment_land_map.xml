@@ -9,8 +9,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/LandMapContentRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.fragment.app.FragmentContainerView android:id="@+id/mapLandPoints"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mvLand"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -18,35 +19,38 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-        <com.google.android.material.floatingactionbutton.FloatingActionButton android:id="@+id/btnLandTerrain"
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnLandTerrain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="16dp"
             android:alpha="0.75"
+            android:backgroundTint="@android:color/white"
             android:clickable="true"
+            android:contentDescription="@string/change_terrain_type"
             android:focusable="true"
             android:foregroundTint="@android:color/white"
-            android:backgroundTint="@android:color/white"
-            app:backgroundTint="@android:color/white"
             android:tint="@android:color/darker_gray"
-            app:tint="@android:color/darker_gray"
+            app:backgroundTint="@android:color/white"
             app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_menu_map_mode"
-            android:contentDescription="@string/change_terrain_type" />
+            app:tint="@android:color/darker_gray" />
 
         <FrameLayout
             android:id="@+id/flLandTouchLayer"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/mapLandPoints"
-            app:layout_constraintEnd_toEndOf="@+id/mapLandPoints"
-            app:layout_constraintStart_toStartOf="@+id/mapLandPoints"
-            app:layout_constraintTop_toTopOf="@+id/mapLandPoints"
-            tools:visibility="gone" />
-        <ImageView android:id="@+id/ivLandOverlay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivLandOverlay"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="false"
@@ -55,12 +59,11 @@
             android:contentDescription="@string/land_imageView"
             android:focusable="false"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@+id/mapLandPoints"
-            app:layout_constraintEnd_toEndOf="@+id/mapLandPoints"
-            app:layout_constraintStart_toStartOf="@+id/mapLandPoints"
-            app:layout_constraintTop_toTopOf="@+id/mapLandPoints"
-            app:srcCompat="@android:drawable/ic_menu_gallery"
-            tools:visibility="gone" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_gallery" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clLandControls"
@@ -69,11 +72,9 @@
             android:background="@color/backgroundColor"
             android:elevation="4dp"
             app:elevation="4dp"
-            app:layout_constraintEnd_toEndOf="@+id/mapLandPoints"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/mapLandPoints"
-            app:layout_constraintTop_toTopOf="@+id/mapLandPoints"
-            tools:visibility="gone">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabLandActionSave"

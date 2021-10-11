@@ -3,204 +3,247 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mosc.simo.ptuxiaki3741"
     tools:ignore="LockedOrientationActivity">
+
     <permission
         android:name="com.mosc.simo.ptuxiaki3741.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28"/>
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="false"
-        android:label="@string/app_name"
         android:icon="@mipmap/app_icon"
+        android:label="@string/app_name"
         android:logo="@mipmap/app_icon"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/vnd.geo+json"/>
-                <data android:pathPattern=".*\\.geojson" />
-                <data android:host="*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/geo+json"/>
-                <data android:pathPattern=".*\\.geojson" />
-                <data android:host="*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/json"/>
-                <data android:pathPattern=".*\\.geojson" />
-                <data android:host="*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/octet-stream"/>
-                <data android:pathPattern=".*\\.geojson" />
-                <data android:host="*"/>
-            </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/vnd.geo+json"/>
-                <data android:pathPattern=".*\\.json" />
-                <data android:host="*"/>
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/vnd.geo+json" />
+                <data android:pathPattern=".*\\.geojson" />
+                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/geo+json"/>
-                <data android:pathPattern=".*\\.json" />
-                <data android:host="*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/json"/>
-                <data android:pathPattern=".*\\.json" />
-                <data android:host="*"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/octet-stream"/>
-                <data android:pathPattern=".*\\.json" />
-                <data android:host="*"/>
-            </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/vnd.google-earth.kml+xml"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/geo+json" />
+                <data android:pathPattern=".*\\.geojson" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/json" />
+                <data android:pathPattern=".*\\.geojson" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.geojson" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/vnd.geo+json" />
+                <data android:pathPattern=".*\\.json" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/geo+json" />
+                <data android:pathPattern=".*\\.json" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/json" />
+                <data android:pathPattern=".*\\.json" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.json" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/vnd.google-earth.kml+xml" />
                 <data android:pathPattern=".*\\.kml" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="x-gis/x-shapefile"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="x-gis/x-shapefile" />
                 <data android:pathPattern=".*\\.shp" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/x-shapefile"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/x-shapefile" />
                 <data android:pathPattern=".*\\.shp" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/x-gis"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/x-gis" />
                 <data android:pathPattern=".*\\.shp" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/x-qgis"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/x-qgis" />
                 <data android:pathPattern=".*\\.shp" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
-                <data android:mimeType="application/octet-stream"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/octet-stream" />
                 <data android:pathPattern=".*\\.shp" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
                 <data android:mimeType="application/gml+xml" />
                 <data android:pathPattern=".*\\.xml" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.gml" />
-                <data android:host="*"/>
+                <data android:host="*" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ImportActivity"
             android:label="@string/title_activity_import"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
+
 </manifest>

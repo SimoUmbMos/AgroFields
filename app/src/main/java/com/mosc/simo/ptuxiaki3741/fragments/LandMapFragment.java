@@ -33,7 +33,6 @@ import androidx.navigation.NavController;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -81,72 +80,6 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     private String address;
     private Land currLand;
     private String displayTitle;
-
-    // overrides
-    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
-                                                 @Nullable ViewGroup container,
-                                                 @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        binding = FragmentLandMapBinding.inflate(inflater,container,false);
-        return binding.getRoot();
-    }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initData();
-        initActivity();
-        initDataToView();
-        initViewModel();
-        initViews();
-    }
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.land_map_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(menuItemClick(item)){
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    @Override public boolean onTouch(View v, MotionEvent event) {
-        if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_MOVE:
-                    if (event.getPointerCount() == 1) {
-                        imgTouchMove(event);
-                    }else{
-                        v.performClick();
-                    }
-                    break;
-                case MotionEvent.ACTION_DOWN:
-                    if (event.getPointerCount() == 1) {
-                        initImgTouch(event);
-                    }else{
-                        v.performClick();
-                    }
-                    break;
-                default:
-                    v.performClick();
-                    break;
-            }
-        }
-        return true;
-    }
-    @Override public boolean onBackPressed() {
-        if(binding.LandMapRoot.isDrawerOpen(GravityCompat.END)){
-            binding.LandMapRoot.closeDrawer(GravityCompat.END);
-            return false;
-        }
-        if(binding.clLandControls.getVisibility() != View.GONE){
-            clearTitle();
-            return false;
-        }
-        return true;
-    }
 
     //ActivityResultLauncher relative
     private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
@@ -343,15 +276,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             resetAll.setTitle(getString(R.string.clear_points));
         }
         clearTitle();
-        if(UIUtil.isGooglePlayServicesAvailable(getActivity())){
-            SupportMapFragment mapFragment =
-                    (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapLandPoints);
-            if (mapFragment != null) {
-                mapFragment.getMapAsync(this::initMap);
-            }
-        }else{
-            binding.btnLandTerrain.setVisibility(View.GONE);
-        }
+        binding.mvLand.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
@@ -1194,5 +1119,84 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
     private void toImportImg(){
         importFile(LandFileState.Img);
+    }
+
+    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
+                                                 @Nullable ViewGroup container,
+                                                 @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        binding = FragmentLandMapBinding.inflate(inflater,container,false);
+        binding.mvLand.onCreate(savedInstanceState);
+        return binding.getRoot();
+    }
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+        initActivity();
+        initDataToView();
+        initViewModel();
+        initViews();
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        binding.mvLand.onDestroy();
+        binding = null;
+    }
+    @Override public void onResume() {
+        super.onResume();
+        binding.mvLand.onResume();
+    }
+    @Override public void onPause() {
+        super.onPause();
+        binding.mvLand.onPause();
+    }
+    @Override public void onLowMemory() {
+        super.onLowMemory();
+        binding.mvLand.onLowMemory();
+    }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.land_map_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(menuItemClick(item)){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override public boolean onTouch(View v, MotionEvent event) {
+        if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_MOVE:
+                    if (event.getPointerCount() == 1) {
+                        imgTouchMove(event);
+                    }else{
+                        v.performClick();
+                    }
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    if (event.getPointerCount() == 1) {
+                        initImgTouch(event);
+                    }else{
+                        v.performClick();
+                    }
+                    break;
+                default:
+                    v.performClick();
+                    break;
+            }
+        }
+        return true;
+    }
+    @Override public boolean onBackPressed() {
+        if(binding.LandMapRoot.isDrawerOpen(GravityCompat.END)){
+            binding.LandMapRoot.closeDrawer(GravityCompat.END);
+            return false;
+        }
+        if(binding.clLandControls.getVisibility() != View.GONE){
+            clearTitle();
+            return false;
+        }
+        return true;
     }
 }
