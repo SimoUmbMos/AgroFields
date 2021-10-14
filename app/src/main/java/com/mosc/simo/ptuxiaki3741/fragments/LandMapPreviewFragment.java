@@ -32,6 +32,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -39,7 +40,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 public class LandMapPreviewFragment extends Fragment implements FragmentBackPress {
-    //todo: (idea) make save memo based on user
+    //todo: (idea) make memo based on user
     private FragmentLandMapPreviewBinding binding;
 
     private GoogleMap mMap;
@@ -116,7 +117,7 @@ public class LandMapPreviewFragment extends Fragment implements FragmentBackPres
                 strokeColor = Color.argb(192,0,0,255);
                 fillColor = Color.argb(51,0,0,255);
             }
-            PolygonOptions options = MapUtil.getPolygonOptions(
+            PolygonOptions options = LandUtil.getPolygonOptions(
                     currLand,
                     strokeColor,
                     fillColor,

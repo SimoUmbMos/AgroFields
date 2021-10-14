@@ -29,28 +29,6 @@ public final class MapUtil {
     public static final String TAG = "MapUtil";
     private MapUtil(){}
 
-    public static PolygonOptions getPolygonOptions(
-            Land land,
-            int strokeColor,
-            int  fillColor,
-            boolean isClickable
-    ){
-        if(land.getData() == null)
-            return null;
-        if(land.getData().getBorder().size() == 0)
-            return null;
-        PolygonOptions options = new PolygonOptions();
-        options.addAll(land.getData().getBorder());
-        options.clickable(isClickable);
-        options.strokeColor(strokeColor);
-        options.fillColor(fillColor);
-        for(List<LatLng> hole : land.getData().getHoles()){
-            if(hole.size()>0)
-                options.addHole(hole);
-        }
-        return options;
-    }
-
     public static Address findLocation(Context c, String a){
         if(a != null){
             String address = a.trim();
@@ -77,9 +55,8 @@ public final class MapUtil {
                         geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
                 if(locations == null)
                     return null;
-                if(locations.size()>0){
+                if(locations.size()>0)
                     return locations.get(0);
-                }
             }catch (Exception e){
                 Log.e(TAG, "findLocation: ", e);
             }

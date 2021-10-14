@@ -24,6 +24,7 @@ import com.mosc.simo.ptuxiaki3741.enums.ImportAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
+import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -156,7 +157,7 @@ public class ImportActivity extends AppCompatActivity {
                         for(LatLng point:land.getData().getBorder()){
                             builder.include(point);
                         }
-                        options.add(MapUtil.getPolygonOptions(
+                        options.add(LandUtil.getPolygonOptions(
                                 land,
                                 strokeColor,
                                 fillColor,

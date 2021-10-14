@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
@@ -191,7 +192,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Land land:lands){
-                    PolygonOptions options = MapUtil.getPolygonOptions(
+                    PolygonOptions options = LandUtil.getPolygonOptions(
                             land,
                             strokeColor,
                             fillColor,
@@ -231,7 +232,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 strokeColor = Color.argb(192,0,0,255);
                 fillColor = Color.argb(51,0,0,255);
             }
-            PolygonOptions options = MapUtil.getPolygonOptions(
+            PolygonOptions options = LandUtil.getPolygonOptions(
                     new Land(new LandData(polygon.getPoints(),polygon.getHoles())),
                     strokeColor,
                     fillColor,

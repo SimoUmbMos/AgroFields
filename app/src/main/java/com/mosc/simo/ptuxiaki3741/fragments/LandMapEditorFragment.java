@@ -59,14 +59,26 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandMapFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
+public class LandMapEditorFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
     public static final String TAG = "LandFragment";
+
+    private boolean
+            mapIsLocked = false,
+            beforeMoveWasLocked = false;
+    private float
+            zoom,
+            dx,
+            dy,
+            x,
+            y;
+    private int
+            index1,
+            index2,
+            index3;
 
     private LandActionStates mapStatus;
     private LandFileState fileState;
     private ImportAction importAction;
-    private float zoom, dx, dy, x, y;
-    private int index1, index2, index3;
 
     public ActionBar actionBar;
     private FragmentLandMapBinding binding;
@@ -280,7 +292,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         mMap.setMinZoomPreference(5);
         mMap.setMaxZoomPreference(20);
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
@@ -449,7 +461,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             strokeColor = Color.argb(192,0,0,255);
             fillColor = Color.argb(51,0,0,255);
         }
-        PolygonOptions options = MapUtil.getPolygonOptions(
+        PolygonOptions options = LandUtil.getPolygonOptions(
                 new Land(new LandData(points,holes)),
                 strokeColor,
                 fillColor,
@@ -474,17 +486,17 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         }
     }
     private void changeMapType() {
-        if(mMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID){
-            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        }else{
+        if(mMap.getMapType() == GoogleMap.MAP_TYPE_SATELLITE){
             mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        }else{
+            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         }
     }
     private void toggleMapLock(){
         MenuItem miLock = binding.navLandMenu.getMenu()
                 .findItem(R.id.toolbar_action_toggle_map_lock);
         if(mMap != null){
-            if(binding.btnLandTerrain.getVisibility() == View.GONE){
+            if(mapIsLocked){
                 mMap.getUiSettings().setRotateGesturesEnabled(true);
                 mMap.getUiSettings().setScrollGesturesEnabled(true);
                 mMap.getUiSettings().setZoomGesturesEnabled(true);
@@ -501,6 +513,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                 binding.btnLandTerrain.setVisibility(View.GONE);
                 miLock.setIcon(R.drawable.ic_drawer_menu_map_locked);
             }
+            mapIsLocked = !mapIsLocked;
         }
         if(this.mapStatus != LandActionStates.Disable && this.mapStatus != LandActionStates.Move){
             setAction(LandActionStates.Disable);
@@ -639,7 +652,8 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                     if(binding.ivLandOverlay.getVisibility() == View.VISIBLE){
                         binding.flLandTouchLayer.setVisibility(View.VISIBLE);
                         binding.flLandTouchLayer.setOnTouchListener(this);
-                        if(binding.btnLandTerrain.getVisibility() == View.VISIBLE){
+                        beforeMoveWasLocked = !mapIsLocked;
+                        if(!mapIsLocked){
                             toggleMapLock();
                         }
                         setTitle(
@@ -751,11 +765,8 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
                     setupSideMenu();
                 }
                 drawMap();
-            }else if(
-                mapStatus == LandActionStates.Move &&
-                        binding.btnLandTerrain.getVisibility() != View.VISIBLE
-            ){
-                    toggleMapLock();
+            }else if(mapStatus == LandActionStates.Move && beforeMoveWasLocked){
+                toggleMapLock();
             }
             setAction(LandActionStates.Disable);
         }
@@ -1019,10 +1030,7 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
         if(binding != null){
             if(toggle){
                 binding.LandMapRoot.openDrawer(GravityCompat.END);
-                if(
-                        mapStatus == LandActionStates.Move &&
-                                binding.btnLandTerrain.getVisibility() != View.VISIBLE
-                ){
+                if(mapStatus == LandActionStates.Move && beforeMoveWasLocked){
                     toggleMapLock();
                 }
                 if(this.mapStatus != LandActionStates.Disable){
@@ -1075,12 +1083,25 @@ public class LandMapFragment extends Fragment implements FragmentBackPress,View.
             AsyncTask.execute(()->{
                 Address location = MapUtil.findLocation(getContext(),address);
                 if(location != null){
+                    float tempZoom = AppValues.countryZoom;
+                    if(location.getMaxAddressLineIndex()>-1){
+                        String s = location.getAddressLine(0);
+                        long count = s.chars().filter(ch -> ch == ',').count();
+                        if(count == 0){
+                            tempZoom = AppValues.countryZoom;
+                        }else if(count == 1){
+                            tempZoom = AppValues.cityZoom;
+                        }else{
+                            tempZoom = AppValues.streetZoom;
+                        }
+                    }
                     if(location.hasLatitude() && location.hasLongitude()){
+                        final float zoom = tempZoom;
                         activity.runOnUiThread(()-> {
                             if(mMap != null)
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(location.getLatitude(),location.getLongitude()),
-                                        AppValues.addressZoom
+                                        zoom
                                 ));
                         });
                     }

@@ -26,7 +26,9 @@ public final class AppValues {
     public static final float stepZoom = 0.03f;
     public static final float maxZoom = 7f;
     public static final float minZoom = 0.1f;
-    public static final float addressZoom = 10;
+    public static final float countryZoom = 5.0f;
+    public static final float cityZoom = 10.0f;
+    public static final float streetZoom = 15.0f;
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";

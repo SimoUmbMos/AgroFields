@@ -134,7 +134,7 @@
             app:popUpToInclusive="false" />
     </fragment>
     <fragment android:id="@+id/LandMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMapFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMapEditorFragment"
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
         <action android:id="@+id/landMapToLandInfo"
