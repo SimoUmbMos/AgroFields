@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
 import android.os.Build;
-import android.util.Log;
 
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
@@ -33,61 +32,35 @@ public final class EncryptUtil {
         random.setSeed((id*4)/2);
         return String.format(Locale.getDefault(),"%04d", random.nextInt(10000));
     }
-    public static String encryptString(String s){
+    public static String encryptString(String s) throws Exception{
         if(s == null)
             return null;
-        try {
-            byte[] data = s.getBytes(StandardCharsets.UTF_8);
-            SecretKey key = getKeyGenerator().generateKey();
-            Cipher cipher = getCipher(Cipher.ENCRYPT_MODE,key);
-            byte[] cipherText = cipher.doFinal(data);
-            String keyString = encodeToString(keyToString(key));
-            if( keyString != null){
-                return encodeToString(cipherText) + divider + keyString;
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "encryptString: ",e);
+        byte[] data = s.getBytes(StandardCharsets.UTF_8);
+        SecretKey key = getKeyGenerator().generateKey();
+        Cipher cipher = getCipher(Cipher.ENCRYPT_MODE,key);
+        byte[] cipherText = cipher.doFinal(data);
+        String keyString = encodeToString(keyToString(key));
+        if( keyString != null){
+            return encodeToString(cipherText) + divider + keyString;
         }
         return s;
     }
-    public static String encryptString(String s,boolean isChaCha20){
-        if(s == null)
-            return null;
-        try {
-            byte[] data = s.getBytes(StandardCharsets.UTF_8);
-            SecretKey key = getKeyGenerator().generateKey();
-            Cipher cipher = getCipher(Cipher.ENCRYPT_MODE,key,isChaCha20);
-            byte[] cipherText = cipher.doFinal(data);
-            String keyString = encodeToString(keyToString(key));
-            if( keyString != null){
-                return encodeToString(cipherText) + divider + keyString;
+    public static String encryptPassword(String password) throws Exception{
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] encodedHash = digest.digest(
+                password.getBytes(StandardCharsets.UTF_8));
+        StringBuilder hexString = new StringBuilder(2 * encodedHash.length);
+        String hex;
+        for (byte b : encodedHash) {
+            hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
             }
-        } catch (Exception e) {
-            Log.e(TAG, "encryptString: ",e);
+            hexString.append(hex);
         }
-        return s;
+        return hexString.toString();
     }
-    public static String encryptPassword(String password){
-        try{
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedHash = digest.digest(
-                    password.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder(2 * encodedHash.length);
-            String hex;
-            for (byte b : encodedHash) {
-                hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        }catch (Exception e){
-            Log.e("UserClass", "encryptPassword: ", e);
-        }
-        return password;
-    }
-    public static void encryptCurrUser(User u){
+    public static void encryptCurrUser(User u) throws Exception{
         if(u.getEmail() != null){
             if(!u.getEmail().contains(divider)){
                 u.setEmail(encryptString(u.getEmail()));
@@ -99,19 +72,15 @@ public final class EncryptUtil {
             }
         }
     }
-    public static User encrypt(User u) {
+    public static User encrypt(User u) throws Exception{
         User result = u;
-        try{
-            if(u != null){
-                result = (User) u.clone();
-                encryptCurrUser(result);
-            }
-        }catch (Exception e){
-            Log.e(TAG, "encrypt: ",e);
+        if(u != null){
+            result = (User) u.clone();
+            encryptCurrUser(result);
         }
         return result;
     }
-    public static User encryptWithPassword(User u) {
+    public static User encryptWithPassword(User u) throws Exception{
         User encryptedUser = encrypt(u);
         if(encryptedUser != null){
             if(encryptedUser.getPassword() != null){
@@ -122,43 +91,20 @@ public final class EncryptUtil {
         return encryptedUser;
     }
 
-    public static String decryptString(String s){
+    public static String decryptString(String s) throws Exception{
         if(s == null)
             return null;
         if(!s.contains(divider))
             return s;
-        try {
-            int index = s.indexOf(divider);
-            String encodedCipherText = s.substring(0,index);
-            String encodedKeyText = s.substring(index+divider.length());
-            SecretKey key = getKey(decode(encodedKeyText));
-            byte[] data = decode(encodedCipherText);
-            Cipher cipher = getCipher(Cipher.DECRYPT_MODE,key);
-            return new String(cipher.doFinal(data),StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            Log.e(TAG, "decryptString: ",e);
-        }
-        return s;
+        int index = s.indexOf(divider);
+        String encodedCipherText = s.substring(0,index);
+        String encodedKeyText = s.substring(index+divider.length());
+        SecretKey key = getKey(decode(encodedKeyText));
+        byte[] data = decode(encodedCipherText);
+        Cipher cipher = getCipher(Cipher.DECRYPT_MODE,key);
+        return new String(cipher.doFinal(data),StandardCharsets.UTF_8);
     }
-    public static String decryptString(String s,boolean isChaCha){
-        if(s == null)
-            return null;
-        if(!s.contains(divider))
-            return s;
-        try {
-            int index = s.indexOf(divider);
-            String encodedCipherText = s.substring(0,index);
-            String encodedKeyText = s.substring(index+divider.length());
-            SecretKey key = getKey(decode(encodedKeyText));
-            byte[] data = decode(encodedCipherText);
-            Cipher cipher = getCipher(Cipher.DECRYPT_MODE,key,isChaCha);
-            return new String(cipher.doFinal(data),StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            Log.e(TAG, "decryptString: ",e);
-        }
-        return s;
-    }
-    public static void decryptCurrUser(User u){
+    public static void decryptCurrUser(User u) throws Exception{
         if(u.getEmail() != null){
             if(u.getEmail().contains(divider)){
                 u.setEmail(decryptString(u.getEmail()));
@@ -170,26 +116,22 @@ public final class EncryptUtil {
             }
         }
     }
-    public static User decrypt(User u) {
+    public static User decrypt(User u) throws Exception{
         User result = u;
-        try{
-            if(u != null){
-                result = (User) u.clone();
-                decryptCurrUser(result);
-            }
-        }catch (Exception e){
-            Log.e(TAG, "encrypt: ",e);
+        if(u != null){
+            result = (User) u.clone();
+            decryptCurrUser(result);
         }
         return result;
     }
-    public static List<User> decryptAll(List<User> temp) {
+    public static List<User> decryptAll(List<User> temp) throws Exception{
         List<User> result = new ArrayList<>();
         for(User tempUser:temp){
             result.add(decrypt(tempUser));
         }
         return result;
     }
-    //
+    //KeyGenerator
     private static KeyGenerator getKeyGenerator() throws NoSuchAlgorithmException {
         KeyGenerator keygen;
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
@@ -204,13 +146,6 @@ public final class EncryptUtil {
     //cipher getter
     private static Cipher getCipher(int mode,SecretKey key) throws Exception{
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            return getCipherChaCha20(mode,key);
-        }else{
-            return getCipherBlowfish(mode,key);
-        }
-    }
-    private static Cipher getCipher(int mode,SecretKey key,boolean isChaCha20) throws Exception{
-        if(isChaCha20){
             return getCipherChaCha20(mode,key);
         }else{
             return getCipherBlowfish(mode,key);

@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -186,14 +185,14 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                     strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
                     fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
                 }else{
-                    strokeColor = Color.rgb(0,0,255);
-                    fillColor = Color.argb(51,0,0,255);
+                    strokeColor = AppValues.strokeColor;
+                    fillColor = AppValues.fillColor;
                 }
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Land land:lands){
                     PolygonOptions options = LandUtil.getPolygonOptions(
-                            land,
+                            land.getData(),
                             strokeColor,
                             fillColor,
                             true
@@ -229,11 +228,11 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
                 fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
             }else{
-                strokeColor = Color.argb(192,0,0,255);
-                fillColor = Color.argb(51,0,0,255);
+                strokeColor = AppValues.strokeColor;
+                fillColor = AppValues.fillColor;
             }
             PolygonOptions options = LandUtil.getPolygonOptions(
-                    new Land(new LandData(polygon.getPoints(),polygon.getHoles())),
+                    new LandData(polygon.getPoints(),polygon.getHoles()),
                     strokeColor,
                     fillColor,
                     true

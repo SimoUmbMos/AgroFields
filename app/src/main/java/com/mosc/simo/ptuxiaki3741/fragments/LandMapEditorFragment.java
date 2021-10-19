@@ -4,11 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Address;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,11 +45,9 @@ import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
@@ -60,21 +58,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandMapEditorFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
-    public static final String TAG = "LandFragment";
+    public static final String TAG = "LandMapEditorFragment";
 
-    private boolean
-            mapIsLocked = false,
-            beforeMoveWasLocked = false;
-    private float
-            zoom,
-            dx,
-            dy,
-            x,
-            y;
-    private int
-            index1,
-            index2,
-            index3;
+    private boolean mapIsLocked = false, beforeMoveWasLocked = false;
+    private float zoom, dx, dy, x, y;
+    private int index1, index2, index3;
 
     private LandActionStates mapStatus;
     private LandFileState fileState;
@@ -88,7 +76,6 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     private List<LatLng> points,startPoints;
     private List<List<LatLng>> holes,startHoles;
     private List<List<LatLng>> undoList;
-    private User currUser;
     private String address;
     private Land currLand;
     private String displayTitle;
@@ -97,18 +84,6 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             this::onRequestPermissionsResult
-    );
-    private final ActivityResultLauncher<Intent> imgFileLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::imgFileResult
-    );
-    private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::fileResult
-    );
-    private final ActivityResultLauncher<Intent> importLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            this::importResult
     );
     private void onRequestPermissionsResult(Boolean result) {
         toggleDrawer(false);
@@ -127,77 +102,70 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
         }
         fileState = LandFileState.Disable;
     }
+    private final ActivityResultLauncher<Intent> imgFileLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            this::imgFileResult
+    );
     private void imgFileResult(ActivityResult result) {
         if (
-            result.getResultCode() == Activity.RESULT_OK &&
-            result.getData() != null
+                result.getResultCode() == Activity.RESULT_OK &&
+                        result.getData() != null
         ){
             if(FileUtil.fileIsValidImg(getContext(),result.getData())){
                 addOverlayImg(result.getData().getData());
             }
         }
     }
+    private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            this::fileResult
+    );
     private void fileResult(ActivityResult result) {
-        if (
-                result.getResultCode() == Activity.RESULT_OK &&
-                        result.getData() != null
-        ){
-            Intent intent = FileUtil.parseFile(getContext(),result.getData());
-            if(intent != null){
-                intent.putExtra(AppValues.userNameImportActivity,currUser.getId());
-                intent.putExtra(AppValues.actionImportActivity,importAction);
-                importLauncher.launch(intent);
-            }
-        }
-    }
-    private void importResult(ActivityResult result) {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            if(result.getData() != null){
-                Land tempLand = (Land) result.getData().getExtras()
-                        .get(AppValues.resNameImportActivity);
-                if(tempLand != null){
-                    if(tempLand.getData() != null){
-                        switch (importAction){
-                            case IMPORT:
-                                afterImportFileAction(tempLand.getData());
-                                break;
-                            case ADD:
-                                afterAddFileAction(tempLand.getData());
-                                break;
-                            case SUBTRACT:
-                                afterSubtractFileAction(tempLand.getData());
-                                break;
-                        }
+        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
+            new Thread(()->{
+                try{
+                    ArrayList<LandData> data = FileUtil.handleFile(getContext(),result.getData());
+                    if(data.size()>0){
+                        Bundle args = new Bundle();
+                        args.putParcelableArrayList(
+                                AppValues.argImportFragLandDataList,
+                                data
+                        );
+                        args.putParcelable(
+                                AppValues.argImportFragCurrLandData,
+                                new LandData(
+                                        currLand.getData().getId(),
+                                        currLand.getData().getCreator_id(),
+                                        currLand.getData().getTitle(),
+                                        currLand.getData().getBorder(),
+                                        currLand.getData().getHoles()
+                                )
+                        );
+                        args.putSerializable(
+                                AppValues.argImportFragLandAction,
+                                importAction
+                        );
+                        toImport(getActivity(),args);
                     }
+                }catch (Exception e){
+                    Log.e(TAG, "fileResult: ",e);
                 }
+            }).start();
+        }
+    }
+
+    private void handleImport() {
+        if (getArguments() != null) {
+            LandData landData;
+            if(getArguments().containsKey(AppValues.argImportLandData)){
+                landData = getArguments().getParcelable(AppValues.argImportLandData);
+            }else{
+                landData = null;
+            }
+            if(landData != null){
+                saveLand(landData);
             }
         }
-        importAction = ImportAction.NONE;
-    }
-    private void afterImportFileAction(LandData data){
-        points.clear();
-        holes.clear();
-        points.addAll(data.getBorder());
-        holes.addAll(data.getHoles());
-        saveLand();
-    }
-    private void afterAddFileAction(LandData dataToAdd){
-        LandData curr = new LandData(points,holes);
-        LandData result = LandUtil.uniteLandData(curr,dataToAdd);
-        points.clear();
-        holes.clear();
-        points.addAll(result.getBorder());
-        holes.addAll(result.getHoles());
-        saveLand();
-    }
-    private void afterSubtractFileAction(LandData dataToSubtract){
-        LandData curr = new LandData(points,holes);
-        LandData result = LandUtil.subtractLandData(curr,dataToSubtract);
-        points.clear();
-        holes.clear();
-        points.addAll(result.getBorder());
-        holes.addAll(result.getHoles());
-        saveLand();
     }
 
     //init relative
@@ -220,7 +188,7 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
         points = new ArrayList<>();
         holes = new ArrayList<>();
         if(currLand == null){
-            finish(getActivity());
+            toMenu(getActivity());
         }
 
         displayTitle = currLand.getData().getTitle();
@@ -248,7 +216,6 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
         importAction = ImportAction.NONE;
-        currUser = null;
     }
     private void initActivity() {
         if(getActivity() != null){
@@ -268,12 +235,6 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
         }
         clearFlags();
         clearUndo();
-    }
-    private void initViewModel() {
-        if(getActivity() != null){
-            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
-        }
     }
     private void initViews() {
         binding.clLandControls.setVisibility(View.GONE);
@@ -302,11 +263,6 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
         drawMap();
         zoomOnPoints();
         binding.btnLandTerrain.setOnClickListener(v -> changeMapType());
-    }
-
-    //land and user data getter setter
-    private void onUserUpdate(User user) {
-        currUser = user;
     }
 
     //menu relative
@@ -379,10 +335,28 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     }
 
     //save relative
+    private void saveLand(LandData data) {
+        if(isValidToSave(data)){
+            addToVM(data);
+            toMenu(getActivity());
+        }
+    }
+    private boolean isValidToSave(LandData data) {
+        if(data != null){
+            return data.getBorder().size() > 2;
+        }
+        return false;
+    }
+    private void addToVM(LandData data) {
+        if(getActivity() != null){
+            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands.saveLand(new Land(data));
+        }
+    }
     private void saveLand() {
         if(isValidToSave()){
             addToVM();
-            finish(getActivity());
+            toMenu(getActivity());
         }
     }
     private boolean isValidToSave() {
@@ -421,7 +395,7 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     }
     private void deleteLandActions(){
         removeFromVM();
-        finish(getActivity());
+        toMenu(getActivity());
     }
     private void removeFromVM() {
         if(getActivity() != null && currLand.getData().getId() >= 0){
@@ -458,11 +432,11 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
             strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
             fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
         }else{
-            strokeColor = Color.argb(192,0,0,255);
-            fillColor = Color.argb(51,0,0,255);
+            strokeColor = AppValues.strokeColor;
+            fillColor = AppValues.fillColor;
         }
         PolygonOptions options = LandUtil.getPolygonOptions(
-                new Land(new LandData(points,holes)),
+                new LandData(points,holes),
                 strokeColor,
                 fillColor,
                 false
@@ -1111,22 +1085,30 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     }
 
     //navigation relative
-    public void finish(Activity activity) {
+    public void toMenu(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()->{
-                binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
-                binding.clLandControls.setVisibility(View.GONE);
-                activity.onBackPressed();
+                NavController nav = UIUtil.getNavController(this,R.id.LandMapEditorFragment);
+                if(nav != null)
+                    nav.navigate(R.id.landMapToMainMenu);
             });
     }
     public void toInfo(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandMapFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.LandMapEditorFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandInfoFragment,currLand);
                 if(nav != null)
                     nav.navigate(R.id.landMapToLandInfo,bundle);
+            });
+    }
+    public void toImport(Activity activity, Bundle args) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.LandMapEditorFragment);
+                if(nav != null)
+                    nav.navigate(R.id.landMapToFileMap,args);
             });
     }
     private void toImportFile(){
@@ -1152,10 +1134,10 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        handleImport();
         initData();
         initActivity();
         initDataToView();
-        initViewModel();
         initViews();
     }
     @Override public void onDestroyView() {

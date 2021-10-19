@@ -1,5 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 
+import android.util.Log;
+
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepository {
+    public static final String TAG = "UserRepositoryImpl";
     private final RoomDatabase db;
 
     public UserRepositoryImpl(RoomDatabase db) {
@@ -25,10 +28,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserByID(long id){
         User u = db.userDao().getUserById(id);
+        User result = null;
         if(u != null){
-            return EncryptUtil.decrypt(u);
+            try{
+                result = EncryptUtil.decrypt(u);
+            }catch (Exception e){
+                Log.e(TAG, "getUserByID: ", e);
+            }
         }
-        return null;
+        return result;
     }
     @Override
     public User getUserByUserName(String username) {
@@ -36,8 +44,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public User getUserByUserNameAndPassword(String username, String password) {
-        String encryptedPassword = EncryptUtil.encryptPassword(password);
-        return db.userDao().getUserByUserNameAndPassword(username, encryptedPassword);
+        String encryptedPassword = null;
+        try {
+            encryptedPassword = EncryptUtil.encryptPassword(password);
+        }catch (Exception e){
+            Log.e(TAG, "getUserByUserNameAndPassword: ", e);
+        }
+        User result = null;
+        if(encryptedPassword != null){
+            result = db.userDao().getUserByUserNameAndPassword(username, encryptedPassword);
+        }
+        return result;
     }
 
     @Override
@@ -173,7 +190,13 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getId(),
                 UserDBAction.FRIENDS
         ));
-        return EncryptUtil.decryptAll(friends);
+        List<User> result = new ArrayList<>();
+        try {
+            result.addAll(EncryptUtil.decryptAll(friends));
+        }catch (Exception e){
+            Log.e(TAG, "getUserFriendList: ", e);
+        }
+        return result;
     }
     @Override
     public List<User> getUserFriendRequestList(User user) {
@@ -213,9 +236,15 @@ public class UserRepositoryImpl implements UserRepository {
         if(newUser != null){
             User user = db.userDao().getUserByUserName(newUser.getUsername());
             if(user == null){
-                user = EncryptUtil.encryptWithPassword(newUser);
-                long id = db.userDao().insert(user);
-                user.setId(id);
+                try{
+                    user = EncryptUtil.encryptWithPassword(newUser);
+                }catch (Exception e){
+                    Log.e(TAG, "saveNewUser: ", e);
+                }
+                if(user != null){
+                    long id = db.userDao().insert(user);
+                    user.setId(id);
+                }
                 return user;
             }
         }
@@ -224,7 +253,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void editUser(User user) {
         if(user != null){
-            db.userDao().insert(EncryptUtil.encrypt(user));
+            User update = null;
+            try {
+                update = EncryptUtil.encrypt(user);
+            }catch (Exception e){
+                Log.e(TAG, "editUser: ", e);
+            }
+            if(update != null)
+                db.userDao().insert(update);
         }
     }
     @Override

@@ -1,9 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.file.shapefile;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.nocrala.tools.gis.data.esri.shapefile.ShapeFileReader;
@@ -22,62 +19,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyShapeFileReader {
-    public static final String TAG = "MyShapeFileReader";
-    public static List<Land> exec(InputStream is){
-        List<Land> result = new ArrayList<>();
-        try {
-            ValidationPreferences prefs = new ValidationPreferences();
-            prefs.setMaxNumberOfPointsPerShape(100000);
-            ShapeFileReader r = new ShapeFileReader(is, prefs);
+    public static ArrayList<LandData> exec(InputStream is) throws Exception{
+        ArrayList<LandData> result = new ArrayList<>();
+        ValidationPreferences prefs = new ValidationPreferences();
+        prefs.setMaxNumberOfPointsPerShape(100000);
+        ShapeFileReader r = new ShapeFileReader(is, prefs);
 
-            AbstractShape s;
-            while ((s = r.next()) != null) {
-                switch (s.getShapeType() ){
-                    case POLYLINE_M:
-                        for (int i = 0; i < ((PolylineMShape) s).getNumberOfParts(); i++) {
-                            readFromShape(result, ((PolylineMShape) s).getPointsOfPart(i));
-                        }
-                        break;
-                    case POLYLINE_Z:
-                        for (int i = 0; i < ((PolylineZShape) s).getNumberOfParts(); i++) {
-                            readFromShape(result, ((PolylineZShape) s).getPointsOfPart(i));
-                        }
-                        break;
-                    case POLYLINE:
-                        for (int i = 0; i < ((PolylineShape) s).getNumberOfParts(); i++) {
-                            readFromShape(result, ((PolylineShape) s).getPointsOfPart(i));
-                        }
-                        break;
-                    case POLYGON:
-                        for (int i = 0; i < ((PolygonShape) s).getNumberOfParts(); i++) {
-                            readFromShape(result, ((PolygonShape) s).getPointsOfPart(i));
-                        }
-                        break;
-                    case POLYGON_M:
-                        for (int i = 0; i < ((PolygonMShape) s).getNumberOfParts(); i++) {
-                            readFromShape(result, ((PolygonMShape) s).getPointsOfPart(i));
-                        }
-                        break;
-                    case POLYGON_Z:
-                        for (int i = 0; i < ((PolygonZShape) s).getNumberOfParts(); i++) {
-                            readFromShape(result, ((PolygonZShape) s).getPointsOfPart(i));
-                        }
-                        break;
-                    default:
-                        Log.d(TAG, "exec: " + s.getShapeType().name());
-                }
+        AbstractShape s;
+        while ((s = r.next()) != null) {
+            switch (s.getShapeType() ){
+                case POLYLINE_M:
+                    for (int i = 0; i < ((PolylineMShape) s).getNumberOfParts(); i++) {
+                        readFromShape(result, ((PolylineMShape) s).getPointsOfPart(i));
+                    }
+                    break;
+                case POLYLINE_Z:
+                    for (int i = 0; i < ((PolylineZShape) s).getNumberOfParts(); i++) {
+                        readFromShape(result, ((PolylineZShape) s).getPointsOfPart(i));
+                    }
+                    break;
+                case POLYLINE:
+                    for (int i = 0; i < ((PolylineShape) s).getNumberOfParts(); i++) {
+                        readFromShape(result, ((PolylineShape) s).getPointsOfPart(i));
+                    }
+                    break;
+                case POLYGON:
+                    for (int i = 0; i < ((PolygonShape) s).getNumberOfParts(); i++) {
+                        readFromShape(result, ((PolygonShape) s).getPointsOfPart(i));
+                    }
+                    break;
+                case POLYGON_M:
+                    for (int i = 0; i < ((PolygonMShape) s).getNumberOfParts(); i++) {
+                        readFromShape(result, ((PolygonMShape) s).getPointsOfPart(i));
+                    }
+                    break;
+                case POLYGON_Z:
+                    for (int i = 0; i < ((PolygonZShape) s).getNumberOfParts(); i++) {
+                        readFromShape(result, ((PolygonZShape) s).getPointsOfPart(i));
+                    }
+                    break;
             }
-        }catch (Exception e){
-            Log.e(TAG, "readShapeFileReader: ", e);
         }
         return result;
     }
 
-    private static void readFromShape(List<Land> result, PointData[] pointsOfPart) {
+    private static void readFromShape(List<LandData> result, PointData[] pointsOfPart) {
         List<LatLng> tempList = new ArrayList<>();
         for (PointData point : pointsOfPart) {
             tempList.add(new LatLng(point.getY(), point.getX()));
         }
-        result.add(new Land(new LandData(tempList)));
+        result.add(new LandData(tempList));
     }
 }

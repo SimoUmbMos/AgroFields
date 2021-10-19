@@ -1,5 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.values;
 
+import android.graphics.Color;
+
 public final class AppValues {
     /* DB VALUES*/
     public static final int DATABASE_VERSION = 25;
@@ -8,6 +10,8 @@ public final class AppValues {
     public static final long sharedPreferenceDefaultUserViewModel = -1;
     /* Common Values*/
     public static final int defaultPadding = 64;
+    public static final int strokeColor = Color.argb(192,0,0,255);
+    public static final int fillColor = Color.argb(51,0,0,255);
     /* Contact Profile Fragment Values */
     public static final String CONTACT_PROFILE_ARG = "user";
     /* Share Land Fragment Values */
@@ -17,8 +21,10 @@ public final class AppValues {
     /* Land Map Preview Fragment Values*/
     public static final String argLandLandMapPreviewFragment = "land";
     public static final String argIsHistoryLandMapPreviewFragment= "is_history";
-    /* Land Map Fragment Values*/
+    /* Land Map Editor Fragment Values*/
     public static final String argLandLandMapFragment = "land";
+    public static final String argImportLandData = "import_land";
+    public static final String argImportLandAction = "import_action";
     public static final String argAddressLandMapFragment = "address";
     public static final double distanceToMapActionKM = 100;
     public static final float stepOpacity = 0.03f;
@@ -34,7 +40,7 @@ public final class AppValues {
     public static final String isDarkKey = "is_dark_theme";
     public static final int doubleTapBack = 2750;
     /* Import Activity Values */
-    public static final String resNameImportActivity = "polygon";
-    public static final String userNameImportActivity = "userid";
-    public static final String actionImportActivity = "action";
+    public static final String argImportFragLandDataList = "land_data_list";
+    public static final String argImportFragCurrLandData = "land_data";
+    public static final String argImportFragLandAction = "file_action";
 }

@@ -127,9 +127,14 @@ public class UserViewModel extends AndroidViewModel {
             boolean isCurrUser = user.equals(currUser.getValue());
             userRepository.editUser(user);
             if(isCurrUser){
-                User decryptedUser = EncryptUtil.decrypt(
-                        getUserByID(user.getId())
-                );
+                User decryptedUser = currUser.getValue();
+                try{
+                    decryptedUser = EncryptUtil.decrypt(
+                            getUserByID(user.getId())
+                    );
+                }catch (Exception e){
+                    Log.e(TAG, "editUser: ", e);
+                }
                 this.currUser.postValue(decryptedUser);
             }
         }
@@ -158,9 +163,14 @@ public class UserViewModel extends AndroidViewModel {
     public void singIn(User user) {
         if(user != null){
             putUidToMemory(user.getId());
-            User decryptedUser = EncryptUtil.decrypt(
-                    userRepository.getUserByID(user.getId())
-            );
+            User decryptedUser = user;
+            try{
+                decryptedUser = EncryptUtil.decrypt(
+                        userRepository.getUserByID(user.getId())
+                );
+            }catch (Exception e){
+                Log.e(TAG, "singIn: ", e);
+            }
             currUser.postValue(decryptedUser);
             populateCurrUserRelativeLists(decryptedUser);
         }else{

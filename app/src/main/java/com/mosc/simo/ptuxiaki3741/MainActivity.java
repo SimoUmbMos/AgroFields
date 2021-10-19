@@ -25,14 +25,13 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 public class MainActivity extends AppCompatActivity {
     private FragmentBackPress fragmentBackPress;
     private NavHostFragment navHostFragment;
-    private boolean doubleBackToExitPressedOnce = false;
+    private boolean overrideDoubleBack = false,doubleBackToExitPressedOnce = false;
     private ActivityMainBinding binding;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        checkIfCalledByFile();
         init();
         initViewModels();
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -43,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
     @Override public void onBackPressed() {
+        if(overrideDoubleBack){
+            super.onBackPressed();
+            return;
+        }
         if(fragmentBackPress.onBackPressed()){
             if(navHostFragment.getChildFragmentManager().getBackStackEntryCount() == 0){
                 if (doubleBackToExitPressedOnce) {
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        overrideDoubleBack = false;
         fragmentBackPress = () -> true;
         setSupportActionBar(binding.tbMainActivity);
         if(getSupportActionBar() != null){
@@ -79,15 +83,13 @@ public class MainActivity extends AppCompatActivity {
         AsyncTask.execute(()-> userViewModel.init(sharedPref));
         userViewModel.getCurrUser().observe(this,this::onUserUpdate);
     }
-    private void checkIfCalledByFile(){
+    public Intent getIntentIfCalledByFile(){
         if(getIntent() != null) {
             if (getIntent().getData() != null) {
-                Intent i = new Intent(MainActivity.this, ImportActivity.class);
-                i.setData(getIntent().getData());
-                startActivity(i);
-                finish();
+                return getIntent();
             }
         }
+        return null;
     }
 
     public void showToast(CharSequence text) {
@@ -102,11 +104,15 @@ public class MainActivity extends AppCompatActivity {
         AsyncTask.execute(()-> landViewModel.init(user));
     }
 
+    public void setOverrideDoubleBack(boolean overrideDoubleBack){
+        this.overrideDoubleBack = overrideDoubleBack;
+    }
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        overrideDoubleBack = false;
         this.fragmentBackPress = fragmentBackPress;
     }
 

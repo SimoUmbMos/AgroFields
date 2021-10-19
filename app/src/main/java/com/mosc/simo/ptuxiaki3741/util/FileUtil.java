@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
-import android.util.Log;
 
-import com.mosc.simo.ptuxiaki3741.ImportActivity;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
@@ -18,6 +16,7 @@ import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.jdom2.Document;
 import org.jdom2.output.Format;
@@ -85,7 +84,7 @@ public final class FileUtil {
                         isGML(ctx, response) ||
                         isShapeFile(ctx, response);
     }
-    public static List<Land> handleFile(Context ctx, Intent result) {
+    public static ArrayList<LandData> handleFile(Context ctx, Intent result) throws Exception{
         if(result != null){
             if(fileIsValid(ctx, result)){
                 Uri uri = result.getData();
@@ -97,21 +96,11 @@ public final class FileUtil {
                     case GEOJSON:
                         return handleJson(ctx, uri);
                     case GML:
-                        List<Land> lands = handleGML(ctx, uri);
-                        Log.d("debug", "handleFile gml size: "+lands.size());
-                        return lands;
+                        return handleGML(ctx, uri);
                 }
             }
         }
         return new ArrayList<>();
-    }
-    public static Intent parseFile(Context ctx, Intent data) {
-        Intent intent = null;
-        if(fileIsValid(ctx, data)){
-            intent = new Intent(ctx, ImportActivity.class);
-            intent.setData(data.getData());
-        }
-        return intent;
     }
 
     private static FileType getFileType(Context ctx, Intent result) {
@@ -163,38 +152,17 @@ public final class FileUtil {
         }
         return displayName;
     }
-    private static List<Land> handleKml(Context ctx, Uri uri) {
-        try{
-            return KmlFileReader.exec(ctx.getContentResolver().openInputStream(uri));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    private static ArrayList<LandData> handleKml(Context ctx, Uri uri) throws Exception{
+        return KmlFileReader.exec(ctx.getContentResolver().openInputStream(uri));
     }
-    private static List<Land> handleJson(Context ctx, Uri uri) {
-        try{
-            return GeoJsonReader.exec(ctx.getContentResolver().openInputStream(uri));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    private static ArrayList<LandData> handleJson(Context ctx, Uri uri) throws Exception{
+        return GeoJsonReader.exec(ctx.getContentResolver().openInputStream(uri));
     }
-
-    private static List<Land> handleGML(Context ctx, Uri uri) {
-        try{
-            return GMLReader.exec(ctx.getContentResolver().openInputStream(uri));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    private static ArrayList<LandData> handleGML(Context ctx, Uri uri) throws Exception{
+        return GMLReader.exec(ctx.getContentResolver().openInputStream(uri));
     }
-    private static List<Land> handleShapeFile(Context ctx, Uri uri) {
-        try{
-            return MyShapeFileReader.exec(ctx.getContentResolver().openInputStream(uri));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    private static ArrayList<LandData> handleShapeFile(Context ctx, Uri uri) throws Exception{
+        return MyShapeFileReader.exec(ctx.getContentResolver().openInputStream(uri));
     }
     private static String getExtension(String s){
         String[] segments = s.split("\\.");

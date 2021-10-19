@@ -1,21 +1,21 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.maps.GoogleMap;
-import com.mosc.simo.ptuxiaki3741.databinding.FragmentSelectedSharedLandBinding;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentSelectedShareLandBinding;
 
 public class SelectedShareLandFragment extends Fragment {
     //todo: (idea) make toggle edit privilege
     //todo: (idea) make change ownership
-    private FragmentSelectedSharedLandBinding binding;
+    private FragmentSelectedShareLandBinding binding;
 
     private void initData() {
 
@@ -34,9 +34,9 @@ public class SelectedShareLandFragment extends Fragment {
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentSelectedSharedLandBinding.inflate(inflater,container,false);
+                                       @Nullable ViewGroup container,
+                                       @Nullable Bundle savedInstanceState) {
+        binding = FragmentSelectedShareLandBinding.inflate(inflater,container,false);
         binding.mvLand.onCreate(savedInstanceState);
         return binding.getRoot();
     }

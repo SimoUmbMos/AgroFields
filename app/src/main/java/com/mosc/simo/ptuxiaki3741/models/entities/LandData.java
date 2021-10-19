@@ -119,6 +119,7 @@ public class LandData implements Parcelable {
         this.border.clear();
         if(border != null)
             this.border.addAll(border);
+
     }
     public void setHoles(List<List<LatLng>> holes){
         this.holes.clear();

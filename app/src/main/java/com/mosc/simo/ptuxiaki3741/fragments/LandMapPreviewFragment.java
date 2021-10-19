@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -114,11 +113,11 @@ public class LandMapPreviewFragment extends Fragment implements FragmentBackPres
                 strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
                 fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
             }else{
-                strokeColor = Color.argb(192,0,0,255);
-                fillColor = Color.argb(51,0,0,255);
+                strokeColor = AppValues.strokeColor;
+                fillColor = AppValues.fillColor;
             }
             PolygonOptions options = LandUtil.getPolygonOptions(
-                    currLand,
+                    currLand.getData(),
                     strokeColor,
                     fillColor,
                     false

@@ -2,7 +2,6 @@ package com.mosc.simo.ptuxiaki3741.util;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
@@ -153,33 +152,22 @@ public final class LandUtil {
         return new ArrayList<>();
     }
 
-    public static boolean areSameLandHistory(LandHistory oldItem, LandHistory newItem) {
-        if(oldItem.getLandData() == null && newItem.getLandData() == null )
-            return true;
-        if(oldItem.getLandData() == null || newItem.getLandData() == null )
-            return false;
-        return oldItem.getLandData().getId() == newItem.getLandData().getId();
-    }
-    public static boolean areSameLandHistoryContent(LandHistory oldItem, LandHistory newItem) {
-        return ListUtils.arraysMatch(oldItem.getData(),newItem.getData());
-    }
-
     public static PolygonOptions getPolygonOptions(
-            Land land,
+            LandData landData,
             int strokeColor,
             int  fillColor,
             boolean isClickable
     ){
-        if(land.getData() == null)
+        if(landData == null)
             return null;
-        if(land.getData().getBorder().size() == 0)
+        if(landData.getBorder().size() == 0)
             return null;
         PolygonOptions options = new PolygonOptions();
-        options.addAll(land.getData().getBorder());
+        options.addAll(landData.getBorder());
         options.clickable(isClickable);
         options.strokeColor(strokeColor);
         options.fillColor(fillColor);
-        for(List<LatLng> hole : land.getData().getHoles()){
+        for(List<LatLng> hole : landData.getHoles()){
             if(hole.size()>0)
                 options.addHole(hole);
         }

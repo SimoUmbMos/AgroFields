@@ -192,6 +192,7 @@ public class ShareLandFragment extends Fragment implements FragmentBackPress {
         adapter.notifyDataSetChanged();
     }
     private void onSharedLandItemClick(int pos, boolean wasChecked){
+        //TODO: CALL SELECTED SHARED LAND
         LandWithShare entity = data.get(pos);
         if(wasChecked){
             vmLands.removeSharedLand(entity.getData(),contact);

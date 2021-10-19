@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,12 +24,20 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoadingBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
+import java.util.ArrayList;
+
 public class LoadingFragment extends Fragment implements FragmentBackPress {
+    public static final String TAG = "LoadingFragment";
     private FragmentLoadingBinding binding;
+    private Intent intent;
+    private User currUser;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,13 +64,17 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     }
 
     private void init(){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(this);
-            ActionBar actionBar = mainActivity.getSupportActionBar();
-            if(actionBar != null){
-                actionBar.setTitle(getString(R.string.app_name));
-                actionBar.hide();
+        currUser = null;
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.setTitle(getString(R.string.app_name));
+                    actionBar.hide();
+                }
+                intent = mainActivity.getIntentIfCalledByFile();
             }
         }
     }
@@ -74,11 +88,29 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     }
 
     private void onUserUpdate(User user) {
-        if(user != null){
-            toMenu(getActivity());
+        currUser = user;
+        if(intent == null){
+            if(currUser != null){
+                toMenu(getActivity());
+            }else{
+                toLogin(getActivity());
+            }
         }else{
-            toLogin(getActivity());
+            handleFile();
         }
+    }
+
+    private void handleFile() {
+        Activity activity = getActivity();
+        new Thread(()->{
+            try {
+                ArrayList<LandData> data = FileUtil.handleFile(activity,intent);
+                toMapPreview(activity,data);
+            }catch (Exception e){
+                Log.e(TAG, "handleFile: ",e);
+                toMapPreview(activity,new ArrayList<>());
+            }
+        }).start();
     }
 
     private void toMenu(Activity activity) {
@@ -96,5 +128,16 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
                 if(nav != null)
                     nav.navigate(R.id.loadingToLogin);
             });
+    }
+    private void toMapPreview(Activity activity, ArrayList<LandData> data) {
+        if(activity != null){
+            Bundle args = new Bundle();
+            args.putParcelableArrayList(AppValues.argImportFragLandDataList,data);
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
+                if(nav != null)
+                    nav.navigate(R.id.loadingToFileMap,args);
+            });
+        }
     }
 }

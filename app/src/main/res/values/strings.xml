@@ -174,12 +174,12 @@
     </string-array>
     <!-- Degree Info Fragment-->
     <string name="degree_info_menu_title">Degree Info</string>
+    <!-- File Map Fragment -->
+    <string name="file_map_fragment_import_action">Click Land To Import</string>
+    <string name="file_map_fragment_loading">Loading File…</string>
+    <string name="file_map_fragment_error">File Error</string>
+    <string name="file_map_fragment_add_action">Click Land To Add</string>
+    <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
-    <!-- Import Activity -->
-    <string name="title_activity_import">Map</string>
-    <string name="map_loading_text">Loading</string>
-    <string name="import_activity_import_action">Click Land To Import</string>
-    <string name="import_activity_add_action">Click Land To Add</string>
-    <string name="import_activity_subtract_action">Click Land To Subtract</string>
 </resources>

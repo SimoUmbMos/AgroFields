@@ -1,8 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.file.gml;
 
-
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -20,37 +18,32 @@ import java.util.List;
 
 public class GMLReader {
     public static String TAG = "GMLReader";
-    public static List<Land> exec(InputStream is) {
-        List<Land> border_fragment = new ArrayList<>();
+    public static ArrayList<LandData> exec(InputStream is) throws Exception{
+        ArrayList<LandData> border_fragment = new ArrayList<>();
 
-        try {
-            String s = convertStreamToString(is);
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            XmlPullParser  parser = factory.newPullParser();
-            parser.setInput(new StringReader(s.replace("&","&amp;")));
-            String tagName;
-            Land temp;
-            int eventType = parser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                tagName = parser.getName();
-                if (eventType == XmlPullParser.START_TAG) {
-                    if (tagName.equalsIgnoreCase("Polygon")){
-                        temp = parsePolygon(parser);
-                        if(temp != null)
-                            border_fragment.add(temp);
-                    }
+        String s = convertStreamToString(is);
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XmlPullParser  parser = factory.newPullParser();
+        parser.setInput(new StringReader(s.replace("&","&amp;")));
+        String tagName;
+        LandData temp;
+        int eventType = parser.getEventType();
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            tagName = parser.getName();
+            if (eventType == XmlPullParser.START_TAG) {
+                if (tagName.equalsIgnoreCase("Polygon")){
+                    temp = parsePolygon(parser);
+                    if(temp != null)
+                        border_fragment.add(temp);
                 }
-                eventType = parser.next();
             }
-
-        } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
+            eventType = parser.next();
         }
         return border_fragment;
     }
 
-    private static Land parsePolygon(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static LandData parsePolygon(XmlPullParser parser) throws XmlPullParserException, IOException {
         String tagName;
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -75,7 +68,7 @@ public class GMLReader {
         return null;
     }
 
-    private static Land parserOuterBoundary(XmlPullParser parser) throws XmlPullParserException, IOException{
+    private static LandData parserOuterBoundary(XmlPullParser parser) throws XmlPullParserException, IOException{
         String tagName;
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -98,7 +91,7 @@ public class GMLReader {
         }
         return null;
     }
-    private static Land parserExterior(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static LandData parserExterior(XmlPullParser parser) throws XmlPullParserException, IOException {
         String tagName;
         String srsDimension="2";
         int eventType = parser.getEventType();
@@ -129,7 +122,7 @@ public class GMLReader {
         return null;
     }
 
-    private static Land parseCoordinates(XmlPullParser parser) throws XmlPullParserException, IOException{
+    private static LandData parseCoordinates(XmlPullParser parser) throws XmlPullParserException, IOException{
         List<LatLng> border = new ArrayList<>();
         String cs = ",";
         String ts = " ";
@@ -155,13 +148,13 @@ public class GMLReader {
                 border.addAll(getBorderFromCoordinates(coordinates));
             }else{
                 if(border.size()>0)
-                    return new Land(new LandData(border));
+                    return new LandData(border);
                 return null;
             }
             eventType = parser.next();
         }
         return null;}
-    private static Land parsePosList(XmlPullParser parser,String dim) throws XmlPullParserException, IOException{
+    private static LandData parsePosList(XmlPullParser parser,String dim) throws XmlPullParserException, IOException{
         List<LatLng> border = new ArrayList<>();
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -169,7 +162,7 @@ public class GMLReader {
                 border.addAll(getBorderFromPosList(parser.getText(),dim));
             }else if(eventType == XmlPullParser.END_TAG){
                 if(border.size()>0)
-                    return new Land(new LandData(border));
+                    return new LandData(border);
                 return null;
             }
             eventType = parser.next();
@@ -208,7 +201,6 @@ public class GMLReader {
     public static String convertStreamToString( InputStream is ) throws IOException {
         StringBuilder sb = new StringBuilder( Math.max( 16, is.available() ) );
         char[] tmp = new char[ 4096 ];
-
         try {
             InputStreamReader reader = new InputStreamReader( is, StandardCharsets.UTF_8 );
             for( int cnt; ( cnt = reader.read( tmp ) ) > 0; )

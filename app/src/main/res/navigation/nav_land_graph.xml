@@ -20,6 +20,20 @@
             app:popUpTo="@+id/nav_land_graph"
             app:launchSingleTop="true"
             app:popUpToInclusive="true" />
+        <action android:id="@+id/loadingToFileMap"
+            app:destination="@id/FileMapFragment"
+            app:popUpTo="@+id/nav_land_graph"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment android:id="@+id/FileMapFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.FileMapFragment"
+        android:label="fragment_file_map"
+        tools:layout="@layout/fragment_file_map" >
+        <action android:id="@+id/fileMapToLandEditor"
+            app:destination="@id/LandMapEditorFragment"
+            app:popUpTo="@id/LandCollectionFragment"
+            app:popUpToInclusive="false"/>
     </fragment>
     <fragment android:id="@+id/LoginFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LoginRegisterFragment"
@@ -61,12 +75,11 @@
             app:popUpTo="@id/nav_land_graph"
             app:popUpToInclusive="true" />
     </fragment>
-
+    <!-- todo: change UserRequestFragment caller from main menu to contacts list -->
     <fragment android:id="@+id/UserRequestFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserRequestFragment"
         android:label="fragment_user_request"
         tools:layout="@layout/fragment_user_request" />
-
     <fragment android:id="@+id/UserContactsFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.UserContactsFragment"
         android:label="fragment_user_contacts"
@@ -84,7 +97,14 @@
     <fragment android:id="@+id/ShareLandFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.ShareLandFragment"
         android:label="fragment_share_land"
-        tools:layout="@layout/fragment_share_land" />
+        tools:layout="@layout/fragment_share_land" >
+        <action android:id="@+id/shareLandToSelectedShareLand"
+            app:destination="@id/SelectedShareLandFragment" />
+    </fragment>
+    <fragment android:id="@+id/SelectedShareLandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.SelectedShareLandFragment"
+        android:label="fragment_selected_share_land"
+        tools:layout="@layout/fragment_selected_share_land" />
 
     <fragment android:id="@+id/AppSettingsFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.AppSettingsFragment"
@@ -119,7 +139,7 @@
         android:label="fragment_land_info"
         tools:layout="@layout/fragment_land_info" >
         <action android:id="@+id/landInfoToLandMap"
-            app:destination="@id/LandMapFragment"
+            app:destination="@id/LandMapEditorFragment"
             app:popUpTo="@id/LandCollectionFragment"
             app:popUpToInclusive="false" />
     </fragment>
@@ -129,19 +149,22 @@
         tools:layout="@layout/fragment_land_map_preview">
         <action
             android:id="@+id/landPreviewToLandMap"
-            app:destination="@id/LandMapFragment"
+            app:destination="@id/LandMapEditorFragment"
             app:popUpTo="@id/LandCollectionFragment"
             app:popUpToInclusive="false" />
     </fragment>
-    <fragment android:id="@+id/LandMapFragment"
+    <fragment android:id="@+id/LandMapEditorFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMapEditorFragment"
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
         <action android:id="@+id/landMapToLandInfo"
             app:destination="@id/LandInfoFragment" />
-        <action android:id="@+id/landMapToLandPreview"
-            app:destination="@id/LandMapPreviewFragment"
+        <action android:id="@+id/landMapToMainMenu"
+            app:destination="@id/LandCollectionFragment"
             app:popUpTo="@id/LandCollectionFragment"
             app:popUpToInclusive="false" />
+        <action android:id="@+id/landMapToFileMap"
+            app:destination="@id/FileMapFragment" />
     </fragment>
+
 </navigation>
