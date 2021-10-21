@@ -33,7 +33,7 @@
         <action android:id="@+id/fileMapToLandEditor"
             app:destination="@id/LandMapEditorFragment"
             app:popUpTo="@id/LandCollectionFragment"
-            app:popUpToInclusive="false"/>
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment android:id="@+id/LoginFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LoginRegisterFragment"

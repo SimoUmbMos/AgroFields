@@ -206,4 +206,8 @@ public class ShareLandFragment extends Fragment implements FragmentBackPress {
         if(getActivity() != null)
             getActivity().onBackPressed();
     }
+    private void goToSelectedLand(LandWithShare entity){
+        if(getActivity() != null)
+            getActivity().onBackPressed();
+    }
 }

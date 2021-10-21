@@ -196,8 +196,10 @@ public class FileMapFragment extends Fragment implements FragmentBackPress {
         if(activity != null)
             activity.runOnUiThread(()->{
                 NavController nav = UIUtil.getNavController(this,R.id.FileMapFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppValues.argImportLandData,landData);
                 if(nav != null)
-                    nav.navigate(R.id.fileMapToLandEditor);
+                    nav.navigate(R.id.fileMapToLandEditor,bundle);
             });
     }
 

@@ -154,7 +154,7 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
         }
     }
 
-    private void handleImport() {
+    private boolean handleImport() {
         if (getArguments() != null) {
             LandData landData;
             if(getArguments().containsKey(AppValues.argImportLandData)){
@@ -164,8 +164,10 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
             }
             if(landData != null){
                 saveLand(landData);
+                return true;
             }
         }
+        return false;
     }
 
     //init relative
@@ -189,6 +191,11 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
         holes = new ArrayList<>();
         if(currLand == null){
             toMenu(getActivity());
+            return;
+        }
+        if(currLand.getData() == null){
+            toMenu(getActivity());
+            return;
         }
 
         displayTitle = currLand.getData().getTitle();
@@ -1134,11 +1141,12 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        handleImport();
-        initData();
-        initActivity();
-        initDataToView();
-        initViews();
+        if(!handleImport()){
+            initData();
+            initActivity();
+            initDataToView();
+            initViews();
+        }
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
