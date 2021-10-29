@@ -290,7 +290,6 @@ public class MenuContactsFragment
             });
     }
     public void toUserRequests(@Nullable Activity activity) {
-        //fixme: add me
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuContactsFragment);
