@@ -189,7 +189,7 @@ public class SelectedShareLandFragment extends Fragment implements FragmentBackP
     }
     private void onSave() {
         AsyncTask.execute(()->{
-            vmLands.addLandPermissions(perm);
+            vmLands.updateLandPermissions(perm);
             goBack();
         });
     }

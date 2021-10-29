@@ -12,7 +12,6 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserLandPermissions;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.LandRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
@@ -274,8 +273,8 @@ public class LandViewModel extends AndroidViewModel {
     public UserLandPermissions getLandPermissionForUser(User contact, Land land) {
         return landRepository.getLandPermissionsForUser(contact,land);
     }
-    public void addLandPermissions(UserLandPermissions perms){
-        if(perms != null && currUser != null){
+    public void updateLandPermissions(UserLandPermissions perms){
+        if(currUser != null){
             lands.postValue(new ArrayList<>());
             sharedLands.postValue(new ArrayList<>());
             landsHistory.postValue(new ArrayList<>());
@@ -285,21 +284,6 @@ public class LandViewModel extends AndroidViewModel {
                 loadSharedLands(currUser);
                 loadLandsRecords(currUser);
             });
-        }
-    }
-    public void removeLandPermissions(LandData landData, User contact){
-        if(contact != null && landData != null && currUser != null){
-            if(landData.getCreator_id() == currUser.getId()){
-                lands.postValue(new ArrayList<>());
-                sharedLands.postValue(new ArrayList<>());
-                landsHistory.postValue(new ArrayList<>());
-                AsyncTask.execute(()->{
-                    landRepository.removeLandPermissions(contact,landData);
-                    loadLands(currUser);
-                    loadSharedLands(currUser);
-                    loadLandsRecords(currUser);
-                });
-            }
         }
     }
     public void removeAllLandPermissions(User contact) {

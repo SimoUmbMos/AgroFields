@@ -6,11 +6,9 @@ import android.os.Parcelable;
 import androidx.room.Embedded;
 import androidx.room.Ignore;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserLandPermissions;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Land implements Parcelable {

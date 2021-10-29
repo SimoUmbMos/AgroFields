@@ -143,7 +143,7 @@ public class LandRepositoryImpl implements LandRepository {
                 db.sharedLandDao().deleteAll(userLandPermissions);
             }
         }
-        if(perms.isAdmin() || perms.isRead() || perms.isWrite()){
+        if(perms.hasPerms()){
             db.sharedLandDao().insert(perms);
         }
     }

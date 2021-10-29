@@ -58,6 +58,10 @@ public class UserLandPermissions implements Parcelable {
         }
     }
 
+    public boolean hasPerms(){
+        return isAdmin() || isRead() || isWrite();
+    }
+
     public long getSid() {
         return sid;
     }

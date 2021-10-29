@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    def nav_version = "2.4.0-alpha10"
+    def nav_version = "2.4.0-beta01"
     def paging_version = "3.0.1"
     def room_version = "2.3.0"
 
@@ -53,7 +53,7 @@ dependencies {
     implementation "androidx.paging:paging-runtime:$paging_version"
     implementation "androidx.paging:paging-guava:$paging_version"
     implementation "com.google.android.material:material:1.4.0"
-    implementation "com.google.android.gms:play-services-maps:17.0.1"
+    implementation "com.google.android.gms:play-services-maps:18.0.0"
     implementation "com.google.code.gson:gson:2.8.6"
     implementation "com.google.maps.android:android-maps-utils:0.5"
     implementation "org.jdom:jdom2:2.0.6"
