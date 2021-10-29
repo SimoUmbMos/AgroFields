@@ -69,7 +69,7 @@ public class UserRequestFragment extends Fragment implements SearchView.OnQueryT
         binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.search_menu, menu);
+        inflater.inflate(R.menu.user_request_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
@@ -78,14 +78,25 @@ public class UserRequestFragment extends Fragment implements SearchView.OnQueryT
         menuRefresh = menu.findItem( R.id.menu_item_refresh);
         searchView = (SearchView) menuSearch.getActionView();
         searchView.setOnQueryTextListener(this);
-        searchView.setOnSearchClickListener(v -> {
-            isSearchOpen = true;
-            menu.findItem(R.id.menu_item_refresh).setVisible(false);
-        });
+        searchView.setOnSearchClickListener(v -> isSearchOpen = true);
         searchView.setOnCloseListener(() -> {
             isSearchOpen = isSearching;
-            menu.findItem(R.id.menu_item_refresh).setVisible(!isSearching);
             return false;
+        });
+        menuSearch.setOnActionExpandListener(new  MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                if(menuRefresh != null)
+                    menuRefresh.setVisible(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if(menuRefresh != null)
+                    menuRefresh.setVisible(true);
+                return true;
+            }
         });
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -290,8 +301,6 @@ public class UserRequestFragment extends Fragment implements SearchView.OnQueryT
         String display;
         boolean disableRv = false;
         if(isSearching){
-            if(menuRefresh != null)
-                menuRefresh.setVisible(false);
             if(actionBar != null){
                 actionBar.setTitle(lastSearchText);
             }
@@ -305,8 +314,6 @@ public class UserRequestFragment extends Fragment implements SearchView.OnQueryT
             }
 
         }else{
-            if(menuRefresh != null)
-                menuRefresh.setVisible(true);
             if(actionBar != null){
                 actionBar.setTitle(getString(R.string.request_title));
             }

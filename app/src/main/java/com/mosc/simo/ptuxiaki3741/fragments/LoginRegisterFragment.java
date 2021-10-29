@@ -373,9 +373,9 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     public void toMenu(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LoginFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.LoginRegisterFragment);
                 if(nav != null)
-                    nav.navigate(R.id.loginToMenu);
+                    nav.navigate(R.id.toMenuMain);
             });
     }
 }

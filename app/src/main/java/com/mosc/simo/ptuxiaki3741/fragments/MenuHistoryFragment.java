@@ -34,7 +34,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
+public class MenuHistoryFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandHistoryMenuFragment";
     private LandHistoryListAdapter adapter;
     private FragmentMenuHistoryBinding binding;
@@ -180,12 +180,12 @@ public class HistoryMenuFragment extends Fragment implements FragmentBackPress {
     public void toLandMap(@Nullable Activity activity, Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandHistoryFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuHistoryFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
                 bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,true);
                 if(nav != null)
-                    nav.navigate(R.id.landHistoryToLandPreview,bundle);
+                    nav.navigate(R.id.toMapLandPreview,bundle);
             });
     }
 }

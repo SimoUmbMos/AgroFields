@@ -6,158 +6,153 @@
     android:id="@+id/nav_land_graph"
     app:startDestination="@id/LoadingFragment">
 
-    <fragment android:id="@+id/LoadingFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LoadingFragment"
-        android:label="fragment_loading"
-        tools:layout="@layout/fragment_loading" >
-        <action android:id="@+id/loadingToLogin"
-            app:destination="@id/LoginFragment"
-            app:popUpTo="@+id/nav_land_graph"
-            app:launchSingleTop="true"
-            app:popUpToInclusive="true"/>
-        <action android:id="@+id/loadingToMenu"
-            app:destination="@id/MainMenuFragment"
-            app:popUpTo="@+id/nav_land_graph"
-            app:launchSingleTop="true"
-            app:popUpToInclusive="true" />
-        <action android:id="@+id/loadingToFileMap"
-            app:destination="@id/FileMapFragment"
-            app:popUpTo="@+id/nav_land_graph"
-            app:launchSingleTop="true"
-            app:popUpToInclusive="true"/>
-    </fragment>
-    <fragment android:id="@+id/FileMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.FileMapFragment"
-        android:label="fragment_file_map"
-        tools:layout="@layout/fragment_file_map" >
-        <action android:id="@+id/fileMapToLandEditor"
-            app:destination="@id/LandMapEditorFragment"
-            app:popUpTo="@id/LandCollectionFragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
-    <fragment android:id="@+id/LoginFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LoginRegisterFragment"
-        android:label="fragment_login_register"
-        tools:layout="@layout/fragment_login_register" >
-        <action android:id="@+id/loginToMenu"
-            app:destination="@id/MainMenuFragment"
-            app:popUpTo="@id/nav_land_graph"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment android:id="@+id/MainMenuFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.MainMenuFragment"
-        android:label="fragment_menu"
-        tools:layout="@layout/fragment_menu_main" >
-        <action android:id="@+id/mainMenuToLogin"
-            app:destination="@id/LoginFragment"
-            app:popUpTo="@id/nav_land_graph"
-            app:popUpToInclusive="true" />
-        <action android:id="@+id/mainMenuToUserProfile"
-            app:destination="@id/UserProfileFragment" />
-        <action android:id="@+id/mainMenuToLandHistory"
-            app:destination="@id/LandHistoryFragment" />
-        <action android:id="@+id/mainMenuToListMenu"
-            app:destination="@id/LandCollectionFragment" />
-        <action android:id="@+id/mainMenuToUserContacts"
-            app:destination="@id/UserContactsFragment" />
-        <action android:id="@+id/mainMenuToUserRequests"
-            app:destination="@id/UserRequestFragment" />
-        <action android:id="@+id/mainMenuToAppSettings"
-            app:destination="@id/AppSettingsFragment" />
-    </fragment>
-
-    <fragment android:id="@+id/UserProfileFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserProfileFragment"
-        android:label="fragment_user_profile"
-        tools:layout="@layout/fragment_user_profile" >
-        <action android:id="@+id/userProfileToLogin"
-            app:destination="@id/LoginFragment"
-            app:popUpTo="@id/nav_land_graph"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <!-- todo: change UserRequestFragment caller from main menu to contacts list -->
-    <fragment android:id="@+id/UserRequestFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserRequestFragment"
-        android:label="fragment_user_request"
-        tools:layout="@layout/fragment_user_request" />
-    <fragment android:id="@+id/UserContactsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserContactsFragment"
-        android:label="fragment_user_contacts"
-        tools:layout="@layout/fragment_user_contacts" >
-        <action android:id="@+id/userContactsToContactProfile"
-            app:destination="@id/ContactProfileFragment" />
-    </fragment>
-    <fragment android:id="@+id/ContactProfileFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.ContactProfileFragment"
-        android:label="fragment_contact_profile"
-        tools:layout="@layout/fragment_contact_profile" >
-        <action android:id="@+id/contactProfileToSelectedShareLand"
-            app:destination="@id/SelectedShareLandFragment" />
-    </fragment>
-    <fragment android:id="@+id/SelectedShareLandFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.SelectedShareLandFragment"
-        android:label="fragment_selected_share_land"
-        tools:layout="@layout/fragment_selected_share_land" />
-
     <fragment android:id="@+id/AppSettingsFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.AppSettingsFragment"
         android:label="fragment_app_settings"
         tools:layout="@layout/fragment_app_settings" >
-        <action android:id="@+id/appSettingsToDegreeInfo"
+        <action android:id="@+id/toDegreeInfo"
             app:destination="@id/DegreeInfoFragment" />
     </fragment>
     <fragment android:id="@+id/DegreeInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.DegreeInfoFragment"
         android:label="fragment_degree_info"
         tools:layout="@layout/fragment_degree_info" />
-
-    <fragment android:id="@+id/LandHistoryFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.HistoryMenuFragment"
-        android:label="fragment_land_history_menu"
-        tools:layout="@layout/fragment_menu_history" >
-        <action android:id="@+id/landHistoryToLandPreview"
-            app:destination="@id/LandMapPreviewFragment" />
+    <fragment android:id="@+id/LoadingFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" >
+        <action android:id="@+id/toLoginRegister"
+            app:destination="@id/LoginRegisterFragment"
+            app:popUpTo="@+id/nav_land_graph"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"/>
+        <action android:id="@+id/toMenuMain"
+            app:destination="@id/MenuMainFragment"
+            app:popUpTo="@+id/nav_land_graph"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+        <action android:id="@+id/toMapFile"
+            app:destination="@id/MapFileFragment"
+            app:popUpTo="@+id/nav_land_graph"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"/>
     </fragment>
-    <fragment android:id="@+id/LandCollectionFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMenuFragment"
-        android:label="fragment_land_collection"
-        tools:layout="@layout/fragment_menu_land" >
-        <action android:id="@+id/landCollectionToLandInfo"
-            app:destination="@id/LandInfoFragment" />
-        <action android:id="@+id/landCollectionToLandPreview"
-            app:destination="@id/LandMapPreviewFragment" />
+    <fragment android:id="@+id/LoginRegisterFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LoginRegisterFragment"
+        android:label="fragment_login_register"
+        tools:layout="@layout/fragment_login_register" >
+        <action android:id="@+id/toMenuMain"
+            app:destination="@id/MenuMainFragment"
+            app:popUpTo="@id/nav_land_graph"
+            app:popUpToInclusive="true" />
     </fragment>
-    <fragment android:id="@+id/LandInfoFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandInfoFragment"
-        android:label="fragment_land_info"
-        tools:layout="@layout/fragment_land_info" >
-        <action android:id="@+id/landInfoToLandMap"
-            app:destination="@id/LandMapEditorFragment"
-            app:popUpTo="@id/LandCollectionFragment"
-            app:popUpToInclusive="false" />
+    <fragment android:id="@+id/MapFileFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MapFileFragment"
+        android:label="fragment_file_map"
+        tools:layout="@layout/fragment_file_map" >
+        <action android:id="@+id/toMapLandEditor"
+            app:destination="@id/MapLandEditorFragment"
+            app:popUpTo="@id/MenuLandsFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
-    <fragment android:id="@+id/LandMapPreviewFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMapPreviewFragment"
-        android:label="fragment_land_map_preview"
-        tools:layout="@layout/fragment_land_map_preview">
-        <action
-            android:id="@+id/landPreviewToLandMap"
-            app:destination="@id/LandMapEditorFragment"
-            app:popUpTo="@id/LandCollectionFragment"
-            app:popUpToInclusive="false" />
-    </fragment>
-    <fragment android:id="@+id/LandMapEditorFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandMapEditorFragment"
+    <fragment android:id="@+id/MapLandEditorFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MapLandEditorFragment"
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
-        <action android:id="@+id/landMapToLandInfo"
-            app:destination="@id/LandInfoFragment" />
-        <action android:id="@+id/landMapToMainMenu"
-            app:destination="@id/LandCollectionFragment"
-            app:popUpTo="@id/LandCollectionFragment"
+        <action android:id="@+id/toProfileLand"
+            app:destination="@id/ProfileLandFragment" />
+        <action android:id="@+id/toMenuLands"
+            app:destination="@id/MenuLandsFragment"
+            app:popUpTo="@id/MenuLandsFragment"
             app:popUpToInclusive="true" />
-        <action android:id="@+id/landMapToFileMap"
-            app:destination="@id/FileMapFragment" />
+        <action android:id="@+id/toMapFile"
+            app:destination="@id/MapFileFragment" />
     </fragment>
+    <fragment android:id="@+id/MapLandPreviewFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MapLandPreviewFragment"
+        android:label="fragment_land_map_preview"
+        tools:layout="@layout/fragment_land_map_preview">
+        <action android:id="@+id/toMapLandEditor"
+            app:destination="@id/MapLandEditorFragment"
+            app:popUpTo="@id/MenuLandsFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment android:id="@+id/MenuContactsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuContactsFragment"
+        android:label="fragment_user_contacts"
+        tools:layout="@layout/fragment_user_contacts" >
+        <action android:id="@+id/toUserRequest"
+            app:destination="@id/UserRequestFragment" />
+        <action android:id="@+id/toProfileContact"
+            app:destination="@id/ProfileContactFragment" />
+    </fragment>
+    <fragment android:id="@+id/MenuHistoryFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuHistoryFragment"
+        android:label="fragment_land_history_menu"
+        tools:layout="@layout/fragment_menu_history" >
+        <action android:id="@+id/toMapLandPreview"
+            app:destination="@id/MapLandPreviewFragment" />
+    </fragment>
+    <fragment android:id="@+id/MenuLandsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuLandsFragment"
+        android:label="fragment_land_collection"
+        tools:layout="@layout/fragment_menu_land" >
+        <action android:id="@+id/toProfileLand"
+            app:destination="@id/ProfileLandFragment" />
+        <action android:id="@+id/toMapLandPreview"
+            app:destination="@id/MapLandPreviewFragment" />
+    </fragment>
+    <fragment android:id="@+id/MenuMainFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuMainFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu_main" >
+        <action android:id="@+id/toLoginRegister"
+            app:destination="@id/LoginRegisterFragment"
+            app:popUpTo="@id/nav_land_graph"
+            app:popUpToInclusive="true" />
+        <action android:id="@+id/toProfileUser"
+            app:destination="@id/ProfileUserFragment" />
+        <action android:id="@+id/toMenuHistory"
+            app:destination="@id/MenuHistoryFragment" />
+        <action android:id="@+id/toMenuLands"
+            app:destination="@id/MenuLandsFragment" />
+        <action android:id="@+id/toMenuContacts"
+            app:destination="@id/MenuContactsFragment" />
+        <action android:id="@+id/toAppSettings"
+            app:destination="@id/AppSettingsFragment" />
+    </fragment>
+    <fragment android:id="@+id/ProfileContactFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ProfileContactFragment"
+        android:label="fragment_contact_profile"
+        tools:layout="@layout/fragment_contact_profile" >
+        <action android:id="@+id/toShareLand"
+            app:destination="@id/ShareLandFragment" />
+    </fragment>
+    <fragment android:id="@+id/ProfileLandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ProfileLandFragment"
+        android:label="fragment_land_info"
+        tools:layout="@layout/fragment_land_info" >
+        <action android:id="@+id/toMapLandEditor"
+            app:destination="@id/MapLandEditorFragment"
+            app:popUpTo="@id/MenuLandsFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment android:id="@+id/ProfileUserFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ProfileUserFragment"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" >
+        <action android:id="@+id/toLoginRegister"
+            app:destination="@id/LoginRegisterFragment"
+            app:popUpTo="@id/nav_land_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment android:id="@+id/ShareLandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ShareLandFragment"
+        android:label="fragment_selected_share_land"
+        tools:layout="@layout/fragment_selected_share_land" />
+    <fragment android:id="@+id/UserRequestFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserRequestFragment"
+        android:label="fragment_user_request"
+        tools:layout="@layout/fragment_user_request" />
 
 </navigation>

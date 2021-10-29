@@ -36,7 +36,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
-public class SelectedShareLandFragment extends Fragment implements FragmentBackPress {
+public class ShareLandFragment extends Fragment implements FragmentBackPress {
     private FragmentSelectedShareLandBinding binding;
     private AlertDialog dialog;
 

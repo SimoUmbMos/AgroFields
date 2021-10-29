@@ -38,7 +38,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
-public class LandMapPreviewFragment extends Fragment implements FragmentBackPress {
+public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
 
     //todo: (idea) make memo based on user
     private FragmentLandMapPreviewBinding binding;
@@ -170,11 +170,11 @@ public class LandMapPreviewFragment extends Fragment implements FragmentBackPres
     public void toLandEdit(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandMapPreviewFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MapLandPreviewFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandLandMapFragment,currLand);
                 if(nav != null)
-                    nav.navigate(R.id.landPreviewToLandMap,bundle);
+                    nav.navigate(R.id.toMapLandEditor,bundle);
             });
     }
     public void finish(Activity activity) {

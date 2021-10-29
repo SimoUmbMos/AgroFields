@@ -42,7 +42,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainMenuFragment extends Fragment implements FragmentBackPress {
+public class MenuMainFragment extends Fragment implements FragmentBackPress {
 
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
@@ -54,7 +54,6 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
 
     private FragmentMenuMainBinding binding;
     private ActionBar actionBar;
-    private Menu menu;
 
     //init
     private void initData(){
@@ -118,19 +117,6 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
 
-    //menu
-    private void updateMenu() {
-        if(menu != null && getContext() != null){
-            MenuItem item = menu.findItem(R.id.menu_item_request);
-            if(item != null){
-                if(friendRequests.size() > 0){
-                    item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request_notification));
-                }else{
-                    item.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request));
-                }
-            }
-        }
-    }
 
     //observers
     private void onCurrUserUpdate(User user) {
@@ -146,8 +132,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         friendRequests.clear();
         if(requests != null)
             friendRequests.addAll(requests);
-
-        updateMenu();
+        updateRequestNotification();
     }
     private void onLandUpdate(List<Land> newData) {
         int index;
@@ -285,64 +270,69 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
 
+    //ui
+    private void updateRequestNotification() {
+        if(friendRequests.size()>0){
+            binding.mcvRequestLayout.setVisibility(View.VISIBLE);
+            if(friendRequests.size()>99){
+                binding.tvRequestNumber.setText(R.string.max_request_label);
+            }else{
+                binding.tvRequestNumber.setText(String.valueOf(friendRequests.size()));
+            }
+        }else{
+            binding.mcvRequestLayout.setVisibility(View.GONE);
+            binding.tvRequestNumber.setText(String.valueOf(0));
+        }
+    }
+
     //navigation
     public void toLandHistory(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.mainMenuToLandHistory);
+                    nav.navigate(R.id.toMenuHistory);
             });
     }
     public void toListMenu(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.mainMenuToListMenu);
+                    nav.navigate(R.id.toMenuLands);
             });
     }
     public void toProfile(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.mainMenuToUserProfile);
+                    nav.navigate(R.id.toProfileUser);
             });
     }
     public void toLogin(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.mainMenuToLogin);
+                    nav.navigate(R.id.toLoginRegister);
             });
     }
     public void toSettings(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.mainMenuToAppSettings);
+                    nav.navigate(R.id.toAppSettings);
             });
     }
     public void toUserContacts(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.mainMenuToUserContacts);
+                    nav.navigate(R.id.toMenuContacts);
             });
-    }
-    public void toRequestMenu(@Nullable Activity activity) {
-        if(activity != null){
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MainMenuFragment);
-                if(nav != null){
-                    nav.navigate(R.id.mainMenuToUserRequests);
-                }
-            });
-        }
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -379,21 +369,17 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu_menu, menu);
-        this.menu = menu;
-        updateMenu();
         super.onCreateOptionsMenu(menu, inflater);
     }
+    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case (R.id.menu_item_request):
-                toRequestMenu(getActivity());
-                return true;
-            case (R.id.menu_item_app_settings):
-                toSettings(getActivity());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.menu_item_app_settings) {
+            toSettings(getActivity());
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
         return true;

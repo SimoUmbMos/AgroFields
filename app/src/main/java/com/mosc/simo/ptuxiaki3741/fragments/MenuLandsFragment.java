@@ -51,7 +51,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandMenuFragment extends Fragment implements FragmentBackPress {
+public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
 
     private final List<Land> data = new ArrayList<>();
@@ -554,22 +554,22 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     public void toLandPreview(@Nullable Activity activity, Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuLandsFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
                 bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,false);
                 if(nav != null)
-                    nav.navigate(R.id.landCollectionToLandPreview,bundle);
+                    nav.navigate(R.id.toMapLandPreview,bundle);
             });
     }
     public void toLandAdd(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandCollectionFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MenuLandsFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandInfoFragment,null);
                 if(nav != null)
-                    nav.navigate(R.id.landCollectionToLandInfo,bundle);
+                    nav.navigate(R.id.toProfileLand,bundle);
             });
     }
     private void finish() {

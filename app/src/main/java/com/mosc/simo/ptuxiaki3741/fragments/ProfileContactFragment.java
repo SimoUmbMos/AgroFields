@@ -39,7 +39,7 @@ import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactProfileFragment extends Fragment implements FragmentBackPress {
+public class ProfileContactFragment extends Fragment implements FragmentBackPress {
     //todo: (idea) make memo based on user
     private FragmentContactProfileBinding binding;
     private AlertDialog dialog;
@@ -223,12 +223,12 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
     private void toSelectedLand(Land land) {
         if(getActivity() != null)
             getActivity().runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.ContactProfileFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.ProfileContactFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.SHARE_LAND_DATA_ARG,land);
                 bundle.putParcelable(AppValues.SHARE_LAND_USER_ARG,contact);
                 if(nav != null)
-                    nav.navigate(R.id.contactProfileToSelectedShareLand,bundle);
+                    nav.navigate(R.id.toShareLand,bundle);
             });
     }
 

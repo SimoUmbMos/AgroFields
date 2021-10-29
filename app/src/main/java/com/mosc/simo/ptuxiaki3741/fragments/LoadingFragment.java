@@ -118,7 +118,7 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
                 if(nav != null)
-                    nav.navigate(R.id.loadingToMenu);
+                    nav.navigate(R.id.toMenuMain);
             });
     }
     private void toLogin(Activity activity) {
@@ -126,7 +126,7 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
                 if(nav != null)
-                    nav.navigate(R.id.loadingToLogin);
+                    nav.navigate(R.id.toLoginRegister);
             });
     }
     private void toMapPreview(Activity activity, ArrayList<LandData> data) {
@@ -136,7 +136,7 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
                 if(nav != null)
-                    nav.navigate(R.id.loadingToFileMap,args);
+                    nav.navigate(R.id.toMapFile,args);
             });
         }
     }

@@ -57,7 +57,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandMapEditorFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
+public class MapLandEditorFragment extends Fragment implements FragmentBackPress,View.OnTouchListener {
     public static final String TAG = "LandMapEditorFragment";
 
     private boolean mapIsLocked = false, beforeMoveWasLocked = false;
@@ -1095,27 +1095,27 @@ public class LandMapEditorFragment extends Fragment implements FragmentBackPress
     public void toMenu(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()->{
-                NavController nav = UIUtil.getNavController(this,R.id.LandMapEditorFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MapLandEditorFragment);
                 if(nav != null)
-                    nav.navigate(R.id.landMapToMainMenu);
+                    nav.navigate(R.id.toMenuLands);
             });
     }
     public void toInfo(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandMapEditorFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MapLandEditorFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandInfoFragment,currLand);
                 if(nav != null)
-                    nav.navigate(R.id.landMapToLandInfo,bundle);
+                    nav.navigate(R.id.toProfileLand,bundle);
             });
     }
     public void toImport(Activity activity, Bundle args) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandMapEditorFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MapLandEditorFragment);
                 if(nav != null)
-                    nav.navigate(R.id.landMapToFileMap,args);
+                    nav.navigate(R.id.toMapFile,args);
             });
     }
     private void toImportFile(){

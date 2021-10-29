@@ -150,7 +150,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.AppSettingsFragment);
                 if(nav != null)
-                    nav.navigate(R.id.appSettingsToDegreeInfo);
+                    nav.navigate(R.id.toDegreeInfo);
             });
     }
 }

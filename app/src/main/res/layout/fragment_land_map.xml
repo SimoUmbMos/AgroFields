@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.LandMapEditorFragment">
+    tools:context=".fragments.MapLandEditorFragment">
     <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/LandMapContentRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

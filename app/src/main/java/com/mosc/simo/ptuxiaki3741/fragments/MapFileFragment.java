@@ -33,7 +33,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileMapFragment extends Fragment implements FragmentBackPress {
+public class MapFileFragment extends Fragment implements FragmentBackPress {
     private FragmentFileMapBinding binding;
 
     private final List<LandData> landDataList = new ArrayList<>();
@@ -195,11 +195,11 @@ public class FileMapFragment extends Fragment implements FragmentBackPress {
     private void toLandEdit(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()->{
-                NavController nav = UIUtil.getNavController(this,R.id.FileMapFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.MapFileFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argImportLandData,landData);
                 if(nav != null)
-                    nav.navigate(R.id.fileMapToLandEditor,bundle);
+                    nav.navigate(R.id.toMapLandEditor,bundle);
             });
     }
 

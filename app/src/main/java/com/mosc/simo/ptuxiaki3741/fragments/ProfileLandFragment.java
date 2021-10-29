@@ -33,7 +33,7 @@ import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
-public class LandInfoFragment extends Fragment implements FragmentBackPress {
+public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
 
     private Land land;
@@ -204,22 +204,22 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
     public void toLandMap(@Nullable Activity activity,Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandInfoFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.ProfileLandFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandLandMapFragment,land);
                 if(nav != null)
-                    nav.navigate(R.id.landInfoToLandMap,bundle);
+                    nav.navigate(R.id.toMapLandEditor,bundle);
             });
     }
     public void toLandMap(@Nullable Activity activity, Land land, String address) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandInfoFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.ProfileLandFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandLandMapFragment,land);
                 bundle.putString(AppValues.argAddressLandMapFragment,address);
                 if(nav != null)
-                    nav.navigate(R.id.landInfoToLandMap,bundle);
+                    nav.navigate(R.id.toMapLandEditor,bundle);
             });
     }
 }

@@ -25,7 +25,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserProfileBinding;import 
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
-public class UserProfileFragment extends Fragment implements FragmentBackPress {
+public class ProfileUserFragment extends Fragment implements FragmentBackPress {
     private FragmentUserProfileBinding binding;
     private User currUser;
     private boolean isEditMode;
@@ -157,9 +157,9 @@ public class UserProfileFragment extends Fragment implements FragmentBackPress {
     public void toLogin(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.UserProfileFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.ProfileUserFragment);
                 if(nav != null)
-                    nav.navigate(R.id.userProfileToLogin);
+                    nav.navigate(R.id.toLoginRegister);
             });
     }
 }
