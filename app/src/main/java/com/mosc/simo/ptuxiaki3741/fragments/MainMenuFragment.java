@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,12 +43,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuFragment extends Fragment implements FragmentBackPress {
-    public static final String TAG ="MenuFragment";
 
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
     private List<User> friendRequests;
-    private List<Land> lands;
+    private List<Land> lands,sharedLands;
+    private List<Land> data;
     private GoogleMap mMap;
     private boolean drawPolygon;
 
@@ -61,6 +60,8 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
     private void initData(){
         friendRequests = new ArrayList<>();
         lands = new ArrayList<>();
+        sharedLands = new ArrayList<>();
+        data = new ArrayList<>();
         drawPolygon = false;
     }
     private void initActivity() {
@@ -90,6 +91,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         }
         if(vmLands != null){
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
+            vmLands.getSharedLands().observe(getViewLifecycleOwner(),this::onSharedLandUpdate);
         }
     }
     private void initFragment() {
@@ -110,7 +112,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
             googleMap.getUiSettings().setRotateGesturesEnabled(false);
             googleMap.getUiSettings().setScrollGesturesEnabled(false);
             googleMap.getUiSettings().setZoomGesturesEnabled(false);
-            googleMap.setOnMapClickListener(this::OnMapClick);
+            googleMap.setOnMapClickListener(p -> OnMapClick());
             googleMap.setOnPolygonClickListener(this::OnPolygonClick);
             googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
         }
@@ -147,10 +149,37 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
 
         updateMenu();
     }
-    private void onLandUpdate(List<Land> landList) {
+    private void onLandUpdate(List<Land> newData) {
+        int index;
+        for(Land temp:lands) {
+            index = data.indexOf(temp);
+            if(index>-1){
+                data.remove(index);
+            }
+        }
         lands.clear();
-        if(landList != null){
-            lands.addAll(landList);
+        lands.addAll(newData);
+        for(Land temp:lands) {
+            if(temp.getPerm().isRead()){
+                data.add(temp);
+            }
+        }
+        drawMap();
+    }
+    private void onSharedLandUpdate(List<Land> newData) {
+        int index;
+        for(Land temp:sharedLands) {
+            index = data.indexOf(temp);
+            if(index>-1){
+                data.remove(index);
+            }
+        }
+        sharedLands.clear();
+        sharedLands.addAll(newData);
+        for(Land temp:sharedLands) {
+            if(temp.getPerm().isRead()){
+                data.add(temp);
+            }
         }
         drawMap();
     }
@@ -165,11 +194,9 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void OnPolygonClick(Polygon polygon){
-        Log.d(TAG, "OnPolygonClick: ");
         drawMap(polygon);
     }
-    private void OnMapClick(LatLng point){
-        Log.d(TAG, "OnMapClick: ");
+    private void OnMapClick(){
         if(drawPolygon)
             drawMap();
     }
@@ -177,7 +204,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
         drawPolygon = false;
         if(mMap != null){
             mMap.clear();
-            if(lands.size()>0){
+            if(data.size()>0){
                 binding.mvLands.setVisibility(View.VISIBLE);
                 binding.mainMenuAction.setVisibility(View.GONE);
                 int strokeColor,fillColor;
@@ -190,7 +217,7 @@ public class MainMenuFragment extends Fragment implements FragmentBackPress {
                 }
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                for(Land land:lands){
+                for(Land land:data){
                     PolygonOptions options = LandUtil.getPolygonOptions(
                             land.getData(),
                             strokeColor,

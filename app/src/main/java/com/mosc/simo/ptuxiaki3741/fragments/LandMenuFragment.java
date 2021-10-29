@@ -55,6 +55,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
 
     private final List<Land> data = new ArrayList<>();
+    private final List<Land> myLands = new ArrayList<>();
+    private final List<Land> mySharedLands = new ArrayList<>();
     private final List<Land> exportLands = new ArrayList<>();
     private FileType exportAction;
     private LandListAdapter adapter;
@@ -79,14 +81,17 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         initFragment();
         initViewModel();
     }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.land_list_menu, menu);
-        initMenu(menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
     @Override public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.land_list_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        initMenu(menu);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(menuItemClick(item))
@@ -143,7 +148,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserChange);
             vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-            vmLands.getLands().observe(getViewLifecycleOwner(),this::onDataChange);
+            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandsChange);
+            vmLands.getSharedLands().observe(getViewLifecycleOwner(),this::onSharedLandsChange);
         }
     }
     private void initMenu(Menu menu){
@@ -249,14 +255,60 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             finish();
         }
     }
-    private void onDataChange(List<Land> data) {
-        if(this.data.size()>0){
-            int size = this.data.size();
-            this.data.clear();
-            adapter.notifyItemRangeRemoved(0,size);
+    private void onLandsChange(List<Land> lands) {
+        int index;
+        for(Land temp:myLands) {
+            index = data.indexOf(temp);
+            if(index>-1){
+                data.remove(index);
+                adapter.notifyItemRemoved(index);
+            }
         }
-        this.data.addAll(data);
-        adapter.notifyItemRangeInserted(0,data.size());
+        myLands.clear();
+        myLands.addAll(lands);
+        for(Land temp:myLands) {
+            if(temp.getPerm().isRead()){
+                data.add(temp);
+                adapter.notifyItemInserted(data.indexOf(temp));
+            }
+        }
+        updateUi();
+    }
+    private void onSharedLandsChange(List<Land> lands) {
+        for(Land land:lands){
+            if(land.getPerm().isWrite()){
+                Log.d(TAG, land.getData().getTitle()+": is Write");
+            }else{
+                Log.d(TAG, land.getData().getTitle()+": is not Write");
+            }
+            if(land.getPerm().isRead()){
+                Log.d(TAG, land.getData().getTitle()+": is Read");
+            }else{
+                Log.d(TAG, land.getData().getTitle()+": is not Read");
+            }
+            if(land.getPerm().isAdmin()){
+                Log.d(TAG, land.getData().getTitle()+": is Admin");
+            }else{
+                Log.d(TAG, land.getData().getTitle()+": is not Admin");
+            }
+        }
+        int index;
+        for(Land temp:mySharedLands) {
+            index = data.indexOf(temp);
+            if(index>-1){
+                data.remove(index);
+                adapter.notifyItemRemoved(index);
+            }
+        }
+        mySharedLands.clear();
+        mySharedLands.addAll(lands);
+        for(Land temp:mySharedLands) {
+            if(temp.getPerm().isRead()){
+                data.add(temp);
+                index = data.indexOf(temp);
+                adapter.notifyItemInserted(index);
+            }
+        }
         updateUi();
     }
     private void onLandClick(Land land) {

@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import java.util.List;
@@ -16,10 +17,10 @@ public interface LandDao {
             "WHERE id = :lid")
     LandData getLandData(long lid);
 
-    @Query("SELECT land.* " +
-            "FROM LandData land INNER JOIN SharedLands share ON land.id = share.LandID " +
-            "WHERE share.UserID = :uid")
-    List<LandData> getUserSharedLands(long uid);
+    @Query("SELECT LandData.*, perm.* " +
+            "FROM LandData INNER JOIN UserLandPermissions perm ON LandData.id = perm.LandID " +
+            "WHERE perm.UserID = :uid")
+    List<Land> getUserSharedLands(long uid);
 
     @Query("SELECT * FROM LandData " +
             "WHERE CreatorID = :uid")

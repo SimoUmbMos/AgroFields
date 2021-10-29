@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 public final class AppValues {
     /* DB VALUES*/
-    public static final int DATABASE_VERSION = 25;
+    public static final int DATABASE_VERSION = 27;
     /* ViewModels VALUES */
     public static final String sharedPreferenceKeyUserViewModel = "currUser";
     public static final long sharedPreferenceDefaultUserViewModel = -1;
@@ -15,7 +15,8 @@ public final class AppValues {
     /* Contact Profile Fragment Values */
     public static final String CONTACT_PROFILE_ARG = "user";
     /* Share Land Fragment Values */
-    public static final String SHARE_LAND_ARG = "user";
+    public static final String SHARE_LAND_USER_ARG = "user";
+    public static final String SHARE_LAND_DATA_ARG = "land";
     /* Land Info Fragment Values */
     public static final String argLandInfoFragment = "land";
     /* Land Map Preview Fragment Values*/
@@ -24,7 +25,6 @@ public final class AppValues {
     /* Land Map Editor Fragment Values*/
     public static final String argLandLandMapFragment = "land";
     public static final String argImportLandData = "import_land";
-    public static final String argImportLandAction = "import_action";
     public static final String argAddressLandMapFragment = "address";
     public static final double distanceToMapActionKM = 100;
     public static final float stepOpacity = 0.03f;

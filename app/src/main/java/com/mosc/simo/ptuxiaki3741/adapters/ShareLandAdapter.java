@@ -9,15 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderShareLandCheckableBinding;
-import com.mosc.simo.ptuxiaki3741.models.LandWithShare;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 
 import java.util.List;
 
 public class ShareLandAdapter extends RecyclerView.Adapter<ShareLandAdapter.ShareLandViewHolder>{
-    private final List<LandWithShare> data;
+    private final List<Land> data;
     private final OnSharedLandCheckListener listener;
 
-    public ShareLandAdapter(List<LandWithShare> data, OnSharedLandCheckListener listener){
+    public ShareLandAdapter(List<Land> data, OnSharedLandCheckListener listener){
         this.data = data;
         this.listener = listener;
     }
@@ -34,14 +34,10 @@ public class ShareLandAdapter extends RecyclerView.Adapter<ShareLandAdapter.Shar
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ShareLandViewHolder h, int pos) {
+    public void onBindViewHolder(@NonNull ShareLandViewHolder holder, int pos) {
         if(pos < data.size()){
-            LandWithShare entity = data.get(pos);
-            h.binding.ctvSharedLandName.setChecked(entity.getSharedData() != null);
-            h.binding.ctvSharedLandName.setText(entity.getData().getTitle());
-            h.binding.ctvSharedLandName.setOnClickListener(v->
-                    listener.onSharedLandCheck(pos, h.binding.ctvSharedLandName.isChecked())
-            );
+            Land entity = data.get(pos);
+            holder.bind(entity,listener);
         }
     }
 
@@ -53,14 +49,20 @@ public class ShareLandAdapter extends RecyclerView.Adapter<ShareLandAdapter.Shar
     }
 
     protected static class ShareLandViewHolder extends RecyclerView.ViewHolder{
-        public final ViewHolderShareLandCheckableBinding binding;
+        private final ViewHolderShareLandCheckableBinding binding;
         public ShareLandViewHolder(@NonNull View view) {
             super(view);
             binding = ViewHolderShareLandCheckableBinding.bind(view);
         }
+        public void bind(Land land, OnSharedLandCheckListener listener){
+            binding.tvSharedLandName.setText(land.getData().getTitle());
+            binding.tvSharedLandName.setOnClickListener(v->
+                    listener.onLandSelect(land)
+            );
+        }
     }
 
     public interface OnSharedLandCheckListener{
-        void onSharedLandCheck(int pos, boolean wasChecked);
+        void onLandSelect(Land land);
     }
 }

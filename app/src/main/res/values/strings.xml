@@ -137,8 +137,20 @@
     <string name="contact_delete_message">Are you sure you want to delete this contact</string>
     <string name="deleted_contact">Contact Deleted</string>
     <string name="deleted_contact_error">Something was goes wrong, try again</string>
-    <!-- Share Land Fragment -->
-    <string name="share_land_list_title">Shared Lands List</string>
+    <string name="share_land_list_title">Click Land to Share</string>
+    <!-- Selected Share Land Fragment -->
+    <string name="change_land_owner_menu_label">Change\nOwnership</string>
+    <string name="change_land_owner_alert_title">Change Land Ownership</string>
+    <string name="change_land_owner_alert_desc">Are you sure you want to perform this action?\nthis can\'t be undo!</string>
+    <string name="change_land_owner_result_true">Ownership Changed!</string>
+    <string name="change_land_owner_result_false">Ownership Change Failed!</string>
+    <string name="selected_share_land_list_title">Manage Permissions</string>
+    <string name="selected_share_land_title_label">"Land: "</string>
+    <string name="selected_share_land_admin_check">Admin Permissions</string>
+    <string name="selected_share_land_read_check">Read Permissions</string>
+    <string name="selected_share_land_write_check">Write Permissions</string>
+    <string name="cancel_share">Cancel</string>
+    <string name="save_share">Save</string>
     <!-- User Profile Fragment -->
     <string name="profile_bar_label">My Profile</string>
     <string name="email_hint_user_profile">Email</string>

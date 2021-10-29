@@ -22,6 +22,12 @@ public interface LandHistoryDao {
             "ORDER BY LandID, Date, LandTitle")
     List<LandDataRecord> getLandRecordsByUserId(long uid);
 
+    @Query("SELECT r.* " +
+            "FROM LandDataRecord r INNER JOIN UserLandPermissions p ON p.LandID = r.LandID " +
+            "WHERE r.CreatorID = :uid OR (p.UserID = :uid AND p.AdminPermission = :admin) " +
+            "ORDER BY r.LandID, r.Date, r.LandTitle")
+    List<LandDataRecord> getLandRecordsByUserIdAndPermission(long uid, boolean admin);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandDataRecord landRecord);
 

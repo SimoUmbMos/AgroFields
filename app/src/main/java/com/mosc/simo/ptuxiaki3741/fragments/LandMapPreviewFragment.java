@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +40,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 public class LandMapPreviewFragment extends Fragment implements FragmentBackPress {
+
     //todo: (idea) make memo based on user
     private FragmentLandMapPreviewBinding binding;
 
@@ -220,12 +222,22 @@ public class LandMapPreviewFragment extends Fragment implements FragmentBackPres
         MenuItem editItem = menu.findItem(R.id.menu_item_edit_land);
         MenuItem restoreItem = menu.findItem(R.id.menu_item_restore_land);
         if(editItem != null){
-            editItem.setVisible(!isHistory);
-            editItem.setEnabled(!isHistory);
+            if(currLand.getPerm().isWrite()){
+                editItem.setVisible(!isHistory);
+                editItem.setEnabled(!isHistory);
+            }else{
+                editItem.setVisible(false);
+                editItem.setEnabled(false);
+            }
         }
         if(restoreItem != null){
-            restoreItem.setVisible(isHistory);
-            restoreItem.setEnabled(isHistory);
+            if(currLand.getPerm().isAdmin()){
+                restoreItem.setVisible(isHistory);
+                restoreItem.setEnabled(isHistory);
+            }else{
+                restoreItem.setVisible(false);
+                restoreItem.setEnabled(false);
+            }
         }
         super.onPrepareOptionsMenu(menu);
     }

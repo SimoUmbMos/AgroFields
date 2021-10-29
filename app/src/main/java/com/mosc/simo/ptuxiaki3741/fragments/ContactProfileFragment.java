@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.adapters.ShareLandAdapter;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentContactProfileBinding;
@@ -34,6 +37,9 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContactProfileFragment extends Fragment implements FragmentBackPress {
     //todo: (idea) make memo based on user
     private FragmentContactProfileBinding binding;
@@ -41,6 +47,11 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
 
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
+    private ShareLandAdapter adapter;
+
+    private final List<Land> myLands = new ArrayList<>();
+    private final List<Land> mySharedLands = new ArrayList<>();
+    private final List<Land> data = new ArrayList<>();
     private User contact;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -55,6 +66,7 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
         initActivity();
         initViewModel();
         initFragment();
+        initObservers();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -143,16 +155,82 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
             });
         }
 
-        binding.btnContactShareLand.setOnClickListener(v->toShareLandList());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                getContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+        );
+        adapter = new ShareLandAdapter(data,this::onLandClick);
+        binding.rcSharedLand.setLayoutManager(layoutManager);
+        binding.rcSharedLand.setHasFixedSize(true);
+        binding.rcSharedLand.setAdapter(adapter);
+    }
+    private void initObservers() {
+        if(vmLands != null){
+            vmLands.getLands().observe(getViewLifecycleOwner(),this::onMyLandsUpdate);
+            vmLands.getSharedLands().observe(getViewLifecycleOwner(),this::onMySharedLandsUpdate);
+        }
     }
 
-    private void toShareLandList() {
-        toSharedLands(getActivity());
+    private void onMyLandsUpdate(List<Land> myLands){
+        onDataUpdateStart(this.myLands);
+        this.myLands.clear();
+        this.myLands.addAll(myLands);
+        onDataUpdateEnd(this.myLands);
+    }
+    private void onMySharedLandsUpdate(List<Land> mySharedLands){
+        onDataUpdateStart(this.mySharedLands);
+        this.mySharedLands.clear();
+        this.mySharedLands.addAll(mySharedLands);
+        onDataUpdateEnd(this.mySharedLands);
+    }
+    private void onDataUpdateStart(List<Land> lands){
+        for(Land land:lands){
+            for(int i = 0;i<data.size();i++){
+                if(data.get(i).getData().getId() == land.getData().getId()){
+                    data.remove(i);
+                    adapter.notifyItemRemoved(i);
+                    break;
+                }
+            }
+        }
+    }
+    private void onDataUpdateEnd(List<Land> lands){
+        for(Land land:lands){
+            if(land.getPerm().isAdmin()){
+                data.add(land);
+                adapter.notifyItemInserted(data.indexOf(land));
+            }
+        }
+        updateUi();
+    }
+    private void onLandClick(Land land){
+        toSelectedLand(land);
+    }
+    private void updateUi() {
+        if(data.size()>0){
+            binding.tvSharedLandDisplay.setVisibility(View.GONE);
+            binding.rcSharedLand.setVisibility(View.VISIBLE);
+        }else{
+            binding.tvSharedLandDisplay.setVisibility(View.VISIBLE);
+            binding.rcSharedLand.setVisibility(View.GONE);
+        }
     }
 
     private void goBack(){
         if(getActivity() != null)
             getActivity().onBackPressed();
+    }
+    private void toSelectedLand(Land land) {
+        if(getActivity() != null)
+            getActivity().runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.ContactProfileFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppValues.SHARE_LAND_DATA_ARG,land);
+                bundle.putParcelable(AppValues.SHARE_LAND_USER_ARG,contact);
+                if(nav != null)
+                    nav.navigate(R.id.contactProfileToSelectedShareLand,bundle);
+            });
     }
 
     private void removeContact(){
@@ -178,7 +256,7 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
             AsyncTask.execute(()->{
                 String display;
                 if(vmUsers.deleteFriend(contact)){
-                    vmLands.removeAllSharedLandsWithUser(contact);
+                    vmLands.removeAllLandPermissions(contact);
                     display = getString(R.string.deleted_contact);
                 }else{
                     display = getString(R.string.deleted_contact_error);
@@ -195,16 +273,5 @@ public class ContactProfileFragment extends Fragment implements FragmentBackPres
                 }
             });
         }
-    }
-
-    public void toSharedLands(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.ContactProfileFragment);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.SHARE_LAND_ARG,contact);
-                if(nav != null)
-                    nav.navigate(R.id.contactProfileToShareLand,bundle);
-            });
     }
 }

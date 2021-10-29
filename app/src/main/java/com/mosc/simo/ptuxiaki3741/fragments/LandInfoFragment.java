@@ -98,6 +98,11 @@ public class LandInfoFragment extends Fragment implements FragmentBackPress {
             landLabel = getString(R.string.create_land_label);
             binding.etLandInfoAddress.setEnabled(true);
         }else{
+            binding.etLandInfoName.setEnabled(land.getPerm().isWrite());
+            binding.etLandInfoAddress.setEnabled(land.getPerm().isWrite());
+            binding.btnLandInfoSubmit.setEnabled(land.getPerm().isWrite());
+            binding.btnLandInfoCancel.setEnabled(land.getPerm().isWrite());
+
             landLabel = getString(R.string.edit_land_label);
             binding.etLandInfoName.setText(land.getData().getTitle());
             binding.etLandInfoAddress.setText("");
