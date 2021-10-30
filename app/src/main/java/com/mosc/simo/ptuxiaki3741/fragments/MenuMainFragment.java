@@ -179,6 +179,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void OnPolygonClick(Polygon polygon){
+        //fixme: click accuracy
         drawMap(polygon);
     }
     private void OnMapClick(){

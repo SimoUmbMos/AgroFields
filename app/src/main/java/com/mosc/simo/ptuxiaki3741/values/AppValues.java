@@ -9,7 +9,7 @@ public final class AppValues {
     public static final String sharedPreferenceKeyUserViewModel = "currUser";
     public static final long sharedPreferenceDefaultUserViewModel = -1;
     /* Common Values*/
-    public static final int defaultPadding = 64;
+    public static final int defaultPadding = 16;
     public static final int strokeColor = Color.argb(192,0,0,255);
     public static final int fillColor = Color.argb(51,0,0,255);
     /* Contact Profile Fragment Values */

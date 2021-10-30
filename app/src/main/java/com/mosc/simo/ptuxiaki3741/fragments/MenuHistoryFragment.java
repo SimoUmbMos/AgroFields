@@ -47,6 +47,8 @@ public class MenuHistoryFragment extends Fragment implements FragmentBackPress {
     private List<LandHistory> data;
     private List<User> users;
 
+    private int openIndex = -1;
+
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -68,13 +70,20 @@ public class MenuHistoryFragment extends Fragment implements FragmentBackPress {
         inflater.inflate(R.menu.land_history_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        MenuItem item = menu.findItem(R.id.menu_item_toggle_land_history_lists);
+        if(openIndex != -1){
+            item.setVisible(true);
+            item.setEnabled(true);
+        }else{
+            item.setVisible(false);
+            item.setEnabled(false);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_item_toggle_land_history_lists) {
-            if(areAllListsVisible()){
-                hideAllLists();
-            }else{
-                showAllLists();
-            }
+            closeAllOpenTabs();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -84,6 +93,7 @@ public class MenuHistoryFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initData(){
+        openIndex = -1;
         data = new ArrayList<>();
         users = new ArrayList<>();
     }
@@ -161,38 +171,49 @@ public class MenuHistoryFragment extends Fragment implements FragmentBackPress {
 
     }
     private void updateUI() {
-        if(data.size()>0){
-            binding.rvHistoryList.setVisibility(View.VISIBLE);
-            binding.tvHistoryActionLabel.setVisibility(View.GONE);
-        }else{
-            binding.tvHistoryActionLabel.setVisibility(View.VISIBLE);
-            binding.rvHistoryList.setVisibility(View.GONE);
+        if(getActivity() != null){
+            getActivity().runOnUiThread(()->{
+                if(data.size()>0){
+                    binding.rvHistoryList.setVisibility(View.VISIBLE);
+                    binding.tvHistoryActionLabel.setVisibility(View.GONE);
+                }else{
+                    binding.tvHistoryActionLabel.setVisibility(View.VISIBLE);
+                    binding.rvHistoryList.setVisibility(View.GONE);
+                }
+            });
         }
     }
-    public boolean areAllListsVisible(){
-        for(LandHistory item : data){
-            if(!item.isVisible())
-                return false;
+    private void closeAllOpenTabs(){
+        if(openIndex != -1){
+            data.get(openIndex).setVisible(false);
+            adapter.notifyItemChanged(openIndex);
+            openIndex = -1;
         }
-        return true;
-    }
-    public void showAllLists(){
-        for(int i = 0; i < data.size();i++){
-            data.get(i).setVisible(true);
-            adapter.notifyItemChanged(i);
-        }
-    }
-    public void hideAllLists(){
-        for(int i = 0; i < data.size();i++){
-            data.get(i).setVisible(false);
-            adapter.notifyItemChanged(i);
-        }
+        if(getActivity() != null)
+            getActivity().invalidateOptionsMenu();
     }
 
     //recycle view
     public void onHeaderClick(int pos){
-        data.get(pos).setVisible(!data.get(pos).isVisible());
-        adapter.notifyItemChanged(pos);
+        if(openIndex != -1){
+            if(openIndex == pos){
+                data.get(openIndex).setVisible(false);
+                adapter.notifyItemChanged(openIndex);
+                openIndex = -1;
+            }else{
+                data.get(openIndex).setVisible(false);
+                adapter.notifyItemChanged(openIndex);
+                openIndex = pos;
+                data.get(openIndex).setVisible(true);
+                adapter.notifyItemChanged(openIndex);
+            }
+        }else{
+            openIndex = pos;
+            data.get(openIndex).setVisible(true);
+            adapter.notifyItemChanged(openIndex);
+        }
+        if(getActivity() != null)
+            getActivity().invalidateOptionsMenu();
     }
     public void onRecordClick(LandDataRecord record){
         Land land = new Land(LandUtil.getLandDataFromLandRecord(record));

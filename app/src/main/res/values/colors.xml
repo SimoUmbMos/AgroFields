@@ -2,6 +2,7 @@
 <resources>
   <color name="colorError">#B00020</color>
   <color name="backgroundColor">#EDEEF0</color>
+  <color name="cardBackgroundColor">#BECED0</color>
   <color name="errorTextColor">#EDEEF0</color>
   <color name="accentColor">#F9718A</color>
   <color name="polygonStroke">#C071f9e0</color>

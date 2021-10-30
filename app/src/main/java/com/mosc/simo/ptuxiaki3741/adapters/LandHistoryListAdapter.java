@@ -66,50 +66,63 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     }
 
     private void setupViewHolder(@NonNull ItemViewHolder holder, int position) {
-        String username;
-        String date;
-        String action;
         LandHistory item = data.get(position);
         holder.binding.tvLandTitle.setText(item.getTitle());
-        holder.binding.tlHistoryRoot.removeAllViews();
-        for(LandDataRecord record : item.getData()){
-            username = "";
-            for(User user:users){
-                if(record.getUserID() == user.getId())
-                    username = user.getUsername();
-            }
-            date = dateFormat.format(record.getDate());
-            action = "";
-            switch (record.getActionID()){
-                case CREATE:
-                    action = values[0];
-                    break;
-                case UPDATE:
-                    action = values[1];
-                    break;
-                case RESTORE:
-                    action = values[2];
-                    break;
-                case DELETE:
-                    action = values[3];
-                    break;
-            }
-            holder.binding.tlHistoryRoot.addView(new HistoryEntryView(
-                    holder.binding.getRoot().getContext(),
-                    username,
-                    date,
-                    action,
-                    v->onRecordClick.onRecordClick(record)
-            ));
-        }
         if(item.isVisible()){
-            holder.binding.tlHistoryRoot.setVisibility(View.VISIBLE);
-            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_item_close, 0);
+            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_item_close,
+                    0
+            );
         }else{
-            holder.binding.tlHistoryRoot.setVisibility(View.GONE);
-            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_item_open, 0);
+            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_item_open,
+                    0
+            );
         }
         holder.binding.tvLandTitle.setOnClickListener(v->onHeaderClick.onHeaderClick(position));
+        holder.binding.tlHistoryRoot.removeAllViews();
+        if(item.isVisible()){
+            String username;
+            String date;
+            String action;
+            for(LandDataRecord record : item.getData()){
+                username = "";
+                for(User user:users){
+                    if(record.getUserID() == user.getId())
+                        username = user.getUsername();
+                }
+                date = dateFormat.format(record.getDate());
+                action = "";
+                switch (record.getActionID()){
+                    case CREATE:
+                        action = values[0];
+                        break;
+                    case UPDATE:
+                        action = values[1];
+                        break;
+                    case RESTORE:
+                        action = values[2];
+                        break;
+                    case DELETE:
+                        action = values[3];
+                        break;
+                }
+                holder.binding.tlHistoryRoot.addView(new HistoryEntryView(
+                        holder.binding.getRoot().getContext(),
+                        username,
+                        date,
+                        action,
+                        v->onRecordClick.onRecordClick(record)
+                ));
+            }
+            holder.binding.tlHistoryRoot.setVisibility(View.VISIBLE);
+        }else{
+            holder.binding.tlHistoryRoot.setVisibility(View.GONE);
+        }
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
