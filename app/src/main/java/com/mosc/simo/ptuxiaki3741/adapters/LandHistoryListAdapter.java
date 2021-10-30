@@ -3,19 +3,16 @@ package com.mosc.simo.ptuxiaki3741.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryBinding;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.view.HistoryEntryView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,23 +20,25 @@ import java.util.List;
 import java.util.Locale;
 
 public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryListAdapter.ItemViewHolder>{
-    private static final int TextViewMargin = 8;
-    private final DateFormat dateFormat;
     private final List<LandHistory> data;
+    private final List<User> users;
+    private final String[] values;
     private final OnRecordClick onRecordClick;
     private final OnHeaderClick onHeaderClick;
-    private final String[] values;
+    private final DateFormat dateFormat;
     public LandHistoryListAdapter(
-            List<LandHistory> list,
+            List<LandHistory> data,
+            List<User> users,
             String[] values,
             OnHeaderClick onHeaderClick,
             OnRecordClick onRecordClick
     ){
-        this.data = list;
+        this.data = data;
+        this.users = users;
         this.values = values;
         this.onRecordClick = onRecordClick;
         this.onHeaderClick = onHeaderClick;
-        this.dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
     }
 
     @NonNull @Override public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,42 +66,20 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     }
 
     private void setupViewHolder(@NonNull ItemViewHolder holder, int position) {
+        String username;
+        String date;
+        String action;
         LandHistory item = data.get(position);
-        String title = item.getLandData().getTitle()+
-                " #"+
-                EncryptUtil.convert4digit(item.getLandData().getId());
-        if(item.getData().get(item.getData().size()-1).getActionID() == LandDBAction.DELETE
-        )
-            title = title + " - " +values[3];
-        holder.binding.tvLandTitle.setText(title);
+        holder.binding.tvLandTitle.setText(item.getTitle());
         holder.binding.tlHistoryRoot.removeAllViews();
         for(LandDataRecord record : item.getData()){
-            TableRow tr = new TableRow(holder.binding.getRoot().getContext());
-            TableLayout.LayoutParams params= new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(0,TextViewMargin,0,TextViewMargin);
-            tr.setLayoutParams(params);
-            tr.setWeightSum(2);
-
-            TextView tv1 = new TextView(holder.binding.getRoot().getContext());
-            TextView tv2 = new TextView(holder.binding.getRoot().getContext());
-            TableRow.LayoutParams params1 = new TableRow.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT
-            );
-            TableRow.LayoutParams params2 = new TableRow.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT
-            );
-            params1.weight = 1;
-            params2.weight = 1;
-            tv1.setLayoutParams(params1);
-            tv2.setLayoutParams(params2);
-
-            tv1.setText(dateFormat.format(record.getDate()));
-            String action;
+            username = "";
+            for(User user:users){
+                if(record.getUserID() == user.getId())
+                    username = user.getUsername();
+            }
+            date = dateFormat.format(record.getDate());
+            action = "";
             switch (record.getActionID()){
                 case CREATE:
                     action = values[0];
@@ -116,16 +93,14 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
                 case DELETE:
                     action = values[3];
                     break;
-                default:
-                    action = "";
-                    break;
             }
-            tv2.setText(action);
-
-            tr.addView(tv1);
-            tr.addView(tv2);
-            tr.setOnClickListener(v->onRecordClick.onRecordClick(record));
-            holder.binding.tlHistoryRoot.addView(tr);
+            holder.binding.tlHistoryRoot.addView(new HistoryEntryView(
+                    holder.binding.getRoot().getContext(),
+                    username,
+                    date,
+                    action,
+                    v->onRecordClick.onRecordClick(record)
+            ));
         }
         if(item.isVisible()){
             holder.binding.tlHistoryRoot.setVisibility(View.VISIBLE);

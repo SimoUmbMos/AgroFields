@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.models;
 
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 
@@ -14,16 +15,12 @@ public class LandHistory {
     private boolean isVisible;
     private final List<LandDataRecord> landRecords;
 
-    public LandHistory(){
-        this.landRecords = new ArrayList<>();
-        landData = null;
-        isVisible = false;
-    }
     public LandHistory(List<LandDataRecord> records){
         if(records != null)
             landRecords = new ArrayList<>(records);
         else
             landRecords = new ArrayList<>();
+
         if(landRecords.size()>0){
             landData = LandUtil.getLandDataFromLandRecord(landRecords.get(landRecords.size()-1));
         }else{
@@ -66,5 +63,9 @@ public class LandHistory {
     @Override
     public int hashCode() {
         return Objects.hash(landRecords);
+    }
+
+    public String getTitle() {
+        return landData.getTitle()+ " #"+ EncryptUtil.convert4digit(landData.getId());
     }
 }
