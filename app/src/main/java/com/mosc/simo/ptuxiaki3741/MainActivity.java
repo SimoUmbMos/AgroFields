@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
@@ -22,11 +23,19 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
-public class MainActivity extends AppCompatActivity {
-    private FragmentBackPress fragmentBackPress;
-    private NavHostFragment navHostFragment;
-    private boolean overrideDoubleBack = false,doubleBackToExitPressedOnce = false;
+public class MainActivity extends AppCompatActivity{
+    public static final String TAG = "MainActivity";
+
     private ActivityMainBinding binding;
+    private NavHostFragment navHostFragment;
+
+    private FragmentBackPress fragmentBackPress;
+
+    private UserViewModel userViewModel;
+    private LandViewModel landViewModel;
+    private boolean overrideDoubleBack = false,
+            doubleBackToExitPressedOnce = false,
+            doRefresh = false;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         initViewModels();
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fcvNavHostFragment);
+        initBackgroundLoop();
     }
     @Override public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -78,11 +88,36 @@ public class MainActivity extends AppCompatActivity {
         checkThemeSettings();
     }
     private void initViewModels() {
-        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        landViewModel = new ViewModelProvider(this).get(LandViewModel.class);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         AsyncTask.execute(()-> userViewModel.init(sharedPref));
         userViewModel.getCurrUser().observe(this,this::onUserUpdate);
     }
+    private void initBackgroundLoop() {
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    if(doRefresh)
+                        refreshLists();
+                } catch (Exception e) {
+                    Log.e(TAG, "initBackgroundLoop: ", e);
+                } finally {
+                    handler.postDelayed(this,AppValues.backgroundInterval);
+                }
+            }
+        };
+        handler.postDelayed(runnable,AppValues.backgroundInterval);
+    }
+
+    private void refreshLists() {
+        if(userViewModel != null){
+            AsyncTask.execute(()->userViewModel.refreshVM());
+        }
+    }
+
     public Intent getIntentIfCalledByFile(){
         if(getIntent() != null) {
             if (getIntent().getData() != null) {
@@ -100,12 +135,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onUserUpdate(User user) {
-        LandViewModel landViewModel = new ViewModelProvider(this).get(LandViewModel.class);
         AsyncTask.execute(()-> landViewModel.init(user));
     }
 
     public void setOverrideDoubleBack(boolean overrideDoubleBack){
         this.overrideDoubleBack = overrideDoubleBack;
+    }
+    public void setDoRefresh(boolean doRefresh){
+        this.doRefresh = doRefresh;
     }
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){
         if(getSupportActionBar() != null){

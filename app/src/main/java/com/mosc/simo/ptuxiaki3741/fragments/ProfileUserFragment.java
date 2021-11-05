@@ -26,6 +26,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class ProfileUserFragment extends Fragment implements FragmentBackPress {
+    //todo: (idea) show QR code
     private FragmentUserProfileBinding binding;
     private User currUser;
     private boolean isEditMode;

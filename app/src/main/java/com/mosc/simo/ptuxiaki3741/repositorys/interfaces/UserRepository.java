@@ -15,6 +15,7 @@ public interface UserRepository {
     List<User> userSearch(User user, String Username);
 
     UserFriendRequestStatus sendFriendRequest(User currUser, User receiver);
+    boolean deleteFriendRequest(User currUser, User receiver);
     boolean acceptFriendRequest(User currUser, User sender);
     boolean declineFriendRequest(User currUser, User sender);
     boolean deleteFriend(User currUser, User friend);
@@ -31,7 +32,8 @@ public interface UserRepository {
     void removeMemo(UserMemo memo);
 
     List<User> getUserFriendList(User user);
-    List<User> getUserFriendRequestList(User user);
+    List<User> getUserInboxRequestList(User user);
+    List<User> getUserOutboxRequestList(User user);
     List<User> getUserBlockList(User user);
     List<UserMemo> getUserFriendsMemosList(User user);
     List<LandMemo> getUserLandsMemosList(User user);

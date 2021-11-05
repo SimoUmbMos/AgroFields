@@ -35,6 +35,6 @@ public interface UserRelationshipDao {
             "WHERE ReceiverID = :rid " +
             "AND SenderID = :sid " +
             "AND Type = :type")
-    void deleteByIDsAndType(long rid, long sid, UserDBAction type);
+    int deleteByIDsAndType(long rid, long sid, UserDBAction type);
 
 }

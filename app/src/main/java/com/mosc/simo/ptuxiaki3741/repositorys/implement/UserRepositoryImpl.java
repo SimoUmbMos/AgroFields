@@ -65,7 +65,6 @@ public class UserRepositoryImpl implements UserRepository {
                     search
             );
             removeUsers(searchUser, result, UserDBAction.BLOCKED);
-            removeUsers(searchUser, result, UserDBAction.REQUESTED);
             removeUsers(searchUser, result, UserDBAction.FRIENDS);
             return result;
         }
@@ -75,7 +74,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public UserFriendRequestStatus sendFriendRequest(User currUser, User receiver){
         if(currUser != null && receiver != null ){
-            if(getUserFriendRequestList(currUser).contains(receiver)){
+            if(getUserInboxRequestList(currUser).contains(receiver)){
                 if(acceptFriendRequest(currUser,receiver)){
                     return UserFriendRequestStatus.ACCEPTED;
                 }
@@ -96,9 +95,21 @@ public class UserRepositoryImpl implements UserRepository {
         return UserFriendRequestStatus.REQUEST_FAILED;
     }
     @Override
+    public boolean deleteFriendRequest(User sender, User receiver){
+        if(sender != null && receiver != null){
+            int res = db.userRelationshipDao().deleteByIDsAndType(
+                    receiver.getId(),
+                    sender.getId(),
+                    UserDBAction.REQUESTED
+            );
+            return res > 0;
+        }
+        return false;
+    }
+    @Override
     public boolean acceptFriendRequest(User currUser, User sender){
         if( currUser != null && sender != null ){
-            if(getUserFriendRequestList(currUser).contains(sender)){
+            if(getUserInboxRequestList(currUser).contains(sender)){
                 deleteUserRelationship(currUser,sender);
                 saveUserRelationship(currUser,sender,UserDBAction.FRIENDS);
                 return true;
@@ -109,7 +120,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean declineFriendRequest(User currUser, User sender){
         if( currUser != null && sender != null ){
-            List<User> currUserRequests = getUserFriendRequestList(currUser);
+            List<User> currUserRequests = getUserInboxRequestList(currUser);
             if(currUserRequests.contains(sender)){
                 deleteUserRelationship(currUser,sender);
                 return true;
@@ -199,9 +210,19 @@ public class UserRepositoryImpl implements UserRepository {
         return result;
     }
     @Override
-    public List<User> getUserFriendRequestList(User user) {
+    public List<User> getUserInboxRequestList(User user) {
         if(user != null){
             return db.userDao().getUsersByReceiverIDAndType(
+                    user.getId(),
+                    UserDBAction.REQUESTED
+            );
+        }
+        return new ArrayList<>();
+    }
+    @Override
+    public List<User> getUserOutboxRequestList(User user) {
+        if(user != null){
+            return db.userDao().getUsersBySenderIDAndType(
                     user.getId(),
                     UserDBAction.REQUESTED
             );

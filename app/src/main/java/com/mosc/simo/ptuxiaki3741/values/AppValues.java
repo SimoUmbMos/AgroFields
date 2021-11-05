@@ -39,6 +39,7 @@ public final class AppValues {
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";
     public static final int doubleTapBack = 2750;
+    public static final int backgroundInterval = 600000;
     /* Import Activity Values */
     public static final String argImportFragLandDataList = "land_data_list";
     public static final String argImportFragCurrLandData = "land_data";

@@ -43,7 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuMainFragment extends Fragment implements FragmentBackPress {
-
+    //fixme: map click accuracy
+    //fixme: stuck on loading..
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
     private List<User> friendRequests;
@@ -86,7 +87,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     private void initObservers() {
         if(vmUsers != null){
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-            vmUsers.getFriendRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
+            vmUsers.getInboxRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
         }
         if(vmLands != null){
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
@@ -179,7 +180,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void OnPolygonClick(Polygon polygon){
-        //fixme: click accuracy
         drawMap(polygon);
     }
     private void OnMapClick(){

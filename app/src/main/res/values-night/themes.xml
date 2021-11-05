@@ -50,6 +50,12 @@
     <style name="TextInputFields" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
+    <style name="FloatingActionButton" parent="AppTheme">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="colorSecondary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/backgroundColor</item>
+        <item name="colorOnSecondary">@color/backgroundColor</item>
+    </style>
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>

@@ -50,6 +50,12 @@
     <style name="TextInputFields" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
+    <style name="FloatingActionButtonStyle" parent="AppTheme">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="colorSecondary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/backgroundColor</item>
+        <item name="colorOnSecondary">@color/backgroundColor</item>
+    </style>
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
@@ -67,6 +73,18 @@
         <!-- background -->
         <item name="android:background">@color/backgroundColor</item>
     </style>
+    <style name="NormalAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/accentColor</item>
+    </style>
+    <style name="AlertDialogTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+    <style name="AlertDialogCheckedTextView" parent="@style/Widget.MaterialComponents.CheckedTextView">
+        <item name="android:textColor">@color/textColor</item>
+    </style>
+    <style name="AlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/textColor</item>
+    </style>
     <style name="ErrorMaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <!-- text -->
         <item name="materialAlertDialogTitleTextStyle">@style/ErrorAlertDialogTitleTextStyle</item>
@@ -79,20 +97,8 @@
         <!-- background -->
         <item name="android:background">@color/backgroundColor</item>
     </style>
-    <style name="NormalAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textColor">@color/accentColor</item>
-    </style>
     <style name="ErrorAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
         <item name="android:textColor">@color/colorError</item>
-    </style>
-    <style name="AlertDialogTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Body.Text">
-        <item name="android:textColor">@color/textColor</item>
-    </style>
-    <style name="AlertDialogCheckedTextView" parent="@style/Widget.MaterialComponents.CheckedTextView">
-        <item name="android:textColor">@color/textColor</item>
-    </style>
-    <style name="AlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/textColor</item>
     </style>
     <style name="ErrorAlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/colorError</item>

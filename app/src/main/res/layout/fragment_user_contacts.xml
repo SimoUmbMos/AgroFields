@@ -24,5 +24,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvContactAction"
         app:layout_constraintTop_toBottomOf="@+id/tvContactAction"
-        tools:listitem="@layout/view_holder_user_contact"/>
+        tools:listitem="@layout/view_holder_user_contact">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabOutboxRequests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/content_description_fab_outbox_requests"
+        android:focusable="true"
+        android:src="@drawable/ic_button_plus"
+        android:theme="@style/FloatingActionButtonStyle"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

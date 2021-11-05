@@ -81,8 +81,10 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuContactsFragment"
         android:label="fragment_user_contacts"
         tools:layout="@layout/fragment_user_contacts" >
-        <action android:id="@+id/toUserRequest"
+        <action android:id="@+id/toUserInboxRequests"
             app:destination="@id/UserRequestFragment" />
+        <action android:id="@+id/toUserOutboxRequests"
+            app:destination="@id/searchContactFragment" />
         <action android:id="@+id/toProfileContact"
             app:destination="@id/ProfileContactFragment" />
     </fragment>
@@ -151,8 +153,13 @@
         android:label="fragment_selected_share_land"
         tools:layout="@layout/fragment_selected_share_land" />
     <fragment android:id="@+id/UserRequestFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserRequestFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserInboxRequestFragment"
         android:label="fragment_user_request"
-        tools:layout="@layout/fragment_user_request" />
+        tools:layout="@layout/fragment_user_inbox_request" />
+    <fragment
+        android:id="@+id/searchContactFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserOutboxRequestFragment"
+        android:label="fragment_search_contact"
+        tools:layout="@layout/fragment_user_outbox_request" />
 
 </navigation>

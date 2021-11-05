@@ -20,6 +20,8 @@ import com.mosc.simo.ptuxiaki3741.repositorys.implement.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,40 +32,48 @@ public class UserViewModel extends AndroidViewModel {
     private SharedPreferences sharedPref;
 
     private final MutableLiveData<User> currUser = new MutableLiveData<>();
-    private final MutableLiveData<List<User>> friends = new MutableLiveData<>();
-    private final MutableLiveData<List<User>> friendRequests = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> contacts = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> inboxRequests = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> outboxRequests = new MutableLiveData<>();
     private final MutableLiveData<List<User>> blocks = new MutableLiveData<>();
-    private final MutableLiveData<List<UserMemo>> friendsMemos = new MutableLiveData<>();
+    private final MutableLiveData<List<UserMemo>> contactsMemos = new MutableLiveData<>();
     private final MutableLiveData<List<LandMemo>> landsMemos = new MutableLiveData<>();
-
-    public LiveData<User> getCurrUser(){
-        return currUser;
-    }
-    public MutableLiveData<List<User>> getFriendList(){
-        return friends;
-    }
-    public MutableLiveData<List<User>> getFriendRequestList(){
-        return friendRequests;
-    }
-    public MutableLiveData<List<User>> getBlockList(){
-        return blocks;
-    }
-    public MutableLiveData<List<UserMemo>> getFriendsMemoList(){
-        return friendsMemos;
-    }
-    public MutableLiveData<List<LandMemo>> getLandsMemoList(){
-        return landsMemos;
-    }
 
     public UserViewModel(@NonNull Application application) {
         super(application);
         RoomDatabase db = MainActivity.getRoomDb(application.getApplicationContext());
         userRepository = new UserRepositoryImpl(db);
     }
+
     public void init(SharedPreferences sharedPref){
         this.sharedPref = sharedPref;
         AsyncTask.execute(this::initFromMemory);
     }
+
+    public LiveData<User> getCurrUser(){
+        return currUser;
+    }
+    public MutableLiveData<List<User>> getFriendList(){
+        return contacts;
+    }
+    public MutableLiveData<List<User>> getInboxRequestList(){
+        return inboxRequests;
+    }
+    public MutableLiveData<List<User>> getOutboxRequestList(){
+        return outboxRequests;
+    }
+    public MutableLiveData<List<User>> getBlockList(){
+        return blocks;
+    }
+    //todo: (idea) implement getContactsMemoList
+    public MutableLiveData<List<UserMemo>> getContactsMemoList(){
+        return contactsMemos;
+    }
+    //todo: (idea) implement getLandsMemoList
+    public MutableLiveData<List<LandMemo>> getLandsMemoList(){
+        return landsMemos;
+    }
+
     private void initFromMemory() {
         long uid = loadCurrUser();
         initCurrUser(uid);
@@ -76,18 +86,21 @@ public class UserViewModel extends AndroidViewModel {
         currUser.postValue(user);
         populateCurrUserRelativeLists(user);
     }
+    //todo: (idea) split function populateCurrUserRelativeLists
     private void populateCurrUserRelativeLists(User user) {
         if(user != null){
-            friends.postValue(getFriends(user));
-            friendRequests.postValue(getFriendRequests(user));
+            contacts.postValue(getFriends(user));
+            inboxRequests.postValue(getInboxRequests(user));
+            outboxRequests.postValue(getOutboxRequests(user));
             blocks.postValue(getBlocks(user));
-            friendsMemos.postValue(getFriendsMemos(user));
+            contactsMemos.postValue(getContactsMemos(user));
             landsMemos.postValue(getLandsMemos(user));
         }else{
-            friends.postValue(new ArrayList<>());
-            friendRequests.postValue(new ArrayList<>());
+            contacts.postValue(new ArrayList<>());
+            inboxRequests.postValue(new ArrayList<>());
+            outboxRequests.postValue(new ArrayList<>());
             blocks.postValue(new ArrayList<>());
-            friendsMemos.postValue(new ArrayList<>());
+            contactsMemos.postValue(new ArrayList<>());
             landsMemos.postValue(new ArrayList<>());
         }
     }
@@ -98,22 +111,85 @@ public class UserViewModel extends AndroidViewModel {
         }
         return uid;
     }
+    private User loadUserData(User user) {
+        User decryptedUser = user;
+        try{
+            decryptedUser = EncryptUtil.decrypt(
+                    userRepository.getUserByID(user.getId())
+            );
+        }catch (Exception e){
+            Log.e(TAG, "loadUserData: ", e);
+        }
+        return decryptedUser;
+    }
 
     private void clearUidFromMemory(){
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.remove(AppValues.sharedPreferenceKeyUserViewModel);
-        editor.apply();
+        if(sharedPref != null){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.remove(AppValues.sharedPreferenceKeyUserViewModel);
+            editor.apply();
+        }
     }
     private void putUidToMemory(long id){
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(AppValues.sharedPreferenceKeyUserViewModel, id);
-        editor.apply();
+        if(sharedPref != null){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putLong(AppValues.sharedPreferenceKeyUserViewModel, id);
+            editor.apply();
+        }
     }
     private long getUidFromMemory() {
-        return sharedPref.getLong(
-                AppValues.sharedPreferenceKeyUserViewModel,
-                AppValues.sharedPreferenceDefaultUserViewModel
-        );
+        if(sharedPref != null){
+            return sharedPref.getLong(
+                    AppValues.sharedPreferenceKeyUserViewModel,
+                    AppValues.sharedPreferenceDefaultUserViewModel
+            );
+        }
+        return AppValues.sharedPreferenceDefaultUserViewModel;
+    }
+
+    private List<User> getFriends(User user){
+        if(user != null){
+            return userRepository.getUserFriendList(user);
+        }
+        return new ArrayList<>();
+    }
+    private List<User> getInboxRequests(User user){
+        if(user != null){
+            return userRepository.getUserInboxRequestList(user);
+        }
+        return new ArrayList<>();
+    }
+    private List<User> getOutboxRequests(User user){
+        if(user != null){
+            return userRepository.getUserOutboxRequestList(user);
+        }
+        return new ArrayList<>();
+    }
+    private List<User> getBlocks(User user){
+        if(user != null){
+            return userRepository.getUserBlockList(user);
+        }
+        return new ArrayList<>();
+    }
+    private List<UserMemo> getContactsMemos(User user){
+        if(user != null){
+            return userRepository.getUserFriendsMemosList(user);
+        }
+        return new ArrayList<>();
+    }
+    private List<LandMemo> getLandsMemos(User user){
+        if(user != null){
+            return userRepository.getUserLandsMemosList(user);
+        }
+        return new ArrayList<>();
+    }
+
+    public void refreshVM(){
+        if(currUser.getValue() != null){
+            initCurrUser(currUser.getValue().getId());
+        }else{
+            initCurrUser(AppValues.sharedPreferenceDefaultUserViewModel);
+        }
     }
 
     public User getUserByID(long uid){
@@ -163,14 +239,7 @@ public class UserViewModel extends AndroidViewModel {
     public void singIn(User user) {
         if(user != null){
             putUidToMemory(user.getId());
-            User decryptedUser = user;
-            try{
-                decryptedUser = EncryptUtil.decrypt(
-                        userRepository.getUserByID(user.getId())
-                );
-            }catch (Exception e){
-                Log.e(TAG, "singIn: ", e);
-            }
+            User decryptedUser = loadUserData(user);
             currUser.postValue(decryptedUser);
             populateCurrUserRelativeLists(decryptedUser);
         }else{
@@ -190,62 +259,24 @@ public class UserViewModel extends AndroidViewModel {
         return null;
     }
 
-    private List<User> getFriends(User user){
-        if(user != null){
-            Log.d(TAG, "getFriends: USER NOT NULL");
-            return userRepository.getUserFriendList(user);
-        }
-        Log.d(TAG, "getFriends: USER NULL");
-        return new ArrayList<>();
-    }
-    private List<User> getFriendRequests(User user){
-        if(user != null){
-            Log.d(TAG, "getFriendRequests: USER NOT NULL");
-            return userRepository.getUserFriendRequestList(user);
-        }
-        Log.d(TAG, "getFriendRequests: USER NULL");
-        return new ArrayList<>();
-    }
-    private List<User> getBlocks(User user){
-        if(user != null){
-            Log.d(TAG, "getBlocks: USER NOT NULL");
-            return userRepository.getUserBlockList(user);
-        }
-        Log.d(TAG, "getBlocks: USER NULL");
-        return new ArrayList<>();
-    }
-    private List<UserMemo> getFriendsMemos(User user){
-        if(user != null){
-            Log.d(TAG, "getFriendsMemos: USER NOT NULL");
-            return userRepository.getUserFriendsMemosList(user);
-        }
-        Log.d(TAG, "getFriendsMemos: USER NULL");
-        return new ArrayList<>();
-    }
-    private List<LandMemo> getLandsMemos(User user){
-        if(user != null){
-            Log.d(TAG, "getLandsMemos: USER NOT NULL");
-            return userRepository.getUserLandsMemosList(user);
-        }
-        Log.d(TAG, "getLandsMemos: USER NULL");
-        return new ArrayList<>();
-    }
-
-    public void refreshLists(){
-        populateCurrUserRelativeLists(currUser.getValue());
-    }
-
-    public UserFriendRequestStatus sendFriendRequest(User user){
+    public UserFriendRequestStatus sendRequest(User user){
+        UserFriendRequestStatus r = UserFriendRequestStatus.REQUEST_FAILED;
         if(currUser.getValue() != null && user != null){
-            switch (userRepository.sendFriendRequest(currUser.getValue(),user)){
-                case ACCEPTED:
-                    populateCurrUserRelativeLists(currUser.getValue());
-                    return UserFriendRequestStatus.ACCEPTED;
-                case REQUESTED:
-                    return UserFriendRequestStatus.REQUESTED;
+            r = userRepository.sendFriendRequest(currUser.getValue(),user);
+            if(r != UserFriendRequestStatus.REQUEST_FAILED){
+                populateCurrUserRelativeLists(currUser.getValue());
             }
         }
-        return UserFriendRequestStatus.REQUEST_FAILED;
+        return r;
+    }
+    public boolean deleteRequest(User user){
+        if(currUser.getValue() != null && user != null){
+            if (userRepository.deleteFriendRequest(currUser.getValue(),user)) {
+                populateCurrUserRelativeLists(currUser.getValue());
+                return true;
+            }
+        }
+        return false;
     }
     public boolean acceptRequest(User user){
         if(currUser.getValue() != null && user != null){

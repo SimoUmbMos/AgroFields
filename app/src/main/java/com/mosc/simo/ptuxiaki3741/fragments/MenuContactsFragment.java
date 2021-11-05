@@ -36,7 +36,9 @@ import java.util.List;
 
 public class MenuContactsFragment
         extends Fragment
-        implements FragmentBackPress, SearchView.OnQueryTextListener {
+        implements FragmentBackPress, SearchView.OnQueryTextListener
+{
+    //todo: (idea) merge contact menu with send request and received request fragments w/ bottom navigation
     public static final String TAG = "UserContactsFragment";
 
     private SearchView searchView;
@@ -99,6 +101,7 @@ public class MenuContactsFragment
             public boolean onMenuItemActionExpand(MenuItem item) {
                 if (itemRequest != null) {
                     itemRequest.setVisible(false);
+                    binding.fabOutboxRequests.setVisibility(View.GONE);
                 }
                 return true;
             }
@@ -107,6 +110,7 @@ public class MenuContactsFragment
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 if (itemRequest != null) {
                     itemRequest.setVisible(true);
+                    binding.fabOutboxRequests.setVisibility(View.VISIBLE);
                 }
                 return true;
             }
@@ -114,7 +118,7 @@ public class MenuContactsFragment
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_item_request) {
-            toUserRequests(getActivity());
+            toUserInboxRequests(getActivity());
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -169,10 +173,11 @@ public class MenuContactsFragment
         binding.rvContactList.setLayoutManager(layoutManager);
         binding.rvContactList.setHasFixedSize(true);
         binding.rvContactList.setAdapter(adapter);
+        binding.fabOutboxRequests.setOnClickListener(v->toUserOutboxRequests(getActivity()));
     }
     private void initObservers() {
         if(vmUsers != null){
-            vmUsers.getFriendRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
+            vmUsers.getInboxRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
             vmUsers.getFriendList().observe(getViewLifecycleOwner(),this::onContactListUpdate);
         }
     }
@@ -289,12 +294,20 @@ public class MenuContactsFragment
                     nav.navigate(R.id.toProfileContact,bundle);
             });
     }
-    public void toUserRequests(@Nullable Activity activity) {
+    public void toUserInboxRequests(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuContactsFragment);
                 if(nav != null)
-                    nav.navigate(R.id.toUserRequest);
+                    nav.navigate(R.id.toUserInboxRequests);
+            });
+    }
+    public void toUserOutboxRequests(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.MenuContactsFragment);
+                if(nav != null)
+                    nav.navigate(R.id.toUserOutboxRequests);
             });
     }
 }

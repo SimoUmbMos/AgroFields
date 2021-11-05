@@ -156,22 +156,22 @@
     <string name="save_user">Save</string>
     <string name="edit_user">Edit</string>
     <string name="logout">Logout</string>
-    <!-- User Requests Fragment -->
-    <string name="request_title">Requests</string>
-    <string name="no_requests">No requests found</string>
-    <string name="requests">Requests</string>
-    <string name="request">Request</string>
-    <string name="no_result">No result</string>
-    <string name="results">Results</string>
-    <string name="result">Result</string>
-    <string name="request_sent">Request sent</string>
-    <string name="request_send_error">Something goes wrong with your request</string>
+    <!-- Inbox User Requests Fragment -->
+    <string name="inbox_request_title">Requests</string>
+    <string name="empty_user_inbox_request_list">No New Requests</string>
     <string name="accept_request">Request accepted</string>
     <string name="accept_request_error">Something goes wrong, try again</string>
     <string name="decline_request">Request declined</string>
     <string name="decline_request_error">Something goes wrong, try again</string>
     <string name="fabAccept">Accept Contact</string>
     <string name="fabDeny">Deny Contact</string>
+    <!-- Outbox User Requests Fragment -->
+    <string name="outbox_request_title">Requests</string>
+    <string name="request_sent">Request sent</string>
+    <string name="request_deleted">Request deleted</string>
+    <string name="request_send_error">Something goes wrong with your request</string>
+    <string name="empty_user_outbox_request_list">You have not send any requests</string>
+    <string name="empty_user_outbox_request_search_list">No Result</string>
     <!-- App Settings Fragment-->
     <string name="app_settings_title">Settings</string>
     <string name="degree_info">Degree Info</string>
@@ -193,4 +193,5 @@
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
     <string name="max_request_label">99+</string>
+    <string name="content_description_fab_outbox_requests">fabOutboxRequests</string>
 </resources>
