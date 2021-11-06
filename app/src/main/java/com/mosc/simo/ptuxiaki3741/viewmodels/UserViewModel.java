@@ -56,10 +56,10 @@ public class UserViewModel extends AndroidViewModel {
     public MutableLiveData<List<User>> getFriendList(){
         return contacts;
     }
-    public MutableLiveData<List<User>> getInboxRequestList(){
+    public MutableLiveData<List<User>> getReceivedRequestList(){
         return inboxRequests;
     }
-    public MutableLiveData<List<User>> getOutboxRequestList(){
+    public MutableLiveData<List<User>> getSendedRequestList(){
         return outboxRequests;
     }
     public MutableLiveData<List<User>> getBlockList(){

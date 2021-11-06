@@ -83,7 +83,7 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
     }
     private void initObservers(){
         if(vmUsers != null)
-            vmUsers.getOutboxRequestList().observe(getViewLifecycleOwner(),this::onUpdateRequests);
+            vmUsers.getSendedRequestList().observe(getViewLifecycleOwner(),this::onUpdateRequests);
     }
 
     private void onSearchUpdate(String query) {

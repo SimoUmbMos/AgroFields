@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -13,10 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.badge.BadgeDrawable;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentContactsContainerBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+
+import java.util.List;
 
 public class ContactsContainerFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "ContactsContainerFragment";
@@ -34,6 +40,7 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
         initData();
         initActivity();
         initFragment();
+        initViewHolder();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -67,6 +74,30 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
         binding.bottomNavigation.setOnItemSelectedListener(this::bottomNavListener);
         binding.fab.setOnClickListener(this::fabClickListener);
         binding.bottomNavigation.setSelectedItemId(R.id.bottom_menu_item_contacts_list);
+    }
+    private void initViewHolder(){
+        if(getActivity() != null){
+            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            vmUsers.getReceivedRequestList().observe(getViewLifecycleOwner(),this::onDataRefresh);
+        }
+    }
+
+    private void onDataRefresh(List<User> receivedRequests) {
+        MenuItem request = binding.bottomNavigation.getMenu()
+                .findItem(R.id.bottom_menu_item_contacts_requests);
+        if(request != null){
+            if(receivedRequests != null){
+                if(receivedRequests.size()>0){
+                    BadgeDrawable badge = binding.bottomNavigation
+                            .getOrCreateBadge(request.getItemId());
+                    badge.setNumber(receivedRequests.size());
+                }else{
+                    binding.bottomNavigation.removeBadge(request.getItemId());
+                }
+            }else{
+                binding.bottomNavigation.removeBadge(request.getItemId());
+            }
+        }
     }
 
     private void fabClickListener(View view) {

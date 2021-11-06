@@ -136,7 +136,7 @@ public class UserInboxRequestFragment extends Fragment implements SearchView.OnQ
     }
     private void initObservers(){
         if(vmUsers != null){
-            vmUsers.getInboxRequestList().observe(getViewLifecycleOwner(),this::onUpdateRequests);
+            vmUsers.getReceivedRequestList().observe(getViewLifecycleOwner(),this::onUpdateRequests);
         }
     }
 

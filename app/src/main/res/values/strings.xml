@@ -124,12 +124,38 @@
     <string name="land_action_restored">Restored</string>
     <string name="land_action_deleted">Deleted</string>
     <string name="toggle_history_list">Toggle List</string>
+    <!-- User Profile Fragment -->
+    <string name="profile_bar_label">My Profile</string>
+    <string name="email_hint_user_profile">Email</string>
+    <string name="phone_hint_user_profile">Phone</string>
+    <string name="save_user">Save</string>
+    <string name="edit_user">Edit</string>
+    <string name="logout">Logout</string>
+    <!-- Contacts Container Fragment -->
+    <string name="contacts_container_menu_label_list">Contacts</string>
+    <string name="contacts_container_menu_label_requests">Requests</string>
     <!-- User Contacts Fragment -->
     <string name="contacts_title">My Contacts</string>
     <string name="search_user_hint">Search User</string>
     <string name="list_result">result</string>
     <string name="list_results">result\'s</string>
     <string name="empty_search">No result</string>
+    <!-- Inbox User Requests Fragment -->
+    <string name="inbox_request_title">Requests</string>
+    <string name="empty_user_inbox_request_list">No New Requests</string>
+    <string name="accept_request">Request accepted</string>
+    <string name="accept_request_error">Something goes wrong, try again</string>
+    <string name="decline_request">Request declined</string>
+    <string name="decline_request_error">Something goes wrong, try again</string>
+    <string name="fabAccept">Accept Contact</string>
+    <string name="fabDeny">Deny Contact</string>
+    <!-- Outbox User Requests Fragment -->
+    <string name="outbox_request_title">Requests</string>
+    <string name="request_sent">Request sent</string>
+    <string name="request_deleted">Request deleted</string>
+    <string name="request_send_error">Something goes wrong with your request</string>
+    <string name="empty_user_outbox_request_list">You have not send any requests</string>
+    <string name="empty_user_outbox_request_search_list">No Result</string>
     <!-- Contact Profile Fragment -->
     <string name="contact_menu_remove_contact">Delete Contact</string>
     <string name="contact_delete_title">Delete Contact</string>
@@ -149,29 +175,6 @@
     <string name="selected_share_land_write_check">Write Permissions</string>
     <string name="cancel_share">Cancel</string>
     <string name="save_share">Save</string>
-    <!-- User Profile Fragment -->
-    <string name="profile_bar_label">My Profile</string>
-    <string name="email_hint_user_profile">Email</string>
-    <string name="phone_hint_user_profile">Phone</string>
-    <string name="save_user">Save</string>
-    <string name="edit_user">Edit</string>
-    <string name="logout">Logout</string>
-    <!-- Inbox User Requests Fragment -->
-    <string name="inbox_request_title">Requests</string>
-    <string name="empty_user_inbox_request_list">No New Requests</string>
-    <string name="accept_request">Request accepted</string>
-    <string name="accept_request_error">Something goes wrong, try again</string>
-    <string name="decline_request">Request declined</string>
-    <string name="decline_request_error">Something goes wrong, try again</string>
-    <string name="fabAccept">Accept Contact</string>
-    <string name="fabDeny">Deny Contact</string>
-    <!-- Outbox User Requests Fragment -->
-    <string name="outbox_request_title">Requests</string>
-    <string name="request_sent">Request sent</string>
-    <string name="request_deleted">Request deleted</string>
-    <string name="request_send_error">Something goes wrong with your request</string>
-    <string name="empty_user_outbox_request_list">You have not send any requests</string>
-    <string name="empty_user_outbox_request_search_list">No Result</string>
     <!-- App Settings Fragment-->
     <string name="app_settings_title">Settings</string>
     <string name="degree_info">Degree Info</string>
@@ -194,8 +197,4 @@
     <string name="double_tap_exit">Tap again to exit</string>
     <string name="max_request_label">99+</string>
     <string name="content_description_fab_outbox_requests">fabOutboxRequests</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="contacts_container_menu_label_list">Contacts</string>
-    <string name="contacts_container_menu_label_requests">Requests</string>
 </resources>

@@ -87,7 +87,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     private void initObservers() {
         if(vmUsers != null){
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-            vmUsers.getInboxRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
+            vmUsers.getReceivedRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
         }
         if(vmLands != null){
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
