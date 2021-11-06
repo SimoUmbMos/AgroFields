@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity{
         init();
         initViewModels();
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fcvNavHostFragment);
+                .findFragmentById(R.id.nhfMainNav);
         initBackgroundLoop();
     }
     @Override public boolean onSupportNavigateUp() {

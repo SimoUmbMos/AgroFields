@@ -25,7 +25,6 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.UserSendRequestAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserOutboxRequestBinding;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.UserRequest;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
@@ -33,10 +32,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserOutboxRequestFragment
-        extends Fragment
-        implements SearchView.OnQueryTextListener, FragmentBackPress
-{
+public class UserOutboxRequestFragment extends Fragment implements SearchView.OnQueryTextListener {
     //todo: (idea) QR code scanner
     private FragmentUserOutboxRequestBinding binding;
     private ActionBar actionBar;
@@ -61,7 +57,6 @@ public class UserOutboxRequestFragment
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 if(activity != null){
-                    activity.setOnBackPressed(this);
                     actionBar = activity.getSupportActionBar();
                     if(actionBar != null){
                         actionBar.setTitle(getString(R.string.outbox_request_title));
@@ -198,16 +193,18 @@ public class UserOutboxRequestFragment
     }
 
     private void updateUi() {
-        if(displayData.size()>0){
-            binding.rvRequestList.setVisibility(View.VISIBLE);
-            binding.tvRequestDisplay.setVisibility(View.GONE);
-        }else{
-            binding.tvRequestDisplay.setVisibility(View.VISIBLE);
-            binding.rvRequestList.setVisibility(View.GONE);
-            if(lastQuery.isEmpty()){
-                binding.tvRequestDisplay.setText(getString(R.string.empty_user_outbox_request_list));
+        if(binding != null){
+            if(displayData.size()>0){
+                binding.rvRequestList.setVisibility(View.VISIBLE);
+                binding.tvRequestDisplay.setVisibility(View.GONE);
             }else{
-                binding.tvRequestDisplay.setText(getString(R.string.empty_user_outbox_request_search_list));
+                binding.tvRequestDisplay.setVisibility(View.VISIBLE);
+                binding.rvRequestList.setVisibility(View.GONE);
+                if(lastQuery.isEmpty()){
+                    binding.tvRequestDisplay.setText(getString(R.string.empty_user_outbox_request_list));
+                }else{
+                    binding.tvRequestDisplay.setText(getString(R.string.empty_user_outbox_request_search_list));
+                }
             }
         }
     }
@@ -269,9 +266,6 @@ public class UserOutboxRequestFragment
     }
     @Override public boolean onQueryTextChange(String query) {
         onSearchUpdate(query.trim());
-        return true;
-    }
-    @Override public boolean onBackPressed() {
         return true;
     }
 }

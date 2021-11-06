@@ -25,16 +25,12 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.UserRequestAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserInboxRequestBinding;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserInboxRequestFragment
-        extends Fragment
-        implements SearchView.OnQueryTextListener, FragmentBackPress
-{
+public class UserInboxRequestFragment extends Fragment implements SearchView.OnQueryTextListener {
     private FragmentUserInboxRequestBinding binding;
 
     private UserViewModel vmUsers;
@@ -102,9 +98,6 @@ public class UserInboxRequestFragment
     @Override public boolean onQueryTextSubmit(String query) {
         return true;
     }
-    @Override public boolean onBackPressed() {
-        return true;
-    }
 
     private void initData(){
         lastQuery = "";
@@ -118,7 +111,6 @@ public class UserInboxRequestFragment
     private void initActivity(){
         MainActivity activity = (MainActivity) getActivity();
         if(activity != null){
-            activity.setOnBackPressed(this);
             ActionBar actionBar = activity.getSupportActionBar();
             if(actionBar != null){
                 actionBar.setTitle(getString(R.string.inbox_request_title));

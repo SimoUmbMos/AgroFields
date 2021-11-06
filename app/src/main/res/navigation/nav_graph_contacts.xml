@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_contacts"
+    app:startDestination="@id/MenuContactsFragment">
+
+    <fragment android:id="@+id/MenuContactsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuContactsFragment"
+        android:label="fragment_user_contacts"
+        tools:layout="@layout/fragment_user_contacts" />
+    <fragment android:id="@+id/UserRequestFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserInboxRequestFragment"
+        android:label="fragment_user_request"
+        tools:layout="@layout/fragment_user_inbox_request" />
+    <fragment
+        android:id="@+id/searchContactFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserOutboxRequestFragment"
+        android:label="fragment_search_contact"
+        tools:layout="@layout/fragment_user_outbox_request" />
+</navigation>

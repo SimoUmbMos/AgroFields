@@ -77,17 +77,6 @@
             app:popUpTo="@id/MenuLandsFragment"
             app:popUpToInclusive="false" />
     </fragment>
-    <fragment android:id="@+id/MenuContactsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuContactsFragment"
-        android:label="fragment_user_contacts"
-        tools:layout="@layout/fragment_user_contacts" >
-        <action android:id="@+id/toUserInboxRequests"
-            app:destination="@id/UserRequestFragment" />
-        <action android:id="@+id/toUserOutboxRequests"
-            app:destination="@id/searchContactFragment" />
-        <action android:id="@+id/toProfileContact"
-            app:destination="@id/ProfileContactFragment" />
-    </fragment>
     <fragment android:id="@+id/MenuHistoryFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuHistoryFragment"
         android:label="fragment_land_history_menu"
@@ -119,16 +108,9 @@
         <action android:id="@+id/toMenuLands"
             app:destination="@id/MenuLandsFragment" />
         <action android:id="@+id/toMenuContacts"
-            app:destination="@id/MenuContactsFragment" />
+            app:destination="@id/ContactsContainerFragment" />
         <action android:id="@+id/toAppSettings"
             app:destination="@id/AppSettingsFragment" />
-    </fragment>
-    <fragment android:id="@+id/ProfileContactFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.ProfileContactFragment"
-        android:label="fragment_contact_profile"
-        tools:layout="@layout/fragment_contact_profile" >
-        <action android:id="@+id/toShareLand"
-            app:destination="@id/ShareLandFragment" />
     </fragment>
     <fragment android:id="@+id/ProfileLandFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.ProfileLandFragment"
@@ -148,18 +130,24 @@
             app:popUpTo="@id/nav_land_graph"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/ContactsContainerFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ContactsContainerFragment"
+        android:label="fragment_contacts_container"
+        tools:layout="@layout/fragment_contacts_container">
+        <action android:id="@+id/toProfileContact"
+            app:destination="@id/ProfileContactFragment"/>
+    </fragment>
+
+    <fragment android:id="@+id/ProfileContactFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.ProfileContactFragment"
+        android:label="fragment_contact_profile"
+        tools:layout="@layout/fragment_contact_profile" >
+        <action android:id="@+id/toShareLand"
+            app:destination="@id/ShareLandFragment" />
+    </fragment>
     <fragment android:id="@+id/ShareLandFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.ShareLandFragment"
         android:label="fragment_selected_share_land"
         tools:layout="@layout/fragment_selected_share_land" />
-    <fragment android:id="@+id/UserRequestFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserInboxRequestFragment"
-        android:label="fragment_user_request"
-        tools:layout="@layout/fragment_user_inbox_request" />
-    <fragment
-        android:id="@+id/searchContactFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserOutboxRequestFragment"
-        android:label="fragment_search_contact"
-        tools:layout="@layout/fragment_user_outbox_request" />
-
 </navigation>

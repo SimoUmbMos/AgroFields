@@ -45,6 +45,17 @@
         <item name="colorSurface">@color/backgroundColor</item>
         <item name="android:colorBackground">@color/backgroundColor</item>
     </style>
+    <style name="BottomNavigationStyle" parent="AppTheme">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="itemIconTint">@color/bottom_nav_color_selector</item>
+        <item name="itemTextColor">@color/bottom_nav_color_selector</item>
+        <item name="itemTextAppearanceActive">@style/BottomNavigationText.Selected</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationText</item>
+    </style>
+    <style name="BottomNavigationText" parent="AppTheme"/>
+    <style name="BottomNavigationText.Selected" parent="BottomNavigationText">
+        <item name="android:textStyle">bold</item>
+    </style>
 
     <!-- fields styles -->
     <style name="TextInputFields" parent="AppTheme">
@@ -53,6 +64,12 @@
     <style name="FloatingActionButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
         <item name="colorSecondary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/backgroundColor</item>
+        <item name="colorOnSecondary">@color/backgroundColor</item>
+    </style>
+    <style name="FloatingActionButtonStyle.BottomNavigation" parent="FloatingActionButtonStyle">
+        <item name="colorPrimary">@color/accentColor</item>
+        <item name="colorSecondary">@color/accentColor</item>
         <item name="colorOnPrimary">@color/backgroundColor</item>
         <item name="colorOnSecondary">@color/backgroundColor</item>
     </style>

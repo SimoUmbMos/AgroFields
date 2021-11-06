@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -26,7 +25,6 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.UserContactsAdapter;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserContactsBinding;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -34,25 +32,19 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuContactsFragment
-        extends Fragment
-        implements FragmentBackPress, SearchView.OnQueryTextListener
-{
+public class MenuContactsFragment extends Fragment implements SearchView.OnQueryTextListener {
     //todo: (idea) merge contact menu with send request and received request fragments w/ bottom navigation
     public static final String TAG = "UserContactsFragment";
 
-    private SearchView searchView;
-    private MenuItem itemRequest;
     private ActionBar actionBar;
 
-    private List<User> friendRequests;
     private List<User> contactList;
     private List<User> displayData;
     private UserViewModel vmUsers;
     private UserContactsAdapter adapter;
 
     private String lastQuery;
-    private boolean isSearching,isSearchOpen;
+    private boolean isSearching;
 
     private FragmentUserContactsBinding binding;
 
@@ -80,47 +72,14 @@ public class MenuContactsFragment
     }
     @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        itemRequest = menu.findItem(R.id.menu_item_request);
-        if(itemRequest != null && getContext() != null){
-            if(friendRequests.size() > 0){
-                itemRequest.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request_notification));
-            }else{
-                itemRequest.setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_add_request));
-            }
-        }
         MenuItem menuSearch = menu.findItem( R.id.menu_item_search);
-        searchView = (SearchView) menuSearch.getActionView();
+        SearchView searchView = (SearchView) menuSearch.getActionView();
         searchView.setOnQueryTextListener(this);
-        searchView.setOnSearchClickListener(v -> isSearchOpen = true);
-        searchView.setOnCloseListener(() -> {
-            isSearchOpen = isSearching;
-            return false;
+        searchView.setOnSearchClickListener(v -> {
         });
-        menuSearch.setOnActionExpandListener(new  MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                if (itemRequest != null) {
-                    itemRequest.setVisible(false);
-                    binding.fabOutboxRequests.setVisibility(View.GONE);
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                if (itemRequest != null) {
-                    itemRequest.setVisible(true);
-                    binding.fabOutboxRequests.setVisibility(View.VISIBLE);
-                }
-                return true;
-            }
-        });
+        searchView.setOnCloseListener(() -> false);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_item_request) {
-            toUserInboxRequests(getActivity());
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onQueryTextChange(String query) {
@@ -130,28 +89,18 @@ public class MenuContactsFragment
     @Override public boolean onQueryTextSubmit(String query) {
         return true;
     }
-    @Override public boolean onBackPressed() {
-        if(isSearchOpen){
-            clearSearch();
-            return false;
-        }
-        return true;
-    }
 
     //init
     private void initData() {
-        friendRequests = new ArrayList<>();
         contactList = new ArrayList<>();
         displayData = new ArrayList<>();
         isSearching = false;
-        isSearchOpen = false;
         lastQuery="";
         adapter=new UserContactsAdapter(displayData,this::onContactClick);
     }
     private void initActivity() {
         MainActivity activity = (MainActivity) getActivity();
         if(activity != null){
-            activity.setOnBackPressed(this);
             actionBar = activity.getSupportActionBar();
             if(actionBar != null){
                 actionBar.setTitle(getString(R.string.contacts_title));
@@ -173,11 +122,9 @@ public class MenuContactsFragment
         binding.rvContactList.setLayoutManager(layoutManager);
         binding.rvContactList.setHasFixedSize(true);
         binding.rvContactList.setAdapter(adapter);
-        binding.fabOutboxRequests.setOnClickListener(v->toUserOutboxRequests(getActivity()));
     }
     private void initObservers() {
         if(vmUsers != null){
-            vmUsers.getInboxRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
             vmUsers.getFriendList().observe(getViewLifecycleOwner(),this::onContactListUpdate);
         }
     }
@@ -187,27 +134,12 @@ public class MenuContactsFragment
         lastQuery=query.trim();
         displayData.clear();
         if(lastQuery.isEmpty()){
-            isSearchOpen = false;
             isSearching = false;
             displayData.addAll(contactList);
         }else{
-            isSearchOpen = true;
             isSearching = true;
             displayData.addAll(searchFriends());
         }
-        viewUpdate();
-    }
-    private void clearSearch(){
-        if(searchView != null){
-            searchView.setQuery("", false);
-            searchView.clearFocus();
-            searchView.onActionViewCollapsed();
-        }
-        isSearching = false;
-        isSearchOpen = false;
-        lastQuery = "";
-        displayData.clear();
-        displayData.addAll(contactList);
         viewUpdate();
     }
     private List<User> searchFriends(){
@@ -220,13 +152,6 @@ public class MenuContactsFragment
     }
 
     //observers
-    private void onFriendRequestListUpdate(List<User> requests) {
-        friendRequests.clear();
-        if(requests != null)
-            friendRequests.addAll(requests);
-        if(getActivity() != null)
-            getActivity().invalidateOptionsMenu();
-    }
     private void onContactListUpdate(List<User> users) {
         contactList.clear();
         if(users != null){
@@ -285,29 +210,29 @@ public class MenuContactsFragment
     }
 
     public void toContactProfile(@Nullable Activity activity, User contact) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MenuContactsFragment);
+        Fragment fragment = getParentFragment();
+        while(fragment != null){
+            if(fragment.getClass() == ContactsContainerFragment.class){
+                break;
+            }else{
+                fragment=fragment.getParentFragment();
+            }
+        }
+        if(fragment == null) return;
+        if(contact == null) return;
+        if(activity == null) return;
+        activity.runOnUiThread(()-> {
+            if(getParentFragment() != null){
+                NavController nav = UIUtil.getNavController(
+                        getParentFragment().getParentFragment(),
+                        R.id.ContactsContainerFragment
+                );
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.CONTACT_PROFILE_ARG,contact);
-                if(nav != null)
+                if(nav != null){
                     nav.navigate(R.id.toProfileContact,bundle);
-            });
-    }
-    public void toUserInboxRequests(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MenuContactsFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toUserInboxRequests);
-            });
-    }
-    public void toUserOutboxRequests(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MenuContactsFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toUserOutboxRequests);
-            });
+                }
+            }
+        });
     }
 }

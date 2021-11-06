@@ -7,9 +7,4 @@
         android:icon="@drawable/ic_menu_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
-    <item android:id="@+id/menu_item_request"
-        android:orderInCategory="200"
-        android:title="@string/main_menu_requests"
-        android:icon="@drawable/ic_menu_add_request"
-        app:showAsAction="always" />
 </menu>
