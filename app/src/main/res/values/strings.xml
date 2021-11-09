@@ -19,8 +19,6 @@
     <string name="cancel">Cancel</string>
     <string name="clipboard_message">Text Copied</string>
     <!-- Login Fragment -->
-    <string name="login_label">Login</string>
-    <string name="register_label">Register</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
     <string name="confirm_password_hint">Confirm Password</string>

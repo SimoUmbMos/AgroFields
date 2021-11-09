@@ -218,7 +218,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     public void showLogin(){
         isRegister = false;
 
-        binding.tvLoginLabel.setText(R.string.login_label);
         binding.btnLoginSubmit.setText(getString(R.string.submit_login));
         binding.btnLoginSwitch.setText(getString(R.string.login_switch_btn));
         binding.tvLoginRegisterHint.setText(getString(R.string.login_hint));
@@ -230,7 +229,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     public void showRegister(){
         isRegister = true;
 
-        binding.tvLoginLabel.setText(R.string.register_label);
         binding.btnLoginSubmit.setText(getString(R.string.submit_register));
         binding.btnLoginSwitch.setText(getString(R.string.register_switch_btn));
         binding.tvLoginRegisterHint.setText(getString(R.string.register_hint));
