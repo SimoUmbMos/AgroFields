@@ -44,7 +44,8 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         super.onViewCreated(view, savedInstanceState);
         initActivity();
         initViewModel();
-        init();
+        initFragment();
+        initObservers();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -65,38 +66,50 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         return true;
     }
 
+    //init
     private void initActivity() {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(this);
-            actionBar = mainActivity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle("");
-            actionBar.hide();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.setTitle("");
+                    actionBar.hide();
+                }
+            }
         }
     }
     private void initViewModel() {
         if(getActivity() != null){
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        }
+    }
+    private void initFragment() {
+        showLogin();
+        binding.btnLoginSubmit.setOnClickListener(v->onSubmitClick());
+        binding.btnLoginSwitch.setOnClickListener(v->onSwitchUiClick());
+    }
+    private void initObservers() {
+        if(vmUsers != null){
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
         }
     }
-    private void init() {
-        showLogin();
-        binding.btnLoginSubmit.setOnClickListener(this::onSubmit);
-        binding.tvLoginSwitch.setOnClickListener(this::onSwitchUI);
-    }
 
-    private void onSubmit(View view) {
-        if(isRegister){
-            onRegister();
-        }else{
-            onLogin();
+    //observers
+    private void onUserUpdate(User user) {
+        if(user != null){
+            toMenu(getActivity());
         }
     }
-    private void onSwitchUI(View view) {
+    private void onSubmitClick() {
+        if(isRegister){
+            onSubmitRegister();
+        }else{
+            onSubmitLogin();
+        }
+    }
+    private void onSwitchUiClick() {
         if(isRegister){
             toLogin();
         }else{
@@ -104,26 +117,14 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
 
-    private void onUserUpdate(User user) {
-        if(user != null){
-            toMenu(getActivity());
-        }
-    }
-
-    private void onLogin() {
+    //login
+    private void onSubmitLogin() {
         User user = getLoginDataIfValid();
         if(user != null){
-            AsyncTask.execute(()->onLoginAction(user));
+            AsyncTask.execute(()->onSubmitLoginAction(user));
         }
     }
-    private void onRegister() {
-        User user = getRegisterDataIfValid();
-        if(user != null){
-            startLoadingAnimation();
-            AsyncTask.execute(()->onRegisterAction(user));
-        }
-    }
-    private void onLoginAction(User tempUser){
+    private void onSubmitLoginAction(User tempUser){
         User user = vmUsers.checkCredentials(tempUser);
         if (user != null) {
             vmUsers.singIn(user);
@@ -140,7 +141,16 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
             }
         }
     }
-    private void onRegisterAction(User tempUser){
+
+    //register
+    private void onSubmitRegister() {
+        User user = getRegisterDataIfValid();
+        if(user != null){
+            startLoadingAnimation();
+            AsyncTask.execute(()->onSubmitRegisterAction(user));
+        }
+    }
+    private void onSubmitRegisterAction(User tempUser){
         if(getActivity() != null)
             getActivity().runOnUiThread(this::stopLoadingAnimation);
         User user = vmUsers.saveNewUser(tempUser);
@@ -152,17 +162,8 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 getActivity().runOnUiThread(()-> showError(error));
         }
     }
-    private void toRegister() {
-        clearFields();
-        showError(LoginRegisterError.NONE);
-        showRegister();
-    }
-    private void toLogin() {
-        clearFields();
-        showError(LoginRegisterError.NONE);
-        showLogin();
-    }
 
+    //validation
     private User getLoginDataIfValid() {
         showError(LoginRegisterError.NONE);
         String  username = "", password = "";
@@ -216,10 +217,10 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     //ui
     public void showLogin(){
         isRegister = false;
-        binding.tvLoginLabel.setText(R.string.login_label);
 
+        binding.tvLoginLabel.setText(R.string.login_label);
         binding.btnLoginSubmit.setText(getString(R.string.submit_login));
-        binding.tvLoginSwitch.setText(getString(R.string.login_switch_btn));
+        binding.btnLoginSwitch.setText(getString(R.string.login_switch_btn));
         binding.tvLoginRegisterHint.setText(getString(R.string.login_hint));
 
         binding.etLoginPhoneLayout.setVisibility(View.GONE);
@@ -228,23 +229,25 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     }
     public void showRegister(){
         isRegister = true;
-        binding.tvLoginLabel.setText(R.string.register_label);
 
+        binding.tvLoginLabel.setText(R.string.register_label);
         binding.btnLoginSubmit.setText(getString(R.string.submit_register));
-        binding.tvLoginSwitch.setText(getString(R.string.register_switch_btn));
+        binding.btnLoginSwitch.setText(getString(R.string.register_switch_btn));
         binding.tvLoginRegisterHint.setText(getString(R.string.register_hint));
 
         binding.etLoginPhoneLayout.setVisibility(View.VISIBLE);
         binding.etLoginMainEmailLayout.setVisibility(View.VISIBLE);
         binding.etLoginSecondaryPasswordLayout.setVisibility(View.VISIBLE);
-
     }
     public void clearFields(){
-        binding.etLoginPhone.setText("");
+        binding.viewFocusThief.requestFocus();
+        binding.viewFocusThief.requestFocusFromTouch();
+
         binding.etLoginUserName.setText("");
-        binding.etLoginMainEmail.setText("");
         binding.etLoginMainPassword.setText("");
         binding.etLoginSecondaryPassword.setText("");
+        binding.etLoginMainEmail.setText("");
+        binding.etLoginPhone.setText("");
     }
     public void showError(LoginRegisterError error) {
         switch (error){
@@ -330,6 +333,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         //fixme: code
     }
 
+    //nav
     public void toMenu(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
@@ -337,5 +341,15 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 if(nav != null)
                     nav.navigate(R.id.toMenuMain);
             });
+    }
+    private void toLogin() {
+        clearFields();
+        showError(LoginRegisterError.NONE);
+        showLogin();
+    }
+    private void toRegister() {
+        clearFields();
+        showError(LoginRegisterError.NONE);
+        showRegister();
     }
 }
