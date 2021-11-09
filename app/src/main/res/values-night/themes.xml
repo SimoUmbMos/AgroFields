@@ -76,6 +76,12 @@
         <item name="colorOnPrimary">@color/backgroundColor</item>
         <item name="colorOnSecondary">@color/backgroundColor</item>
     </style>
+    <style name="FloatingActionButtonStyle.BottomLogin" parent="FloatingActionButtonStyle">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="colorSecondary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/backgroundColor</item>
+        <item name="colorOnSecondary">@color/backgroundColor</item>
+    </style>
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>

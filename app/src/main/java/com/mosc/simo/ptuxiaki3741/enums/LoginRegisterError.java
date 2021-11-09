@@ -18,8 +18,6 @@ public enum LoginRegisterError {
 
     EmailEmptyError,
     EmailInvalidCharacterError,
-    Email2EmptyError,
-    EmailNotMatchError,
     EmailTakenError,
 
     PhoneInvalidError,

@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Login fields margin metrics -->
-    <!-- Login buttons margin metrics -->
-    <dimen name="login_button_margin_bottom">16dp</dimen>
-    <dimen name="login_button_margin_start_small">16dp</dimen>
-    <dimen name="login_button_margin_end_small">16dp</dimen>
-    <dimen name="login_button_margin_start_big">32dp</dimen>
-    <dimen name="login_button_margin_end_big">32dp</dimen>
+    <!-- Login Register margin metrics -->
+    <dimen name="login_fields_margin">16dp</dimen>
+    <dimen name="login_fields_margin_small">2dp</dimen>
     <!-- List margin metrics -->
     <dimen name="list_history_item_margin">8dp</dimen>
 </resources>

@@ -12,16 +12,6 @@ import java.util.List;
 
 @Dao
 public interface LandHistoryDao {
-    @Query("SELECT * FROM LandDataRecord " +
-            "WHERE LandID = :lid " +
-            "ORDER BY Date, LandTitle")
-    List<LandDataRecord> getLandRecordByLandID(long lid);
-
-    @Query("SELECT * FROM LandDataRecord " +
-            "WHERE CreatorID = :uid " +
-            "ORDER BY LandID, Date, LandTitle")
-    List<LandDataRecord> getLandRecordsByUserId(long uid);
-
     @Query("SELECT r.* " +
             "FROM LandDataRecord r LEFT JOIN UserLandPermissions p ON p.LandID = r.LandID " +
             "WHERE r.CreatorID = :uid OR (p.UserID = :uid AND p.AdminPermission = :admin) " +

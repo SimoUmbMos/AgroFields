@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -85,11 +84,24 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
     private void init() {
-        binding.btnLoginButton.setOnClickListener(this::onLogin);
-        binding.btnLoginSubmit.setOnClickListener(this::onRegister);
-        binding.btnLoginRegister.setOnClickListener(this::toRegister);
-        binding.btnLoginCancel.setOnClickListener(this::toLogin);
         showLogin();
+        binding.btnLoginSubmit.setOnClickListener(this::onSubmit);
+        binding.tvLoginSwitch.setOnClickListener(this::onSwitchUI);
+    }
+
+    private void onSubmit(View view) {
+        if(isRegister){
+            onRegister();
+        }else{
+            onLogin();
+        }
+    }
+    private void onSwitchUI(View view) {
+        if(isRegister){
+            toLogin();
+        }else{
+            toRegister();
+        }
     }
 
     private void onUserUpdate(User user) {
@@ -98,13 +110,13 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
 
-    private void onLogin(View view) {
+    private void onLogin() {
         User user = getLoginDataIfValid();
         if(user != null){
             AsyncTask.execute(()->onLoginAction(user));
         }
     }
-    private void onRegister(View view) {
+    private void onRegister() {
         User user = getRegisterDataIfValid();
         if(user != null){
             startLoadingAnimation();
@@ -140,12 +152,12 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 getActivity().runOnUiThread(()-> showError(error));
         }
     }
-    private void toRegister(View view) {
+    private void toRegister() {
         clearFields();
         showError(LoginRegisterError.NONE);
         showRegister();
     }
-    private void toLogin(View view) {
+    private void toLogin() {
         clearFields();
         showError(LoginRegisterError.NONE);
         showLogin();
@@ -175,7 +187,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         String  username = "",
                 phone = "",
                 email = "",
-                email2 = "",
                 password = "",
                 password2 = "";
         if(binding.etLoginUserName.getText() != null){
@@ -187,16 +198,13 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         if(binding.etLoginMainEmail.getText() != null){
             email = binding.etLoginMainEmail.getText().toString().trim();
         }
-        if(binding.etLoginSecondaryEmail.getText() != null){
-            email2 = binding.etLoginSecondaryEmail.getText().toString().trim();
-        }
         if(binding.etLoginMainPassword.getText() != null){
             password = binding.etLoginMainPassword.getText().toString().trim();
         }
         if(binding.etLoginSecondaryPassword.getText() != null){
             password2 =binding.etLoginSecondaryPassword.getText().toString().trim();
         }
-        LoginRegisterError error = UserUtil.checkData(username,password,password2,email,email2,phone);
+        LoginRegisterError error = UserUtil.checkData(username,password,password2,email,phone);
         if(error == LoginRegisterError.NONE){
             return new User(username, password, phone, email);
         }else{
@@ -210,38 +218,24 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         isRegister = false;
         binding.tvLoginLabel.setText(R.string.login_label);
 
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
-                binding.llLoginButtons.getLayoutParams();
-        params.verticalBias = 0.65f;
-        binding.llLoginButtons.setLayoutParams(params);
-
-        binding.btnLoginRegister.setVisibility(View.VISIBLE);
-        binding.btnLoginButton.setVisibility(View.VISIBLE);
-        binding.btnLoginSubmit.setVisibility(View.GONE);
-        binding.btnLoginCancel.setVisibility(View.GONE);
+        binding.btnLoginSubmit.setText(getString(R.string.submit_login));
+        binding.tvLoginSwitch.setText(getString(R.string.login_switch_btn));
+        binding.tvLoginRegisterHint.setText(getString(R.string.login_hint));
 
         binding.etLoginPhoneLayout.setVisibility(View.GONE);
         binding.etLoginMainEmailLayout.setVisibility(View.GONE);
-        binding.etLoginSecondaryEmailLayout.setVisibility(View.GONE);
         binding.etLoginSecondaryPasswordLayout.setVisibility(View.GONE);
     }
     public void showRegister(){
         isRegister = true;
         binding.tvLoginLabel.setText(R.string.register_label);
 
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
-                binding.llLoginButtons.getLayoutParams();
-        params.verticalBias = 1.0f;
-        binding.llLoginButtons.setLayoutParams(params);
-
-        binding.btnLoginRegister.setVisibility(View.GONE);
-        binding.btnLoginButton.setVisibility(View.GONE);
-        binding.btnLoginSubmit.setVisibility(View.VISIBLE);
-        binding.btnLoginCancel.setVisibility(View.VISIBLE);
+        binding.btnLoginSubmit.setText(getString(R.string.submit_register));
+        binding.tvLoginSwitch.setText(getString(R.string.register_switch_btn));
+        binding.tvLoginRegisterHint.setText(getString(R.string.register_hint));
 
         binding.etLoginPhoneLayout.setVisibility(View.VISIBLE);
         binding.etLoginMainEmailLayout.setVisibility(View.VISIBLE);
-        binding.etLoginSecondaryEmailLayout.setVisibility(View.VISIBLE);
         binding.etLoginSecondaryPasswordLayout.setVisibility(View.VISIBLE);
 
     }
@@ -250,7 +244,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         binding.etLoginUserName.setText("");
         binding.etLoginMainEmail.setText("");
         binding.etLoginMainPassword.setText("");
-        binding.etLoginSecondaryEmail.setText("");
         binding.etLoginSecondaryPassword.setText("");
     }
     public void showError(LoginRegisterError error) {
@@ -311,16 +304,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 binding.etLoginMainEmailLayout.setError(
                         getResources().getString(R.string.register_email_invalid_error));
                 break;
-            case Email2EmptyError:
-                binding.etLoginSecondaryEmailLayout.setError(
-                        getResources().getString(R.string.register_email_empty_error));
-                break;
-            case EmailNotMatchError:
-                binding.etLoginMainEmailLayout.setError(
-                        getResources().getString(R.string.register_email_not_match_error));
-                binding.etLoginSecondaryEmailLayout.setError(
-                        getResources().getString(R.string.register_email_not_match_error));
-                break;
             case EmailTakenError:
                 binding.etLoginMainEmailLayout.setError(
                         getResources().getString(R.string.register_email_taken_error));
@@ -336,7 +319,6 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 binding.etLoginUserNameLayout.setError(null);
                 binding.etLoginMainEmailLayout.setError(null);
                 binding.etLoginMainPasswordLayout.setError(null);
-                binding.etLoginSecondaryEmailLayout.setError(null);
                 binding.etLoginSecondaryPasswordLayout.setError(null);
                 break;
         }

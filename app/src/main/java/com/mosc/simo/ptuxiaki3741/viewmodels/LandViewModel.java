@@ -63,9 +63,9 @@ public class LandViewModel extends AndroidViewModel {
             if(lands.getValue() != null){
                 landList = lands.getValue();
                 landList.clear();
-                landList.addAll(landRepository.searchLandsByUser(user));
+                landList.addAll(landRepository.getLandsByUser(user));
             }else{
-                landList = new ArrayList<>(landRepository.searchLandsByUser(user));
+                landList = new ArrayList<>(landRepository.getLandsByUser(user));
             }
             lands.postValue(landList);
         }else{

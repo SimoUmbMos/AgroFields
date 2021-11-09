@@ -14,7 +14,7 @@ public final class UserUtil {
         return LoginRegisterError.NONE;
     }
     public static LoginRegisterError checkData(
-            String username, String password, String password2, String email, String email2, String phone
+            String username, String password, String password2, String email, String phone
     ) {
         if(username.length()< AppValues.minUserNameFieldSize || username.length()>AppValues.maxUserNameFieldSize)
             return LoginRegisterError.UserNameSizeError;
@@ -34,10 +34,6 @@ public final class UserUtil {
             return LoginRegisterError.EmailEmptyError;
         if(!EmailValidator.getInstance().isValid(email))
             return LoginRegisterError.EmailInvalidCharacterError;
-        if(email2.isEmpty())
-            return LoginRegisterError.Email2EmptyError;
-        if(!email.equals(email2))
-            return LoginRegisterError.EmailNotMatchError;
 
         if(isPhoneInvalid(phone))
             return LoginRegisterError.PhoneInvalidError;
