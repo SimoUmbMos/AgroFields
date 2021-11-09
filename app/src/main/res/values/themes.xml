@@ -30,6 +30,7 @@
         <!-- Accent -->
         <item name="colorAccent">@color/accentColor</item>
 
+        <item name="badgeStyle">@style/CustomBadge</item>
         <item name="fontFamily">@font/main_font</item>
         <item name="android:fontFamily">@font/main_font</item>
         <item name="windowActionModeOverlay">true</item>
@@ -53,8 +54,10 @@
         <item name="itemTextAppearanceInactive">@style/BottomNavigationText</item>
     </style>
     <style name="BottomNavigationText" parent="AppTheme"/>
-    <style name="BottomNavigationText.Selected" parent="BottomNavigationText">
-        <item name="android:textStyle">bold</item>
+    <style name="BottomNavigationText.Selected" parent="BottomNavigationText"/>
+    <style name="CustomBadge" parent="@style/Widget.MaterialComponents.Badge">
+        <item name="backgroundColor">@color/colorNotificationBadge</item>
+        <item name="badgeTextColor">@color/colorOnNotificationBadge</item>
     </style>
 
     <!-- fields styles -->

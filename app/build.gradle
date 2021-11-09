@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    def nav_version = "2.4.0-beta01"
+    def nav_version = "2.4.0-beta02"
     def paging_version = "3.0.1"
     def room_version = "2.3.0"
 
@@ -56,6 +56,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:18.0.0"
     implementation "com.google.code.gson:gson:2.8.6"
     implementation "com.google.maps.android:android-maps-utils:0.5"
+    implementation 'commons-validator:commons-validator:1.6'
     implementation "org.jdom:jdom2:2.0.6"
     implementation "org.jetbrains:annotations:16.0.2"
     implementation "org.osgeo:proj4j:0.1.0"

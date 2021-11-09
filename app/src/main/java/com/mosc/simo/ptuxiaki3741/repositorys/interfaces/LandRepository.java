@@ -11,7 +11,6 @@ import java.util.List;
 public interface LandRepository {
 
     List<Land> searchLandsByUser(User user);
-    List<Land> getSharedLands(User user);
 
     Land getLand(long lid);
     List<LandDataRecord> getLandRecordsByLand(Land land);

@@ -28,7 +28,6 @@ public class LandViewModel extends AndroidViewModel {
     private User currUser = null;
 
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
-    private final MutableLiveData<List<Land>> sharedLands = new MutableLiveData<>();
     private final MutableLiveData<List<LandDataRecord>> landsHistory = new MutableLiveData<>();
 
     public LandViewModel(@NonNull Application application) {
@@ -41,9 +40,6 @@ public class LandViewModel extends AndroidViewModel {
     public LiveData<List<Land>> getLands(){
         return lands;
     }
-    public LiveData<List<Land>> getSharedLands(){
-        return sharedLands;
-    }
     public LiveData<List<LandDataRecord>> getLandsHistory() {
         return landsHistory;
     }
@@ -55,7 +51,6 @@ public class LandViewModel extends AndroidViewModel {
     }
     private void loadData(User user) {
         loadLands(user);
-        loadSharedLands(user);
         loadLandsRecords(user);
     }
     private void backgroundLoad(User user) {
@@ -77,21 +72,6 @@ public class LandViewModel extends AndroidViewModel {
             clearLands();
         }
     }
-    private void loadSharedLands(User user) {
-        if(user != null){
-            List<Land> sharedLandList;
-            if(sharedLands.getValue() != null){
-                sharedLandList = sharedLands.getValue();
-                sharedLandList.clear();
-                sharedLandList.addAll(landRepository.getSharedLands(user));
-            }else{
-                sharedLandList = new ArrayList<>(landRepository.getSharedLands(user));
-            }
-            sharedLands.postValue(sharedLandList);
-        }else{
-            clearSharedLands();
-        }
-    }
     private void loadLandsRecords(User user) {
         if(user != null){
             List<LandDataRecord> landsHistoryList;
@@ -111,9 +91,6 @@ public class LandViewModel extends AndroidViewModel {
     private void clearLands() {
         lands.postValue(new ArrayList<>());
     }
-    private void clearSharedLands() {
-        sharedLands.postValue(new ArrayList<>());
-    }
     private void clearLandsRecords() {
         landsHistory.postValue(new ArrayList<>());
     }
@@ -121,7 +98,6 @@ public class LandViewModel extends AndroidViewModel {
     public void saveLand(Land land){
         if(currUser != null && land != null){
             lands.postValue(new ArrayList<>());
-            sharedLands.postValue(new ArrayList<>());
             landsHistory.postValue(new ArrayList<>());
             AsyncTask.execute(()->{
                 LandDBAction action;
@@ -139,7 +115,6 @@ public class LandViewModel extends AndroidViewModel {
                 );
                 landRepository.saveLandRecord(landRecord);
                 loadLands(currUser);
-                loadSharedLands(currUser);
                 loadLandsRecords(currUser);
             });
         }
@@ -147,7 +122,6 @@ public class LandViewModel extends AndroidViewModel {
     public void restoreLand(Land land) {
         if(currUser != null && land != null){
             lands.postValue(new ArrayList<>());
-            sharedLands.postValue(new ArrayList<>());
             landsHistory.postValue(new ArrayList<>());
             AsyncTask.execute(()->{
                 if(land.getData().getId() != -1){
@@ -163,7 +137,6 @@ public class LandViewModel extends AndroidViewModel {
                 }
 
                 loadLands(currUser);
-                loadSharedLands(currUser);
                 loadLandsRecords(currUser);
             });
         }
@@ -171,7 +144,6 @@ public class LandViewModel extends AndroidViewModel {
     public void removeLand(Land removeLand) {
         if(currUser != null && removeLand != null){
             lands.postValue(new ArrayList<>());
-            sharedLands.postValue(new ArrayList<>());
             landsHistory.postValue(new ArrayList<>());
             AsyncTask.execute(()-> {
                 boolean isShared = false;
@@ -196,7 +168,6 @@ public class LandViewModel extends AndroidViewModel {
                     landRepository.deleteLand(removeLand);
                 }
                 loadLands(currUser);
-                loadSharedLands(currUser);
                 for(LandDataRecord temp:landRecords){
                     landRepository.saveLandRecord(temp);
                 }
@@ -207,7 +178,6 @@ public class LandViewModel extends AndroidViewModel {
     public void removeLands(List<Land> l) {
         if(currUser != null && l != null){
             lands.postValue(new ArrayList<>());
-            sharedLands.postValue(new ArrayList<>());
             landsHistory.postValue(new ArrayList<>());
             AsyncTask.execute(()-> {
                 List<Land> removeLands = new ArrayList<>();
@@ -233,11 +203,10 @@ public class LandViewModel extends AndroidViewModel {
                 for(Land removeLand:removeLands){
                     landRepository.deleteLand(removeLand);
                 }
-                loadLands(currUser);
                 for(Land removeLand:removeSharedLands){
                     landRepository.removeLandPermissions(currUser, removeLand.getData());
                 }
-                loadSharedLands(currUser);
+                loadLands(currUser);
                 for(LandDataRecord temp:landRecords){
                     landRepository.saveLandRecord(temp);
                 }
@@ -258,10 +227,8 @@ public class LandViewModel extends AndroidViewModel {
                         );
                         if(r){
                             lands.postValue(new ArrayList<>());
-                            sharedLands.postValue(new ArrayList<>());
                             landsHistory.postValue(new ArrayList<>());
                             loadLands(currUser);
-                            loadSharedLands(currUser);
                             loadLandsRecords(currUser);
                         }
                         result.onActionResult(r);
@@ -276,12 +243,10 @@ public class LandViewModel extends AndroidViewModel {
     public void updateLandPermissions(UserLandPermissions perms){
         if(currUser != null){
             lands.postValue(new ArrayList<>());
-            sharedLands.postValue(new ArrayList<>());
             landsHistory.postValue(new ArrayList<>());
             AsyncTask.execute(()->{
                 landRepository.addLandPermissions(perms);
                 loadLands(currUser);
-                loadSharedLands(currUser);
                 loadLandsRecords(currUser);
             });
         }
@@ -289,12 +254,10 @@ public class LandViewModel extends AndroidViewModel {
     public void removeAllLandPermissions(User contact) {
         if(contact != null && currUser != null){
             lands.postValue(new ArrayList<>());
-            sharedLands.postValue(new ArrayList<>());
             landsHistory.postValue(new ArrayList<>());
             AsyncTask.execute(()->{
                 landRepository.removeAllLandPermissions(currUser, contact);
                 loadLands(currUser);
-                loadSharedLands(currUser);
                 loadLandsRecords(currUser);
             });
         }

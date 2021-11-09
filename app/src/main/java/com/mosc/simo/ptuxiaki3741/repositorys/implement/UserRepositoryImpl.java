@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 import android.util.Log;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandMemo;
@@ -255,22 +256,35 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User saveNewUser(User newUser){
         if(newUser != null){
-            User user = db.userDao().getUserByUserName(newUser.getUsername());
-            if(user == null){
-                try{
-                    user = EncryptUtil.encryptWithPassword(newUser);
-                }catch (Exception e){
-                    Log.e(TAG, "saveNewUser: ", e);
+            if(usernameNotExists(newUser)){
+                if(emailNotExists(newUser)){
+                    User user = null;
+                    try{
+                        user = EncryptUtil.encryptWithPassword(newUser);
+                    }catch (Exception e){
+                        Log.e(TAG, "saveNewUser: ", e);
+                    }
+                    if(user != null){
+                        long id = db.userDao().insert(user);
+                        user.setId(id);
+                    }
+                    return user;
                 }
-                if(user != null){
-                    long id = db.userDao().insert(user);
-                    user.setId(id);
-                }
-                return user;
             }
         }
         return null;
     }
+    @Override
+    public LoginRegisterError getNewUserError(User newUser){
+        if(newUser != null){
+            if(!usernameNotExists(newUser))
+                return LoginRegisterError.UserNameTakenError;
+            if(!emailNotExists(newUser))
+                return LoginRegisterError.EmailTakenError;
+        }
+        return LoginRegisterError.NONE;
+    }
+
     @Override
     public void editUser(User user) {
         if(user != null){
@@ -311,7 +325,6 @@ public class UserRepositoryImpl implements UserRepository {
             result.removeAll(removeList);
         }
     }
-
     private void saveUserRelationship(User sender, User receiver, UserDBAction type) {
         deleteUserRelationship(sender,receiver);
         db.userRelationshipDao().insert(
@@ -322,6 +335,25 @@ public class UserRepositoryImpl implements UserRepository {
         List<UserRelationship> relationships =
                 db.userRelationshipDao().getByIDs(user1.getId(),user2.getId());
         db.userRelationshipDao().deleteAll(relationships);
+    }
+    private boolean usernameNotExists(User newUser) {
+        User user = db.userDao().getUserByUserName(newUser.getUsername());
+        return user == null;
+    }
+    private boolean emailNotExists(User newUser) {
+        List<User> users = db.userDao().getAllUsers();
+        User temp;
+        for(User user:users){
+            try{
+                temp = EncryptUtil.decrypt(user);
+                if(newUser.getEmail().equals(temp.getEmail())){
+                    return false;
+                }
+            }catch (Exception e){
+                Log.e(TAG, "emailExists: ", e);
+            }
+        }
+        return true;
     }
 
 }

@@ -20,13 +20,14 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
+import com.mosc.simo.ptuxiaki3741.util.UserUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentUserProfileBinding;import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class ProfileUserFragment extends Fragment implements FragmentBackPress {
-    //todo: (idea) show QR code
     private FragmentUserProfileBinding binding;
     private User currUser;
     private boolean isEditMode;
@@ -111,12 +112,34 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
         }else{
             binding.btnUserProfileModify.setText(R.string.edit_user);
             if(currUser != null){
-                if(isDataValid()){
-                    currUser.setEmail(getEmailData());
-                    currUser.setPhone(getPhoneData());
-                    AsyncTask.execute(()->vmUsers.editUser(currUser));
-                }else{
+                String email = getEmailData(),
+                        phone = getPhoneData();
+                User copy = new User(currUser.getUsername(),email,phone);
+                LoginRegisterError result = UserUtil.checkUserData(copy);
+                switch (result){
+                    case EmailEmptyError:
+                        binding.etUserProfileEmailLayout.setError(
+                                getResources().getString(R.string.register_email_empty_error));
+                        break;
+                    case EmailInvalidCharacterError:
+                        binding.etUserProfileEmailLayout.setError(
+                                getResources().getString(R.string.register_email_invalid_error));
+                        break;
+                    case PhoneInvalidError:
+                        binding.etUserProfilePhoneLayout.setError(
+                                getResources().getString(R.string.register_phone_invalid_error));
+                        break;
+                    default:
+                        binding.etUserProfileEmailLayout.setError(null);
+                        binding.etUserProfilePhoneLayout.setError(null);
+                        break;
+                }
+                if(result != LoginRegisterError.NONE){
                     setupUiForUser(currUser);
+                }else{
+                    currUser.setEmail(email);
+                    currUser.setPhone(phone);
+                    AsyncTask.execute(()->vmUsers.editUser(currUser));
                 }
             }
         }
@@ -127,15 +150,6 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
         binding.etUserProfilePhone.setEnabled(isEditMode);
     }
 
-    private boolean isDataValid(){
-        if(
-                binding.etUserProfileEmail.getText() != null
-        ){
-            String email = binding.etUserProfileEmail.getText().toString();
-            return !email.trim().isEmpty();
-        }
-        return false;
-    }
     private String getEmailData(){
         if(binding.etUserProfileEmail.getText() != null){
             String email = binding.etUserProfileEmail.getText().toString();

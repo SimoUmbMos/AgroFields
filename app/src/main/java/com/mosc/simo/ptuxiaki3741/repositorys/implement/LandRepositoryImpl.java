@@ -27,7 +27,10 @@ public class LandRepositoryImpl implements LandRepository {
         for(LandData landData : userLandData){
             userLands.add(new Land(landData));
         }
-
+        List<Land> lands = db.landDao().getUserSharedLands(uid);
+        if(lands != null){
+            userLands.addAll(lands);
+        }
         return userLands;
     }
 
@@ -107,14 +110,6 @@ public class LandRepositoryImpl implements LandRepository {
             }
         }
         return false;
-    }
-    @Override
-    public List<Land> getSharedLands(User user) {
-        List<Land> lands = db.landDao().getUserSharedLands(user.getId());
-        if(lands != null){
-            return lands;
-        }
-        return new ArrayList<>();
     }
     @Override
     public UserLandPermissions getLandPermissionsForUser(User contact, Land land) {

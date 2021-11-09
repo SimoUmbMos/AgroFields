@@ -13,6 +13,9 @@ import java.util.List;
 
 @Dao
 public interface UserDao {
+    @Query("SELECT * FROM Users")
+    List<User> getAllUsers();
+
     @Query("SELECT * FROM Users " +
             "WHERE Username GLOB  '*' || :search || '*' " +
             "AND id != :searcherID")
@@ -46,5 +49,4 @@ public interface UserDao {
 
     @Delete
     void delete(User user);
-
 }

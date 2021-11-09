@@ -227,28 +227,6 @@
                 android:layout_margin="8dp"
                 android:clickable="false">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mcvRequestLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/textColor"
-                    app:cardCornerRadius="16dp"
-                    app:layout_constraintDimensionRatio="w,1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/tvRequestNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="4dp"
-                        android:textAlignment="center"
-                        android:textColor="@color/backgroundColor"
-                        android:textStyle="bold" />
-
-                </com.google.android.material.card.MaterialCardView>
-
                 <ImageView
                     android:id="@+id/imgContacts"
                     android:layout_width="0dp"
@@ -274,6 +252,27 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcvRequestLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorNotificationBadge"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/guideline4">
+
+            <TextView
+                android:id="@+id/tvRequestNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="4dp"
+                android:textColor="@color/colorOnNotificationBadge"
+                android:textStyle="bold" />
+
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

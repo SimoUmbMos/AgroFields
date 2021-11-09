@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuContactsFragment extends Fragment implements SearchView.OnQueryTextListener {
-    //todo: (idea) merge contact menu with send request and received request fragments w/ bottom navigation
     public static final String TAG = "UserContactsFragment";
 
     private ActionBar actionBar;

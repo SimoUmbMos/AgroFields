@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserOutboxRequestFragment extends Fragment implements SearchView.OnQueryTextListener {
-    //todo: (idea) QR code scanner
     private FragmentUserOutboxRequestBinding binding;
     private ActionBar actionBar;
     private UserSendRequestAdapter adapter;

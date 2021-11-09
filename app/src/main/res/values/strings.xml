@@ -31,19 +31,22 @@
     <string name="login">Login</string>
     <string name="submit_register">Register</string>
     <string name="cancel_register">Cancel</string>
-    <string name="register_username_wrong_error">Wrong Username</string>
     <string name="register_username_empty_error">Username is empty</string>
-    <string name="register_username_taken_error">Username is taken</string>
-    <string name="register_password_wrong_error">Wrong Password</string>
+    <string name="register_username_size_error">Username must be 6 with 16 characters</string>
+    <string name="register_username_invalid_error">Invalid character on username</string>
+    <string name="register_username_taken_error">Username already in use</string>
+    <string name="register_username_wrong_error">Wrong username</string>
     <string name="register_password_empty_error">Password is empty</string>
-    <string name="register_email_exist_error">Email exist\'s</string>
+    <string name="register_password_size_error">Password must be 8 with 16 characters</string>
+    <string name="register_password_invalid_error">Invalid character on password</string>
+    <string name="register_password_not_match_error">Password\'s don\'t match</string>
+    <string name="register_password_wrong_error">Wrong password</string>
     <string name="register_email_empty_error">Email is empty</string>
-    <string name="register_email_not_match_error">Email don\'t match</string>
-    <string name="register_password_not_match_error">Password don\'t match</string>
-    <string name="register_phone_exist_error">Phone exist\'s</string>
-    <string name="register_phone_length_error">Phone length is invalid</string>
+    <string name="register_email_invalid_error">Invalid email</string>
+    <string name="register_email_not_match_error">Email\'s don\'t match</string>
+    <string name="register_email_taken_error">Email already in use</string>
+    <string name="register_phone_invalid_error">Invalid phone</string>
     <!-- Main Menu Fragment -->
-    <string name="main_menu_requests">User requests</string>
     <string name="main_menu_settings">Settings</string>
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_history_button">History</string>
@@ -132,6 +135,8 @@
     <string name="edit_user">Edit</string>
     <string name="logout">Logout</string>
     <!-- Contacts Container Fragment -->
+    <string name="max_request_label">99+</string>
+    <string name="fab_content_desc_add_contact">fab add contact</string>
     <string name="contacts_container_menu_label_list">Contacts</string>
     <string name="contacts_container_menu_label_requests">Requests</string>
     <!-- User Contacts Fragment -->
@@ -149,6 +154,8 @@
     <string name="decline_request_error">Something goes wrong, try again</string>
     <string name="fabAccept">Accept Contact</string>
     <string name="fabDeny">Deny Contact</string>
+    <string name="accept_request_label">Accept</string>
+    <string name="decline_request_label">Decline</string>
     <!-- Outbox User Requests Fragment -->
     <string name="outbox_request_title">Requests</string>
     <string name="request_sent">Request sent</string>
@@ -156,6 +163,8 @@
     <string name="request_send_error">Something goes wrong with your request</string>
     <string name="empty_user_outbox_request_list">You have not send any requests</string>
     <string name="empty_user_outbox_request_search_list">No Result</string>
+    <string name="send_request_label">Send</string>
+    <string name="remove_request_label">Remove</string>
     <!-- Contact Profile Fragment -->
     <string name="contact_menu_remove_contact">Delete Contact</string>
     <string name="contact_delete_title">Delete Contact</string>
@@ -195,6 +204,4 @@
     <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
-    <string name="max_request_label">99+</string>
-    <string name="content_description_fab_outbox_requests">fabOutboxRequests</string>
 </resources>

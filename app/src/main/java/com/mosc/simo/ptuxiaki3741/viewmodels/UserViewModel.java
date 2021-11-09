@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandMemo;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -19,8 +20,6 @@ import com.mosc.simo.ptuxiaki3741.models.entities.UserMemo;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,6 +197,9 @@ public class UserViewModel extends AndroidViewModel {
     public User saveNewUser(User user){
         return userRepository.saveNewUser(user);
     }
+    public LoginRegisterError getNewUserError(User tempUser) {
+        return userRepository.getNewUserError(tempUser);
+    }
     public void editUser(User user){
         if(user != null){
             boolean isCurrUser = user.equals(currUser.getValue());
@@ -317,4 +319,5 @@ public class UserViewModel extends AndroidViewModel {
             populateCurrUserRelativeLists(currUser.getValue());
         }
     }
+
 }

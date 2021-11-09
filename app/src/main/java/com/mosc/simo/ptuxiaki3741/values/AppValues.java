@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 public final class AppValues {
     /* DB VALUES*/
-    public static final int DATABASE_VERSION = 27;
+    public static final int DATABASE_VERSION = 28;
     /* ViewModels VALUES */
     public static final String sharedPreferenceKeyUserViewModel = "currUser";
     public static final long sharedPreferenceDefaultUserViewModel = -1;
@@ -12,6 +12,12 @@ public final class AppValues {
     public static final int defaultPadding = 16;
     public static final int strokeColor = Color.argb(192,0,0,255);
     public static final int fillColor = Color.argb(51,0,0,255);
+    /* Login Register Fragment */
+    public static final int minUserNameFieldSize=6;
+    public static final int maxUserNameFieldSize=16;
+    public static final int minPasswordFieldSize=8;
+    public static final int maxPasswordFieldSize=16;
+    public static final String phoneRegex = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
     /* Contact Profile Fragment Values */
     public static final String CONTACT_PROFILE_ARG = "user";
     /* Share Land Fragment Values */

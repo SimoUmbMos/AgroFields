@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -48,8 +49,6 @@ public class ProfileContactFragment extends Fragment implements FragmentBackPres
     private LandViewModel vmLands;
     private ShareLandAdapter adapter;
 
-    private final List<Land> myLands = new ArrayList<>();
-    private final List<Land> mySharedLands = new ArrayList<>();
     private final List<Land> data = new ArrayList<>();
     private User contact;
 
@@ -167,41 +166,26 @@ public class ProfileContactFragment extends Fragment implements FragmentBackPres
     private void initObservers() {
         if(vmLands != null){
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onMyLandsUpdate);
-            vmLands.getSharedLands().observe(getViewLifecycleOwner(),this::onMySharedLandsUpdate);
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void onMyLandsUpdate(List<Land> myLands){
-        onDataUpdateStart(this.myLands);
-        this.myLands.clear();
-        this.myLands.addAll(myLands);
-        onDataUpdateEnd(this.myLands);
-    }
-    private void onMySharedLandsUpdate(List<Land> mySharedLands){
-        onDataUpdateStart(this.mySharedLands);
-        this.mySharedLands.clear();
-        this.mySharedLands.addAll(mySharedLands);
-        onDataUpdateEnd(this.mySharedLands);
-    }
-    private void onDataUpdateStart(List<Land> lands){
-        for(Land land:lands){
-            for(int i = 0;i<data.size();i++){
-                if(data.get(i).getData().getId() == land.getData().getId()){
-                    data.remove(i);
-                    adapter.notifyItemRemoved(i);
-                    break;
+        AsyncTask.execute(()->{
+            data.clear();
+            if(myLands != null){
+                for(Land land:myLands){
+                    if(land.getPerm().isAdmin()){
+                        data.add(land);
+                    }
                 }
             }
-        }
-    }
-    private void onDataUpdateEnd(List<Land> lands){
-        for(Land land:lands){
-            if(land.getPerm().isAdmin()){
-                data.add(land);
-                adapter.notifyItemInserted(data.indexOf(land));
-            }
-        }
-        updateUi();
+            if(getActivity() != null)
+                getActivity().runOnUiThread(()->{
+                    adapter.notifyDataSetChanged();
+                    updateUi();
+                });
+        });
     }
     private void onLandClick(Land land){
         toSelectedLand(land);

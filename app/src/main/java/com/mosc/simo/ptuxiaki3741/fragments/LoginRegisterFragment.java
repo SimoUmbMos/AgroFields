@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +21,7 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.util.UserUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoginRegisterBinding;
 import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
@@ -107,104 +107,10 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     private void onRegister(View view) {
         User user = getRegisterDataIfValid();
         if(user != null){
+            startLoadingAnimation();
             AsyncTask.execute(()->onRegisterAction(user));
         }
     }
-    private void toRegister(View view) {
-        clear();
-        clearErrors();
-        showRegister();
-    }
-    private void toLogin(View view) {
-        clear();
-        clearErrors();
-        showLogin();
-    }
-
-    private User getLoginDataIfValid() {
-        String  username = "",
-                password = "";
-        try{
-            if(
-                    binding.etLoginUserName.getText() != null &&
-                    binding.etLoginMainPassword.getText() != null
-            ){
-                username = binding.etLoginUserName.getText().toString().trim();
-                password = binding.etLoginMainPassword.getText().toString().trim();
-            }else{
-                username = "";
-                password = "";
-            }
-        }catch (NullPointerException e){
-            Log.e(TAG, "getLoginDataIfValid: ", e);
-        }
-
-        boolean isPasswordWritten = !password.isEmpty(),
-                isUsernameWritten = !username.isEmpty();
-
-        showLoginError(isUsernameWritten, isPasswordWritten);
-
-        if(isPasswordWritten && isUsernameWritten){
-            return new User(username, password);
-        }
-        return null;
-    }
-    private User getRegisterDataIfValid() {
-        String  username = "",
-                phone = "",
-                email = "",
-                email2 = "",
-                password = "",
-                password2 = "";
-        try{
-            if(
-                    binding.etLoginUserName.getText() != null &&
-                    binding.etLoginPhone.getText() != null &&
-                    binding.etLoginMainEmail.getText() != null &&
-                    binding.etLoginSecondaryEmail.getText() != null &&
-                    binding.etLoginMainPassword.getText() != null &&
-                    binding.etLoginSecondaryPassword.getText() != null
-            ){
-                username = binding.etLoginUserName.getText().toString().trim();
-                phone = binding.etLoginPhone.getText().toString().trim();
-                email = binding.etLoginMainEmail.getText().toString().trim();
-                email2 = binding.etLoginSecondaryEmail.getText().toString().trim();
-                password = binding.etLoginMainPassword.getText().toString().trim();
-                password2 =binding.etLoginSecondaryPassword.getText().toString().trim();
-            }else{
-                username = "";
-                phone = "";
-                email = "";
-                email2 = "";
-                password = "";
-                password2 = "";
-            }
-        }catch (NullPointerException e){
-            Log.e(TAG, "getRegisterDataIfValid: ", e);
-        }
-
-        boolean isEmailSame = email.equals(email2),
-                isPasswordSame = password.equals(password2),
-                isPhoneLengthRight =
-                        binding.etLoginPhone.length() ==
-                                binding.etLoginPhoneLayout.getCounterMaxLength() ||
-                        binding.etLoginPhone.length() == 0,
-                isEmailWritten = !email.isEmpty(),
-                isPasswordWritten = !password.isEmpty(),
-                isUsernameWritten = !username.isEmpty();
-
-        showRegisterError(isEmailSame, isEmailWritten,
-                isPasswordSame, isPasswordWritten,
-                isUsernameWritten, isPhoneLengthRight);
-
-        if(isEmailWritten && isEmailSame &&
-                isPasswordWritten && isPasswordSame &&
-                isPhoneLengthRight && isUsernameWritten){
-            return new User(username, password, phone, email);
-        }
-        return null;
-    }
-
     private void onLoginAction(User tempUser){
         User user = vmUsers.checkCredentials(tempUser);
         if (user != null) {
@@ -223,50 +129,80 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
     private void onRegisterAction(User tempUser){
+        if(getActivity() != null)
+            getActivity().runOnUiThread(this::stopLoadingAnimation);
         User user = vmUsers.saveNewUser(tempUser);
         if(user != null){
             vmUsers.singIn(user);
         }else{
+            LoginRegisterError error = vmUsers.getNewUserError(tempUser);
             if(getActivity() != null)
-                getActivity().runOnUiThread(()->
-                        showError(LoginRegisterError.UserNameTakenError)
-                );
+                getActivity().runOnUiThread(()-> showError(error));
         }
     }
-
-    private void showLoginError(boolean isUsernameWritten, boolean isPasswordWritten) {
-        clearErrors();
-        if(!isUsernameWritten){
-            showError(LoginRegisterError.UserNameEmptyError);
-        }
-        if(!isPasswordWritten){
-            showError(LoginRegisterError.PasswordEmptyError);
-        }
+    private void toRegister(View view) {
+        clearFields();
+        showError(LoginRegisterError.NONE);
+        showRegister();
     }
-    private void showRegisterError(boolean isEmailSame, boolean isEmailWritten,
-                        boolean isPasswordSame, boolean isPasswordWritten,
-                         boolean isUsernameWritten, boolean isPhoneLengthRight) {
-        clearErrors();
+    private void toLogin(View view) {
+        clearFields();
+        showError(LoginRegisterError.NONE);
+        showLogin();
+    }
 
-        if(!isEmailWritten){
-            showError(LoginRegisterError.EmailEmptyError);
-        }else if(!isEmailSame){
-            showError(LoginRegisterError.EmailNotMatchError);
+    private User getLoginDataIfValid() {
+        showError(LoginRegisterError.NONE);
+        String  username = "", password = "";
+        if(binding.etLoginUserName.getText() != null){
+            username = binding.etLoginUserName.getText().toString().trim();
+        }
+        if(binding.etLoginMainPassword.getText() != null){
+            password = binding.etLoginMainPassword.getText().toString().trim();
         }
 
-        if(!isPasswordWritten){
-            showError(LoginRegisterError.PasswordEmptyError);
-        }else if(!isPasswordSame){
-            showError(LoginRegisterError.PasswordNotMatchError);
-        }
+        LoginRegisterError error = UserUtil.checkData(username, password);
 
-        if(!isUsernameWritten){
-            showError(LoginRegisterError.UserNameEmptyError);
+        if(error == LoginRegisterError.NONE){
+            return new User(username, password);
+        }else{
+            showError(error);
         }
-
-        if(!isPhoneLengthRight){
-            showError(LoginRegisterError.PhoneLengthError);
+        return null;
+    }
+    private User getRegisterDataIfValid() {
+        showError(LoginRegisterError.NONE);
+        String  username = "",
+                phone = "",
+                email = "",
+                email2 = "",
+                password = "",
+                password2 = "";
+        if(binding.etLoginUserName.getText() != null){
+            username = binding.etLoginUserName.getText().toString().trim();
         }
+        if(binding.etLoginPhone.getText() != null){
+            phone = binding.etLoginPhone.getText().toString().trim();
+        }
+        if(binding.etLoginMainEmail.getText() != null){
+            email = binding.etLoginMainEmail.getText().toString().trim();
+        }
+        if(binding.etLoginSecondaryEmail.getText() != null){
+            email2 = binding.etLoginSecondaryEmail.getText().toString().trim();
+        }
+        if(binding.etLoginMainPassword.getText() != null){
+            password = binding.etLoginMainPassword.getText().toString().trim();
+        }
+        if(binding.etLoginSecondaryPassword.getText() != null){
+            password2 =binding.etLoginSecondaryPassword.getText().toString().trim();
+        }
+        LoginRegisterError error = UserUtil.checkData(username,password,password2,email,email2,phone);
+        if(error == LoginRegisterError.NONE){
+            return new User(username, password, phone, email);
+        }else{
+            showError(error);
+        }
+        return null;
     }
 
     //ui
@@ -309,7 +245,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         binding.etLoginSecondaryPasswordLayout.setVisibility(View.VISIBLE);
 
     }
-    public void clear(){
+    public void clearFields(){
         binding.etLoginPhone.setText("");
         binding.etLoginUserName.setText("");
         binding.etLoginMainEmail.setText("");
@@ -317,32 +253,43 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         binding.etLoginSecondaryEmail.setText("");
         binding.etLoginSecondaryPassword.setText("");
     }
-    public void clearErrors() {
-        binding.etLoginPhoneLayout.setError(null);
-        binding.etLoginUserNameLayout.setError(null);
-        binding.etLoginMainEmailLayout.setError(null);
-        binding.etLoginMainPasswordLayout.setError(null);
-        binding.etLoginSecondaryEmailLayout.setError(null);
-        binding.etLoginSecondaryPasswordLayout.setError(null);
-    }
     public void showError(LoginRegisterError error) {
         switch (error){
-            case EmailEmptyError:
-                binding.etLoginMainEmailLayout.setError(
-                        getResources().getString(R.string.register_email_empty_error));
+            case UserNameEmptyError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_empty_error));
                 break;
-            case EmailNotMatchError:
-                binding.etLoginMainEmailLayout.setError(
-                        getResources().getString(R.string.register_email_not_match_error));
-                binding.etLoginSecondaryEmailLayout.setError(
-                        getResources().getString(R.string.register_email_not_match_error));
+            case UserNameSizeError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_size_error));
                 break;
-            case PasswordWrongError:
-                binding.etLoginMainPasswordLayout.setError(
-                        getResources().getString(R.string.register_password_wrong_error));
+            case UserNameInvalidCharacterError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_invalid_error));
                 break;
+            case UserNameTakenError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_taken_error));
+                break;
+            case UserNameWrongError:
+                binding.etLoginUserNameLayout.setError(
+                        getResources().getString(R.string.register_username_wrong_error));
+                break;
+
             case PasswordEmptyError:
                 binding.etLoginMainPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_empty_error));
+                break;
+            case PasswordSizeError:
+                binding.etLoginMainPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_size_error));
+                break;
+            case PasswordInvalidCharacterError:
+                binding.etLoginMainPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_invalid_error));
+                break;
+            case Password2EmptyError:
+                binding.etLoginSecondaryPasswordLayout.setError(
                         getResources().getString(R.string.register_password_empty_error));
                 break;
             case PasswordNotMatchError:
@@ -351,23 +298,54 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
                 binding.etLoginSecondaryPasswordLayout.setError(
                         getResources().getString(R.string.register_password_not_match_error));
                 break;
-            case PhoneLengthError:
+            case PasswordWrongError:
+                binding.etLoginMainPasswordLayout.setError(
+                        getResources().getString(R.string.register_password_wrong_error));
+                break;
+
+            case EmailEmptyError:
+                binding.etLoginMainEmailLayout.setError(
+                        getResources().getString(R.string.register_email_empty_error));
+                break;
+            case EmailInvalidCharacterError:
+                binding.etLoginMainEmailLayout.setError(
+                        getResources().getString(R.string.register_email_invalid_error));
+                break;
+            case Email2EmptyError:
+                binding.etLoginSecondaryEmailLayout.setError(
+                        getResources().getString(R.string.register_email_empty_error));
+                break;
+            case EmailNotMatchError:
+                binding.etLoginMainEmailLayout.setError(
+                        getResources().getString(R.string.register_email_not_match_error));
+                binding.etLoginSecondaryEmailLayout.setError(
+                        getResources().getString(R.string.register_email_not_match_error));
+                break;
+            case EmailTakenError:
+                binding.etLoginMainEmailLayout.setError(
+                        getResources().getString(R.string.register_email_taken_error));
+                break;
+
+            case PhoneInvalidError:
                 binding.etLoginPhoneLayout.setError(
-                        getResources().getString(R.string.register_phone_length_error));
+                        getResources().getString(R.string.register_phone_invalid_error));
                 break;
-            case UserNameWrongError:
-                binding.etLoginUserNameLayout.setError(
-                        getResources().getString(R.string.register_username_wrong_error));
-                break;
-            case UserNameEmptyError:
-                binding.etLoginUserNameLayout.setError(
-                        getResources().getString(R.string.register_username_empty_error));
-                break;
-            case UserNameTakenError:
-                binding.etLoginUserNameLayout.setError(
-                        getResources().getString(R.string.register_username_taken_error));
+            case NONE:
+            default:
+                binding.etLoginPhoneLayout.setError(null);
+                binding.etLoginUserNameLayout.setError(null);
+                binding.etLoginMainEmailLayout.setError(null);
+                binding.etLoginMainPasswordLayout.setError(null);
+                binding.etLoginSecondaryEmailLayout.setError(null);
+                binding.etLoginSecondaryPasswordLayout.setError(null);
                 break;
         }
+    }
+    public void startLoadingAnimation(){
+        //fixme: code
+    }
+    public void stopLoadingAnimation(){
+        //fixme: code
     }
 
     public void toMenu(@Nullable Activity activity) {

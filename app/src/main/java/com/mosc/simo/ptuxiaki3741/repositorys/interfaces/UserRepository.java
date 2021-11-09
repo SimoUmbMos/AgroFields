@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.repositorys.interfaces;
 
+import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandMemo;
@@ -39,6 +40,7 @@ public interface UserRepository {
     List<LandMemo> getUserLandsMemosList(User user);
 
     User saveNewUser(User user);
+    LoginRegisterError getNewUserError(User newUser);
     void editUser(User user);
     void deleteUser(User user);
 }

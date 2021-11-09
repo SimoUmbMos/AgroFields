@@ -1,9 +1,11 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -71,6 +73,10 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
         }
     }
     private void initFragment() {
+        MenuItem item = binding.bottomNavigation.getMenu().findItem(R.id.bottom_menu_item_hidden);
+        if(item != null){
+            item.setVisible(false);
+        }
         binding.bottomNavigation.setOnItemSelectedListener(this::bottomNavListener);
         binding.fab.setOnClickListener(this::fabClickListener);
         binding.bottomNavigation.setSelectedItemId(R.id.bottom_menu_item_contacts_list);
@@ -101,7 +107,7 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
     }
 
     private void fabClickListener(View view) {
-        navigateTo(R.id.searchContactFragment);
+        binding.bottomNavigation.setSelectedItemId(R.id.bottom_menu_item_hidden);
     }
     private boolean bottomNavListener(MenuItem menuItem) {
         switch (menuItem.getItemId()){
@@ -111,6 +117,9 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
             case (R.id.bottom_menu_item_contacts_requests):
                 navigateTo(R.id.UserRequestFragment);
                 return true;
+            case (R.id.bottom_menu_item_hidden):
+                navigateTo(R.id.searchContactFragment);
+                return true;
             default:
                 return false;
         }
@@ -118,12 +127,24 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
 
     private void navigateTo(int resID) {
         if(navController != null){
-            if(prevResId == -1){
+            if(prevResId == -1 || prevResId != resID){
                 prevResId = resID;
                 navController.navigate(resID);
-            }else if(prevResId != resID){
-                prevResId = resID;
-                navController.navigate(resID);
+                ColorStateList fabColor = null;
+                if(getContext() != null){
+                    if (resID == R.id.searchContactFragment) {
+                        fabColor = ColorStateList.valueOf(
+                                ContextCompat.getColor(getContext(), R.color.accentColor)
+                        );
+                    }else{
+                        fabColor = ColorStateList.valueOf(
+                                ContextCompat.getColor(getContext(), R.color.textColor)
+                        );
+                    }
+                }
+                if(fabColor != null){
+                    binding.fab.setBackgroundTintList(fabColor);
+                }
             }
         }
     }

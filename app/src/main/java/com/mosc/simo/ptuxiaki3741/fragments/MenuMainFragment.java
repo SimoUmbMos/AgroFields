@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -43,26 +44,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuMainFragment extends Fragment implements FragmentBackPress {
-    //fixme: map click accuracy
-    //fixme: stuck on loading..
+    //todo: (fix) map click accuracy
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
-    private List<User> friendRequests;
-    private List<Land> lands,sharedLands;
     private List<Land> data;
     private GoogleMap mMap;
-    private boolean drawPolygon;
+    private boolean drawPolygon, firstLoad;
 
     private FragmentMenuMainBinding binding;
     private ActionBar actionBar;
 
     //init
     private void initData(){
-        friendRequests = new ArrayList<>();
-        lands = new ArrayList<>();
-        sharedLands = new ArrayList<>();
         data = new ArrayList<>();
         drawPolygon = false;
+        firstLoad = true;
     }
     private void initActivity() {
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -84,17 +80,15 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
         }
     }
-    private void initObservers() {
+    private void initUserObservers() {
         if(vmUsers != null){
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
             vmUsers.getReceivedRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
         }
-        if(vmLands != null){
-            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
-            vmLands.getSharedLands().observe(getViewLifecycleOwner(),this::onSharedLandUpdate);
-        }
     }
     private void initFragment() {
+        binding.mainMenuAction.setVisibility(View.VISIBLE);
+        binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnHistory.setOnClickListener(v -> toLandHistory(getActivity()));
         binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
@@ -102,19 +96,21 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mvLands.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.setOnMapClickListener(p -> OnMapClick());
+        mMap.setOnPolygonClickListener(this::OnPolygonClick);
         if(binding != null){
             binding.mvLands.setVisibility(View.INVISIBLE);
-            binding.mainMenuAction.setVisibility(View.VISIBLE);
-            binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
-            mMap = googleMap;
-
-            googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            googleMap.getUiSettings().setRotateGesturesEnabled(false);
-            googleMap.getUiSettings().setScrollGesturesEnabled(false);
-            googleMap.getUiSettings().setZoomGesturesEnabled(false);
-            googleMap.setOnMapClickListener(p -> OnMapClick());
-            googleMap.setOnPolygonClickListener(this::OnPolygonClick);
-            googleMap.setOnMapLoadedCallback(this::mapFullLoaded);
+        }
+        initLandObservers();
+    }
+    private void initLandObservers() {
+        if(vmLands != null){
+            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
         }
     }
 
@@ -130,61 +126,35 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void onFriendRequestListUpdate(List<User> requests) {
-        friendRequests.clear();
-        if(requests != null)
-            friendRequests.addAll(requests);
-        updateRequestNotification();
+        updateRequestNotification(requests);
     }
     private void onLandUpdate(List<Land> newData) {
-        int index;
-        for(Land temp:lands) {
-            index = data.indexOf(temp);
-            if(index>-1){
-                data.remove(index);
+        AsyncTask.execute(()->{
+            data.clear();
+            if(newData != null){
+                for(Land temp:newData) {
+                    if(temp.getPerm().isRead()){
+                        data.add(temp);
+                    }
+                }
             }
-        }
-        lands.clear();
-        lands.addAll(newData);
-        for(Land temp:lands) {
-            if(temp.getPerm().isRead()){
-                data.add(temp);
-            }
-        }
-        drawMap();
-    }
-    private void onSharedLandUpdate(List<Land> newData) {
-        int index;
-        for(Land temp:sharedLands) {
-            index = data.indexOf(temp);
-            if(index>-1){
-                data.remove(index);
-            }
-        }
-        sharedLands.clear();
-        sharedLands.addAll(newData);
-        for(Land temp:sharedLands) {
-            if(temp.getPerm().isRead()){
-                data.add(temp);
-            }
-        }
-        drawMap();
+            if(getActivity() != null)
+                getActivity().runOnUiThread(()->{
+                    drawMap();
+                    if(firstLoad){
+                        firstLoad = false;
+                        binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
+                    }
+                });
+        });
     }
 
     //map
-    private void mapFullLoaded(){
-        if(binding != null){
-            binding.mvLands.setVisibility(View.VISIBLE);
-            binding.mainMenuAction.setVisibility(View.GONE);
-            binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
-            drawMap();
-        }
-    }
     private void OnPolygonClick(Polygon polygon){
         drawMap(polygon);
     }
     private void OnMapClick(){
-        if(drawPolygon)
-            drawMap();
+        if(drawPolygon) drawMap();
     }
     private void drawMap(){
         drawPolygon = false;
@@ -224,11 +194,11 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                             AppValues.defaultPadding
                     ));
                 }else{
-                    binding.mvLands.setVisibility(View.GONE);
+                    binding.mvLands.setVisibility(View.INVISIBLE);
                     binding.mainMenuAction.setVisibility(View.VISIBLE);
                 }
             }else{
-                binding.mvLands.setVisibility(View.GONE);
+                binding.mvLands.setVisibility(View.INVISIBLE);
                 binding.mainMenuAction.setVisibility(View.VISIBLE);
             }
         }
@@ -272,13 +242,13 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
 
     //ui
-    private void updateRequestNotification() {
-        if(friendRequests.size()>0){
+    private void updateRequestNotification(List<User> requests) {
+        if(requests.size()>0){
             binding.mcvRequestLayout.setVisibility(View.VISIBLE);
-            if(friendRequests.size()>99){
+            if(requests.size()>99){
                 binding.tvRequestNumber.setText(R.string.max_request_label);
             }else{
-                binding.tvRequestNumber.setText(String.valueOf(friendRequests.size()));
+                binding.tvRequestNumber.setText(String.valueOf(requests.size()));
             }
         }else{
             binding.mcvRequestLayout.setVisibility(View.GONE);
@@ -348,8 +318,8 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         initData();
         initActivity();
         initViewModels();
-        initObservers();
         initFragment();
+        initUserObservers();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();

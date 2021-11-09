@@ -41,5 +41,5 @@
         android:src="@drawable/ic_button_plus"
         android:theme="@style/FloatingActionButtonStyle.BottomNavigation"
         app:layout_anchor="@id/bottomBar"
-        android:contentDescription="TODO" /><!-- todo -->
+        android:contentDescription="@string/fab_content_desc_add_contact" /><!-- todo -->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

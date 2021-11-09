@@ -1,13 +1,26 @@
 package com.mosc.simo.ptuxiaki3741.enums;
 
 public enum LoginRegisterError {
-    EmailEmptyError,
-    EmailNotMatchError,
-    PasswordWrongError,
-    PasswordEmptyError,
-    PasswordNotMatchError,
-    PhoneLengthError,
-    UserNameWrongError,
+    NONE,
+
     UserNameEmptyError,
-    UserNameTakenError
+    UserNameSizeError,
+    UserNameInvalidCharacterError,
+    UserNameTakenError,
+    UserNameWrongError,
+
+    PasswordEmptyError,
+    PasswordSizeError,
+    PasswordInvalidCharacterError,
+    Password2EmptyError,
+    PasswordNotMatchError,
+    PasswordWrongError,
+
+    EmailEmptyError,
+    EmailInvalidCharacterError,
+    Email2EmptyError,
+    EmailNotMatchError,
+    EmailTakenError,
+
+    PhoneInvalidError,
 }
