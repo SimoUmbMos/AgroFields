@@ -35,7 +35,8 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
-
+//fixme: cant use greek characters on land name
+//todo: (idea) address->curr loc
     private Land land;
     private User currUser;
     private FragmentLandInfoBinding binding;

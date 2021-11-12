@@ -60,7 +60,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     }
     @Override public boolean onBackPressed() {
         if(isRegister){
-            showLogin();
+            toLogin();
             return false;
         }
         return true;
@@ -89,6 +89,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         showLogin();
         binding.btnLoginSubmit.setOnClickListener(v->onSubmitClick());
         binding.btnLoginSwitch.setOnClickListener(v->onSwitchUiClick());
+        binding.tvLoginRegisterHint.setOnClickListener(v->onSwitchUiClick());
     }
     private void initObservers() {
         if(vmUsers != null){

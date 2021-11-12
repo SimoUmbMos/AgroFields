@@ -13,9 +13,13 @@ import java.util.List;
 
 @Dao
 public interface LandDao {
-    @Query("SELECT * FROM LandData " +
-            "WHERE id = :lid")
+    @Query("SELECT * FROM LandData "+
+            "WHERE id = :lid ")
     LandData getLandData(long lid);
+
+    @Query("SELECT d.*, p.* FROM LandData d LEFT JOIN UserLandPermissions p ON d.id = p.LandID "+
+            "WHERE (p.LandID = :lid AND p.UserID = :uid) OR (d.id = :lid AND d.CreatorID = :uid)")
+    Land getLand(long lid,long uid);
 
     @Query("SELECT LandData.*, perm.* " +
             "FROM LandData INNER JOIN UserLandPermissions perm ON LandData.id = perm.LandID " +

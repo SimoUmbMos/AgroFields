@@ -127,6 +127,7 @@
     <string name="toggle_history_list">Toggle List</string>
     <!-- User Profile Fragment -->
     <string name="profile_bar_label">My Profile</string>
+    <string name="profile_edit_bar_label">Edit Profile</string>
     <string name="email_hint_user_profile">Email</string>
     <string name="phone_hint_user_profile">Phone</string>
     <string name="save_user">Save</string>

@@ -70,6 +70,12 @@
         <item name="colorOnPrimary">@color/backgroundColor</item>
         <item name="colorOnSecondary">@color/backgroundColor</item>
     </style>
+    <style name="FloatingActionButtonStyle.ChangeState" parent="FloatingActionButtonStyle">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="colorSecondary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/textColor</item>
+        <item name="colorOnSecondary">@color/textColor</item>
+    </style>
     <style name="FloatingActionButtonStyle.BottomNavigation" parent="FloatingActionButtonStyle">
         <item name="colorPrimary">@color/accentColor</item>
         <item name="colorSecondary">@color/accentColor</item>

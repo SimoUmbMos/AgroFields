@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/UserProfileRoot"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/UserProfileRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.ProfileUserFragment">
@@ -41,8 +41,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:counterEnabled="true"
-            app:counterMaxLength="10"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -55,17 +53,15 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btnUserProfileModify"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="32dp"
         android:text="@string/edit_user"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/llUserProfileData"
         app:layout_constraintStart_toStartOf="@+id/llUserProfileData"
-        style="?android:attr/buttonBarButtonStyle"
-        app:theme="@style/BorderlessButtonStyle"/>
+        app:layout_constraintTop_toBottomOf="@+id/llUserProfileData"
+        app:theme="@style/FloatingActionButtonStyle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

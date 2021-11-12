@@ -9,7 +9,7 @@ import com.mosc.simo.ptuxiaki3741.models.entities.UserLandPermissions;
 import java.util.List;
 
 public interface LandRepository {
-    Land getLand(long lid);
+    Land getLand(long lid,long uid);
     List<Land> getLandsByUser(User user);
     List<LandDataRecord> getLandRecordsByUser(User user);
 

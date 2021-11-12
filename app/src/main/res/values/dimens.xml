@@ -2,7 +2,6 @@
 <resources>
     <!-- Login Register margin metrics -->
     <dimen name="login_fields_margin">16dp</dimen>
-    <dimen name="login_fields_margin_small">2dp</dimen>
     <!-- List margin metrics -->
     <dimen name="list_history_item_margin">8dp</dimen>
 </resources>

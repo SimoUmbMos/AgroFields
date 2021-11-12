@@ -58,19 +58,26 @@ public class User implements Parcelable,Cloneable {
         this.email = email;
     }
     @Ignore
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.phone = null;
+        this.email = null;
+    }
+    @Ignore
+    public User(String username) {
+        this.username = username;
+        this.password = null;
+        this.phone = null;
+        this.email = null;
+    }
+    @Ignore
     protected User(Parcel in) {
         id = in.readLong();
         username = in.readString();
         password = in.readString();
         phone = in.readString();
         email = in.readString();
-    }
-    @Ignore
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
-        this.phone = null;
-        this.email = null;
     }
 
     public long getId() {

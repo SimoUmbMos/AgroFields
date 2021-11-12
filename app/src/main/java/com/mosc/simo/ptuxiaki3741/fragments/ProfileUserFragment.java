@@ -1,12 +1,14 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -28,10 +30,12 @@ import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 
 public class ProfileUserFragment extends Fragment implements FragmentBackPress {
+    //todo: make edit mode on and off more obviously
     private FragmentUserProfileBinding binding;
     private User currUser;
     private boolean isEditMode;
     private UserViewModel vmUsers;
+    private ActionBar actionBar;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,8 +46,9 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
-        initFragment();
         initViewModels();
+        initFragment();
+        initObservers();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -56,12 +61,16 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menu_item_logout){
-            logout();
+            onLogoutClick();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
+        if(isEditMode){
+            onResetClick();
+            return false;
+        }
         return true;
     }
 
@@ -69,23 +78,25 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
         MainActivity mainActivity = (MainActivity) getActivity();
         if( mainActivity != null){
             mainActivity.setOnBackPressed(this);
-            ActionBar actionBar = mainActivity.getSupportActionBar();
+            actionBar = mainActivity.getSupportActionBar();
             if(actionBar != null){
-                actionBar.setTitle(getString(R.string.profile_bar_label));
                 actionBar.show();
             }
         }
     }
-    private void initFragment(){
-        binding.btnUserProfileModify.setOnClickListener(v->onModifyClick());
-        setEditMode(false);
-    }
     private void initViewModels(){
         if(getActivity() != null){
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::setupUiForUser);
+        }
+    }
+    private void initFragment(){
+        toNormalMode();
+    }
+    private void initObservers(){
+        if(vmUsers != null){
+            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
         }else{
-            setupUiForUser(null);
+            onUserUpdate(null);
         }
     }
     private void initMenu(Menu menu){
@@ -95,7 +106,12 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
         );
     }
 
-    private void setupUiForUser(User user) {
+    private void clearErrors(){
+        binding.etUserProfileEmailLayout.setError(null);
+        binding.etUserProfilePhoneLayout.setError(null);
+    }
+
+    private void onUserUpdate(User user) {
         currUser = user;
         if(user != null){
             binding.etUserProfilePhone.setText(user.getPhone());
@@ -103,51 +119,6 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
         }else{
             toLogin(getActivity());
         }
-    }
-
-    private void onModifyClick() {
-        setEditMode(!isEditMode);
-        if(isEditMode){
-            binding.btnUserProfileModify.setText(R.string.save_user);
-        }else{
-            binding.btnUserProfileModify.setText(R.string.edit_user);
-            if(currUser != null){
-                String email = getEmailData(),
-                        phone = getPhoneData();
-                User copy = new User(currUser.getUsername(),email,phone);
-                LoginRegisterError result = UserUtil.checkUserData(copy);
-                switch (result){
-                    case EmailEmptyError:
-                        binding.etUserProfileEmailLayout.setError(
-                                getResources().getString(R.string.register_email_empty_error));
-                        break;
-                    case EmailInvalidCharacterError:
-                        binding.etUserProfileEmailLayout.setError(
-                                getResources().getString(R.string.register_email_invalid_error));
-                        break;
-                    case PhoneInvalidError:
-                        binding.etUserProfilePhoneLayout.setError(
-                                getResources().getString(R.string.register_phone_invalid_error));
-                        break;
-                    default:
-                        binding.etUserProfileEmailLayout.setError(null);
-                        binding.etUserProfilePhoneLayout.setError(null);
-                        break;
-                }
-                if(result != LoginRegisterError.NONE){
-                    setupUiForUser(currUser);
-                }else{
-                    currUser.setEmail(email);
-                    currUser.setPhone(phone);
-                    AsyncTask.execute(()->vmUsers.editUser(currUser));
-                }
-            }
-        }
-    }
-    public void setEditMode(boolean isEditMode) {
-        this.isEditMode = isEditMode;
-        binding.etUserProfileEmail.setEnabled(isEditMode);
-        binding.etUserProfilePhone.setEnabled(isEditMode);
     }
 
     private String getEmailData(){
@@ -165,11 +136,110 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
         return "";
     }
 
-    private void logout(){
+    private void onEditClick(){
+        toEditMode();
+    }
+    private void onSaveClick(){
+        if(saveAction())
+            toNormalMode();
+    }
+    private void onLogoutClick(){
         vmUsers.logout();
     }
+    private void onResetClick(){
+        if(isEditMode){
+            clearErrors();
+            onUserUpdate(currUser);
+            toNormalMode();
+        }
+    }
 
-    public void toLogin(@Nullable Activity activity) {
+    private boolean saveAction(){
+        clearErrors();
+        if(currUser != null){
+            String email = getEmailData(), phone = getPhoneData();
+            User copy = new User(currUser.getUsername(),phone,email);
+            LoginRegisterError result = UserUtil.checkUserData(copy);
+            if(result == LoginRegisterError.NONE){
+                currUser.setEmail(email);
+                currUser.setPhone(phone);
+                AsyncTask.execute(()->vmUsers.editUser(currUser));
+                return true;
+            }else{
+                switch (result){
+                    case EmailEmptyError:
+                        binding.etUserProfileEmailLayout.setError(
+                                getResources().getString(R.string.register_email_empty_error));
+                        break;
+                    case EmailInvalidCharacterError:
+                        binding.etUserProfileEmailLayout.setError(
+                                getResources().getString(R.string.register_email_invalid_error));
+                        break;
+                    case PhoneInvalidError:
+                        binding.etUserProfilePhoneLayout.setError(
+                                getResources().getString(R.string.register_phone_invalid_error));
+                        break;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void toEditMode(){
+        isEditMode = true;
+        clearErrors();
+        binding.etUserProfileEmail.setEnabled(true);
+        binding.etUserProfilePhone.setEnabled(true);
+        binding.btnUserProfileModify.setText(R.string.save_user);
+        binding.btnUserProfileModify.setOnClickListener(v->onSaveClick());
+        if(actionBar != null){
+            actionBar.setTitle(getString(R.string.profile_edit_bar_label));
+        }
+        if(getContext() != null){
+            binding.btnUserProfileModify.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                    getContext(),
+                                    R.color.accentColor
+                            )
+                    )
+            );
+            binding.btnUserProfileModify.setTextColor(
+                    ContextCompat.getColor(
+                            getContext(),
+                            R.color.backgroundColor
+                    )
+            );
+        }
+    }
+    private void toNormalMode(){
+        isEditMode = false;
+        clearErrors();
+        binding.etUserProfileEmail.setEnabled(false);
+        binding.etUserProfilePhone.setEnabled(false);
+        binding.btnUserProfileModify.setText(R.string.edit_user);
+        binding.btnUserProfileModify.setOnClickListener(v->onEditClick());
+        if(actionBar != null){
+            actionBar.setTitle(getString(R.string.profile_bar_label));
+        }
+        if(getContext() != null){
+            binding.btnUserProfileModify.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                    getContext(),
+                                    R.color.cardBackgroundColor
+                            )
+                    )
+            );
+            binding.btnUserProfileModify.setTextColor(
+                    ContextCompat.getColor(
+                            getContext(),
+                            R.color.textColor
+                    )
+            );
+        }
+    }
+    private void toLogin(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ProfileUserFragment);

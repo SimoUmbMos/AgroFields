@@ -35,9 +35,8 @@ public class LandRepositoryImpl implements LandRepository {
     }
 
     @Override
-    public Land getLand(long lid) {
-        LandData landData = db.landDao().getLandData(lid);
-        return new Land(landData);
+    public Land getLand(long lid,long uid) {
+        return db.landDao().getLand(lid,uid);
     }
     @Override
     public List<LandDataRecord> getLandRecordsByUser(User user) {
