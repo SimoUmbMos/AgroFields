@@ -13,7 +13,8 @@ public interface UserRepository {
     User getUserByID(long id);
     User getUserByUserName(String username);
     User getUserByUserNameAndPassword(String username, String password);
-    List<User> userSearch(User user, String Username);
+    List<User> userSearch(User user, String Username, int page);
+    int searchUserMaxPage(User user, String Username);
 
     UserFriendRequestStatus sendFriendRequest(User currUser, User receiver);
     boolean deleteFriendRequest(User currUser, User receiver);

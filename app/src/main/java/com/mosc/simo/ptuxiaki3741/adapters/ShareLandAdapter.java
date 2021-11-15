@@ -9,15 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderShareLandCheckableBinding;
+import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 
 import java.util.List;
 
 public class ShareLandAdapter extends RecyclerView.Adapter<ShareLandAdapter.ShareLandViewHolder>{
     private final List<Land> data;
-    private final OnSharedLandCheckListener listener;
+    private final ActionResult<Land> listener;
 
-    public ShareLandAdapter(List<Land> data, OnSharedLandCheckListener listener){
+    public ShareLandAdapter(List<Land> data, ActionResult<Land> listener){
         this.data = data;
         this.listener = listener;
     }
@@ -54,15 +55,11 @@ public class ShareLandAdapter extends RecyclerView.Adapter<ShareLandAdapter.Shar
             super(view);
             binding = ViewHolderShareLandCheckableBinding.bind(view);
         }
-        public void bind(Land land, OnSharedLandCheckListener listener){
+        public void bind(Land land, ActionResult<Land> listener){
             binding.tvSharedLandName.setText(land.getData().getTitle());
             binding.tvSharedLandName.setOnClickListener(v->
-                    listener.onLandSelect(land)
+                    listener.onActionResult(land)
             );
         }
-    }
-
-    public interface OnSharedLandCheckListener{
-        void onLandSelect(Land land);
     }
 }

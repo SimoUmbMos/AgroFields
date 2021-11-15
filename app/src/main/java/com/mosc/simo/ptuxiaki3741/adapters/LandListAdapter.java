@@ -10,24 +10,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandCheckableBinding;
+import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 
 import java.util.List;
 
-
 public class LandListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final int LIST_DEFAULT = 1,LIST_CHECKABLE = 2;
     private final List<Land> data;
-    private final OnLandClick onLandClick;
-    private final OnLandLongClick onLandLongClick;
+    private final ActionResult<Land> onLandClick;
+    private final ActionResult<Land> onLandLongClick;
     private boolean showCheckMark;
 
     public LandListAdapter(
             List<Land> data,
-            OnLandClick onLandClick,
-            OnLandLongClick onLandLongClick
+            ActionResult<Land> onLandClick,
+            ActionResult<Land> onLandLongClick
     ){
         this.data = data;
         this.onLandClick = onLandClick;
@@ -69,20 +69,20 @@ public class LandListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     item.binding.ctvLandName.setText(display);
                     item.binding.ctvLandName.setChecked(land.isSelected());
                     item.binding.ctvLandName.setOnClickListener(v ->
-                            onLandClick.onLandClick(land)
+                            onLandClick.onActionResult(land)
                     );
                     item.binding.ctvLandName.setOnLongClickListener(v -> {
-                        onLandLongClick.onLandLongClick(land);
+                        onLandLongClick.onActionResult(land);
                         return true;
                     });
                 }else{
                     LandItem item = (LandItem) holder;
                     item.binding.ctvLandName.setText(display);
                     item.binding.ctvLandName.setOnClickListener(v ->
-                            onLandClick.onLandClick(land)
+                            onLandClick.onActionResult(land)
                     );
                     item.binding.ctvLandName.setOnLongClickListener(v -> {
-                        onLandLongClick.onLandLongClick(land);
+                        onLandLongClick.onActionResult(land);
                         return true;
                     });
                 }
@@ -117,12 +117,5 @@ public class LandListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             binding = ViewHolderLandCheckableBinding.bind(itemView);
         }
-    }
-
-    public interface OnLandClick{
-        void onLandClick(Land land);
-    }
-    public interface OnLandLongClick{
-        void onLandLongClick(Land land);
     }
 }

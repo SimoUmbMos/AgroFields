@@ -78,6 +78,7 @@
     <string name="cancel_info">Cancel</string>
     <!-- Land Map Preview Fragment -->
     <string name="edit_land">Edit Land</string>
+    <string name="history_land">Land History</string>
     <string name="restore_land">Restore Land</string>
     <!-- Land Map Fragment -->
     <string name="change_terrain_type">change terrain type</string>

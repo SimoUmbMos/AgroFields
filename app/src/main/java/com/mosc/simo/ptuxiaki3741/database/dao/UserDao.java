@@ -18,8 +18,13 @@ public interface UserDao {
 
     @Query("SELECT * FROM Users " +
             "WHERE Username GLOB  '*' || :search || '*' " +
+            "AND id != :searcherID " +
+            "LIMIT :limit OFFSET :offset")
+    List<User> searchUserByUserName(long searcherID, String search, int limit, int offset);
+    @Query("SELECT id FROM Users " +
+            "WHERE Username GLOB  '*' || :search || '*' " +
             "AND id != :searcherID")
-    List<User> searchUserByUserName(long searcherID, String search);
+    List<Long> searchUserByUserNamePage(long searcherID, String search);
 
     @Query("SELECT u.* FROM Users u INNER JOIN UserRelationships ur ON u.id = ur.SenderID " +
             "WHERE ur.ReceiverID = :receiverID " +

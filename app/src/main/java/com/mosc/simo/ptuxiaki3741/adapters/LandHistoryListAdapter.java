@@ -9,48 +9,44 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryBinding;
-import com.mosc.simo.ptuxiaki3741.models.LandHistory;
+import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.view.HistoryEntryView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryListAdapter.ItemViewHolder>{
-    private final List<LandHistory> data;
+public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryListAdapter.HistoryItemViewHolder>{
+    private final List<LandDataRecord> data;
     private final List<User> users;
     private final String[] values;
-    private final OnRecordClick onRecordClick;
-    private final OnHeaderClick onHeaderClick;
+    private final ActionResult<LandDataRecord> onClick;
     private final DateFormat dateFormat;
     public LandHistoryListAdapter(
-            List<LandHistory> data,
+            List<LandDataRecord> data,
             List<User> users,
             String[] values,
-            OnHeaderClick onHeaderClick,
-            OnRecordClick onRecordClick
+            ActionResult<LandDataRecord> onClick
     ){
         this.data = data;
         this.users = users;
         this.values = values;
-        this.onRecordClick = onRecordClick;
-        this.onHeaderClick = onHeaderClick;
+        this.onClick = onClick;
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
     }
 
-    @NonNull @Override public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    @NonNull @Override public HistoryItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.view_holder_history,
                 parent,
                 false
         );
-        return new ItemViewHolder(view);
+        return new HistoryItemViewHolder(view);
     }
-    @Override public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull HistoryItemViewHolder holder, int position) {
         if(position < data.size()){
             if(data.get(position) != null){
                 setupViewHolder(holder, position);
@@ -65,78 +61,43 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
         return 0;
     }
 
-    private void setupViewHolder(@NonNull ItemViewHolder holder, int position) {
-        LandHistory item = data.get(position);
-        holder.binding.tvLandTitle.setText(item.getTitle());
-        if(item.isVisible()){
-            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_item_close,
-                    0
-            );
-        }else{
-            holder.binding.tvLandTitle.setCompoundDrawablesWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_item_open,
-                    0
-            );
-        }
-        holder.binding.tvLandTitle.setOnClickListener(v->onHeaderClick.onHeaderClick(position));
-        holder.binding.tlHistoryRoot.removeAllViews();
-        if(item.isVisible()){
-            String username;
-            String date;
-            String action;
-            for(LandDataRecord record : item.getData()){
-                username = "";
-                for(User user:users){
-                    if(record.getUserID() == user.getId())
-                        username = user.getUsername();
-                }
-                date = dateFormat.format(record.getDate());
-                action = "";
-                switch (record.getActionID()){
-                    case CREATE:
-                        action = values[0];
-                        break;
-                    case UPDATE:
-                        action = values[1];
-                        break;
-                    case RESTORE:
-                        action = values[2];
-                        break;
-                    case DELETE:
-                        action = values[3];
-                        break;
-                }
-                holder.binding.tlHistoryRoot.addView(new HistoryEntryView(
-                        holder.binding.getRoot().getContext(),
-                        username,
-                        date,
-                        action,
-                        v->onRecordClick.onRecordClick(record)
-                ));
-            }
-            holder.binding.tlHistoryRoot.setVisibility(View.VISIBLE);
-        }else{
-            holder.binding.tlHistoryRoot.setVisibility(View.GONE);
-        }
-    }
+    private void setupViewHolder(@NonNull HistoryItemViewHolder holder, int position) {
+        LandDataRecord item = data.get(position);
+        holder.binding.getRoot().setOnClickListener(v->onClick.onActionResult(item));
 
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+        String username = "";
+        for(User user:users){
+            if(item.getUserID() == user.getId())
+                username = user.getUsername();
+        }
+        holder.binding.tvHistoryEntryUser.setText(username);
+
+        String date = dateFormat.format(item.getDate());
+        holder.binding.tvHistoryEntryDate.setText(date);
+
+        String action = "";
+        switch (item.getActionID()){
+            case CREATE:
+                action = values[0];
+                break;
+            case UPDATE:
+                action = values[1];
+                break;
+            case RESTORE:
+                action = values[2];
+                break;
+            case DELETE:
+                action = values[3];
+                break;
+        }
+        holder.binding.tvHistoryEntryAction.setText(action);
+
+    }
+    public static class HistoryItemViewHolder extends RecyclerView.ViewHolder {
         public final ViewHolderHistoryBinding binding;
-        public ItemViewHolder(@NonNull View view) {
+        public HistoryItemViewHolder(@NonNull View view) {
             super(view);
             binding = ViewHolderHistoryBinding.bind(view);
         }
-    }
-
-    public interface OnRecordClick{
-        void onRecordClick(LandDataRecord record);
-    }
-    public interface OnHeaderClick{
-        void onHeaderClick(int pos);
     }
 }

@@ -43,6 +43,10 @@ public class UserViewModel extends AndroidViewModel {
         RoomDatabase db = MainActivity.getRoomDb(application.getApplicationContext());
         userRepository = new UserRepositoryImpl(db);
     }
+    public UserViewModel(@NonNull Application application, RoomDatabase db) {
+        super(application);
+        userRepository = new UserRepositoryImpl(db);
+    }
 
     public void init(SharedPreferences sharedPref){
         this.sharedPref = sharedPref;
@@ -254,11 +258,17 @@ public class UserViewModel extends AndroidViewModel {
         populateCurrUserRelativeLists(null);
     }
 
-    public List<User> searchUser(String search){
+    public List<User> searchUser(String search, int page){
         if(currUser.getValue() != null){
-            return userRepository.userSearch(currUser.getValue(), search);
+            return userRepository.userSearch(currUser.getValue(), search, page);
         }
         return null;
+    }
+    public int searchUserMaxPage(String search){
+        if(currUser.getValue() != null){
+            return userRepository.searchUserMaxPage(currUser.getValue(), search);
+        }
+        return 1;
     }
 
     public UserFriendRequestStatus sendRequest(User user){

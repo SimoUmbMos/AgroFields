@@ -13,6 +13,7 @@ import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserRelationship;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,17 +60,42 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> userSearch(User searchUser, String search) {
+    public List<User> userSearch(User searchUser, String search, int page) {
+        if(page<1)
+            page = 1;
         if(search.length() > 3 && searchUser != null){
             List<User> result = db.userDao().searchUserByUserName(
                     searchUser.getId(),
-                    search
+                    search,
+                    AppValues.DATABASE_PAGE_SIZE,
+                    (page-1)*AppValues.DATABASE_PAGE_SIZE
             );
-            removeUsers(searchUser, result, UserDBAction.BLOCKED);
-            removeUsers(searchUser, result, UserDBAction.FRIENDS);
+            if(result == null)
+                return new ArrayList<>();
+            if(result.size()>0){
+                removeUsers(searchUser, result, UserDBAction.BLOCKED);
+                removeUsers(searchUser, result, UserDBAction.FRIENDS);
+            }
             return result;
         }
-        return null;
+        return new ArrayList<>();
+    }
+    @Override
+    public int searchUserMaxPage(User searchUser, String search) {
+        if(search.length() > 3 && searchUser != null){
+            List<Long> result = db.userDao().searchUserByUserNamePage(
+                    searchUser.getId(),
+                    search
+            );
+            if(result == null)
+                return 1;
+            if(result.size()>0){
+                removeIDs(searchUser, result, UserDBAction.BLOCKED);
+                removeIDs(searchUser, result, UserDBAction.FRIENDS);
+            }
+            return (result.size() - 1) / AppValues.DATABASE_PAGE_SIZE + 1;
+        }
+        return 1;
     }
 
     @Override
@@ -318,8 +344,25 @@ public class UserRepositoryImpl implements UserRepository {
             for(UserRelationship relationship : relationships){
                 if(relationship.getReceiverID() == searchUser.getId()){
                     removeList.add(db.userDao().getUserById(relationship.getSenderID()));
-                }else{
+                }else if(relationship.getSenderID() == searchUser.getId()){
                     removeList.add(db.userDao().getUserById(relationship.getReceiverID()));
+                }
+            }
+            result.removeAll(removeList);
+        }
+    }
+    private void removeIDs(User searchUser, List<Long> result, UserDBAction type) {
+        if(result.size() > 0){
+            List<UserRelationship> relationships = db.userRelationshipDao().getByIDAndType(
+                    searchUser.getId(),
+                    type
+            );
+            List<Long> removeList = new ArrayList<>();
+            for(UserRelationship relationship : relationships){
+                if(relationship.getReceiverID() == searchUser.getId()){
+                    removeList.add(relationship.getSenderID());
+                }else if(relationship.getSenderID() == searchUser.getId()){
+                    removeList.add(relationship.getReceiverID());
                 }
             }
             result.removeAll(removeList);

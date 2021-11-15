@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,8 +39,10 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
-public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
+import java.util.List;
 
+public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
+    private static final String TAG = "MapLandPreviewFragment";
     //todo: (idea) make memo based on user
     private FragmentLandMapPreviewBinding binding;
 
@@ -88,7 +91,9 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     private void initViewModel(){
         if(getActivity() != null){
             UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+            LandViewModel vmLand = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
+            vmLand.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
         }
     }
     private void initFragment(){
@@ -108,7 +113,8 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
 
     //map relative
     private void drawLandOnMap() {
-        if (currLand != null) {
+        if (currLand != null && mMap != null) {
+            mMap.clear();
             int strokeColor,fillColor;
             if(getContext() != null){
                 strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
@@ -145,6 +151,16 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     private void onUserUpdate(User user) {
         currUser = user;
     }
+    private void onLandUpdate(List<Land> lands) {
+        if(currLand != null){
+            for(Land temp:lands){
+                if(temp.getData().getId() == currLand.getData().getId() && !isHistory){
+                    currLand.setData(temp.getData());
+                }
+            }
+        }
+        drawLandOnMap();
+    }
 
     //restore relative
     private void restoreLand() {
@@ -155,7 +171,10 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     }
     private boolean isValidToRestore() {
         if(currUser != null){
-            return currLand.getData().getCreator_id() == currUser.getId();
+            if(currLand !=null){
+                return currLand.getPerm().isAdmin() ||
+                        currLand.getData().getCreator_id() == currUser.getId();
+            }
         }
         return false;
     }
@@ -177,6 +196,16 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });
     }
+    public void toLandHistory(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.MapLandPreviewFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppValues.argLandHistoryFragment,currLand);
+                if(nav != null)
+                    nav.navigate(R.id.toLandHistory,bundle);
+            });
+    }
     public void finish(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(activity::onBackPressed);
@@ -195,23 +224,28 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         initActivity();
         initViewModel();
         initFragment();
+        Log.d(TAG, "onViewCreated");
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
         binding.mvLand.onDestroy();
         binding = null;
+        Log.d(TAG, "onDestroyView");
     }
     @Override public void onResume() {
         super.onResume();
         binding.mvLand.onResume();
+        Log.d(TAG, "onResume");
     }
     @Override public void onPause() {
         super.onPause();
         binding.mvLand.onPause();
+        Log.d(TAG, "onPause");
     }
     @Override public void onLowMemory() {
         super.onLowMemory();
         binding.mvLand.onLowMemory();
+        Log.d(TAG, "onLowMemory");
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.land_map_preview_menu, menu);
@@ -219,6 +253,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     }
     @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
         MenuItem editItem = menu.findItem(R.id.menu_item_edit_land);
+        MenuItem historyItem = menu.findItem(R.id.menu_item_history_land);
         MenuItem restoreItem = menu.findItem(R.id.menu_item_restore_land);
         if(editItem != null){
             if(currLand.getPerm().isWrite()){
@@ -227,6 +262,15 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             }else{
                 editItem.setVisible(false);
                 editItem.setEnabled(false);
+            }
+        }
+        if(historyItem != null){
+            if(currLand.getPerm().isAdmin()){
+                historyItem.setVisible(!isHistory);
+                historyItem.setEnabled(!isHistory);
+            }else{
+                historyItem.setVisible(false);
+                historyItem.setEnabled(false);
             }
         }
         if(restoreItem != null){
@@ -244,6 +288,9 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         switch (item.getItemId()){
             case(R.id.menu_item_edit_land):
                 toLandEdit(getActivity());
+                return true;
+            case(R.id.menu_item_history_land):
+                toLandHistory(getActivity());
                 return true;
             case(R.id.menu_item_restore_land):
                 restoreLand();

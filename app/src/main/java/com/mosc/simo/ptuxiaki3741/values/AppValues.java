@@ -5,6 +5,7 @@ import android.graphics.Color;
 public final class AppValues {
     /* DB VALUES*/
     public static final int DATABASE_VERSION = 28;
+    public static final int DATABASE_PAGE_SIZE = 24;
     /* ViewModels VALUES */
     public static final String sharedPreferenceKeyUserViewModel = "currUser";
     public static final long sharedPreferenceDefaultUserViewModel = -1;
@@ -25,6 +26,8 @@ public final class AppValues {
     public static final String SHARE_LAND_DATA_ARG = "land";
     /* Land Info Fragment Values */
     public static final String argLandInfoFragment = "land";
+    /* Land History Fragment Values */
+    public static final String argLandHistoryFragment = "land";
     /* Land Map Preview Fragment Values*/
     public static final String argLandLandMapPreviewFragment = "land";
     public static final String argIsHistoryLandMapPreviewFragment= "is_history";

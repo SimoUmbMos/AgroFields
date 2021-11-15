@@ -9,15 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderUserContactBinding;
+import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.util.List;
 
 public class UserContactsAdapter extends RecyclerView.Adapter<UserContactsAdapter.ViewHolder> {
     private final List<User> data;
-    private final OnContactClick onContactClick;
+    private final ActionResult<User> onContactClick;
 
-    public UserContactsAdapter(List<User> data, OnContactClick onContactClick){
+    public UserContactsAdapter(List<User> data, ActionResult<User> onContactClick){
         this.onContactClick = onContactClick;
         this.data = data;
     }
@@ -37,7 +38,7 @@ public class UserContactsAdapter extends RecyclerView.Adapter<UserContactsAdapte
                 User user = data.get(position);
                 holder.binding.tvUserName.setText(user.getUsername());
                 holder.binding.tvUserName.setOnClickListener(
-                        v->onContactClick.onContactClick(user)
+                        v->onContactClick.onActionResult(user)
                 );
             }
         }
@@ -56,9 +57,5 @@ public class UserContactsAdapter extends RecyclerView.Adapter<UserContactsAdapte
             super(itemView);
             binding = ViewHolderUserContactBinding.bind(itemView);
         }
-    }
-
-    public interface OnContactClick{
-        void onContactClick(User user);
     }
 }

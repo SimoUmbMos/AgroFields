@@ -10,9 +10,15 @@
             android:title="@string/edit_land"
             app:showAsAction="always" />
         <item
+            android:id="@+id/menu_item_history_land"
+            android:orderInCategory="2"
+            android:icon="@drawable/ic_button_history"
+            android:title="@string/history_land"
+            app:showAsAction="always" />
+        <item
             android:id="@+id/menu_item_restore_land"
             android:icon="@drawable/ic_menu_restore"
-            android:orderInCategory="2"
+            android:orderInCategory="3"
             android:title="@string/restore_land"
             app:showAsAction="ifRoom" />
     </group>

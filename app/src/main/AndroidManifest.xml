@@ -8,6 +8,9 @@
         android:name="com.mosc.simo.ptuxiaki3741.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />

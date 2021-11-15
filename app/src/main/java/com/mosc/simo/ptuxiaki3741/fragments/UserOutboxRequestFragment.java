@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,12 +37,14 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
     private FragmentUserOutboxRequestBinding binding;
     private ActionBar actionBar;
     private UserSendRequestAdapter adapter;
+    private LinearLayoutManager layoutManager;
 
     private final List<User> requests = new ArrayList<>();
     private final List<UserRequest> displayData = new ArrayList<>();
     private UserViewModel vmUsers;
 
     private String lastQuery;
+    private int searchPage,maxSearchPage;
 
     private void initData(){
         lastQuery = "";
@@ -70,7 +73,7 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
             vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
     }
     private void initFragment(){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(
+        layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false
@@ -78,6 +81,17 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
         binding.rvRequestList.setLayoutManager(layoutManager);
         binding.rvRequestList.setHasFixedSize(true);
         binding.rvRequestList.setAdapter(adapter);
+        binding.rvRequestList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(searchPage < maxSearchPage){
+                    if(layoutManager.findLastVisibleItemPosition() == displayData.size() - 1){
+                        loadMoreData();
+                    }
+                }
+            }
+        });
         updateUi();
     }
     private void initObservers(){
@@ -86,15 +100,8 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
     }
 
     private void onSearchUpdate(String query) {
-        if(query.length()>3){
-            lastQuery = query;
-            loadData();
-        }else{
-            if(!lastQuery.isEmpty()){
-                lastQuery = "";
-                clearData();
-            }
-        }
+        lastQuery = query;
+        loadInitData();
     }
     private void onUpdateRequests(List<User> data){
         requests.clear();
@@ -102,19 +109,23 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
         refresh();
     }
     @SuppressLint("NotifyDataSetChanged")
-    private void onDataUpdate(List<User> data, boolean isRequest) {
+    private void setDataFromRequest() {
         displayData.clear();
-        if(isRequest){
-            for(User temp : data){
+        for(User temp : requests){
+            displayData.add(new UserRequest(temp,true));
+        }
+        adapter.notifyDataSetChanged();
+        updateUi();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    private void setData(List<User> data, boolean clearList) {
+        if(clearList)
+            displayData.clear();
+        for(User temp : data){
+            if(requests.contains(temp))
                 displayData.add(new UserRequest(temp,true));
-            }
-        }else{
-            for(User temp : data){
-                if(requests.contains(temp))
-                    displayData.add(new UserRequest(temp,true));
-                else
-                    displayData.add(new UserRequest(temp,false));
-            }
+            else
+                displayData.add(new UserRequest(temp,false));
         }
         adapter.notifyDataSetChanged();
         updateUi();
@@ -169,26 +180,49 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
     }
 
     private void refresh(){
-        if(!lastQuery.isEmpty()){
-            loadData();
+        loadInitData();
+    }
+    private void loadInitData() {
+        searchPage = 1;
+        maxSearchPage = 1;
+        if(isValidSearch(lastQuery)){
+            actionBar.setTitle(lastQuery);
+            AsyncTask.execute(()->{
+                List<User> data = new ArrayList<>();
+                if (vmUsers != null) {
+                    maxSearchPage = vmUsers.searchUserMaxPage(lastQuery);
+                    data.addAll(vmUsers.searchUser(lastQuery, searchPage));
+                }
+                if (getActivity() != null)
+                    getActivity().runOnUiThread(() -> setData(data, true));
+            });
         }else{
-            clearData();
+            lastQuery = "";
+            actionBar.setTitle(getString(R.string.outbox_request_title));
+            setDataFromRequest();
         }
     }
-    private void loadData() {
-        actionBar.setTitle(lastQuery);
-        AsyncTask.execute(()->{
-            List<User> data = new ArrayList<>();
-            if(vmUsers != null){
-                data.addAll(vmUsers.searchUser(lastQuery));
-            }
-            if(getActivity() != null)
-                getActivity().runOnUiThread(()->onDataUpdate(data,false));
-        });
+    private void loadMoreData(){
+        //fixme: do testing for new paged users search system
+        if(searchPage < maxSearchPage){
+            searchPage++;
+            AsyncTask.execute(()->{
+                List<User> data = new ArrayList<>();
+                if (vmUsers != null) {
+                    if (searchPage <= maxSearchPage) {
+                        data.addAll(vmUsers.searchUser(lastQuery, searchPage));
+                    }
+                }
+                if (getActivity() != null)
+                    getActivity().runOnUiThread(() -> setData(data, false));
+            });
+        }
     }
-    private void clearData(){
-        actionBar.setTitle(getString(R.string.outbox_request_title));
-        onDataUpdate(requests,true);
+
+    private boolean isValidSearch(String query){
+        if(query.trim().isEmpty())
+            return false;
+        return query.length()>3;
     }
 
     private void updateUi() {

@@ -76,9 +76,11 @@
             app:destination="@id/MapLandEditorFragment"
             app:popUpTo="@id/MenuLandsFragment"
             app:popUpToInclusive="false" />
+        <action android:id="@+id/toLandHistory"
+            app:destination="@id/LandHistoryFragment"/>
     </fragment>
-    <fragment android:id="@+id/MenuHistoryFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuHistoryFragment"
+    <fragment android:id="@+id/LandHistoryFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.LandHistoryFragment"
         android:label="fragment_land_history_menu"
         tools:layout="@layout/fragment_menu_history" >
         <action android:id="@+id/toMapLandPreview"
@@ -103,8 +105,6 @@
             app:popUpToInclusive="true" />
         <action android:id="@+id/toProfileUser"
             app:destination="@id/ProfileUserFragment" />
-        <action android:id="@+id/toMenuHistory"
-            app:destination="@id/MenuHistoryFragment" />
         <action android:id="@+id/toMenuLands"
             app:destination="@id/MenuLandsFragment" />
         <action android:id="@+id/toMenuContacts"
