@@ -92,6 +92,13 @@
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
+    <style name="CustomSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderStyle</item>
+    </style>
+    <style name="SliderStyle" parent="">
+        <item name="colorPrimary">@color/accentColor</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
+    </style>
 
     <!-- dialog -->
     <style name="MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">

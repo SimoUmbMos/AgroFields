@@ -50,10 +50,11 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MapFileFragment"
         android:label="fragment_file_map"
         tools:layout="@layout/fragment_file_map" >
-        <action android:id="@+id/toMapLandEditor"
+        <action
+            android:id="@+id/toMapLandEditor"
             app:destination="@id/MapLandEditorFragment"
             app:popUpTo="@id/MenuLandsFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment android:id="@+id/MapLandEditorFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MapLandEditorFragment"
@@ -64,7 +65,7 @@
         <action android:id="@+id/toMenuLands"
             app:destination="@id/MenuLandsFragment"
             app:popUpTo="@id/MenuLandsFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"/>
         <action android:id="@+id/toMapFile"
             app:destination="@id/MapFileFragment" />
     </fragment>
@@ -72,10 +73,11 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MapLandPreviewFragment"
         android:label="fragment_land_map_preview"
         tools:layout="@layout/fragment_land_map_preview">
-        <action android:id="@+id/toMapLandEditor"
+        <action
+            android:id="@+id/toMapLandEditor"
             app:destination="@id/MapLandEditorFragment"
             app:popUpTo="@id/MenuLandsFragment"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="false"/>
         <action android:id="@+id/toLandHistory"
             app:destination="@id/LandHistoryFragment"/>
     </fragment>
@@ -116,7 +118,8 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.ProfileLandFragment"
         android:label="fragment_land_info"
         tools:layout="@layout/fragment_land_info" >
-        <action android:id="@+id/toMapLandEditor"
+        <action
+            android:id="@+id/toMapLandEditor"
             app:destination="@id/MapLandEditorFragment"
             app:popUpTo="@id/MenuLandsFragment"
             app:popUpToInclusive="false" />

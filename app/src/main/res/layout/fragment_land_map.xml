@@ -40,15 +40,6 @@
             app:srcCompat="@drawable/ic_menu_map_mode"
             app:tint="@android:color/darker_gray" />
 
-        <FrameLayout
-            android:id="@+id/flLandTouchLayer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/ivLandOverlay"
             android:layout_width="0dp"
@@ -80,7 +71,6 @@
                 android:id="@+id/fabLandActionSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="270dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
@@ -97,8 +87,6 @@
                 app:fabSize="mini"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/textColor" />
 
@@ -124,51 +112,23 @@
                 app:layout_constraintVertical_bias="0.0"
                 app:tint="@color/textColor" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabLandActionMinus"
-                android:layout_width="wrap_content"
+            <com.google.android.material.slider.Slider
+                android:id="@+id/slAlphaSlider"
+                style="@style/CustomSlider"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="270dp"
-                android:backgroundTint="@color/backgroundColor"
-                android:clickable="true"
-                android:contentDescription="@string/fabMinus"
-                android:elevation="0dp"
-                android:focusable="true"
-                android:foregroundTint="@color/backgroundColor"
-                android:src="@drawable/ic_button_minus"
-                android:tint="@color/textColor"
-                app:backgroundTint="@color/backgroundColor"
-                app:elevation="0dp"
-                app:fabSize="mini"
-                app:layout_constraintBottom_toBottomOf="@+id/fabLandActionSave"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                android:layout_marginEnd="32dp"
+                android:stepSize="5.0"
+                android:valueFrom="15.0"
+                android:valueTo="85.0"
+                android:value="50.0"
+                app:labelBehavior="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/fabLandActionReset"
+                app:layout_constraintEnd_toStartOf="@+id/fabLandActionReset"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/fabLandActionSave"
-                app:tint="@color/textColor" />
+                app:layout_constraintTop_toTopOf="@+id/fabLandActionReset" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabLandActionPlus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="@color/backgroundColor"
-                android:clickable="true"
-                android:contentDescription="@string/fabPlus"
-                android:elevation="0dp"
-                android:focusable="true"
-                android:foregroundTint="@color/backgroundColor"
-                android:src="@drawable/ic_button_plus"
-                android:tint="@color/textColor"
-                app:backgroundTint="@color/backgroundColor"
-                app:elevation="0dp"
-                app:fabSize="mini"
-                app:layout_constraintBottom_toBottomOf="@+id/fabLandActionMinus"
-                app:layout_constraintStart_toEndOf="@+id/fabLandActionMinus"
-                app:layout_constraintTop_toTopOf="@+id/fabLandActionMinus"
-                app:layout_constraintVertical_bias="0.0"
-                app:tint="@color/textColor" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView android:id="@+id/navLandMenu"

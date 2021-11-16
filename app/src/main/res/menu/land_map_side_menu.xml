@@ -72,31 +72,17 @@
                 android:title="@string/remove_img"
                 app:showAsAction="ifRoom|withText" />
             <item
-                android:id="@+id/toolbar_action_move_img"
+                android:id="@+id/toolbar_action_edit_img"
                 android:icon="@drawable/ic_drawer_menu_move_img"
                 app:iconTint="@color/textColor"
                 android:orderInCategory="3"
-                android:title="@string/move_img"
-                app:showAsAction="ifRoom|withText" />
-            <item
-                android:id="@+id/toolbar_action_zoom_img"
-                android:icon="@drawable/ic_drawer_menu_zoom_img"
-                app:iconTint="@color/textColor"
-                android:orderInCategory="4"
-                android:title="@string/zoom_img"
-                app:showAsAction="ifRoom|withText" />
-            <item
-                android:id="@+id/toolbar_action_rotate_img"
-                android:icon="@drawable/ic_drawer_menu_rotate_img"
-                app:iconTint="@color/textColor"
-                android:orderInCategory="5"
-                android:title="@string/rotate_img"
+                android:title="@string/edit_img"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_opacity_img"
                 android:icon="@drawable/ic_drawer_menu_alpha_img"
                 app:iconTint="@color/textColor"
-                android:orderInCategory="6"
+                android:orderInCategory="4"
                 android:title="@string/opacity_img"
                 app:showAsAction="ifRoom|withText" />
         </menu>

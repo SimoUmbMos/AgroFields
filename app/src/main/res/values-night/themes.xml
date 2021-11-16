@@ -70,6 +70,12 @@
         <item name="colorOnPrimary">@color/backgroundColor</item>
         <item name="colorOnSecondary">@color/backgroundColor</item>
     </style>
+    <style name="FloatingActionButtonStyle.ChangeState" parent="FloatingActionButtonStyle">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="colorSecondary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/textColor</item>
+        <item name="colorOnSecondary">@color/textColor</item>
+    </style>
     <style name="FloatingActionButtonStyle.BottomNavigation" parent="FloatingActionButtonStyle">
         <item name="colorPrimary">@color/accentColor</item>
         <item name="colorSecondary">@color/accentColor</item>
@@ -81,9 +87,17 @@
         <item name="colorSecondary">@color/textColor</item>
         <item name="colorOnPrimary">@color/backgroundColor</item>
         <item name="colorOnSecondary">@color/backgroundColor</item>
+        <item name="elevation">0dp</item>
     </style>
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
+    </style>
+    <style name="CustomSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderStyle</item>
+    </style>
+    <style name="SliderStyle" parent="">
+        <item name="colorPrimary">@color/accentColor</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
     </style>
 
     <!-- dialog -->

@@ -107,6 +107,7 @@
     <string name="remove_img">Remove overlay image</string>
     <string name="zoom_img">Zoom Image</string>
     <string name="move_img">Move Image</string>
+    <string name="edit_img">Edit Image</string>
     <string name="rotate_img">Rotate Image</string>
     <string name="opacity_img">Change Opacity</string>
     <string name="file_actions_group_title">File Actions</string>

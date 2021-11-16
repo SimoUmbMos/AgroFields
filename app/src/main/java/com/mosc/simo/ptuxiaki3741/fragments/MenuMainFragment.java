@@ -45,6 +45,7 @@ import java.util.List;
 
 public class MenuMainFragment extends Fragment implements FragmentBackPress {
     //todo: (fix) map click accuracy
+    //todo: (idea) delete map
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
     private List<Land> data;

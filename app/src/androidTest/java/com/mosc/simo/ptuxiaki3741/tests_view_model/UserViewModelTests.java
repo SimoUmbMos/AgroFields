@@ -55,17 +55,17 @@ public class UserViewModelTests {
             fail();
         }
 
-        assertEquals(user.getId(),1);
-        assertEquals(user.getUsername(),"test");
-        assertNotEquals(user.getPassword(),"test");
-        assertEquals(user.getPhone(),"");
-        assertEquals(user.getEmail(),"test@test.com");
-
         Log.v(TAG, "CurrUser id: " +user.getId());
         Log.v(TAG, "CurrUser Username: " +user.getUsername());
         Log.v(TAG, "CurrUser Password: " +user.getPassword());
         Log.v(TAG, "CurrUser Phone: " +user.getPhone());
         Log.v(TAG, "CurrUser Email: " +user.getEmail());
+
+        assertEquals(user.getId(),1);
+        assertEquals(user.getUsername(),"test");
+        assertNotEquals(user.getPassword(),"test");
+        assertEquals(user.getPhone(),"");
+        assertEquals(user.getEmail(),"test@test.com");
     }
     @Test
     public void test2_searchUser(){
