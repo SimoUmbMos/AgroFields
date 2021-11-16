@@ -223,7 +223,7 @@ public class ShareLandFragment extends Fragment implements FragmentBackPress {
                     binding.ctvIsAdminLand.setChecked(perm.isAdmin());
                     binding.ctvIsReadLand.setChecked(perm.isRead());
                     binding.ctvIsWriteLand.setChecked(perm.isWrite());
-                    binding.ctvIsWriteLand.setEnabled(!perm.isAdmin());
+                    binding.ctvIsWriteLand.setEnabled(!perm.isAdmin() && perm.isRead());
                     binding.ctvIsReadLand.setEnabled(!perm.isAdmin());
                 }
             });

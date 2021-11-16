@@ -100,6 +100,8 @@ public class UserLandPermissions implements Parcelable {
     public void setRead(boolean read) {
         if(!admin){
             this.read = read;
+            if(!read)
+                this.write = false;
         }
     }
     public void setWrite(boolean write) {
