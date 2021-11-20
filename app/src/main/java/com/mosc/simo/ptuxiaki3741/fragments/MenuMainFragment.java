@@ -91,6 +91,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mainMenuAction.setVisibility(View.VISIBLE);
         binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
+        binding.btnHistory.setOnClickListener(v -> toDeletedLandsHistory(getActivity()));
         binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
         binding.btnProfile.setOnClickListener(v -> toProfile(getActivity()));
         binding.mvLands.getMapAsync(this::initMap);
@@ -263,6 +264,14 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
                     nav.navigate(R.id.toMenuLands);
+            });
+    }
+    public void toDeletedLandsHistory(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
+                if(nav != null)
+                    nav.navigate(R.id.toDeletedLandsHistory);
             });
     }
     public void toProfile(@Nullable Activity activity) {

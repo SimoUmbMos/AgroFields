@@ -203,7 +203,6 @@ public class UserOutboxRequestFragment extends Fragment implements SearchView.On
         }
     }
     private void loadMoreData(){
-        //fixme: do testing for new paged users search system
         if(searchPage < maxSearchPage){
             searchPage++;
             AsyncTask.execute(()->{

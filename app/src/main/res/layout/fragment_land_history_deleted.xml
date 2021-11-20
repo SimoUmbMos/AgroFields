@@ -5,13 +5,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.LandHistoryFragment" >
-    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/clHistoryListRoot"
+    tools:context=".fragments.LandHistoryDeletedFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/clDeletedHistoryListRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <TextView android:id="@+id/tvHistoryActionLabel"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDeletedHistoryList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/view_holder_history_deleted" />
+
+        <TextView
+            android:id="@+id/tvDeletedHistoryActionLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empty_list"
@@ -19,13 +31,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvHistoryList"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            tools:listitem="@layout/view_holder_history"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

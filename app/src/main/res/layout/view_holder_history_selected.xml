@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/list_history_item_margin"
+    android:layout_marginBottom="@dimen/list_history_item_margin"
+    android:layout_marginStart="@dimen/list_history_item_side_margin"
+    android:layout_marginEnd="@dimen/list_history_item_side_margin"
+    app:cardBackgroundColor="@color/cardBackgroundColor">
+
+    <com.mosc.simo.ptuxiaki3741.views.HistoryItemView
+        android:id="@+id/hiData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_history_item_inner_large_margin"
+        android:layout_marginTop="@dimen/list_history_item_inner_margin"
+        android:layout_marginEnd="@dimen/list_history_item_inner_large_margin"
+        android:layout_marginBottom="@dimen/list_history_item_inner_margin" />
+</com.google.android.material.card.MaterialCardView>

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryBinding;
+import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistorySelectedBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -18,13 +18,13 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryListAdapter.HistoryItemViewHolder>{
+public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistorySelectedAdapter.HistoryItemViewHolder>{
     private final List<LandDataRecord> data;
     private final List<User> users;
     private final String[] values;
     private final ActionResult<LandDataRecord> onClick;
     private final DateFormat dateFormat;
-    public LandHistoryListAdapter(
+    public LandHistorySelectedAdapter(
             List<LandDataRecord> data,
             List<User> users,
             String[] values,
@@ -40,7 +40,7 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
     @NonNull @Override public HistoryItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.view_holder_history,
+                R.layout.view_holder_history_selected,
                 parent,
                 false
         );
@@ -67,13 +67,15 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
 
         String username = "";
         for(User user:users){
-            if(item.getUserID() == user.getId())
+            if(item.getUserID() == user.getId()){
                 username = user.getUsername();
+                break;
+            }
         }
-        holder.binding.tvHistoryEntryUser.setText(username);
+        holder.binding.hiData.setUsername(username);
 
         String date = dateFormat.format(item.getDate());
-        holder.binding.tvHistoryEntryDate.setText(date);
+        holder.binding.hiData.setDate(date);
 
         String action = "";
         switch (item.getActionID()){
@@ -90,14 +92,14 @@ public class LandHistoryListAdapter extends RecyclerView.Adapter<LandHistoryList
                 action = values[3];
                 break;
         }
-        holder.binding.tvHistoryEntryAction.setText(action);
+        holder.binding.hiData.setAction(action);
 
     }
     public static class HistoryItemViewHolder extends RecyclerView.ViewHolder {
-        public final ViewHolderHistoryBinding binding;
+        public final ViewHolderHistorySelectedBinding binding;
         public HistoryItemViewHolder(@NonNull View view) {
             super(view);
-            binding = ViewHolderHistoryBinding.bind(view);
+            binding = ViewHolderHistorySelectedBinding.bind(view);
         }
     }
 }

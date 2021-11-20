@@ -21,10 +21,10 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryListAdapter;
+import com.mosc.simo.ptuxiaki3741.adapters.LandHistorySelectedAdapter;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandHistorySelectedBinding;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuHistoryBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
@@ -37,11 +37,10 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandHistoryFragment extends Fragment implements FragmentBackPress {
-    //fixme: place only on land preview
-    public static final String TAG = "LandHistoryMenuFragment";
-    private LandHistoryListAdapter adapter;
-    private FragmentMenuHistoryBinding binding;
+public class LandHistorySelectedFragment extends Fragment implements FragmentBackPress {
+    public static final String TAG = "LandHistorySelectedFragment";
+    private LandHistorySelectedAdapter adapter;
+    private FragmentLandHistorySelectedBinding binding;
 
     private UserViewModel vmUsers;
 
@@ -52,7 +51,7 @@ public class LandHistoryFragment extends Fragment implements FragmentBackPress {
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        binding = FragmentMenuHistoryBinding.inflate(inflater, container, false);
+        binding = FragmentLandHistorySelectedBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -122,7 +121,7 @@ public class LandHistoryFragment extends Fragment implements FragmentBackPress {
                 getString(R.string.land_action_restored),
                 getString(R.string.land_action_deleted)
         };
-        adapter = new LandHistoryListAdapter(
+        adapter = new LandHistorySelectedAdapter(
                 data2,
                 users,
                 values,
@@ -193,7 +192,7 @@ public class LandHistoryFragment extends Fragment implements FragmentBackPress {
     public void toLandMap(@Nullable Activity activity, Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LandHistoryFragment);
+                NavController nav = UIUtil.getNavController(this,R.id.LandHistorySelectedFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
                 bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,true);
