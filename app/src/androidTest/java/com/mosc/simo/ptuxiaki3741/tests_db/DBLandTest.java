@@ -29,18 +29,7 @@ import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class DBLandTest{
-    /*todo: complete
-     * save Land
-     * edit Land
-     * remove Land
-     * add share Land
-     * remove share Land
-     * change owner Lands
-     * load user Lands
-     * save history Lands
-     * restore history Lands
-    */
-    //todo: run tests
+    //todo: complete & run tests
     private UserRepository userRepository;
     private LandRepository landRepository;
     private RoomDatabase db;
@@ -55,61 +44,8 @@ public class DBLandTest{
     public void closeDb() {
         db.close();
     }
-
     @Test
-    public void testSaveLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
-    }
-    @Test
-    public void testEditLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
-    }
-    @Test
-    public void testRemoveLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
-    }
-    @Test
-    public void testLoadUserLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        List<Land> lands = new ArrayList<>();
-        for(int i = 0; i < 10;i++){
-            lands.add(
-                    LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user)
-            );
-        }
-
-    }
-
-    @Test
-    public void testAddShareLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        User contact = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
-    }
-    @Test
-    public void testRemoveShareLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        User contact = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
-    }
-    @Test
-    public void testChangeOwnerLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        User contact = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
-    }
-
-    @Test
-    public void testSaveHistoryLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
-    }
-    @Test
-    public void testRestoreHistoryLand(){
-        User user = UserTestUtil.createMockUser(TestUtil.getRandomAlphaNumericString(8));
-        Land land = LandTestUtil.createMockLand(TestUtil.getRandomAlphaNumericString(8), user);
+    public void test() {
+        //code..
     }
 }

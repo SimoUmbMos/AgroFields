@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments;
+package com.mosc.simo.ptuxiaki3741.fragments.land;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -43,7 +43,7 @@ import java.util.List;
 
 public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "MapLandPreviewFragment";
-    //todo: (idea) make memo based on user
+    //fixme: (code) show land zones
     private FragmentLandMapPreviewBinding binding;
 
     private GoogleMap mMap;

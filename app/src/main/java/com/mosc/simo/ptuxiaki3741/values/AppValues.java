@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 public final class AppValues {
     /* DB VALUES*/
-    public static final int DATABASE_VERSION = 28;
+    public static final int DATABASE_VERSION = 29;
     public static final int DATABASE_PAGE_SIZE = 24;
     /* ViewModels VALUES */
     public static final String sharedPreferenceKeyUserViewModel = "currUser";

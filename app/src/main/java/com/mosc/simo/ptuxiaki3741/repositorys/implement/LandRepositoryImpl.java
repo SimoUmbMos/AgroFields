@@ -2,6 +2,8 @@ package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.models.entities.UserLandPermissions;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.LandRepository;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -33,14 +35,31 @@ public class LandRepositoryImpl implements LandRepository {
         }
         return userLands;
     }
-
     @Override
-    public Land getLand(long lid,long uid) {
-        return db.landDao().getLand(lid,uid);
+    public List<LandZone> getLandZonesByUser(User user){
+        List<LandZone> ans = new ArrayList<>();
+        List<LandZoneData> temp;
+
+        List<Land> userLands = getLandsByUser(user);
+
+        for(Land land : userLands){
+            if(land.getData() != null){
+                temp = db.landZoneDao().getLandZonesByLandID(land.getData().getId());
+                for(LandZoneData tempData : temp){
+                    ans.add(new LandZone(tempData,land.getPerm()));
+                }
+            }
+        }
+        return ans;
     }
     @Override
     public List<LandDataRecord> getLandRecordsByUser(User user) {
         return db.landHistoryDao().getLandRecordsByUserIdAndPermission(user.getId(),true);
+    }
+
+    @Override
+    public Land getLand(long lid,long uid) {
+        return db.landDao().getLand(lid,uid);
     }
 
     @Override

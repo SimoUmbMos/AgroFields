@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments;
+package com.mosc.simo.ptuxiaki3741.fragments.contacts;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileContactFragment extends Fragment implements FragmentBackPress {
-    //todo: (idea) make memo based on user
     private FragmentContactProfileBinding binding;
     private AlertDialog dialog;
 

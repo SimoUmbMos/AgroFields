@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.repositorys.interfaces;
 
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -11,6 +12,7 @@ import java.util.List;
 public interface LandRepository {
     Land getLand(long lid,long uid);
     List<Land> getLandsByUser(User user);
+    List<LandZone> getLandZonesByUser(User user);
     List<LandDataRecord> getLandRecordsByUser(User user);
 
     Land saveLand(Land land);

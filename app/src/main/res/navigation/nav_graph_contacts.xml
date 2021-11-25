@@ -6,16 +6,16 @@
     app:startDestination="@id/MenuContactsFragment">
 
     <fragment android:id="@+id/MenuContactsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuContactsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.MenuContactsFragment"
         android:label="fragment_user_contacts"
         tools:layout="@layout/fragment_user_contacts" />
     <fragment android:id="@+id/UserRequestFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserInboxRequestFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.UserInboxRequestFragment"
         android:label="fragment_user_request"
         tools:layout="@layout/fragment_user_inbox_request" />
     <fragment
         android:id="@+id/searchContactFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.UserOutboxRequestFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.UserOutboxRequestFragment"
         android:label="fragment_search_contact"
         tools:layout="@layout/fragment_user_outbox_request" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments;
+package com.mosc.simo.ptuxiaki3741.fragments.contacts;
 
 import android.os.AsyncTask;
 import android.os.Bundle;

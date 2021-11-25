@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:layout_margin="8dp"
     android:padding="8dp"
-    tools:context=".fragments.AppSettingsFragment">
+    tools:context=".fragments.user.AppSettingsFragment">
 
     <TextView
         android:layout_width="0dp"

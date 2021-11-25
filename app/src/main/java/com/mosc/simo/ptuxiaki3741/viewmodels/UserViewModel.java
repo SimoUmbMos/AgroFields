@@ -14,9 +14,7 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandMemo;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.models.entities.UserMemo;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.UserRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -35,8 +33,6 @@ public class UserViewModel extends AndroidViewModel {
     private final MutableLiveData<List<User>> inboxRequests = new MutableLiveData<>();
     private final MutableLiveData<List<User>> outboxRequests = new MutableLiveData<>();
     private final MutableLiveData<List<User>> blocks = new MutableLiveData<>();
-    private final MutableLiveData<List<UserMemo>> contactsMemos = new MutableLiveData<>();
-    private final MutableLiveData<List<LandMemo>> landsMemos = new MutableLiveData<>();
 
     public UserViewModel(@NonNull Application application) {
         super(application);
@@ -68,14 +64,6 @@ public class UserViewModel extends AndroidViewModel {
     public MutableLiveData<List<User>> getBlockList(){
         return blocks;
     }
-    //todo: (idea) implement getContactsMemoList
-    public MutableLiveData<List<UserMemo>> getContactsMemoList(){
-        return contactsMemos;
-    }
-    //todo: (idea) implement getLandsMemoList
-    public MutableLiveData<List<LandMemo>> getLandsMemoList(){
-        return landsMemos;
-    }
 
     private void initFromMemory() {
         long uid = loadCurrUser();
@@ -89,22 +77,17 @@ public class UserViewModel extends AndroidViewModel {
         currUser.postValue(user);
         populateCurrUserRelativeLists(user);
     }
-    //todo: (idea) split function populateCurrUserRelativeLists
     private void populateCurrUserRelativeLists(User user) {
         if(user != null){
             contacts.postValue(getFriends(user));
             inboxRequests.postValue(getInboxRequests(user));
             outboxRequests.postValue(getOutboxRequests(user));
             blocks.postValue(getBlocks(user));
-            contactsMemos.postValue(getContactsMemos(user));
-            landsMemos.postValue(getLandsMemos(user));
         }else{
             contacts.postValue(new ArrayList<>());
             inboxRequests.postValue(new ArrayList<>());
             outboxRequests.postValue(new ArrayList<>());
             blocks.postValue(new ArrayList<>());
-            contactsMemos.postValue(new ArrayList<>());
-            landsMemos.postValue(new ArrayList<>());
         }
     }
     private long loadCurrUser() {
@@ -171,18 +154,6 @@ public class UserViewModel extends AndroidViewModel {
     private List<User> getBlocks(User user){
         if(user != null){
             return userRepository.getUserBlockList(user);
-        }
-        return new ArrayList<>();
-    }
-    private List<UserMemo> getContactsMemos(User user){
-        if(user != null){
-            return userRepository.getUserFriendsMemosList(user);
-        }
-        return new ArrayList<>();
-    }
-    private List<LandMemo> getLandsMemos(User user){
-        if(user != null){
-            return userRepository.getUserLandsMemosList(user);
         }
         return new ArrayList<>();
     }

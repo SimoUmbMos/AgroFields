@@ -32,11 +32,7 @@ public class DBUserTest {
         db.close();
     }
     @Test
-    public void testCreateGetDeleteUser() {
-
-    }
-    @Test
-    public void testEditUser() {
-
+    public void test() {
+        //code..
     }
 }

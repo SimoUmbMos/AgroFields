@@ -5,9 +5,6 @@ import android.util.Log;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.LoginRegisterError;
 import com.mosc.simo.ptuxiaki3741.enums.UserDBAction;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandMemo;
-import com.mosc.simo.ptuxiaki3741.models.entities.UserMemo;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.UserRepository;
 import com.mosc.simo.ptuxiaki3741.enums.UserFriendRequestStatus;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
@@ -180,45 +177,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public LandMemo saveMemo(User currUser, LandData landData, String memo){
-        LandMemo save = new LandMemo(currUser.getId(),landData.getId(),memo);
-        long id = db.landMemoDao().insert(save);
-        save.setId(id);
-        return save;
-    }
-    @Override
-    public UserMemo saveMemo(User currUser, User user, String memo){
-        UserMemo save = new UserMemo(currUser.getId(),user.getId(),memo);
-        long id = db.userMemoDao().insert(save);
-        save.setId(id);
-        return save;
-    }
-    @Override
-    public void removeMemo(User currUser, LandData landData){
-        db.landMemoDao().deleteByUserAndLand(currUser.getId(),landData.getId());
-    }
-    @Override
-    public void removeMemo(User currUser, User contact){
-        db.userMemoDao().deleteByUsers(currUser.getId(),contact.getId());
-    }
-    @Override
-    public void saveMemo(LandMemo memo){
-        db.landMemoDao().insert(memo);
-    }
-    @Override
-    public void saveMemo(UserMemo memo){
-        db.userMemoDao().insert(memo);
-    }
-    @Override
-    public void removeMemo(LandMemo memo){
-        db.landMemoDao().delete(memo);
-    }
-    @Override
-    public void removeMemo(UserMemo memo){
-        db.userMemoDao().delete(memo);
-    }
-
-    @Override
     public List<User> getUserFriendList(User user) {
         List<User> friends = db.userDao().getUsersByReceiverIDAndType(
                 user.getId(),
@@ -264,18 +222,6 @@ public class UserRepositoryImpl implements UserRepository {
                     UserDBAction.BLOCKED
             );
         }
-        return new ArrayList<>();
-    }
-    @Override
-    public List<UserMemo> getUserFriendsMemosList(User user){
-        if(user != null)
-            return db.userMemoDao().getUserLandMemo(user.getId());
-        return new ArrayList<>();
-    }
-    @Override
-    public List<LandMemo> getUserLandsMemosList(User user){
-        if(user != null)
-            return db.landMemoDao().getUserLandMemo(user.getId());
         return new ArrayList<>();
     }
 

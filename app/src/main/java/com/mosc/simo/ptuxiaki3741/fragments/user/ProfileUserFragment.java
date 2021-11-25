@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments;
+package com.mosc.simo.ptuxiaki3741.fragments.user;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
@@ -116,7 +116,7 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
             binding.etUserProfilePhone.setText(user.getPhone());
             binding.etUserProfileEmail.setText(user.getEmail());
         }else{
-            toLogin(getActivity());
+            toLoading(getActivity());
         }
     }
 
@@ -238,12 +238,12 @@ public class ProfileUserFragment extends Fragment implements FragmentBackPress {
             );
         }
     }
-    private void toLogin(@Nullable Activity activity) {
+    private void toLoading(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ProfileUserFragment);
                 if(nav != null)
-                    nav.navigate(R.id.toLoginRegister);
+                    nav.navigate(R.id.toLoading);
             });
     }
 }

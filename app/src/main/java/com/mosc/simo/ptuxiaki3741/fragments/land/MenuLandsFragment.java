@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments;
+package com.mosc.simo.ptuxiaki3741.fragments.land;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -154,6 +154,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
         final MenuItem add = menu.findItem(R.id.menu_item_add);
         final MenuItem delete = menu.findItem(R.id.menu_item_delete);
         final MenuItem export = menu.findItem(R.id.menu_item_export);
+        final MenuItem history = menu.findItem(R.id.menu_item_history);
         add.getActionView().setOnClickListener(v->
                 menu.performIdentifierAction(add.getItemId(), 0)
         );
@@ -162,6 +163,9 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
         );
         export.getActionView().setOnClickListener(v->
                 menu.performIdentifierAction(export.getItemId(),0)
+        );
+        history.getActionView().setOnClickListener(v->
+                menu.performIdentifierAction(history.getItemId(),0)
         );
     }
     private void initActionMenu(Menu menu){
@@ -184,6 +188,9 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                 return true;
             case (R.id.menu_item_export):
                 setState(LandListMenuState.MultiExportState);
+                return true;
+            case (R.id.menu_item_history):
+                toHistory(getActivity());
                 return true;
             case (R.id.menu_item_add):
                 doAction(LandListActionState.ToCreate);
@@ -527,6 +534,14 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                 bundle.putParcelable(AppValues.argLandInfoFragment,null);
                 if(nav != null)
                     nav.navigate(R.id.toProfileLand,bundle);
+            });
+    }
+    public void toHistory(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.MenuLandsFragment);
+                if(nav != null)
+                    nav.navigate(R.id.toLandsHistory);
             });
     }
     private void finish() {

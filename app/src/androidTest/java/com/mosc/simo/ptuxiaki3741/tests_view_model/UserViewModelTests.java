@@ -82,7 +82,7 @@ public class UserViewModelTests {
         int maxPage = vmUsers.searchUserMaxPage("temp");
         assertEquals(3,maxPage);
 
-        int page = -10;
+        int page = 0;
         List<User> search = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         while(page <= maxPage){

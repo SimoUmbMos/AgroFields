@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public static RoomDatabase getRoomDb(Context context){
-        return Room.databaseBuilder(context,
-                RoomDatabase.class, "Main_db").fallbackToDestructiveMigration().build();
+        return Room.databaseBuilder(context, RoomDatabase.class, "Main_db")
+                .fallbackToDestructiveMigration().build();
     }
 
     private void init() {
