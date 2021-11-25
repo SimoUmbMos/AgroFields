@@ -32,7 +32,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     public static final String TAG = "LoginRegisterFragment";
     private FragmentLoginRegisterBinding binding;
     private UserViewModel vmUsers;
-    private boolean isRegister;
+    private boolean isRegister,isLoading;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
         initViewModel();
         initFragment();
@@ -67,6 +68,10 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     }
 
     //init
+    private void initData() {
+        isRegister = false;
+        isLoading = false;
+    }
     private void initActivity() {
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
@@ -86,10 +91,11 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
     private void initFragment() {
-        showLogin();
         binding.btnLoginSubmit.setOnClickListener(v->onSubmitClick());
         binding.btnLoginSwitch.setOnClickListener(v->onSwitchUiClick());
-        binding.tvLoginRegisterHint.setOnClickListener(v->onSwitchUiClick());
+        binding.tvLoginRegisterHint.setOnClickListener(v->binding.btnLoginSwitch.performClick());
+        showLogin();
+        startLoadingAnimation();
     }
     private void initObservers() {
         if(vmUsers != null){
@@ -99,6 +105,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
 
     //observers
     private void onUserUpdate(User user) {
+        stopLoadingAnimation();
         if(user != null){
             toMenu(getActivity());
         }
@@ -122,6 +129,7 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
     private void onSubmitLogin() {
         User user = getLoginDataIfValid();
         if(user != null){
+            startLoadingAnimation();
             AsyncTask.execute(()->onSubmitLoginAction(user));
         }
     }
@@ -130,9 +138,10 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         if (user != null) {
             vmUsers.singIn(user);
         }else{
+            boolean isValidUsername = vmUsers.checkUserNameCredentials(tempUser) != null;
             if(getActivity() != null) {
-                boolean isValidUsername = vmUsers.checkUserNameCredentials(tempUser) != null;
                 getActivity().runOnUiThread(() -> {
+                    stopLoadingAnimation();
                     if (isValidUsername) {
                         showError(LoginRegisterError.PasswordWrongError);
                     } else {
@@ -152,15 +161,17 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
     private void onSubmitRegisterAction(User tempUser){
-        if(getActivity() != null)
-            getActivity().runOnUiThread(this::stopLoadingAnimation);
         User user = vmUsers.saveNewUser(tempUser);
         if(user != null){
             vmUsers.singIn(user);
         }else{
             LoginRegisterError error = vmUsers.getNewUserError(tempUser);
-            if(getActivity() != null)
-                getActivity().runOnUiThread(()-> showError(error));
+            if(getActivity() != null){
+                getActivity().runOnUiThread(()-> {
+                    stopLoadingAnimation();
+                    showError(error);
+                });
+            }
         }
     }
 
@@ -326,10 +337,32 @@ public class LoginRegisterFragment extends Fragment implements FragmentBackPress
         }
     }
     public void startLoadingAnimation(){
-        //fixme: code
+        if(!isLoading) {
+            binding.etLoginUserName.setEnabled(false);
+            binding.etLoginMainPassword.setEnabled(false);
+            binding.etLoginSecondaryPassword.setEnabled(false);
+            binding.etLoginMainEmail.setEnabled(false);
+            binding.etLoginPhone.setEnabled(false);
+
+            binding.btnLoginSwitch.setOnClickListener(v -> {});
+            binding.btnLoginSubmit.setEnabled(false);
+
+            isLoading = true;
+        }
     }
     public void stopLoadingAnimation(){
-        //fixme: code
+        if(isLoading){
+            binding.etLoginUserName.setEnabled(true);
+            binding.etLoginMainPassword.setEnabled(true);
+            binding.etLoginSecondaryPassword.setEnabled(true);
+            binding.etLoginMainEmail.setEnabled(true);
+            binding.etLoginPhone.setEnabled(true);
+
+            binding.btnLoginSwitch.setOnClickListener(v->onSwitchUiClick());
+            binding.btnLoginSubmit.setEnabled(true);
+
+            isLoading = false;
+        }
     }
 
     //nav

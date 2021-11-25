@@ -78,7 +78,7 @@ public final class LandUtil {
                     currLandData.getBorder(),
                     newHole
             );
-            if(ans.size() == 1){
+            if(ans.size() > 0){
                 newBorder.addAll(ans.get(0));
                 if(newBorder.size()>0){
                     double area1 = MapUtil.area(currLandData.getBorder());

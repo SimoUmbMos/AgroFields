@@ -113,6 +113,10 @@ public final class MapUtil {
                 double area = SphericalUtil.computeArea(p);
                 DecimalFormat df = new DecimalFormat("#.######");
                 String areaString = df.format(area);
+                if(areaString.contains(",")){
+                    areaString = areaString.replace(".","");
+                    areaString = areaString.replace(",",".");
+                }
                 return Double.parseDouble(areaString);
             }
         }

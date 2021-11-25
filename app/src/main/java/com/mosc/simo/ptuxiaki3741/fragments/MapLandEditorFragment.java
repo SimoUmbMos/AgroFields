@@ -154,7 +154,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
     }
 
-    private boolean handleImport() {
+    private LandData handleImport() {
         if (getArguments() != null) {
             LandData landData;
             if(getArguments().containsKey(AppValues.argImportLandData)){
@@ -162,16 +162,17 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             }else{
                 landData = null;
             }
-            if(landData != null){
-                saveLand(landData);
-                return true;
-            }
+            return landData;
         }
-        return false;
+        return null;
     }
 
     //init relative
-    private void initData(){
+    private boolean initData(){
+        points = new ArrayList<>();
+        holes = new ArrayList<>();
+        startPoints = new ArrayList<>();
+        startHoles = new ArrayList<>();
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLandLandMapFragment)) {
                 currLand = getArguments().getParcelable(AppValues.argLandLandMapFragment);
@@ -187,15 +188,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             currLand = null;
             address = null;
         }
-        points = new ArrayList<>();
-        holes = new ArrayList<>();
         if(currLand == null){
             toMenu(getActivity());
-            return;
+            return false;
         }
         if(currLand.getData() == null){
             toMenu(getActivity());
-            return;
+            return false;
         }
 
         displayTitle = currLand.getData().getTitle();
@@ -208,7 +207,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             if(points.get(0).equals(points.get(points.size()-1)))
                 points.remove(points.size()-1);
 
-        startPoints = new ArrayList<>(points);
+        startPoints.addAll(points);
 
         holes.addAll(currLand.getData().getHoles());
         for(List<LatLng> hole : holes){
@@ -216,11 +215,12 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 if(hole.get(0).equals(hole.get(hole.size()-1)))
                     hole.remove(hole.size()-1);
         }
-        startHoles = new ArrayList<>(holes);
+        startHoles.addAll(holes);
 
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
         importAction = ImportAction.NONE;
+        return true;
     }
     private void initActivity() {
         if(getActivity() != null){
@@ -343,7 +343,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private void saveLand(LandData data) {
         if(isValidToSave(data)){
             addToVM(data);
-            toMenu(getActivity());
         }
     }
     private boolean isValidToSave(LandData data) {
@@ -856,8 +855,12 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private void setupSideMenu(){
         Menu tempMenu = binding.navLandMenu.getMenu();
 
-        tempMenu.findItem(R.id.toolbar_action_delete_land)
-                .setEnabled(currLand.getData().getId() != -1);
+        if(currLand != null){
+            tempMenu.findItem(R.id.toolbar_action_delete_land)
+                    .setEnabled(currLand.getData().getId() != -1);
+        }else{
+            tempMenu.findItem(R.id.toolbar_action_delete_land).setEnabled(false);
+        }
 
         tempMenu.findItem(R.id.toolbar_action_make_land_editable).setEnabled(holes.size()>0);
 
@@ -969,11 +972,18 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(!handleImport()){
-            initData();
-            initActivity();
-            initDataToView();
-            initViews();
+        LandData data = handleImport();
+        if(data != null){
+            saveLand(data);
+            toMenu(getActivity());
+        }else{
+            if(initData()){
+                initActivity();
+                initDataToView();
+                initViews();
+            }else{
+                toMenu(getActivity());
+            }
         }
     }
     @Override public void onDestroyView() {

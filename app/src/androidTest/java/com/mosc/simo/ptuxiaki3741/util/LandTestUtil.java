@@ -3,7 +3,6 @@ package com.mosc.simo.ptuxiaki3741.util;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.LandRepository;
 
 import java.util.ArrayList;
 

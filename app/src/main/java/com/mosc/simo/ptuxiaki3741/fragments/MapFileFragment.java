@@ -131,8 +131,8 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         int builderSize = 0;
-        boolean isClickable = landData != null;
-        if(isClickable){
+        boolean isClickable = false;
+        if(landData != null){
             options = LandUtil.getPolygonOptions(landData,fillColor,fillColor,false);
             if(options != null)
                 googleMap.addPolygon(options);
@@ -140,6 +140,7 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
                 builder.include(point);
                 builderSize++;
             }
+            isClickable = true;
         }
         for(LandData data:landDataList){
             options = LandUtil.getPolygonOptions(data,strokeColor,fillColor,isClickable);
@@ -163,31 +164,28 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
     }
     private void onPolygonClick(Polygon polygon) {
         if(landData != null){
-            LandData result;
+            LandData result = null;
             switch (action){
                 case ADD:
                     result = LandUtil.uniteLandData(
                             landData,
                             new LandData(polygon.getPoints(),polygon.getHoles())
                     );
-                    landData.setBorder(result.getBorder());
-                    landData.setHoles(result.getHoles());
-                    toLandEdit(getActivity());
                     break;
                 case SUBTRACT:
                     result = LandUtil.subtractLandData(
                             landData,
                             new LandData(polygon.getPoints(),polygon.getHoles())
                     );
-                    landData.setBorder(result.getBorder());
-                    landData.setHoles(result.getHoles());
-                    toLandEdit(getActivity());
                     break;
                 case IMPORT:
-                    landData.setBorder(polygon.getPoints());
-                    landData.setHoles(polygon.getHoles());
-                    toLandEdit(getActivity());
+                    result = new LandData(polygon.getPoints(),polygon.getHoles());
                     break;
+            }
+            if(result != null){
+                landData.setBorder(result.getBorder());
+                landData.setHoles(result.getHoles());
+                toLandEdit(getActivity());
             }
         }
     }
