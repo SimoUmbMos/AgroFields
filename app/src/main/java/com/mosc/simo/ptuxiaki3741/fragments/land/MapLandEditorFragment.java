@@ -3,8 +3,11 @@ package com.mosc.simo.ptuxiaki3741.fragments.land;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -33,6 +35,7 @@ import androidx.navigation.NavController;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -68,7 +71,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private LandFileState fileState;
     private ImportAction importAction;
 
-    public ActionBar actionBar;
+    private ActionBar actionBar;
     private FragmentLandMapBinding binding;
     private GoogleMap mMap;
     private AlertDialog dialog;
@@ -77,82 +80,121 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private List<List<LatLng>> holes,startHoles;
     private List<List<LatLng>> undoList;
     private String address;
+    private boolean currLocation;
     private Land currLand;
     private String displayTitle;
 
     //ActivityResultLauncher relative
-    private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<String> permissionFileLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
-            this::onRequestPermissionsResult
-    );
-    private void onRequestPermissionsResult(Boolean result) {
-        toggleDrawer(false);
-        if(result){
-            Intent intent = FileUtil.getFilePickerIntent(fileState);
-            switch (fileState){
-                case Img:
-                    imgFileLauncher.launch(intent);
-                    break;
-                case File_Import:
-                case File_Add:
-                case File_Subtract:
-                    fileLauncher.launch(intent);
-                    break;
+            result -> {
+                toggleDrawer(false);
+                if (result) {
+                    extracted();
+                }
+                fileState = LandFileState.Disable;
             }
+    );
+    private void extracted() {
+        Intent intent = FileUtil.getFilePickerIntent(fileState);
+        switch (fileState) {
+            case Img:
+                imgFileLauncher.launch(intent);
+                break;
+            case File_Import:
+            case File_Add:
+            case File_Subtract:
+                fileLauncher.launch(intent);
+                break;
         }
-        fileState = LandFileState.Disable;
     }
+
+    @SuppressLint("MissingPermission")
+    private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            result -> {
+                    Boolean fineLocationGranted = result.getOrDefault(
+                            Manifest.permission.ACCESS_FINE_LOCATION, false);
+                    Boolean coarseLocationGranted = result.getOrDefault(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,false);
+                    if (
+                            (fineLocationGranted != null && fineLocationGranted) ||
+                            (coarseLocationGranted != null && coarseLocationGranted)
+                    ){
+                        if(mMap != null) mMap.setMyLocationEnabled(true);
+                        if(getContext() != null && currLocation){
+                            LocationManager locationManager = (LocationManager) getContext()
+                                    .getSystemService(Context.LOCATION_SERVICE);
+                            String locationProvider = LocationManager.GPS_PROVIDER;
+                            moveCameraOnLocation(locationManager.getLastKnownLocation(locationProvider));
+                        }
+                    }else{
+                        if(mMap != null) mMap.setMyLocationEnabled(false);
+                    }
+            }
+    );
+    private void moveCameraOnLocation(Location location) {
+        if(location != null){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(
+                            location.getLatitude(),
+                            location.getLongitude()
+                    ),
+                    AppValues.streetZoom
+            ));
+        }
+    }
+
     private final ActivityResultLauncher<Intent> imgFileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            this::imgFileResult
-    );
-    private void imgFileResult(ActivityResult result) {
-        if (
-                result.getResultCode() == Activity.RESULT_OK &&
-                        result.getData() != null
-        ){
-            if(FileUtil.fileIsValidImg(getContext(),result.getData())){
-                addOverlayImg(result.getData().getData());
+            result ->{
+                if (result.getResultCode() == Activity.RESULT_OK &&result.getData() != null) {
+                    if (FileUtil.fileIsValidImg(getContext(), result.getData())) {
+                        addOverlayImg(result.getData().getData());
+                    }
+                }
             }
-        }
-    }
+    );
+
     private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            this::fileResult
-    );
-    private void fileResult(ActivityResult result) {
-        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
-            new Thread(()->{
-                try{
-                    ArrayList<LandData> data = FileUtil.handleFile(getContext(),result.getData());
-                    if(data.size()>0){
-                        Bundle args = new Bundle();
-                        args.putParcelableArrayList(
-                                AppValues.argImportFragLandDataList,
-                                data
-                        );
-                        args.putParcelable(
-                                AppValues.argImportFragCurrLandData,
-                                new LandData(
-                                        currLand.getData().getId(),
-                                        currLand.getData().getCreator_id(),
-                                        currLand.getData().getTitle(),
-                                        currLand.getData().getBorder(),
-                                        currLand.getData().getHoles()
-                                )
-                        );
-                        args.putSerializable(
-                                AppValues.argImportFragLandAction,
-                                importAction
-                        );
-                        toImport(getActivity(),args);
-                    }
-                }catch (Exception e){
-                    Log.e(TAG, "fileResult: ",e);
+            result ->{
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    new Thread(() -> {
+                        try {
+                            ArrayList<LandData> data = FileUtil.handleFile(
+                                    getContext(),
+                                    result.getData()
+                            );
+                            if (data.size() > 0) {
+                                Bundle args = new Bundle();
+                                args.putParcelableArrayList(
+                                        AppValues.argImportFragLandDataList,
+                                        data
+                                );
+                                args.putParcelable(
+                                        AppValues.argImportFragCurrLandData,
+                                        new LandData(
+                                                currLand.getData().getId(),
+                                                currLand.getData().getCreator_id(),
+                                                currLand.getData().getTitle(),
+                                                currLand.getData().getBorder(),
+                                                currLand.getData().getHoles()
+                                        )
+                                );
+                                args.putSerializable(
+                                        AppValues.argImportFragLandAction,
+                                        importAction
+                                );
+                                toImport(getActivity(), args);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "fileResult: ", e);
+                        }
+                    }).start();
                 }
-            }).start();
-        }
-    }
+            }
+    );
 
     private LandData handleImport() {
         if (getArguments() != null) {
@@ -173,21 +215,20 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         holes = new ArrayList<>();
         startPoints = new ArrayList<>();
         startHoles = new ArrayList<>();
+        currLand = null;
+        address = null;
+        currLocation = false;
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLandLandMapFragment)) {
                 currLand = getArguments().getParcelable(AppValues.argLandLandMapFragment);
-            }else {
-                currLand = null;
             }
-            if(getArguments().containsKey(AppValues.argAddressLandMapFragment)) {
+            if(getArguments().containsKey(AppValues.argCurrLocationLandMapFragment)){
+                currLocation = getArguments().getBoolean(AppValues.argCurrLocationLandMapFragment);
+            }else if(getArguments().containsKey(AppValues.argAddressLandMapFragment)){
                 address = getArguments().getString(AppValues.argAddressLandMapFragment);
-            }else {
-                address = null;
             }
-        }else{
-            currLand = null;
-            address = null;
         }
+
         if(currLand == null){
             toMenu(getActivity());
             return false;
@@ -235,9 +276,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
     }
     private void initDataToView() {
-        if(address == null){
-            asyncFindLocation();
-        }
         clearFlags();
         clearUndo();
     }
@@ -264,16 +302,27 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        mMap.setMinZoomPreference(5);
-        mMap.setMaxZoomPreference(20);
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMinZoomPreference(AppValues.countryZoom-2);
+        mMap.setMaxZoomPreference(AppValues.streetZoom+2);
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setOnMapClickListener(this::processClick);
-        drawMap();
-        zoomOnPoints();
         binding.btnLandTerrain.setOnClickListener(v -> changeMapType());
+        initLocation();
+    }
+    private void initLocation() {
+        if(points.size() == 0){
+            locationPermissionRequest.launch(new String[] {
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+            moveCameraOnLocation();
+        }else{
+            zoomOnPoints();
+        }
+        drawMap();
     }
 
     //menu relative
@@ -425,7 +474,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 importAction = ImportAction.NONE;
                 break;
         }
-        permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        permissionFileLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     //map relative
@@ -447,8 +496,33 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         );
         if(options != null){
             mMap.addPolygon(options);
-        }else if(address != null){
-            asyncMoveCameraOnLocation(getActivity());
+            int pointsNumber = 0;
+            for(List<LatLng> hole : holes){
+                pointsNumber = pointsNumber + hole.size();
+            }
+            pointsNumber = pointsNumber + points.size();
+            if(pointsNumber<100){
+                for(LatLng point : points){
+                    mMap.addCircle(new CircleOptions()
+                            .center(point)
+                            .radius(10)
+                            .fillColor(strokeColor)
+                            .strokeColor(strokeColor)
+                            .clickable(false)
+                    );
+                }
+                for(List<LatLng> hole : holes){
+                    for(LatLng point : hole){
+                        mMap.addCircle(new CircleOptions()
+                                .center(point)
+                                .radius(10)
+                                .fillColor(strokeColor)
+                                .strokeColor(strokeColor)
+                                .clickable(false)
+                        );
+                    }
+                }
+            }
         }
     }
     private void zoomOnPoints() {
@@ -493,10 +567,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             }
             mapIsLocked = !mapIsLocked;
         }
-        if(
-                this.mapStatus != LandActionStates.Disable &&
-                !(isImgAction(mapStatus) && mapStatus != LandActionStates.Alpha)
-        ){
+        if(this.mapStatus != LandActionStates.Disable && !(isImgAction(mapStatus) && mapStatus != LandActionStates.Alpha)){
             setAction(LandActionStates.Disable);
         }
     }
@@ -873,25 +944,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         tempMenu.findItem(R.id.toolbar_action_edit_img).setEnabled(isImgViewEnable());
         tempMenu.findItem(R.id.toolbar_action_opacity_img).setEnabled(isImgViewEnable());
     }
-    private void asyncFindLocation() {
-        AsyncTask.execute(()->{
-            Address temp = MapUtil.findLocation(
-                    getContext(),
-                    MapUtil.getPolygonCenter(startPoints)
-            );
-            if(temp != null){
-                if(temp.getLocality() != null){
-                    if(temp.getCountryName() != null){
-                        address = temp.getLocality()+","+temp.getCountryName();
-                    }else{
-                        address = temp.getLocality();
-                    }
-                }
-            }
-        });
-    }
-    private void asyncMoveCameraOnLocation(Activity activity) {
-        if(activity != null){
+    private void moveCameraOnLocation() {
+        Activity activity = getActivity();
+        if(activity != null && address != null){
             AsyncTask.execute(()->{
                 Address location = MapUtil.findLocation(getContext(),address);
                 if(location != null){
@@ -912,7 +967,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                         activity.runOnUiThread(()-> {
                             if(mMap != null)
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(location.getLatitude(),location.getLongitude()),
+                                        new LatLng(
+                                                location.getLatitude(),
+                                                location.getLongitude()),
                                         zoom
                                 ));
                         });

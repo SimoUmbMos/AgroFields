@@ -33,17 +33,13 @@ public final class AppValues {
     public static final String argIsHistoryLandMapPreviewFragment= "is_history";
     /* Land Map Editor Fragment Values*/
     public static final String argLandLandMapFragment = "land";
+    public static final String argCurrLocationLandMapFragment = "use_curr_location";
     public static final String argImportLandData = "import_land";
     public static final String argAddressLandMapFragment = "address";
     public static final double distanceToMapActionKM = 100;
-    public static final float stepOpacity = 0.03f;
-    public static final float stepRotate = 1f;
-    public static final float stepZoom = 0.03f;
-    public static final float maxZoom = 7f;
-    public static final float minZoom = 0.1f;
-    public static final float countryZoom = 5.0f;
-    public static final float cityZoom = 10.0f;
-    public static final float streetZoom = 15.0f;
+    public static final float countryZoom = 6.0f;
+    public static final float cityZoom = 13.0f;
+    public static final float streetZoom = 16.0f;
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";

@@ -46,7 +46,7 @@ public class LandRepositoryImpl implements LandRepository {
             if(land.getData() != null){
                 temp = db.landZoneDao().getLandZonesByLandID(land.getData().getId());
                 for(LandZoneData tempData : temp){
-                    ans.add(new LandZone(tempData,land.getPerm()));
+                    ans.add(new LandZone(tempData));
                 }
             }
         }

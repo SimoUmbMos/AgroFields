@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
-import com.mosc.simo.ptuxiaki3741.models.entities.UserLandPermissions;
 
 public class LandZone implements Parcelable {
     public static final Creator<LandZone> CREATOR = new Creator<LandZone>() {
@@ -20,49 +19,29 @@ public class LandZone implements Parcelable {
     };
 
     private LandZoneData data;
-    private boolean admin;
-    private boolean read;
-    private boolean write;
-
+    private boolean selected;
 
     protected LandZone(Parcel in) {
         data = in.readParcelable(LandZoneData.class.getClassLoader());
-        admin = in.readByte() != 0;
-        read = in.readByte() != 0;
-        write = in.readByte() != 0;
+        selected = in.readByte() != 0;
     }
-    public LandZone(LandZoneData data, UserLandPermissions p){
+    public LandZone(LandZoneData data){
         this.data = data;
-        this.admin = p.isAdmin();
-        this.read = p.isRead();
-        this.write = p.isWrite();
+        this.selected = false;
     }
 
     public void setData(LandZoneData data) {
         this.data = data;
     }
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-    public void setRead(boolean read) {
-        this.read = read;
-    }
-    public void setWrite(boolean write) {
-        this.write = write;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public LandZoneData getData() {
         return data;
     }
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public boolean isRead() {
-        return read;
-    }
-    public boolean isWrite() {
-        return write;
+    public boolean isSelected() {
+        return selected;
     }
 
     @Override
@@ -73,8 +52,6 @@ public class LandZone implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(data,i);
-        parcel.writeByte((byte) (admin ? 1 : 0));
-        parcel.writeByte((byte) (read ? 1 : 0));
-        parcel.writeByte((byte) (write ? 1 : 0));
+        parcel.writeByte((byte) (selected ? 1 : 0));
     }
 }

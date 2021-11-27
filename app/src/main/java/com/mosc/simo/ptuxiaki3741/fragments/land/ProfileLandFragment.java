@@ -2,8 +2,6 @@ package com.mosc.simo.ptuxiaki3741.fragments.land;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.Address;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,14 +27,12 @@ import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
-import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
 //fixme: cant use greek characters on land name
-//todo: (idea) address->curr loc
     private Land land;
     private User currUser;
     private FragmentLandInfoBinding binding;
@@ -100,7 +96,6 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
             binding.etLandInfoAddress.setEnabled(true);
         }else{
             binding.etLandInfoName.setEnabled(land.getPerm().isWrite());
-            binding.etLandInfoAddress.setEnabled(land.getPerm().isWrite());
             binding.btnLandInfoSubmit.setEnabled(land.getPerm().isWrite());
             binding.btnLandInfoCancel.setEnabled(land.getPerm().isWrite());
 
@@ -109,7 +104,6 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
             binding.etLandInfoAddress.setText("");
             binding.etLandInfoAddress.setEnabled(false);
             binding.etLandInfoAddressLayout.setVisibility(View.GONE);
-            asyncFindAddress(getActivity(),land);
         }
         binding.tvLandInfoActionLabel.setText(landLabel);
         binding.btnLandInfoSubmit.setOnClickListener(v->onSubmit());
@@ -133,30 +127,6 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
             if(inputManager != null)
                 inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-    private void asyncFindAddress(Activity activity, Land land) {
-        if(activity != null){
-            AsyncTask.execute(()->{
-                Address address = MapUtil.findLocation(
-                        activity,
-                        MapUtil.getPolygonCenter(land.getData().getBorder())
-                );
-                if(address!= null){
-                    String tempDisplay = null;
-                    if(address.getLocality() != null){
-                        if(address.getCountryName() != null){
-                            tempDisplay = address.getLocality()+", "+address.getCountryName();
-                        }else{
-                            tempDisplay = address.getLocality();
-                        }
-                    }
-                    final String finalDisplay = tempDisplay;
-                    if(finalDisplay != null){
-                        activity.runOnUiThread(()->binding.etLandInfoAddress.setText(finalDisplay));
-                    }
-                }
-            });
         }
     }
 
@@ -183,11 +153,15 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
         if(land == null){
             if(currUser != null){
                 LandData landData = new LandData(currUser.getId(),landName);
-                toLandMap(getActivity(),new Land(landData),address);
+                if(address.trim().isEmpty()){
+                    toLandMap(getActivity(),new Land(landData),true);
+                }else{
+                    toLandMap(getActivity(),new Land(landData),address);
+                }
             }
         }else{
             land.getData().setTitle(landName);
-            toLandMap(getActivity(),land);
+            toLandMap(getActivity(),land,false);
         }
     }
 
@@ -202,12 +176,14 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     }
 
     //navigation
-    public void toLandMap(@Nullable Activity activity,Land land) {
+    public void toLandMap(@Nullable Activity activity,Land land, boolean useCurrLocation) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ProfileLandFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argLandLandMapFragment,land);
+                if(useCurrLocation)
+                    bundle.putBoolean(AppValues.argCurrLocationLandMapFragment,true);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });

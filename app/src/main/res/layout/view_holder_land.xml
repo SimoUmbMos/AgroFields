@@ -1,9 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ctvLandName"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeightSmall"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-    android:gravity="center_vertical"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd" />
+    android:layout_height="?android:attr/listPreferredItemHeightLarge"
+    android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
+    android:layout_marginEnd="?android:attr/listPreferredItemPaddingEnd"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/cardBackgroundColor">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/titleLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/titleLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <CheckedTextView
+                android:id="@+id/ctvLandName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvLandName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

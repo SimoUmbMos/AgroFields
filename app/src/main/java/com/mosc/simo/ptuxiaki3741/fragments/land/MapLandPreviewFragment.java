@@ -23,22 +23,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapPreviewBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
-import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
@@ -48,12 +49,14 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
 
     private GoogleMap mMap;
 
+    private List<LandZone> currLandZones;
     private Land currLand;
     private User currUser;
     private boolean isHistory;
 
     //init relative
     private void initData(){
+        currLandZones = new ArrayList<>();
         Bundle args = getArguments();
         if(args != null){
             if(args.containsKey(AppValues.argIsHistoryLandMapPreviewFragment)){
@@ -94,6 +97,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             LandViewModel vmLand = new ViewModelProvider(getActivity()).get(LandViewModel.class);
             vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
             vmLand.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
+            vmLand.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
         }
     }
     private void initFragment(){
@@ -131,10 +135,15 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             );
             if(options != null)
                 mMap.addPolygon(options);
-            if(!isHistory){
-                mMap.addMarker(new MarkerOptions()
-                        .position(MapUtil.getPolygonCenter(currLand.getData().getBorder()))
+            for(LandZone zone:currLandZones){
+                options = LandUtil.getPolygonOptions(
+                        new LandData(zone.getData().getBorder()),
+                        strokeColor,
+                        fillColor,
+                        false
                 );
+                if(options != null)
+                    mMap.addPolygon(options);
             }
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for(LatLng point : currLand.getData().getBorder()){
@@ -156,6 +165,17 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             for(Land temp:lands){
                 if(temp.getData().getId() == currLand.getData().getId() && !isHistory){
                     currLand.setData(temp.getData());
+                }
+            }
+        }
+        drawLandOnMap();
+    }
+    private void onLandZoneUpdate(List<LandZone> zones) {
+        currLandZones.clear();
+        if(currLand != null){
+            for(LandZone zone:zones){
+                if(zone.getData().getLid() == currLand.getData().getId()){
+                    currLandZones.add(zone);
                 }
             }
         }
