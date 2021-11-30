@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
 import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
@@ -48,7 +49,9 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     //todo: (idea) delete map
     private UserViewModel vmUsers;
     private LandViewModel vmLands;
-    private List<Land> data;
+    private List<Polygon> landPolygons,zonesPolygons;
+    private List<Land> data1;
+    private List<LandZone> data2;
     private GoogleMap mMap;
     private boolean drawPolygon, firstLoad;
 
@@ -57,7 +60,10 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initData(){
-        data = new ArrayList<>();
+        landPolygons = new ArrayList<>();
+        zonesPolygons = new ArrayList<>();
+        data1 = new ArrayList<>();
+        data2 = new ArrayList<>();
         drawPolygon = false;
         firstLoad = true;
     }
@@ -112,6 +118,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     private void initLandObservers() {
         if(vmLands != null){
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
+            vmLands.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
         }
     }
 
@@ -131,22 +138,32 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
     private void onLandUpdate(List<Land> newData) {
         AsyncTask.execute(()->{
-            data.clear();
+            data1.clear();
             if(newData != null){
                 for(Land temp:newData) {
                     if(temp.getPerm().isRead()){
-                        data.add(temp);
+                        data1.add(temp);
                     }
                 }
             }
             if(getActivity() != null)
                 getActivity().runOnUiThread(()->{
-                    drawMap();
+                    drawMapLands();
                     if(firstLoad){
                         firstLoad = false;
                         binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
                     }
                 });
+        });
+    }
+    private void onLandZoneUpdate(List<LandZone> newData) {
+        AsyncTask.execute(()->{
+            data2.clear();
+            if(newData != null){
+                data2.addAll(newData);
+            }
+            if(getActivity() != null)
+                getActivity().runOnUiThread(this::drawMapZones);
         });
     }
 
@@ -155,13 +172,21 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         drawMap(polygon);
     }
     private void OnMapClick(){
-        if(drawPolygon) drawMap();
+        if(drawPolygon) {
+            drawMapLands();
+            drawMapZones();
+        }
     }
-    private void drawMap(){
+    private void drawMapLands(){
         drawPolygon = false;
         if(mMap != null){
-            mMap.clear();
-            if(data.size()>0){
+            if(landPolygons.size()>0){
+                for(Polygon polygon:landPolygons){
+                    polygon.remove();
+                }
+                landPolygons.clear();
+            }
+            if(data1.size()>0){
                 binding.mvLands.setVisibility(View.VISIBLE);
                 binding.mainMenuAction.setVisibility(View.GONE);
                 int strokeColor,fillColor;
@@ -174,7 +199,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 }
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                for(Land land:data){
+                for(Land land:data1){
                     PolygonOptions options = LandUtil.getPolygonOptions(
                             land.getData(),
                             strokeColor,
@@ -182,7 +207,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                             true
                     );
                     if(options != null){
-                        mMap.addPolygon(options);
+                        landPolygons.add(mMap.addPolygon(options.zIndex(1)));
                     }
                     for(LatLng point: land.getData().getBorder()){
                         builder.include(point);
@@ -201,6 +226,38 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             }else{
                 binding.mvLands.setVisibility(View.INVISIBLE);
                 binding.mainMenuAction.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+    private void drawMapZones(){
+        drawPolygon = false;
+        if(mMap != null){
+            if(zonesPolygons.size()>0){
+                for(Polygon polygon:zonesPolygons){
+                    polygon.remove();
+                }
+                zonesPolygons.clear();
+            }
+            if(data2.size()>0){
+                int strokeColor,fillColor;
+                if(getContext() != null){
+                    strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke2);
+                    fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill2);
+                }else{
+                    strokeColor = AppValues.strokeColor2;
+                    fillColor = AppValues.fillColor2;
+                }
+                for(LandZone zone:data2){
+                    PolygonOptions options = LandUtil.getPolygonOptions(
+                            zone.getData(),
+                            strokeColor,
+                            fillColor,
+                            false
+                    );
+                    if(options != null){
+                        zonesPolygons.add(mMap.addPolygon(options.zIndex(2)));
+                    }
+                }
             }
         }
     }
@@ -267,13 +324,12 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             });
     }
     public void toLandsZone(@Nullable Activity activity) {
-        //fixme: (code) toLandsZone
-        /*if(activity != null)
+        if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.toDeletedLandsHistory);
-            });*/
+                    nav.navigate(R.id.toMenuZoneLands);
+            });
     }
     public void toProfile(@Nullable Activity activity) {
         if(activity != null)

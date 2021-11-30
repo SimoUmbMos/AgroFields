@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/zone_actions_group"
+        android:title="@string/zone_actions_group_title">
+        <menu>
+            <item android:id="@+id/toolbar_action_change_zone_name"
+                android:title="@string/edit_zone_title"
+                android:orderInCategory="1"
+                android:icon="@drawable/ic_menu_edit"
+                app:iconTint="@color/textColor"
+                app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_save_zone"
+                android:title="@string/save_zone"
+                android:orderInCategory="1"
+                android:icon="@drawable/ic_menu_save"
+                app:iconTint="@color/textColor"
+                app:showAsAction="ifRoom|withText" />
+        </menu>
+    </item>
+    <item android:id="@+id/zone_border_actions_group"
+        android:title="@string/zone_border_actions_group_title">
+        <menu>
+            <item android:id="@+id/toolbar_action_zone_add_point"
+                android:title="@string/zone_add_point"
+                android:icon="@drawable/ic_drawer_menu_add"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="1"
+                app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_zone_add_between_points"
+                android:title="@string/zone_add_between_points"
+                android:icon="@drawable/ic_drawer_menu_add_between"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="2"
+                app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_zone_edit_point"
+                android:title="@string/zone_edit_point"
+                android:icon="@drawable/ic_drawer_menu_edit"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="3"
+                app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_zone_delete_point"
+                android:title="@string/zone_delete_point"
+                android:icon="@drawable/ic_drawer_menu_delete"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="4"
+                app:showAsAction="ifRoom|withText" />
+        </menu>
+    </item>
+</menu>

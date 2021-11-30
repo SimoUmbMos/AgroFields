@@ -16,14 +16,15 @@ public interface LandRepository {
     List<LandDataRecord> getLandRecordsByUser(User user);
 
     Land saveLand(Land land);
+    void saveZone(LandZone zone);
     void saveLandRecord(LandDataRecord landRecord);
 
     void deleteLand(Land land);
+    void deleteZone(LandZone zone);
 
     boolean setLandNewCreator(long uid1, long uid2, long lid);
     UserLandPermissions getLandPermissionsForUser(User contact, Land land);
     void addLandPermissions(UserLandPermissions perms);
     void removeLandPermissions(User user, LandData landData);
     void removeAllLandPermissions(User user1, User user2);
-
 }

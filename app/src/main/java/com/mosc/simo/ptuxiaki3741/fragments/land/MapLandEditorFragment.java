@@ -630,7 +630,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 index1 = -1;
             }
         }else{
-            index1 = 1;
+            //todo: maybe bug should be index1 = -1 was index1 = 1
+            index1 = -1;
         }
     }
     private void selectSecondPointForBetween(LatLng latLng) {

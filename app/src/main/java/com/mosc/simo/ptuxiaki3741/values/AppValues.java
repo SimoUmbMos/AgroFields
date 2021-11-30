@@ -13,6 +13,8 @@ public final class AppValues {
     public static final int defaultPadding = 16;
     public static final int strokeColor = Color.argb(192,0,0,255);
     public static final int fillColor = Color.argb(51,0,0,255);
+    public static final int strokeColor2 = Color.argb(192,255,0,0);
+    public static final int fillColor2 = Color.argb(51,255,0,0);
     /* Login Register Fragment */
     public static final int minUserNameFieldSize=6;
     public static final int maxUserNameFieldSize=16;
@@ -28,6 +30,11 @@ public final class AppValues {
     public static final String argLandInfoFragment = "land";
     /* Land History Fragment Values */
     public static final String argLandHistoryFragment = "land";
+    /* Zones Land Selected Fragment Values*/
+    public static final String argZoneLandSelectedLand = "land";
+    /* Zone Preview Fragment Values*/
+    public static final String argZonePreviewZone = "zone";
+    public static final String argZonePreviewLand = "land";
     /* Land Map Preview Fragment Values*/
     public static final String argLandLandMapPreviewFragment = "land";
     public static final String argIsHistoryLandMapPreviewFragment= "is_history";

@@ -238,6 +238,35 @@ public class LandViewModel extends AndroidViewModel {
         }
     }
 
+
+    public void saveZone(LandZone zone) {
+        if(zone != null){
+            clearLists();
+            landRepository.saveZone(zone);
+            populateLists(currUser);
+        }
+    }
+    public void removeZone(LandZone zone) {
+        if(zone != null){
+            clearLists();
+            AsyncTask.execute(()-> {
+                landRepository.deleteZone(zone);
+                populateLists(currUser);
+            });
+        }
+    }
+    public void removeZones(List<LandZone> zones) {
+        if(zones != null){
+            clearLists();
+            AsyncTask.execute(()-> {
+                for(LandZone zone:zones){
+                    landRepository.deleteZone(zone);
+                }
+                populateLists(currUser);
+            });
+        }
+    }
+
     public void changeLandOwner(User contact, Land land, ActionResult<Boolean> result){
         if(currUser != null && land != null && contact != null){
             if(land.getData() != null){

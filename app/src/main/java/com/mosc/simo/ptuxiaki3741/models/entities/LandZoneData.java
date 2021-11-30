@@ -31,6 +31,12 @@ public class LandZoneData implements Parcelable {
         border = in.createTypedArrayList(LatLng.CREATOR);
     }
     @Ignore
+    public LandZoneData(List<LatLng> border) {
+        this.lid = -1;
+        this.title = "";
+        this.border = border;
+    }
+    @Ignore
     public LandZoneData(long lid, String title, List<LatLng> border) {
         this.lid = lid;
         this.title = title;

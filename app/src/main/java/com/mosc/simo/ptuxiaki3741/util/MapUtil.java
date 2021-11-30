@@ -175,8 +175,40 @@ public final class MapUtil {
         }
         return false;
     }
+    public static boolean contains(List<LatLng> p1,List<LatLng> p2){
+        if(p1 != null && p2 !=null){
+            for(LatLng p:p1){
+                if(contains(p,p2))
+                    return true;
+            }
+            if(p1.size()>1){
+                List<LatLng> line = new ArrayList<>();
+                for(int i = 0;i<p1.size();i++){
+                    line.clear();
+                    if(i < (p1.size()-1)){
+                        line.add(p1.get(i));
+                        line.add(p1.get(i+1));
+                    }else{
+                        line.add(p1.get(i));
+                        line.add(p1.get(0));
+                    }
+                    if(intersects(line,p2))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public static boolean disjoint(List<LatLng> p1, List<LatLng> p2) {
+        if(p1 == null)
+            return true;
+        if(p2== null)
+            return true;
+        if(p1.size() == 0)
+            return true;
+        if(p2.size() == 0)
+            return true;
 
         com.esri.arcgisruntime.geometry.Polygon
                 polygon1 = convert(p1),
@@ -276,6 +308,43 @@ public final class MapUtil {
             e.printStackTrace();
         }
         return intersectionsList;
+    }
+    public static List<LatLng> intersection(List<LatLng> p1, List<LatLng> p2) {
+        List<LatLng> intersectionList = new ArrayList<>();
+
+        com.esri.arcgisruntime.geometry.Polygon
+                polygon1 = convert(p1),
+                polygon2 = convert(p2);
+
+        try{
+            if(polygon1 != null & polygon2 != null){
+                Geometry p3 = GeometryEngine.intersection(polygon1,polygon2);
+                JSONObject jsonObj = new JSONObject(p3.toJson());
+                JSONArray points = jsonObj.getJSONArray("rings").getJSONArray(0);
+                for (int i = 0; i < points.length() - 1; i++) {
+                    intersectionList.add(new LatLng(points.getJSONArray(i).getDouble(0), points.getJSONArray(i).getDouble(1)));
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return intersectionList;
+    }
+    public static boolean intersects(List<LatLng> p1, List<LatLng> p2) {
+        List<LatLng> intersectionList = new ArrayList<>();
+
+        com.esri.arcgisruntime.geometry.Polygon
+                polygon1 = convert(p1),
+                polygon2 = convert(p2);
+
+        try{
+            if(polygon1 != null & polygon2 != null){
+                return GeometryEngine.intersects(polygon1,polygon2);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Nullable private static com.esri.arcgisruntime.geometry.Polygon convert(List<LatLng> p){

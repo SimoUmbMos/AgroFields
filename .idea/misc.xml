@@ -47,6 +47,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_edit.xml" value="0.3712962962962963" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_export.xml" value="0.382051282051282" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_history.xml" value="0.2450657894736842" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_location.xml" value="0.19305555555555556" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_logout.xml" value="0.382051282051282" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_mapmode.xml" value="0.26666666666666666" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_menu.xml" value="0.26666666666666666" />
@@ -81,6 +82,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_import.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_main.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_main_content.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/alert_dialog_zone_title.xml" value="0.2348684210526316" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_app_settings.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_blank.xml" value="0.178125" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_contact_profile.xml" value="0.36737884314747266" />
@@ -112,18 +114,22 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_user_outbox_request.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_user_profile.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_user_request.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_zone_editor.xml" value="0.2348684210526316" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_select.xml" value="0.2348684210526316" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_selected.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_add.xml" value="0.25052083333333336" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_change_owner.xml" value="0.2109375" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_delete.xml" value="0.25052083333333336" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_export.xml" value="0.25052083333333336" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_history.xml" value="0.24243421052631578" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_logout.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_edit_text.xml" value="0.11578947368421053" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_history_entry.xml" value="0.2596401028277635" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_history_item.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_history.xml" value="0.2671957671957672" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_history_deleted.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_history_selected.xml" value="0.371875" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_land.xml" value="0.1787037037037037" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_land.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_land_checkable.xml" value="0.19537037037037036" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_share_land_checkable.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_user.xml" value="1.0" />
@@ -138,6 +144,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/contact_profile_menu.xml" value="0.190625" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/contacts_container_bottom_menu.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/contextual_list_menu.xml" value="0.3671875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/empty_menu.xml" value="0.11842105263157894" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/land_history_menu.xml" value="0.2601851851851852" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/land_list_contextual_menu.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/land_list_menu.xml" value="0.371875" />
@@ -152,6 +159,11 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/selected_share_land_menu.xml" value="0.2109375" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/user_profile_menu.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/user_request_menu.xml" value="0.23802083333333332" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/zone_editor_menu.xml" value="0.13486842105263158" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/zone_editor_side_menu.xml" value="0.2348684210526316" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/zone_list_contextual_menu.xml" value="0.2348684210526316" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/zone_list_menu.xml" value="0.2348684210526316" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/zone_preview_menu.xml" value="0.15098684210526317" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap-anydpi-v26/application_icon.xml" value="0.25416666666666665" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap-anydpi-v26/application_icon_round.xml" value="0.25416666666666665" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.37743589743589745" />

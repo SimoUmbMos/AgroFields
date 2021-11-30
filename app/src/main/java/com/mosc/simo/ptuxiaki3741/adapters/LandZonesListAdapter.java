@@ -17,68 +17,57 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
-import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.List;
 
-public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandItem>{
-    private final List<Land> data;
-    private final ActionResult<Land> onLandClick;
-    private final ActionResult<Land> onLandLongClick;
+public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdapter.LandZoneItem>{
+    private final List<LandZone> data;
+    private final ActionResult<LandZone> onClick;
+    private final ActionResult<LandZone> onLongClick;
     private boolean showCheckMark;
 
-    public LandListAdapter(
-            List<Land> data,
-            ActionResult<Land> onLandClick,
-            ActionResult<Land> onLandLongClick
+    public LandZonesListAdapter(
+            List<LandZone> data,
+            ActionResult<LandZone> onClick,
+            ActionResult<LandZone> onLongClick
     ){
         this.data = data;
-        this.onLandClick = onLandClick;
-        this.onLandLongClick = onLandLongClick;
+        this.onClick = onClick;
+        this.onLongClick = onLongClick;
         this.showCheckMark = false;
     }
 
-    public LandListAdapter(
-            List<Land> data,
-            ActionResult<Land> onLandClick
-    ){
-        this.data = data;
-        this.onLandClick = onLandClick;
-        this.onLandLongClick = null;
-        this.showCheckMark = false;
-    }
     public void setShowCheckMark(
             boolean showCheckMark
     ){
         this.showCheckMark = showCheckMark;
     }
 
-    @NonNull @Override public LandItem onCreateViewHolder(
+    @NonNull @Override public LandZoneItem onCreateViewHolder(
             @NonNull ViewGroup parent,
             int viewType
     ) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.view_holder_land,parent,false);
-        return new LandItem(view);
+        return new LandZoneItem(view);
     }
 
     @Override public void onBindViewHolder(
-            @NonNull LandItem holder,
+            @NonNull LandZoneItem holder,
             int position
     ) {
         if(data.size()>position){
-            Land land = data.get(position);
-            LandData landData = land.getData();
-            if(landData != null){
-                holder.bindData(showCheckMark,land,onLandClick,onLandLongClick);
+            LandZone landZone = data.get(position);
+            if(landZone.getData() != null){
+                holder.bindData(showCheckMark,landZone,onClick,onLongClick);
             }
         }
     }
     @Override
-    public void onViewRecycled(LandItem holder) {
+    public void onViewRecycled(LandZoneItem holder) {
         if (holder.mMap != null) {
             holder.mMap.clear();
         }
@@ -91,14 +80,14 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             return 0;
     }
 
-    protected static class LandItem extends RecyclerView.ViewHolder {
+    protected static class LandZoneItem extends RecyclerView.ViewHolder {
         public final ViewHolderLandBinding binding;
         private final int strokeColor;
         private final int fillColor;
 
         public GoogleMap mMap;
 
-        public LandItem(@NonNull View itemView) {
+        public LandZoneItem(@NonNull View itemView) {
             super(itemView);
             binding = ViewHolderLandBinding.bind(itemView);
             binding.mapView.onCreate(null);
@@ -113,13 +102,13 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         }
         public void bindData(
             boolean showCheckBox,
-            Land land,
-            ActionResult<Land> onClick,
-            ActionResult<Land> onLongClick
+            LandZone landZone,
+            ActionResult<LandZone> onClick,
+            ActionResult<LandZone> onLongClick
         ){
-            String display = land.getData().getTitle() +
+            String display = landZone.getData().getTitle() +
                     " #" +
-                    EncryptUtil.convert4digit(land.getData().getId());
+                    EncryptUtil.convert4digit(landZone.getData().getId());
             if(showCheckBox){
                 binding.ctvLandName.setVisibility(View.VISIBLE);
                 binding.tvLandName.setVisibility(View.INVISIBLE);
@@ -129,32 +118,30 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             }
             binding.ctvLandName.setText(display);
             binding.tvLandName.setText(display);
-            binding.ctvLandName.setChecked(land.isSelected());
+            binding.ctvLandName.setChecked(landZone.isSelected());
 
             binding.item.setOnClickListener(v ->
-                    onClick.onActionResult(land)
+                    onClick.onActionResult(landZone)
             );
-            if(onLongClick != null){
-                binding.item.setOnLongClickListener(v -> {
-                    onLongClick.onActionResult(land);
-                    return true;
-                });
-            }
+            binding.item.setOnLongClickListener(v -> {
+                onLongClick.onActionResult(landZone);
+                return true;
+            });
             if(mMap != null){
-                zoomOnLand(land);
-                drawOnMap(land);
+                zoomOnLand(landZone);
+                drawOnMap(landZone);
             }else{
                 binding.mapView.getMapAsync(googleMap -> {
                     MapsInitializer.initialize(binding.getRoot().getContext());
                     mMap = googleMap;
                     mMap.getUiSettings().setAllGesturesEnabled(false);
                     mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                    zoomOnLand(land);
-                    drawOnMap(land);
+                    zoomOnLand(landZone);
+                    drawOnMap(landZone);
                 });
             }
         }
-        private void drawOnMap(Land land){
+        private void drawOnMap(LandZone land){
             mMap.clear();
             if(land.getData().getBorder().size()>0){
                 PolygonOptions options = new PolygonOptions();
@@ -162,13 +149,10 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
                 options.fillColor(fillColor);
                 options.strokeColor(strokeColor);
                 options.clickable(false);
-                for(List<LatLng> hole:land.getData().getHoles()) {
-                    options.addHole(hole);
-                }
                 mMap.addPolygon(options);
             }
         }
-        private void zoomOnLand(Land land){
+        private void zoomOnLand(LandZone land){
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for(LatLng point : land.getData().getBorder()){
                 builder.include(point);

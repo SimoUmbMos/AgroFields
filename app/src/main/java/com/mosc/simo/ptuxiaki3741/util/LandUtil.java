@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,6 +172,23 @@ public final class LandUtil {
             if(hole.size()>0)
                 options.addHole(hole);
         }
+        return options;
+    }
+    public static PolygonOptions getPolygonOptions(
+            LandZoneData zoneData,
+            int strokeColor,
+            int  fillColor,
+            boolean isClickable
+    ){
+        if(zoneData == null)
+            return null;
+        if(zoneData.getBorder().size() == 0)
+            return null;
+        PolygonOptions options = new PolygonOptions();
+        options.addAll(zoneData.getBorder());
+        options.clickable(isClickable);
+        options.strokeColor(strokeColor);
+        options.fillColor(fillColor);
         return options;
     }
 }

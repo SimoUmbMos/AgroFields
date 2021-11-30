@@ -87,6 +87,15 @@ public class LandRepositoryImpl implements LandRepository {
         return land;
     }
     @Override
+    public void saveZone(LandZone zone) {
+        LandZoneData zoneData = zone.getData();
+        if(zoneData != null){
+            long id = db.landZoneDao().insert(zoneData);
+            zoneData.setId(id);
+            zone.setData(zoneData);
+        }
+    }
+    @Override
     public void saveLandRecord(LandDataRecord landRecord) {
         long LRid = db.landHistoryDao().insert(landRecord);
         landRecord.setId(LRid);
@@ -96,6 +105,11 @@ public class LandRepositoryImpl implements LandRepository {
         LandData landData = land.getData();
         db.sharedLandDao().deleteByLandID(landData.getId());
         db.landDao().delete(landData);
+    }
+    @Override
+    public void deleteZone(LandZone zone) {
+        LandZoneData zoneData = zone.getData();
+        db.landZoneDao().delete(zoneData);
     }
 
     @Override
@@ -190,4 +204,5 @@ public class LandRepositoryImpl implements LandRepository {
         if(userLandPermissions.size() > 0)
             db.sharedLandDao().deleteAll(userLandPermissions);
     }
+
 }

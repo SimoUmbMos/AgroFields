@@ -7,7 +7,12 @@
   <color name="cardBackgroundColor">#BECED0</color>
   <color name="errorTextColor">#EDEEF0</color>
   <color name="accentColor">#F9718A</color>
+  <color name="textColor">#3A595C</color>
+
   <color name="polygonStroke">#C071f9e0</color>
   <color name="polygonFill">#4071f9e0</color>
-  <color name="textColor">#3A595C</color>
+  <color name="polygonStroke2">#C0F9718A</color>
+  <color name="polygonFill2">#40F9718A</color>
+  <color name="mapButtonBackgroundColor">#fff</color>
+  <color name="mapButtonTextColor">#404040</color>
 </resources>
