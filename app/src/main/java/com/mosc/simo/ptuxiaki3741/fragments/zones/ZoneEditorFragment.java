@@ -46,7 +46,7 @@ import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private ActionBar actionBar;
 
-    private LandViewModel vmLands;
+    private AppViewModel vmLands;
     private LandZone zone;
     private List<LandZone> otherZones;
     private Land land;
@@ -92,11 +92,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         index3 = -1;
 
         if(getArguments() != null){
-            if(getArguments().containsKey(AppValues.argZonePreviewZone)){
-                zone = getArguments().getParcelable(AppValues.argZonePreviewZone);
+            if(getArguments().containsKey(AppValues.argZone)){
+                zone = getArguments().getParcelable(AppValues.argZone);
             }
-            if(getArguments().containsKey(AppValues.argZonePreviewLand)){
-                land = getArguments().getParcelable(AppValues.argZonePreviewLand);
+            if(getArguments().containsKey(AppValues.argLand)){
+                land = getArguments().getParcelable(AppValues.argLand);
             }
         }
         if(zone != null){
@@ -123,7 +123,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     private void initViewModel(){
         if(getActivity() != null){
-            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
         }
     }
     private void initMap(GoogleMap googleMap) {
@@ -525,7 +525,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         updateMap();
     }
     private void updateUIBasedOnState() {
-
+        //todo:code...
     }
     private void updateMap(){
         if(mMap != null){
@@ -575,7 +575,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private List<LatLng> getBiggerAreaZoneIntersections(List<LatLng> p1, List<LatLng> p2){
         List<LatLng> ans = new ArrayList<>();
-        if(!MapUtil.contains(p1,p2)){
+        if(MapUtil.notContains(p1,p2)){
             Log.d(TAG, "getBiggerAreaZoneIntersections: don't contains");
             return ans;
         }
@@ -587,7 +587,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     private List<LatLng> getBiggerAreaZoneDifference(List<LatLng> p1, List<LatLng> p2){
         List<LatLng> ans = new ArrayList<>(p1);
-        if(!MapUtil.contains(p1,p2)){
+        if(MapUtil.notContains(p1,p2)){
             return ans;
         }
         List<List<LatLng>> tempBorders = MapUtil.difference(p1,p2);
@@ -647,14 +647,6 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.zone_editor_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        MenuItem item = menu.findItem(R.id.menu_item_edit_zone);
-        if(item != null){
-            item.setEnabled(land.getPerm().isWrite());
-            item.setVisible(land.getPerm().isWrite());
-        }
-        super.onPrepareOptionsMenu(menu);
     }
     @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(onMenuClick(item))

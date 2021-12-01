@@ -53,7 +53,6 @@ public final class LandUtil {
 
         return new LandData(
                 currLandData.getId(),
-                currLandData.getCreator_id(),
                 currLandData.getTitle(),
                 newBorder,
                 holes
@@ -98,7 +97,6 @@ public final class LandUtil {
 
         return new LandData(
                 currLandData.getId(),
-                currLandData.getCreator_id(),
                 currLandData.getTitle(),
                 newBorder,
                 holes
@@ -109,7 +107,6 @@ public final class LandUtil {
         if(record != null){
             return new LandData(
                     record.getLandID(),
-                    record.getLandCreatorID(),
                     record.getLandTitle(),
                     record.getBorder(),
                     record.getHoles()

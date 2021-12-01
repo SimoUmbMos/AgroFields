@@ -51,7 +51,7 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
@@ -169,21 +169,20 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                             if (data.size() > 0) {
                                 Bundle args = new Bundle();
                                 args.putParcelableArrayList(
-                                        AppValues.argImportFragLandDataList,
+                                        AppValues.argLands,
                                         data
                                 );
                                 args.putParcelable(
-                                        AppValues.argImportFragCurrLandData,
+                                        AppValues.argLand,
                                         new LandData(
                                                 currLand.getData().getId(),
-                                                currLand.getData().getCreator_id(),
                                                 currLand.getData().getTitle(),
                                                 currLand.getData().getBorder(),
                                                 currLand.getData().getHoles()
                                         )
                                 );
                                 args.putSerializable(
-                                        AppValues.argImportFragLandAction,
+                                        AppValues.argAction,
                                         importAction
                                 );
                                 toImport(getActivity(), args);
@@ -199,8 +198,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private LandData handleImport() {
         if (getArguments() != null) {
             LandData landData;
-            if(getArguments().containsKey(AppValues.argImportLandData)){
-                landData = getArguments().getParcelable(AppValues.argImportLandData);
+            if(getArguments().containsKey(AppValues.argImportLand)){
+                landData = getArguments().getParcelable(AppValues.argImportLand);
             }else{
                 landData = null;
             }
@@ -219,13 +218,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         address = null;
         currLocation = false;
         if(getArguments() != null){
-            if(getArguments().containsKey(AppValues.argLandLandMapFragment)) {
-                currLand = getArguments().getParcelable(AppValues.argLandLandMapFragment);
+            if(getArguments().containsKey(AppValues.argLand)) {
+                currLand = getArguments().getParcelable(AppValues.argLand);
             }
-            if(getArguments().containsKey(AppValues.argCurrLocationLandMapFragment)){
-                currLocation = getArguments().getBoolean(AppValues.argCurrLocationLandMapFragment);
-            }else if(getArguments().containsKey(AppValues.argAddressLandMapFragment)){
-                address = getArguments().getString(AppValues.argAddressLandMapFragment);
+            if(getArguments().containsKey(AppValues.argAddress)){
+                address = getArguments().getString(AppValues.argAddress);
+            }else{
+                currLocation = true;
             }
         }
 
@@ -293,7 +292,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         setupSideMenu();
 
         binding.navLandMenu.setNavigationItemSelectedListener(this::menuItemClick);
-        binding.LandMapRoot.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.fabLandActionSave.setOnClickListener(v->saveAction());
         binding.fabLandActionReset.setOnClickListener(v->undo());
         binding.slAlphaSlider.addOnChangeListener((range,value,user) -> onSliderUpdate(value));
@@ -402,7 +401,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void addToVM(LandData data) {
         if(getActivity() != null){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.saveLand(new Land(data));
         }
     }
@@ -420,14 +419,14 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         currLand.getData().setBorder(points);
         currLand.getData().setHoles(holes);
         if(getActivity() != null){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.saveLand(currLand);
         }
     }
 
     //delete relative
     private void deleteLand(){
-        binding.LandMapRoot.closeDrawer(GravityCompat.END,false);
+        binding.getRoot().closeDrawer(GravityCompat.END,false);
         showDeleteLandDialog();
     }
     private void showDeleteLandDialog(){
@@ -452,7 +451,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void removeFromVM() {
         if(getActivity() != null && currLand.getData().getId() >= 0){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.removeLand(currLand);
         }
     }
@@ -630,7 +629,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 index1 = -1;
             }
         }else{
-            //todo: maybe bug should be index1 = -1 was index1 = 1
             index1 = -1;
         }
     }
@@ -910,7 +908,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private void toggleDrawer(boolean toggle) {
         if(binding != null){
             if(toggle){
-                binding.LandMapRoot.openDrawer(GravityCompat.END);
+                binding.getRoot().openDrawer(GravityCompat.END);
                 if(isImgAction(mapStatus) && mapStatus != LandActionStates.Alpha){
                     if(beforeMoveWasLocked){
                         toggleMapLock();
@@ -920,7 +918,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                     setAction(LandActionStates.Disable);
                 }
             }else{
-                binding.LandMapRoot.closeDrawer(GravityCompat.END);
+                binding.getRoot().closeDrawer(GravityCompat.END);
             }
         }
     }
@@ -994,7 +992,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MapLandEditorFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandInfoFragment,currLand);
+                bundle.putParcelable(AppValues.argLand,currLand);
                 if(nav != null)
                     nav.navigate(R.id.toProfileLand,bundle);
             });
@@ -1072,8 +1070,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
-        if(binding.LandMapRoot.isDrawerOpen(GravityCompat.END)){
-            binding.LandMapRoot.closeDrawer(GravityCompat.END);
+        if(binding.getRoot().isDrawerOpen(GravityCompat.END)){
+            binding.getRoot().closeDrawer(GravityCompat.END);
             return false;
         }
         if(binding.clLandControls.getVisibility() != View.GONE){

@@ -46,15 +46,7 @@
         <item name="colorSurface">@color/backgroundColor</item>
         <item name="android:colorBackground">@color/backgroundColor</item>
     </style>
-    <style name="BottomNavigationStyle" parent="AppTheme">
-        <item name="backgroundTint">@android:color/transparent</item>
-        <item name="itemIconTint">@color/bottom_nav_color_selector</item>
-        <item name="itemTextColor">@color/bottom_nav_color_selector</item>
-        <item name="itemTextAppearanceActive">@style/BottomNavigationText.Selected</item>
-        <item name="itemTextAppearanceInactive">@style/BottomNavigationText</item>
-    </style>
-    <style name="BottomNavigationText" parent="AppTheme"/>
-    <style name="BottomNavigationText.Selected" parent="BottomNavigationText"/>
+
     <style name="CustomBadge" parent="@style/Widget.MaterialComponents.Badge">
         <item name="backgroundColor">@color/colorNotificationBadge</item>
         <item name="badgeTextColor">@color/colorOnNotificationBadge</item>
@@ -64,31 +56,7 @@
     <style name="TextInputFields" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
-    <style name="FloatingActionButtonStyle" parent="AppTheme">
-        <item name="colorPrimary">@color/textColor</item>
-        <item name="colorSecondary">@color/textColor</item>
-        <item name="colorOnPrimary">@color/backgroundColor</item>
-        <item name="colorOnSecondary">@color/backgroundColor</item>
-    </style>
-    <style name="FloatingActionButtonStyle.ChangeState" parent="FloatingActionButtonStyle">
-        <item name="colorPrimary">@color/textColor</item>
-        <item name="colorSecondary">@color/textColor</item>
-        <item name="colorOnPrimary">@color/textColor</item>
-        <item name="colorOnSecondary">@color/textColor</item>
-    </style>
-    <style name="FloatingActionButtonStyle.BottomNavigation" parent="FloatingActionButtonStyle">
-        <item name="colorPrimary">@color/accentColor</item>
-        <item name="colorSecondary">@color/accentColor</item>
-        <item name="colorOnPrimary">@color/backgroundColor</item>
-        <item name="colorOnSecondary">@color/backgroundColor</item>
-    </style>
-    <style name="FloatingActionButtonStyle.BottomLogin" parent="FloatingActionButtonStyle">
-        <item name="colorPrimary">@color/textColor</item>
-        <item name="colorSecondary">@color/textColor</item>
-        <item name="colorOnPrimary">@color/backgroundColor</item>
-        <item name="colorOnSecondary">@color/backgroundColor</item>
-        <item name="elevation">0dp</item>
-    </style>
+
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>

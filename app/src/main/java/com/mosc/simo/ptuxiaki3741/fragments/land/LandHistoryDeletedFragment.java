@@ -24,17 +24,14 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryDeletedAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandHistoryDeletedBinding;
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,19 +41,15 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
     private LandHistoryDeletedAdapter adapter;
     private FragmentLandHistoryDeletedBinding binding;
 
-    private UserViewModel vmUsers;
-
     private int openIndex;
     private boolean notInit;
     private List<LandHistory> data;
-    private List<User> users;
 
     //init
     private void initData() {
         notInit = true;
         openIndex = -1;
         data = new ArrayList<>();
-        users = new ArrayList<>();
     }
     private void initActivity() {
         ActionBar actionBar = null;
@@ -83,7 +76,6 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
         };
         adapter = new LandHistoryDeletedAdapter(
                 data,
-                users,
                 values,
                 this::onLandHistoryClick,
                 this::onRecordClick
@@ -100,15 +92,12 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
     }
     private void initViewModels() {
         if(getActivity() != null){
-            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.getLandsHistory().observe(getViewLifecycleOwner(),this::onHistoryChange);
         }
     }
     //data
     private void populateData(List<LandDataRecord> r) {
-        List<Long> uid = new ArrayList<>();
-        users.clear();
         data.clear();
         openIndex = -1;
 
@@ -116,12 +105,6 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
         for(LandHistory tempLandHistory:tempData){
             if(tempLandHistory.getData().size()>0){
                 data.add(tempLandHistory);
-                for(LandDataRecord tempRecord : tempLandHistory.getData()){
-                    if(!uid.contains(tempRecord.getUserID())){
-                        uid.add(tempRecord.getUserID());
-                        users.add(vmUsers.getUserByID(tempRecord.getUserID()));
-                    }
-                }
             }
         }
     }
@@ -189,8 +172,8 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandHistoryDeletedFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
-                bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,true);
+                bundle.putParcelable(AppValues.argLand,land);
+                bundle.putBoolean(AppValues.argIsHistory,true);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);
             });

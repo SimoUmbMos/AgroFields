@@ -2,8 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:title="@string/map_view_actions_group_title"
-        android:id="@+id/group_map_view_actions">
+    <item android:title="@string/map_view_actions_group_title">
         <menu>
             <item
                 android:id="@+id/toolbar_action_toggle_map_lock"
@@ -14,8 +13,7 @@
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
-    <item android:title="@string/points_actions_group_title"
-        android:id="@+id/group_map_menu_core_actions">
+    <item android:title="@string/points_actions_group_title">
         <menu>
             <item
                 android:id="@+id/toolbar_action_add_on_end"
@@ -54,8 +52,7 @@
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
-    <item android:title="@string/img_actions_group_title"
-        android:id="@+id/group_map_menu_img_actions">
+    <item android:title="@string/img_actions_group_title">
         <menu>
             <item
                 android:id="@+id/toolbar_action_add_img"
@@ -87,8 +84,7 @@
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
-    <item android:title="@string/land_actions_group_title"
-        android:id="@+id/group_map_menu_land_actions">
+    <item android:title="@string/land_actions_group_title">
         <menu>
             <item
                 android:id="@+id/toolbar_action_make_land_editable"
@@ -113,8 +109,7 @@
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
-    <item android:title="@string/file_actions_group_title"
-        android:id="@+id/group_map_menu_file_actions">
+    <item android:title="@string/file_actions_group_title">
         <menu>
             <item
                 android:id="@+id/toolbar_action_import"

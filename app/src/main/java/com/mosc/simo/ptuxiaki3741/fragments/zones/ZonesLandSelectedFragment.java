@@ -32,7 +32,7 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,15 +46,15 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
     private LandListMenuState state;
     private ActionMode actionMenu;
 
-    private LandViewModel vmLands;
+    private AppViewModel vmLands;
 
     //init relative
     private void initData() {
         data = new ArrayList<>();
         selectedLand = null;
         if(getArguments() != null){
-            if(getArguments().containsKey(AppValues.argZoneLandSelectedLand)){
-                selectedLand = getArguments().getParcelable(AppValues.argZoneLandSelectedLand);
+            if(getArguments().containsKey(AppValues.argLand)){
+                selectedLand = getArguments().getParcelable(AppValues.argLand);
             }
         }
     }
@@ -88,7 +88,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
     }
     private void initViewModel() {
         if(getActivity() != null){
-            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.getLandZones().observe(getViewLifecycleOwner(),this::onDataUpdate);
         }
     }
@@ -101,24 +101,12 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
                     item.setEnabled(false);
                     item.setVisible(false);
                 }
-                MenuItem item2 = menu.findItem(R.id.menu_delete_action);
-                if(item2 != null){
-                    item2.setEnabled(selectedLand.getPerm().isWrite());
-                    item2.setVisible(selectedLand.getPerm().isWrite());
-                }
                 break;
             case MultiExportState:
                 item = menu.findItem(R.id.menu_delete_action);
                 if(item != null){
                     item.setEnabled(false);
                     item.setVisible(false);
-                }
-                break;
-            case MultiSelectState:
-                item = menu.findItem(R.id.menu_delete_action);
-                if(item != null){
-                    item.setEnabled(selectedLand.getPerm().isWrite());
-                    item.setVisible(selectedLand.getPerm().isWrite());
                 }
                 break;
         }
@@ -356,9 +344,9 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ZonesLandSelectedFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argZonePreviewLand,selectedLand);
+                bundle.putParcelable(AppValues.argLand,selectedLand);
                 if(z != null){
-                    bundle.putParcelable(AppValues.argZonePreviewZone,z);
+                    bundle.putParcelable(AppValues.argZone,z);
                 }
                 if(nav != null){
                     nav.navigate(R.id.toLandPreview,bundle);
@@ -395,16 +383,12 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             item1.getActionView().setOnClickListener(v->
                     menu.performIdentifierAction(item1.getItemId(),0)
             );
-            item1.setEnabled(selectedLand.getPerm().isWrite());
-            item1.setVisible(selectedLand.getPerm().isWrite());
         }
         final MenuItem item2 = menu.findItem(R.id.menu_item_delete);
         if(item2 != null){
             item2.getActionView().setOnClickListener(v->
                     menu.performIdentifierAction(item2.getItemId(),0)
             );
-            item2.setEnabled(selectedLand.getPerm().isWrite());
-            item2.setVisible(selectedLand.getPerm().isWrite());
         }
         final MenuItem item3 = menu.findItem(R.id.menu_item_add);
         if(item3 != null){

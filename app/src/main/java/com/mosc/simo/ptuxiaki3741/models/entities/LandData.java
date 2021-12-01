@@ -20,8 +20,6 @@ import java.util.Objects;
 public class LandData implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
-    @ColumnInfo(name = "CreatorID")
-    private long creator_id;
     @ColumnInfo(name = "Title")
     private String title;
     @ColumnInfo(name = "Border")
@@ -32,7 +30,6 @@ public class LandData implements Parcelable {
     @Ignore
     protected LandData(Parcel in) {
         id = in.readLong();
-        creator_id = in.readLong();
         title = in.readString();
         border = in.createTypedArrayList(LatLng.CREATOR);
         List<ParcelableHole> holes = in.createTypedArrayList(ParcelableHole.CREATOR);
@@ -42,7 +39,6 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(List<LatLng> border) {
         this.id = -1;
-        this.creator_id = -1;
         this.title = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
@@ -51,7 +47,6 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(List<LatLng> border,List<List<LatLng>> holes) {
         this.id = -1;
-        this.creator_id = -1;
         this.title = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
@@ -59,32 +54,29 @@ public class LandData implements Parcelable {
         setHoles(holes);
     }
     @Ignore
-    public LandData(long creator_id, String title) {
+    public LandData(String title) {
         this.id = -1;
-        this.creator_id = creator_id;
         this.title = title;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
     }
     @Ignore
-    public LandData(boolean setId, long creator_id, String title,
+    public LandData(boolean setId, String title,
                     List<LatLng> border, List<List<LatLng>> holes
     ) {
         if(setId){
             this.id = -1;
         }
-        this.creator_id = creator_id;
         this.title = title;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
         setBorder(border);
         setHoles(holes);
     }
-    public LandData(long id, long creator_id, String title,
+    public LandData(long id, String title,
             List<LatLng> border, List<List<LatLng>> holes
     ) {
         this.id = id;
-        this.creator_id = creator_id;
         this.title = title;
         this.border = new ArrayList<>(border);
         this.holes = new ArrayList<>(holes);
@@ -92,9 +84,6 @@ public class LandData implements Parcelable {
 
     public long getId() {
         return id;
-    }
-    public long getCreator_id() {
-        return creator_id;
     }
     public String getTitle() {
         return title;
@@ -108,9 +97,6 @@ public class LandData implements Parcelable {
 
     public void setId(long id) {
         this.id = id;
-    }
-    public void setCreator_id(long creator_id) {
-        this.creator_id = creator_id;
     }
     public void setTitle(String title) {
         this.title = title;
@@ -147,7 +133,6 @@ public class LandData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeLong(creator_id);
         dest.writeString(title);
         dest.writeTypedList(border);
         List<ParcelableHole> holes = new ArrayList<>();
@@ -163,7 +148,6 @@ public class LandData implements Parcelable {
         LandData landData = (LandData) o;
         return
                 id == landData.id &&
-                creator_id == landData.creator_id &&
                 title.equals(landData.title) &&
                 ListUtils.arraysMatch(border,landData.border) &&
                 ListUtils.arraysMatch(holes,landData.holes);
@@ -171,6 +155,6 @@ public class LandData implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creator_id, title, border, holes);
+        return Objects.hash(id, title, border, holes);
     }
 }

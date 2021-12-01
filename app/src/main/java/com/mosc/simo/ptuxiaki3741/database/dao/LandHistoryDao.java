@@ -12,11 +12,8 @@ import java.util.List;
 
 @Dao
 public interface LandHistoryDao {
-    @Query("SELECT r.* " +
-            "FROM LandDataRecord r LEFT JOIN UserLandPermissions p ON p.LandID = r.LandID " +
-            "WHERE r.CreatorID = :uid OR (p.UserID = :uid AND p.AdminPermission = :admin) " +
-            "ORDER BY r.LandID, r.Date, r.LandTitle")
-    List<LandDataRecord> getLandRecordsByUserIdAndPermission(long uid, boolean admin);
+    @Query("SELECT r.* FROM LandDataRecord r ORDER BY r.LandID, r.Date, r.LandTitle")
+    List<LandDataRecord> getLandRecords();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandDataRecord landRecord);

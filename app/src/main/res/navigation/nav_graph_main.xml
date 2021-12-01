@@ -21,11 +21,6 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.LoadingFragment"
         android:label="fragment_loading"
         tools:layout="@layout/fragment_loading" >
-        <action android:id="@+id/toLoginRegister"
-            app:destination="@id/LoginRegisterFragment"
-            app:popUpTo="@+id/nav_land_graph"
-            app:launchSingleTop="true"
-            app:popUpToInclusive="true"/>
         <action android:id="@+id/toMenuMain"
             app:destination="@id/MenuMainFragment"
             app:popUpTo="@+id/nav_land_graph"
@@ -36,15 +31,6 @@
             app:popUpTo="@+id/nav_land_graph"
             app:launchSingleTop="true"
             app:popUpToInclusive="true"/>
-    </fragment>
-    <fragment android:id="@+id/LoginRegisterFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LoginRegisterFragment"
-        android:label="fragment_login_register"
-        tools:layout="@layout/fragment_login_register" >
-        <action android:id="@+id/toMenuMain"
-            app:destination="@id/MenuMainFragment"
-            app:popUpTo="@id/nav_land_graph"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment android:id="@+id/MapFileFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MapFileFragment"
@@ -129,12 +115,6 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuMainFragment"
         android:label="fragment_menu"
         tools:layout="@layout/fragment_menu_main" >
-        <action android:id="@+id/toLoading"
-            app:destination="@id/LoadingFragment"
-            app:popUpTo="@id/nav_land_graph"
-            app:popUpToInclusive="true" />
-        <action android:id="@+id/toProfileUser"
-            app:destination="@id/ProfileUserFragment" />
         <action android:id="@+id/toMenuLands"
             app:destination="@id/MenuLandsFragment" />
         <action android:id="@+id/toMenuZoneLands"
@@ -154,32 +134,9 @@
             app:popUpTo="@id/MenuLandsFragment"
             app:popUpToInclusive="false" />
     </fragment>
-    <fragment android:id="@+id/ProfileUserFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.user.ProfileUserFragment"
-        android:label="fragment_user_profile"
-        tools:layout="@layout/fragment_user_profile" >
-        <action android:id="@+id/toLoading"
-            app:destination="@id/LoadingFragment"
-            app:popUpTo="@id/nav_land_graph"
-            app:popUpToInclusive="true" />
-    </fragment>
     <fragment android:id="@+id/ContactsContainerFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.ContactsContainerFragment"
         android:label="fragment_contacts_container"
-        tools:layout="@layout/fragment_contacts_container">
-        <action android:id="@+id/toProfileContact"
-            app:destination="@id/ProfileContactFragment"/>
-    </fragment>
+        tools:layout="@layout/fragment_contacts_container"/>
 
-    <fragment android:id="@+id/ProfileContactFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.ProfileContactFragment"
-        android:label="fragment_contact_profile"
-        tools:layout="@layout/fragment_contact_profile" >
-        <action android:id="@+id/toShareLand"
-            app:destination="@id/ShareLandFragment" />
-    </fragment>
-    <fragment android:id="@+id/ShareLandFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.ShareLandFragment"
-        android:label="fragment_selected_share_land"
-        tools:layout="@layout/fragment_selected_share_land" />
 </navigation>

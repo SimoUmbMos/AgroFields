@@ -31,13 +31,11 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,27 +49,20 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
 
     private List<LandZone> currLandZones;
     private Land currLand;
-    private User currUser;
     private boolean isHistory;
 
     //init relative
     private void initData(){
         currLandZones = new ArrayList<>();
-        Bundle args = getArguments();
-        if(args != null){
-            if(args.containsKey(AppValues.argIsHistoryLandMapPreviewFragment)){
-                isHistory = args.getBoolean(AppValues.argIsHistoryLandMapPreviewFragment);
-            }else{
-                isHistory = false;
+        isHistory = false;
+        currLand = null;
+        if(getArguments() != null){
+            if(getArguments().containsKey(AppValues.argIsHistory)){
+                isHistory = getArguments().getBoolean(AppValues.argIsHistory);
             }
-            if(args.containsKey(AppValues.argLandLandMapPreviewFragment)){
-                currLand = args.getParcelable(AppValues.argLandLandMapPreviewFragment);
-            }else{
-                currLand = null;
+            if(getArguments().containsKey(AppValues.argLand)){
+                currLand = getArguments().getParcelable(AppValues.argLand);
             }
-        }else{
-            isHistory = false;
-            currLand = null;
         }
     }
     private void initActivity(){
@@ -93,11 +84,11 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     }
     private void initViewModel(){
         if(getActivity() != null){
-            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            LandViewModel vmLand = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserUpdate);
-            vmLand.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
-            vmLand.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
+            AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            appVM.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
+            if(!isHistory){
+                appVM.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
+            }
         }
     }
     private void initFragment(){
@@ -157,9 +148,6 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     }
 
     //observers
-    private void onUserUpdate(User user) {
-        currUser = user;
-    }
     private void onLandUpdate(List<Land> lands) {
         if(currLand != null){
             for(Land temp:lands){
@@ -184,23 +172,12 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
 
     //restore relative
     private void restoreLand() {
-        if(isValidToRestore()){
-            restoreToVM();
-            finish(getActivity());
-        }
-    }
-    private boolean isValidToRestore() {
-        if(currUser != null){
-            if(currLand !=null){
-                return currLand.getPerm().isAdmin() ||
-                        currLand.getData().getCreator_id() == currUser.getId();
-            }
-        }
-        return false;
+        restoreToVM();
+        finish(getActivity());
     }
     private void restoreToVM() {
         if(getActivity() != null){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.restoreLand(currLand);
         }
     }
@@ -211,7 +188,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MapLandPreviewFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandLandMapFragment,currLand);
+                bundle.putParcelable(AppValues.argLand,currLand);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });
@@ -221,7 +198,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MapLandPreviewFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandHistoryFragment,currLand);
+                bundle.putParcelable(AppValues.argLand,currLand);
                 if(nav != null)
                     nav.navigate(R.id.toLandHistory,bundle);
             });
@@ -276,31 +253,16 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         MenuItem historyItem = menu.findItem(R.id.menu_item_history_land);
         MenuItem restoreItem = menu.findItem(R.id.menu_item_restore_land);
         if(editItem != null){
-            if(currLand.getPerm().isWrite()){
-                editItem.setVisible(!isHistory);
-                editItem.setEnabled(!isHistory);
-            }else{
-                editItem.setVisible(false);
-                editItem.setEnabled(false);
-            }
+            editItem.setVisible(!isHistory);
+            editItem.setEnabled(!isHistory);
         }
         if(historyItem != null){
-            if(currLand.getPerm().isAdmin()){
-                historyItem.setVisible(!isHistory);
-                historyItem.setEnabled(!isHistory);
-            }else{
-                historyItem.setVisible(false);
-                historyItem.setEnabled(false);
-            }
+            historyItem.setVisible(!isHistory);
+            historyItem.setEnabled(!isHistory);
         }
         if(restoreItem != null){
-            if(currLand.getPerm().isAdmin()){
-                restoreItem.setVisible(isHistory);
-                restoreItem.setEnabled(isHistory);
-            }else{
-                restoreItem.setVisible(false);
-                restoreItem.setEnabled(false);
-            }
+            restoreItem.setVisible(isHistory);
+            restoreItem.setEnabled(isHistory);
         }
         super.onPrepareOptionsMenu(menu);
     }

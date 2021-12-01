@@ -11,7 +11,6 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistorySelectedBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,18 +19,15 @@ import java.util.Locale;
 
 public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistorySelectedAdapter.HistoryItemViewHolder>{
     private final List<LandDataRecord> data;
-    private final List<User> users;
     private final String[] values;
     private final ActionResult<LandDataRecord> onClick;
     private final DateFormat dateFormat;
     public LandHistorySelectedAdapter(
             List<LandDataRecord> data,
-            List<User> users,
             String[] values,
             ActionResult<LandDataRecord> onClick
     ){
         this.data = data;
-        this.users = users;
         this.values = values;
         this.onClick = onClick;
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
@@ -64,15 +60,6 @@ public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistory
     private void setupViewHolder(@NonNull HistoryItemViewHolder holder, int position) {
         LandDataRecord item = data.get(position);
         holder.binding.getRoot().setOnClickListener(v->onClick.onActionResult(item));
-
-        String username = "";
-        for(User user:users){
-            if(item.getUserID() == user.getId()){
-                username = user.getUsername();
-                break;
-            }
-        }
-        holder.binding.hiData.setUsername(username);
 
         String date = dateFormat.format(item.getDate());
         holder.binding.hiData.setDate(date);

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/zone_actions_group"
-        android:title="@string/zone_actions_group_title">
+    <item android:title="@string/zone_actions_group_title">
         <menu>
             <item android:id="@+id/toolbar_action_change_zone_name"
                 android:title="@string/edit_zone_title"
@@ -18,8 +17,7 @@
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
-    <item android:id="@+id/zone_border_actions_group"
-        android:title="@string/zone_border_actions_group_title">
+    <item android:title="@string/zone_border_actions_group_title">
         <menu>
             <item android:id="@+id/toolbar_action_zone_add_point"
                 android:title="@string/zone_add_point"

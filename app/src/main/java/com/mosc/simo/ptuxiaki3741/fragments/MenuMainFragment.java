@@ -23,21 +23,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
@@ -47,8 +42,7 @@ import java.util.List;
 public class MenuMainFragment extends Fragment implements FragmentBackPress {
     //todo: (fix) map click accuracy
     //todo: (idea) delete map
-    private UserViewModel vmUsers;
-    private LandViewModel vmLands;
+    private AppViewModel vmLands;
     private List<Polygon> landPolygons,zonesPolygons;
     private List<Land> data1;
     private List<LandZone> data2;
@@ -56,7 +50,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     private boolean drawPolygon, firstLoad;
 
     private FragmentMenuMainBinding binding;
-    private ActionBar actionBar;
 
     //init
     private void initData(){
@@ -69,13 +62,13 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
     private void initActivity() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        actionBar = null;
+        ActionBar actionBar = null;
         if( mainActivity != null){
             mainActivity.setOnBackPressed(this);
             actionBar = mainActivity.getSupportActionBar();
         }
         if(actionBar != null){
-            actionBar.setTitle("");
+            actionBar.setTitle(""); //fixme: add title
             actionBar.show();
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setDisplayShowHomeEnabled(false);
@@ -83,14 +76,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
     private void initViewModels() {
         if(getActivity() != null){
-            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
-        }
-    }
-    private void initUserObservers() {
-        if(vmUsers != null){
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onCurrUserUpdate);
-            vmUsers.getReceivedRequestList().observe(getViewLifecycleOwner(),this::onFriendRequestListUpdate);
+            vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
         }
     }
     private void initFragment() {
@@ -109,7 +95,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setZoomGesturesEnabled(false);
         mMap.setOnMapClickListener(p -> OnMapClick());
-        mMap.setOnPolygonClickListener(this::OnPolygonClick);
         if(binding != null){
             binding.mvLands.setVisibility(View.INVISIBLE);
         }
@@ -124,27 +109,11 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
 
 
     //observers
-    private void onCurrUserUpdate(User user) {
-        if(user != null){
-            if(actionBar != null){
-                actionBar.setTitle(user.getUsername());
-            }
-        }else{
-            toLogin(getActivity());
-        }
-    }
-    private void onFriendRequestListUpdate(List<User> requests) {
-        updateRequestNotification(requests);
-    }
     private void onLandUpdate(List<Land> newData) {
         AsyncTask.execute(()->{
             data1.clear();
             if(newData != null){
-                for(Land temp:newData) {
-                    if(temp.getPerm().isRead()){
-                        data1.add(temp);
-                    }
-                }
+                data1.addAll(newData);
             }
             if(getActivity() != null)
                 getActivity().runOnUiThread(()->{
@@ -168,9 +137,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
 
     //map
-    private void OnPolygonClick(Polygon polygon){
-        drawMap(polygon);
-    }
     private void OnMapClick(){
         if(drawPolygon) {
             drawMapLands();
@@ -204,7 +170,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                             land.getData(),
                             strokeColor,
                             fillColor,
-                            true
+                            false
                     );
                     if(options != null){
                         landPolygons.add(mMap.addPolygon(options.zIndex(1)));
@@ -261,58 +227,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
-    private void drawMap(Polygon polygon){
-        drawPolygon = true;
-        if(mMap != null){
-            int strokeColor,fillColor;
-            if(getContext() != null){
-                strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
-                fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
-            }else{
-                strokeColor = AppValues.strokeColor;
-                fillColor = AppValues.fillColor;
-            }
-            PolygonOptions options = LandUtil.getPolygonOptions(
-                    new LandData(polygon.getPoints(),polygon.getHoles()),
-                    strokeColor,
-                    fillColor,
-                    true
-            );
-            if(options != null){
-                mMap.clear();
-                mMap.addPolygon(options);
-                mMap.addMarker(new MarkerOptions()
-                        .position(MapUtil.getPolygonCenter(polygon.getPoints()))
-                        .draggable(false)
-                );
-
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                for(LatLng point:polygon.getPoints()){
-                    builder.include(point);
-                }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                        builder.build(),
-                        AppValues.defaultPadding
-                ));
-            }
-
-        }
-    }
-
-    //ui
-    private void updateRequestNotification(List<User> requests) {
-        if(requests.size()>0){
-            binding.mcvRequestLayout.setVisibility(View.VISIBLE);
-            if(requests.size()>99){
-                binding.tvRequestNumber.setText(R.string.max_request_label);
-            }else{
-                binding.tvRequestNumber.setText(String.valueOf(requests.size()));
-            }
-        }else{
-            binding.mcvRequestLayout.setVisibility(View.GONE);
-            binding.tvRequestNumber.setText(String.valueOf(0));
-        }
-    }
 
     //navigation
     public void toListMenu(@Nullable Activity activity) {
@@ -332,20 +246,13 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             });
     }
     public void toProfile(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toProfileUser);
-            });
-    }
-    public void toLogin(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toLoading);
-            });
+        //fixme: replace to profile
+//        if(activity != null)
+//            activity.runOnUiThread(()-> {
+//                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
+//                if(nav != null)
+//                    nav.navigate(R.id.toProfileUser);
+//            });
     }
     public void toSettings(@Nullable Activity activity) {
         if(activity != null)
@@ -377,7 +284,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         initActivity();
         initViewModels();
         initFragment();
-        initUserObservers();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();

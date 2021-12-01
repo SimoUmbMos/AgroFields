@@ -32,8 +32,7 @@ import android.widget.Toast;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuLandBinding;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandListActionState;
@@ -41,7 +40,6 @@ import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.adapters.LandListAdapter;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -59,8 +57,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     private FileType exportAction;
     private LandListAdapter adapter;
     private int dialogChecked;
-    private LandViewModel vmLands;
-    private User currUser;
+    private AppViewModel vmLands;
     private LandListMenuState state = LandListMenuState.NormalState;
 
     private FragmentMenuLandBinding binding;
@@ -143,9 +140,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     }
     private void initViewModel() {
         if(getActivity() != null){
-            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            vmUsers.getCurrUser().observe(getViewLifecycleOwner(),this::onUserChange);
-            vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandsChange);
         }
     }
@@ -253,21 +248,11 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     }
 
     //observers
-    private void onUserChange(User user) {
-        currUser = user;
-        if(user == null){
-            finish();
-        }
-    }
     @SuppressLint("NotifyDataSetChanged")
     private void onLandsChange(List<Land> lands) {
         data.clear();
         if(lands != null){
-            for(Land land:lands){
-                if(land.getPerm().isRead()){
-                    data.add(land);
-                }
-            }
+            data.addAll(lands);
         }
         if(getActivity() != null)
             getActivity().runOnUiThread(()->{
@@ -347,7 +332,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                 deleteLands.add(land);
             }
         }
-        if(deleteLands.size()>0 && currUser != null){
+        if(deleteLands.size()>0){
             AsyncTask.execute(()->vmLands.removeLands(deleteLands));
         }
     }
@@ -520,8 +505,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuLandsFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
-                bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,false);
+                bundle.putParcelable(AppValues.argLand,land);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);
             });
@@ -531,7 +515,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuLandsFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandInfoFragment,null);
+                bundle.putParcelable(AppValues.argLand,null);
                 if(nav != null)
                     nav.navigate(R.id.toProfileLand,bundle);
             });
@@ -543,9 +527,5 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                 if(nav != null)
                     nav.navigate(R.id.toLandsHistory);
             });
-    }
-    private void finish() {
-        if(getActivity() != null)
-            getActivity().onBackPressed();
     }
 }

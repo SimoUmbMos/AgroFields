@@ -2,14 +2,12 @@ package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
@@ -25,19 +23,19 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoadingBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LoadingFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LoadingFragment";
     private FragmentLoadingBinding binding;
     private Intent intent;
-    private User currUser;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,9 +45,12 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init();
-        LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
-        AsyncTask.execute(()->initViewModel(lifecycleOwner));
+        initActivity();
+        if(intent != null){
+            handleFile();
+        }else{
+            initViewModel();
+        }
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -63,8 +64,7 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
         return true;
     }
 
-    private void init(){
-        currUser = null;
+    private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
@@ -78,26 +78,17 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
-    private void initViewModel(LifecycleOwner lifecycleOwner){
+    private void initViewModel(){
         if(getActivity() != null){
-            UserViewModel vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            getActivity().runOnUiThread(()->
-                    vmUsers.getCurrUser().observe(lifecycleOwner,this::onUserUpdate)
-            );
+            AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            appVM.getLandsHistory().observe(getViewLifecycleOwner(),this::onUpdate);
+            appVM.init();
         }
     }
 
-    private void onUserUpdate(User user) {
-        currUser = user;
-        if(intent == null){
-            if(currUser != null){
-                toMenu(getActivity());
-            }else{
-                toLogin(getActivity());
-            }
-        }else{
-            handleFile();
-        }
+    private void onUpdate(List<LandDataRecord> records) {
+        if(records != null)
+            toMenu(getActivity());
     }
 
     private void handleFile() {
@@ -121,18 +112,10 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
                     nav.navigate(R.id.toMenuMain);
             });
     }
-    private void toLogin(Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toLoginRegister);
-            });
-    }
     private void toMapPreview(Activity activity, ArrayList<LandData> data) {
         if(activity != null){
             Bundle args = new Bundle();
-            args.putParcelableArrayList(AppValues.argImportFragLandDataList,data);
+            args.putParcelableArrayList(AppValues.argLands,data);
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
                 if(nav != null)

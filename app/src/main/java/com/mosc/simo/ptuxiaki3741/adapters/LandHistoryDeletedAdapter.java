@@ -13,7 +13,6 @@ import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryDeletedBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.views.HistoryItemView;
 
@@ -24,20 +23,17 @@ import java.util.Locale;
 
 public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryDeletedAdapter.HistoryItemDeletedViewHolder>{
     private final List<LandHistory> data;
-    private final List<User> users;
     private final String[] values;
     private final ActionResult<LandHistory> onHistoryClick;
     private final ActionResult<LandDataRecord> onRecordClick;
     private final DateFormat dateFormat;
     public LandHistoryDeletedAdapter(
             List<LandHistory> data,
-            List<User> users,
             String[] values,
             ActionResult<LandHistory> onHistoryClick,
             ActionResult<LandDataRecord> onRecordClick
     ){
         this.data = data;
-        this.users = users;
         this.values = values;
 
         this.onHistoryClick = onHistoryClick;
@@ -89,17 +85,10 @@ public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryD
             );
             holder.binding.clHistoryData.setVisibility(View.VISIBLE);
             HistoryItemView view;
-            String username, action, date;
+            String action, date;
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 2, 0, 2);
             for(LandDataRecord entry:item.getData()){
-                username = "";
-                for(User user:users){
-                    if(entry.getUserID() == user.getId()){
-                        username = user.getUsername();
-                        break;
-                    }
-                }
                 date = dateFormat.format(entry.getDate());
                 switch (entry.getActionID()){
                     case CREATE:
@@ -120,7 +109,6 @@ public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryD
                 }
                 view = new HistoryItemView(
                         holder.binding.getRoot().getContext(),
-                        username,
                         date,
                         action
                 );

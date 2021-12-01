@@ -23,8 +23,7 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandHistorySelectedAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandHistorySelectedBinding;
-import com.mosc.simo.ptuxiaki3741.models.entities.User;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
@@ -32,7 +31,6 @@ import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +40,8 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
     private LandHistorySelectedAdapter adapter;
     private FragmentLandHistorySelectedBinding binding;
 
-    private UserViewModel vmUsers;
-
     private Land land;
     private List<LandDataRecord> data2;
-    private List<User> users;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
@@ -76,11 +71,10 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
     //init
     private void initData(){
         data2 = new ArrayList<>();
-        users = new ArrayList<>();
         land = null;
         if(getArguments() != null){
-            if(getArguments().containsKey(AppValues.argLandHistoryFragment)){
-                Object o = getArguments().getParcelable(AppValues.argLandHistoryFragment);
+            if(getArguments().containsKey(AppValues.argLand)){
+                Object o = getArguments().getParcelable(AppValues.argLand);
                 if(o.getClass() == Land.class){
                     land = (Land) o;
                 }
@@ -101,8 +95,7 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
     }
     private void initViewModel() {
         if(getActivity() != null){
-            vmUsers = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.getLandsHistory().observe(getViewLifecycleOwner(),this::onHistoryChange);
         }
     }
@@ -123,7 +116,6 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
         };
         adapter = new LandHistorySelectedAdapter(
                 data2,
-                users,
                 values,
                 this::onRecordClick
         );
@@ -133,19 +125,11 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
     //data
     private void populateData(List<LandDataRecord> r) {
         List<LandHistory> temp1 = LandUtil.splitLandRecordByLand(r);
-        List<Long> uid = new ArrayList<>();
-        users.clear();
         if(land != null){
             data2.clear();
             for(LandHistory temp2:temp1){
                 if(temp2.getLandData().getId() == land.getData().getId()){
-                    for(LandDataRecord temp3:temp2.getData()){
-                        data2.add(temp3);
-                        if(!uid.contains(temp3.getUserID())){
-                            uid.add(temp3.getUserID());
-                            users.add(vmUsers.getUserByID(temp3.getUserID()));
-                        }
-                    }
+                    data2.addAll(temp2.getData());
                     break;
                 }
             }
@@ -183,7 +167,6 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
     public void onRecordClick(LandDataRecord record){
         Land land = new Land(LandUtil.getLandDataFromLandRecord(record));
         if(land.getData() != null){
-            land.setPerm(this.land.getPerm());
             toLandMap(getActivity(),land);
         }
     }
@@ -194,8 +177,8 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandHistorySelectedFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLandLandMapPreviewFragment,land);
-                bundle.putBoolean(AppValues.argIsHistoryLandMapPreviewFragment,true);
+                bundle.putParcelable(AppValues.argLand,land);
+                bundle.putBoolean(AppValues.argIsHistory,true);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);
             });

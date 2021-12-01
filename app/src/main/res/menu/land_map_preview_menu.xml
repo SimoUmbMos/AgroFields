@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group
-        android:id="@+id/group_map_menu_undo_redo_actions">
+    <group>
         <item
             android:id="@+id/menu_item_edit_land"
             android:orderInCategory="1"

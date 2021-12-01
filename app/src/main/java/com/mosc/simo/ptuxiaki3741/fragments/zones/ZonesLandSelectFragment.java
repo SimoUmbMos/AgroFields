@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +26,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.viewmodels.LandViewModel;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +70,7 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
     }
     private void initViewModel() {
         if(getActivity() != null){
-            LandViewModel vmLands = new ViewModelProvider(getActivity()).get(LandViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onDataUpdate);
         }
     }
@@ -80,11 +79,7 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
     private void onDataUpdate(List<Land> lands) {
         data.clear();
         if(lands != null){
-            for(Land land:lands){
-                if(land.getPerm().isRead()){
-                    data.add(land);
-                }
-            }
+            data.addAll(lands);
         }
         adapter.notifyDataSetChanged();
         updateUI();
@@ -108,7 +103,7 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ZonesLandSelectFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argZoneLandSelectedLand,land);
+                bundle.putParcelable(AppValues.argLand,land);
                 if(nav != null){
                     nav.navigate(R.id.toZonesLandSelected,bundle);
                 }

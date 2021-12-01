@@ -12,7 +12,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.ViewHistoryItemBinding;
 
 public class HistoryItemView extends ConstraintLayout {
     private final ViewHistoryItemBinding binding;
-    private String mUsername,mAction,mDate;
+    private String mAction,mDate;
 
     public HistoryItemView(Context context) {
         super(context);
@@ -38,26 +38,19 @@ public class HistoryItemView extends ConstraintLayout {
         initData(context, attrs);
         initView();
     }
-    public HistoryItemView(Context context, String mUsername, String mDate, String mAction) {
+    public HistoryItemView(Context context, String mDate, String mAction) {
         super(context);
         binding = ViewHistoryItemBinding.bind(
                 inflate(getContext(), R.layout.view_history_item, this)
         );
-        initData(mUsername,mDate,mAction);
+        initData(mDate,mAction);
         initView();
-    }
-    public String getUsername() {
-        return mUsername;
     }
     public String getAction() {
         return mAction;
     }
     public String getDate() {
         return mDate;
-    }
-    public void setUsername(String mUsername) {
-        this.mUsername = mUsername;
-        binding.tvHistoryEntryUser.setText(this.mUsername);
     }
     public void setAction(String mAction) {
         this.mAction = mAction;
@@ -69,12 +62,10 @@ public class HistoryItemView extends ConstraintLayout {
     }
 
     private void initData() {
-        mUsername = "";
         mDate = "";
         mAction = "";
     }
-    private void initData(String mUsername, String mDate, String mAction) {
-        this.mUsername = mUsername;
+    private void initData(String mDate, String mAction) {
         this.mDate = mDate;
         this.mAction = mAction;
     }
@@ -87,7 +78,6 @@ public class HistoryItemView extends ConstraintLayout {
                 0
         );
         try {
-            mUsername = a.getString(R.styleable.HistoryItem_setUsername);
             mAction = a.getString(R.styleable.HistoryItem_setAction);
             mDate = a.getString(R.styleable.HistoryItem_setDate);
         } finally {
@@ -95,7 +85,6 @@ public class HistoryItemView extends ConstraintLayout {
         }
     }
     private void initView() {
-        binding.tvHistoryEntryUser.setText(mUsername);
         binding.tvHistoryEntryDate.setText(mDate);
         binding.tvHistoryEntryAction.setText(mAction);
     }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/MainMenuRoot"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +7,6 @@
     tools:context=".fragments.MenuMainFragment">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcvMap"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -69,7 +67,6 @@
                 android:clickable="false">
 
                 <ImageView
-                    android:id="@+id/imgLands"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:contentDescription="@string/iv_desc_land_button"
@@ -117,7 +114,6 @@
                 android:clickable="false">
 
                 <ImageView
-                    android:id="@+id/imgHistory"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:contentDescription="@string/iv_desc_zone_button"
@@ -163,7 +159,6 @@
                 android:clickable="false">
 
                 <ImageView
-                    android:id="@+id/imgProfile"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:contentDescription="@string/iv_desc_profile_button"
@@ -209,7 +204,6 @@
                 android:clickable="false">
 
                 <ImageView
-                    android:id="@+id/imgContacts"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:contentDescription="@string/iv_desc_contacts_button"
@@ -233,29 +227,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcvRequestLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/colorNotificationBadge"
-            app:cardCornerRadius="16dp"
-            app:layout_constraintDimensionRatio="w,1:1"
-            app:layout_constraintEnd_toEndOf="@id/btn_contacts"
-            app:layout_constraintTop_toTopOf="@id/btn_contacts">
-
-            <TextView
-                android:id="@+id/tvRequestNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="4dp"
-                android:textColor="@color/colorOnNotificationBadge"
-                android:textStyle="bold" />
-
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.constraintlayout.widget.Guideline

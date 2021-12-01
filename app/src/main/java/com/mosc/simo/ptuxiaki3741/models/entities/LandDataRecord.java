@@ -20,10 +20,6 @@ public class LandDataRecord {
     private long id;
     @ColumnInfo(name = "LandID")
     private final long landID;
-    @ColumnInfo(name = "CreatorID")
-    private final long landCreatorID;
-    @ColumnInfo(name = "UserID")
-    private final long userID;
     @ColumnInfo(name = "LandTitle")
     private final String landTitle;
     @ColumnInfo(name = "ActionID")
@@ -36,11 +32,9 @@ public class LandDataRecord {
     private final List<List<LatLng>> holes;
 
     @Ignore
-    public LandDataRecord(LandData land, User user, LandDBAction actionID, Date date) {
+    public LandDataRecord(LandData land, LandDBAction actionID, Date date) {
         this.landID = land.getId();
-        this.landCreatorID = land.getCreator_id();
         this.landTitle = land.getTitle();
-        this.userID = user.getId();
         this.actionID = actionID;
         this.date = date;
         this.border = new ArrayList<>();
@@ -49,12 +43,10 @@ public class LandDataRecord {
         setHoles(land.getHoles());
     }
     @Ignore
-    public LandDataRecord(long id, LandData land, long userID, LandDBAction actionID, Date date) {
+    public LandDataRecord(long id, LandData land, LandDBAction actionID, Date date) {
         this.id = id;
         this.landID = land.getId();
-        this.landCreatorID = land.getCreator_id();
         this.landTitle = land.getTitle();
-        this.userID = userID;
         this.actionID = actionID;
         this.date = date;
         this.border = new ArrayList<>();
@@ -63,15 +55,12 @@ public class LandDataRecord {
         setHoles(land.getHoles());
     }
 
-    public LandDataRecord(long id, long landID, long landCreatorID, String landTitle, long userID,
-                          LandDBAction actionID, Date date,
+    public LandDataRecord(long id, long landID, String landTitle, LandDBAction actionID, Date date,
                           List<LatLng> border, List<List<LatLng>> holes
     ) {
         this.id = id;
         this.landID = landID;
-        this.landCreatorID = landCreatorID;
         this.landTitle = landTitle;
-        this.userID = userID;
         this.actionID = actionID;
         this.date = date;
         this.border = new ArrayList<>();
@@ -86,14 +75,8 @@ public class LandDataRecord {
     public long getLandID() {
         return landID;
     }
-    public long getLandCreatorID() {
-        return landCreatorID;
-    }
     public String getLandTitle() {
         return landTitle;
-    }
-    public long getUserID() {
-        return userID;
     }
     public LandDBAction getActionID() {
         return actionID;
@@ -129,8 +112,6 @@ public class LandDataRecord {
         return
                 id == that.id &&
                 landID == that.landID &&
-                landCreatorID == that.landCreatorID &&
-                userID == that.userID &&
                 actionID == that.actionID &&
                 landTitle.equals(that.landTitle) &&
                 date.equals(that.date) &&
@@ -140,6 +121,6 @@ public class LandDataRecord {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, landID, landCreatorID, userID, actionID, landTitle, date, border,holes);
+        return Objects.hash(id, landID, actionID, landTitle, date, border,holes);
     }
 }

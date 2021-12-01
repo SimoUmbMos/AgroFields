@@ -45,17 +45,17 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
         action = ImportAction.NONE;
         landDataList.clear();
         if(getArguments() != null){
-            if(getArguments().containsKey(AppValues.argImportFragLandDataList)){
+            if(getArguments().containsKey(AppValues.argLands)){
                 landDataList.addAll(
-                        getArguments().getParcelableArrayList(AppValues.argImportFragLandDataList)
+                        getArguments().getParcelableArrayList(AppValues.argLands)
                 );
             }
-            if(getArguments().containsKey(AppValues.argImportFragCurrLandData)){
-                landData = getArguments().getParcelable(AppValues.argImportFragCurrLandData);
+            if(getArguments().containsKey(AppValues.argLand)){
+                landData = getArguments().getParcelable(AppValues.argLand);
             }
-            if(getArguments().containsKey(AppValues.argImportFragLandAction)){
+            if(getArguments().containsKey(AppValues.argAction)){
                 action = (ImportAction)
-                        getArguments().getSerializable(AppValues.argImportFragLandAction);
+                        getArguments().getSerializable(AppValues.argAction);
             }
         }
     }
@@ -195,7 +195,7 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()->{
                 NavController nav = UIUtil.getNavController(this,R.id.MapFileFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argImportLandData,landData);
+                bundle.putParcelable(AppValues.argImportLand,landData);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });

@@ -175,11 +175,11 @@ public final class MapUtil {
         }
         return false;
     }
-    public static boolean contains(List<LatLng> p1,List<LatLng> p2){
+    public static boolean notContains(List<LatLng> p1,List<LatLng> p2){
         if(p1 != null && p2 !=null){
             for(LatLng p:p1){
                 if(contains(p,p2))
-                    return true;
+                    return false;
             }
             if(p1.size()>1){
                 List<LatLng> line = new ArrayList<>();
@@ -193,11 +193,11 @@ public final class MapUtil {
                         line.add(p1.get(0));
                     }
                     if(intersects(line,p2))
-                        return true;
+                        return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     public static boolean disjoint(List<LatLng> p1, List<LatLng> p2) {

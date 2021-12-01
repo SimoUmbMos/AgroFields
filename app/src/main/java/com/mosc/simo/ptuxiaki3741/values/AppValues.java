@@ -3,46 +3,24 @@ package com.mosc.simo.ptuxiaki3741.values;
 import android.graphics.Color;
 
 public final class AppValues {
-    /* DB VALUES*/
-    public static final int DATABASE_VERSION = 29;
+    /* DB VALUES */
+    public static final int DATABASE_VERSION = 30;
     public static final int DATABASE_PAGE_SIZE = 24;
-    /* ViewModels VALUES */
-    public static final String sharedPreferenceKeyUserViewModel = "currUser";
-    public static final long sharedPreferenceDefaultUserViewModel = -1;
-    /* Common Values*/
+    /* Common Values */
     public static final int defaultPadding = 16;
     public static final int strokeColor = Color.argb(192,0,0,255);
     public static final int fillColor = Color.argb(51,0,0,255);
     public static final int strokeColor2 = Color.argb(192,255,0,0);
     public static final int fillColor2 = Color.argb(51,255,0,0);
-    /* Login Register Fragment */
-    public static final int minUserNameFieldSize=6;
-    public static final int maxUserNameFieldSize=16;
-    public static final int minPasswordFieldSize=8;
-    public static final int maxPasswordFieldSize=16;
-    public static final String phoneRegex = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
-    /* Contact Profile Fragment Values */
-    public static final String CONTACT_PROFILE_ARG = "user";
-    /* Share Land Fragment Values */
-    public static final String SHARE_LAND_USER_ARG = "user";
-    public static final String SHARE_LAND_DATA_ARG = "land";
-    /* Land Info Fragment Values */
-    public static final String argLandInfoFragment = "land";
-    /* Land History Fragment Values */
-    public static final String argLandHistoryFragment = "land";
-    /* Zones Land Selected Fragment Values*/
-    public static final String argZoneLandSelectedLand = "land";
-    /* Zone Preview Fragment Values*/
-    public static final String argZonePreviewZone = "zone";
-    public static final String argZonePreviewLand = "land";
-    /* Land Map Preview Fragment Values*/
-    public static final String argLandLandMapPreviewFragment = "land";
-    public static final String argIsHistoryLandMapPreviewFragment= "is_history";
-    /* Land Map Editor Fragment Values*/
-    public static final String argLandLandMapFragment = "land";
-    public static final String argCurrLocationLandMapFragment = "use_curr_location";
-    public static final String argImportLandData = "import_land";
-    public static final String argAddressLandMapFragment = "address";
+    /* Args Values */
+    public static final String argLand = "land";
+    public static final String argLands = "lands";
+    public static final String argZone = "zone";
+    public static final String argAction = "action";
+    public static final String argAddress = "address";
+    public static final String argImportLand = "import_land";
+    public static final String argIsHistory = "is_history";
+    /* Land Map Editor Fragment Values */
     public static final double distanceToMapActionKM = 100;
     public static final float countryZoom = 6.0f;
     public static final float cityZoom = 13.0f;
@@ -51,9 +29,4 @@ public final class AppValues {
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";
     public static final int doubleTapBack = 2750;
-    public static final int backgroundInterval = 600000;
-    /* Import Activity Values */
-    public static final String argImportFragLandDataList = "land_data_list";
-    public static final String argImportFragCurrLandData = "land_data";
-    public static final String argImportFragLandAction = "file_action";
 }
