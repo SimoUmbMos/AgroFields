@@ -1,11 +1,11 @@
 package com.mosc.simo.ptuxiaki3741.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -93,8 +93,6 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
 
     protected static class LandItem extends RecyclerView.ViewHolder {
         public final ViewHolderLandBinding binding;
-        private final int strokeColor;
-        private final int fillColor;
 
         public GoogleMap mMap;
 
@@ -103,13 +101,6 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             binding = ViewHolderLandBinding.bind(itemView);
             binding.mapView.onCreate(null);
             binding.mapView.onResume();
-            if(itemView.getContext() != null){
-                strokeColor = ContextCompat.getColor(itemView.getContext(), R.color.polygonStroke);
-                fillColor = ContextCompat.getColor(itemView.getContext(), R.color.polygonFill);
-            }else{
-                strokeColor = AppValues.strokeColor;
-                fillColor = AppValues.fillColor;
-            }
         }
         public void bindData(
             boolean showCheckBox,
@@ -157,6 +148,18 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         private void drawOnMap(Land land){
             mMap.clear();
             if(land.getData().getBorder().size()>0){
+                int strokeColor = Color.argb(
+                        AppValues.defaultStrokeAlpha,
+                        AppValues.defaultLandColor.getRed(),
+                        AppValues.defaultLandColor.getGreen(),
+                        AppValues.defaultLandColor.getBlue()
+                );
+                int fillColor = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        AppValues.defaultLandColor.getRed(),
+                        AppValues.defaultLandColor.getGreen(),
+                        AppValues.defaultLandColor.getBlue()
+                );
                 PolygonOptions options = new PolygonOptions();
                 options.addAll(land.getData().getBorder());
                 options.fillColor(fillColor);

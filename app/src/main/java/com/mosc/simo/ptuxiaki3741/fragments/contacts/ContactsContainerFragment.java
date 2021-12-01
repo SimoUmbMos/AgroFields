@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -52,6 +53,11 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
+                ActionBar actionBar = activity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.setTitle("");
+                    actionBar.show();
+                }
             }
         }
     }

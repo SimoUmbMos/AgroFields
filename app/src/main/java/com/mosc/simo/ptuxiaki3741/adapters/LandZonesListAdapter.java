@@ -1,11 +1,12 @@
 package com.mosc.simo.ptuxiaki3741.adapters;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
+import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -24,16 +26,19 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.List;
 
 public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdapter.LandZoneItem>{
+    private final Land land;
     private final List<LandZone> data;
     private final ActionResult<LandZone> onClick;
     private final ActionResult<LandZone> onLongClick;
     private boolean showCheckMark;
 
     public LandZonesListAdapter(
+            Land land,
             List<LandZone> data,
             ActionResult<LandZone> onClick,
             ActionResult<LandZone> onLongClick
     ){
+        this.land = land;
         this.data = data;
         this.onClick = onClick;
         this.onLongClick = onLongClick;
@@ -62,7 +67,7 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
         if(data.size()>position){
             LandZone landZone = data.get(position);
             if(landZone.getData() != null){
-                holder.bindData(showCheckMark,landZone,onClick,onLongClick);
+                holder.bindData(showCheckMark, land, landZone, onClick, onLongClick);
             }
         }
     }
@@ -81,9 +86,8 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
     }
 
     protected static class LandZoneItem extends RecyclerView.ViewHolder {
+        private static final String TAG = "LandZoneItem";
         public final ViewHolderLandBinding binding;
-        private final int strokeColor;
-        private final int fillColor;
 
         public GoogleMap mMap;
 
@@ -92,16 +96,10 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
             binding = ViewHolderLandBinding.bind(itemView);
             binding.mapView.onCreate(null);
             binding.mapView.onResume();
-            if(itemView.getContext() != null){
-                strokeColor = ContextCompat.getColor(itemView.getContext(), R.color.polygonStroke);
-                fillColor = ContextCompat.getColor(itemView.getContext(), R.color.polygonFill);
-            }else{
-                strokeColor = AppValues.strokeColor;
-                fillColor = AppValues.fillColor;
-            }
         }
         public void bindData(
             boolean showCheckBox,
+            Land land,
             LandZone landZone,
             ActionResult<LandZone> onClick,
             ActionResult<LandZone> onLongClick
@@ -128,39 +126,78 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 return true;
             });
             if(mMap != null){
-                zoomOnLand(landZone);
-                drawOnMap(landZone);
+                zoomOnLand(land);
+                drawOnMap(land, landZone);
             }else{
                 binding.mapView.getMapAsync(googleMap -> {
                     MapsInitializer.initialize(binding.getRoot().getContext());
                     mMap = googleMap;
                     mMap.getUiSettings().setAllGesturesEnabled(false);
                     mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                    zoomOnLand(landZone);
-                    drawOnMap(landZone);
+                    zoomOnLand(land);
+                    drawOnMap(land, landZone);
                 });
             }
         }
-        private void drawOnMap(LandZone land){
+        private void drawOnMap(Land land, LandZone zone){
             mMap.clear();
             if(land.getData().getBorder().size()>0){
-                PolygonOptions options = new PolygonOptions();
-                options.addAll(land.getData().getBorder());
-                options.fillColor(fillColor);
-                options.strokeColor(strokeColor);
-                options.clickable(false);
-                mMap.addPolygon(options);
+                Log.d(TAG, "drawOnMap: draw land");
+                int strokeColor1 = Color.argb(
+                        AppValues.defaultStrokeAlpha,
+                        AppValues.defaultLandColor.getRed(),
+                        AppValues.defaultLandColor.getGreen(),
+                        AppValues.defaultLandColor.getBlue()
+                );
+                int fillColor1 = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        AppValues.defaultLandColor.getRed(),
+                        AppValues.defaultLandColor.getGreen(),
+                        AppValues.defaultLandColor.getBlue()
+                );
+                PolygonOptions options1 = new PolygonOptions();
+                options1.addAll(land.getData().getBorder());
+                options1.strokeColor(strokeColor1);
+                options1.fillColor(fillColor1);
+                options1.clickable(false);
+                options1.zIndex(1);
+                mMap.addPolygon(options1);
+            }
+            if(zone.getData().getBorder().size()>0){
+                Log.d(TAG, "drawOnMap: draw zone");
+                int strokeColor2 = Color.argb(
+                        AppValues.defaultStrokeAlpha,
+                        AppValues.defaultZoneColor.getRed(),
+                        AppValues.defaultZoneColor.getGreen(),
+                        AppValues.defaultZoneColor.getBlue()
+                );
+                int fillColor2 = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        AppValues.defaultZoneColor.getRed(),
+                        AppValues.defaultZoneColor.getGreen(),
+                        AppValues.defaultZoneColor.getBlue()
+                );
+                PolygonOptions options2 = new PolygonOptions();
+                options2.addAll(zone.getData().getBorder());
+                options2.strokeColor(strokeColor2);
+                options2.fillColor(fillColor2);
+                options2.clickable(false);
+                options2.zIndex(2);
+                mMap.addPolygon(options2);
             }
         }
-        private void zoomOnLand(LandZone land){
+        private void zoomOnLand(Land land){
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            int size = 0;
             for(LatLng point : land.getData().getBorder()){
                 builder.include(point);
+                size++;
             }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                    builder.build(),
-                    AppValues.defaultPadding
-            ));
+            if(size>0)
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                        builder.build(),
+                        AppValues.defaultPadding
+                ));
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.fragments.zones;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -8,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -149,14 +149,18 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             mMap.clear();
             zonePolygon = null;
             zonePoints.clear();
-            int strokeColor,fillColor;
-            if(getContext() != null){
-                strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
-                fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
-            }else{
-                strokeColor = AppValues.strokeColor;
-                fillColor = AppValues.fillColor;
-            }
+            int strokeColor = Color.argb(
+                    AppValues.defaultStrokeAlpha,
+                    AppValues.defaultLandColor.getRed(),
+                    AppValues.defaultLandColor.getGreen(),
+                    AppValues.defaultLandColor.getBlue()
+            );
+            int fillColor = Color.argb(
+                    AppValues.defaultFillAlpha,
+                    AppValues.defaultLandColor.getRed(),
+                    AppValues.defaultLandColor.getGreen(),
+                    AppValues.defaultLandColor.getBlue()
+            );
             if(land.getData().getBorder().size()>0){
                 PolygonOptions options = LandUtil.getPolygonOptions(
                         land.getData(),
@@ -538,14 +542,18 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 zonePoints.clear();
             }
             if(border.size()>0){
-                int strokeColor,fillColor;
-                if(getContext() != null){
-                    strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke2);
-                    fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill2);
-                }else{
-                    strokeColor = AppValues.strokeColor2;
-                    fillColor = AppValues.fillColor2;
-                }
+                int strokeColor = Color.argb(
+                        AppValues.defaultStrokeAlpha,
+                        AppValues.defaultZoneColor.getRed(),
+                        AppValues.defaultZoneColor.getGreen(),
+                        AppValues.defaultZoneColor.getBlue()
+                );
+                int fillColor = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        AppValues.defaultZoneColor.getRed(),
+                        AppValues.defaultZoneColor.getGreen(),
+                        AppValues.defaultZoneColor.getBlue()
+                );
                 PolygonOptions options = LandUtil.getPolygonOptions(
                         new LandZoneData(border),
                         strokeColor,

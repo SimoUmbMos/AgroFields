@@ -1,12 +1,12 @@
 package com.mosc.simo.ptuxiaki3741.fragments.land;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -110,14 +110,20 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     private void drawLandOnMap() {
         if (currLand != null && mMap != null) {
             mMap.clear();
-            int strokeColor,fillColor;
-            if(getContext() != null){
-                strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
-                fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
-            }else{
-                strokeColor = AppValues.strokeColor;
-                fillColor = AppValues.fillColor;
-            }
+
+            int strokeColor = Color.argb(
+                    AppValues.defaultStrokeAlpha,
+                    AppValues.defaultLandColor.getRed(),
+                    AppValues.defaultLandColor.getGreen(),
+                    AppValues.defaultLandColor.getBlue()
+            );
+            int fillColor = Color.argb(
+                    AppValues.defaultFillAlpha,
+                    AppValues.defaultLandColor.getRed(),
+                    AppValues.defaultLandColor.getGreen(),
+                    AppValues.defaultLandColor.getBlue()
+            );
+
             PolygonOptions options = LandUtil.getPolygonOptions(
                     currLand.getData(),
                     strokeColor,

@@ -1,6 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.values;
 
-import android.graphics.Color;
+import com.mosc.simo.ptuxiaki3741.models.ColorData;
 
 public final class AppValues {
     /* DB VALUES */
@@ -8,10 +8,10 @@ public final class AppValues {
     public static final int DATABASE_PAGE_SIZE = 24;
     /* Common Values */
     public static final int defaultPadding = 16;
-    public static final int strokeColor = Color.argb(192,0,0,255);
-    public static final int fillColor = Color.argb(51,0,0,255);
-    public static final int strokeColor2 = Color.argb(192,255,0,0);
-    public static final int fillColor2 = Color.argb(51,255,0,0);
+    public static final int defaultStrokeAlpha = 192;
+    public static final int defaultFillAlpha = 51;
+    public static final ColorData defaultLandColor = new ColorData(71, 249, 224);
+    public static final ColorData defaultZoneColor = new ColorData(249, 71, 138);
     /* Args Values */
     public static final String argLand = "land";
     public static final String argLands = "lands";

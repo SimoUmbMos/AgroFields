@@ -1,12 +1,12 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
@@ -120,14 +120,19 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
     }
     private void drawMap(GoogleMap googleMap) {
         PolygonOptions options;
-        int strokeColor,fillColor;
-        if(getContext() != null){
-            strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
-            fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
-        }else{
-            strokeColor = AppValues.strokeColor;
-            fillColor = AppValues.fillColor;
-        }
+
+        int strokeColor = Color.argb(
+                AppValues.defaultStrokeAlpha,
+                AppValues.defaultLandColor.getRed(),
+                AppValues.defaultLandColor.getGreen(),
+                AppValues.defaultLandColor.getBlue()
+        );
+        int fillColor = Color.argb(
+                AppValues.defaultFillAlpha,
+                AppValues.defaultLandColor.getRed(),
+                AppValues.defaultLandColor.getGreen(),
+                AppValues.defaultLandColor.getBlue()
+        );
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         int builderSize = 0;

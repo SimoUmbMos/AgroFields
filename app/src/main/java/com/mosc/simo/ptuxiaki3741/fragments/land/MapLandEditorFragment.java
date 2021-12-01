@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
@@ -26,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -479,14 +479,18 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     //map relative
     private void drawMap() {
         mMap.clear();
-        int strokeColor,fillColor;
-        if(getContext() != null){
-            strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
-            fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
-        }else{
-            strokeColor = AppValues.strokeColor;
-            fillColor = AppValues.fillColor;
-        }
+        int strokeColor = Color.argb(
+                AppValues.defaultStrokeAlpha,
+                AppValues.defaultLandColor.getRed(),
+                AppValues.defaultLandColor.getGreen(),
+                AppValues.defaultLandColor.getBlue()
+        );
+        int fillColor = Color.argb(
+                AppValues.defaultFillAlpha,
+                AppValues.defaultLandColor.getRed(),
+                AppValues.defaultLandColor.getGreen(),
+                AppValues.defaultLandColor.getBlue()
+        );
         PolygonOptions options = LandUtil.getPolygonOptions(
                 new LandData(points,holes),
                 strokeColor,

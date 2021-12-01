@@ -1,13 +1,13 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -15,7 +15,6 @@ import androidx.navigation.NavController;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -68,8 +67,8 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             actionBar = mainActivity.getSupportActionBar();
         }
         if(actionBar != null){
-            actionBar.setTitle(""); //fixme: add title
-            actionBar.show();
+            actionBar.setTitle("");
+            actionBar.hide();
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setDisplayShowHomeEnabled(false);
         }
@@ -85,7 +84,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnHistory.setOnClickListener(v -> toLandsZone(getActivity()));
         binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
-        binding.btnProfile.setOnClickListener(v -> toProfile(getActivity()));
+        binding.btnSettings.setOnClickListener(v -> toSettings(getActivity()));
         binding.mvLands.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
@@ -155,14 +154,19 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             if(data1.size()>0){
                 binding.mvLands.setVisibility(View.VISIBLE);
                 binding.mainMenuAction.setVisibility(View.GONE);
-                int strokeColor,fillColor;
-                if(getContext() != null){
-                    strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke);
-                    fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill);
-                }else{
-                    strokeColor = AppValues.strokeColor;
-                    fillColor = AppValues.fillColor;
-                }
+
+                int strokeColor = Color.argb(
+                        AppValues.defaultStrokeAlpha,
+                        AppValues.defaultLandColor.getRed(),
+                        AppValues.defaultLandColor.getGreen(),
+                        AppValues.defaultLandColor.getBlue()
+                );
+                int fillColor = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        AppValues.defaultLandColor.getRed(),
+                        AppValues.defaultLandColor.getGreen(),
+                        AppValues.defaultLandColor.getBlue()
+                );
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Land land:data1){
@@ -205,14 +209,19 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 zonesPolygons.clear();
             }
             if(data2.size()>0){
-                int strokeColor,fillColor;
-                if(getContext() != null){
-                    strokeColor = ContextCompat.getColor(getContext(), R.color.polygonStroke2);
-                    fillColor = ContextCompat.getColor(getContext(), R.color.polygonFill2);
-                }else{
-                    strokeColor = AppValues.strokeColor2;
-                    fillColor = AppValues.fillColor2;
-                }
+                int strokeColor = Color.argb(
+                        AppValues.defaultStrokeAlpha,
+                        AppValues.defaultZoneColor.getRed(),
+                        AppValues.defaultZoneColor.getGreen(),
+                        AppValues.defaultZoneColor.getBlue()
+                );
+                int fillColor = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        AppValues.defaultZoneColor.getRed(),
+                        AppValues.defaultZoneColor.getGreen(),
+                        AppValues.defaultZoneColor.getBlue()
+                );
+
                 for(LandZone zone:data2){
                     PolygonOptions options = LandUtil.getPolygonOptions(
                             zone.getData(),
@@ -244,15 +253,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 if(nav != null)
                     nav.navigate(R.id.toMenuZoneLands);
             });
-    }
-    public void toProfile(@Nullable Activity activity) {
-        //fixme: replace to profile
-//        if(activity != null)
-//            activity.runOnUiThread(()-> {
-//                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
-//                if(nav != null)
-//                    nav.navigate(R.id.toProfileUser);
-//            });
     }
     public void toSettings(@Nullable Activity activity) {
         if(activity != null)
@@ -303,18 +303,8 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mvLands.onLowMemory();
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main_menu_menu, menu);
+        inflater.inflate(R.menu.empty_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_item_app_settings) {
-            toSettings(getActivity());
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
         return true;

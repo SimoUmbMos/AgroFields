@@ -79,7 +79,12 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
                 LinearLayoutManager.VERTICAL,
                 false
         );
-        adapter = new LandZonesListAdapter(data,this::onZoneClick,this::onZoneLongClick);
+        adapter = new LandZonesListAdapter(
+                selectedLand,
+                data,
+                this::onZoneClick,
+                this::onZoneLongClick
+        );
 
         binding.rvZoneList.setHasFixedSize(true);
         binding.rvZoneList.setLayoutManager(layoutManager);
