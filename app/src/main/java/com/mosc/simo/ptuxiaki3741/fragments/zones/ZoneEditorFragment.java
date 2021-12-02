@@ -58,7 +58,7 @@ import java.util.List;
 public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "ZoneEditorFragment";
     //todo: make better ui
-
+    //fixme: points marker are big on zoom
     private FragmentZoneEditorBinding binding;
     private GoogleMap mMap;
     private Polygon zonePolygon;

@@ -41,7 +41,6 @@ import java.util.List;
 
 public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "MapLandPreviewFragment";
-    //fixme: (code) show land zones
     private FragmentLandMapPreviewBinding binding;
 
     private GoogleMap mMap;

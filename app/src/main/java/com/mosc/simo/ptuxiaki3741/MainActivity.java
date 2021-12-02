@@ -19,8 +19,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class MainActivity extends AppCompatActivity{
     public static final String TAG = "MainActivity";
-    //fixme: on import zones are deleted
-    //fixme: zone points are big on small lands
+
     private ActivityMainBinding binding;
     private NavHostFragment navHostFragment;
 
