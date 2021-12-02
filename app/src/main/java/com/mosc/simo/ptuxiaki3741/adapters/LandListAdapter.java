@@ -150,15 +150,15 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             if(land.getData().getBorder().size()>0){
                 int strokeColor = Color.argb(
                         AppValues.defaultStrokeAlpha,
-                        AppValues.defaultLandColor.getRed(),
-                        AppValues.defaultLandColor.getGreen(),
-                        AppValues.defaultLandColor.getBlue()
+                        land.getData().getColor().getRed(),
+                        land.getData().getColor().getGreen(),
+                        land.getData().getColor().getBlue()
                 );
                 int fillColor = Color.argb(
                         AppValues.defaultFillAlpha,
-                        AppValues.defaultLandColor.getRed(),
-                        AppValues.defaultLandColor.getGreen(),
-                        AppValues.defaultLandColor.getBlue()
+                        land.getData().getColor().getRed(),
+                        land.getData().getColor().getGreen(),
+                        land.getData().getColor().getBlue()
                 );
                 PolygonOptions options = new PolygonOptions();
                 options.addAll(land.getData().getBorder());

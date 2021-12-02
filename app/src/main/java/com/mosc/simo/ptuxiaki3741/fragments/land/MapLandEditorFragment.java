@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.slider.Slider;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.collageviews.MultiTouchListener;
@@ -47,9 +49,11 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapBinding;
 import com.mosc.simo.ptuxiaki3741.enums.ImportAction;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
+import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.util.DialogUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
@@ -82,6 +86,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private String address;
     private boolean currLocation;
     private Land currLand;
+    private ColorData color, tempColor;
     private String displayTitle;
 
     //ActivityResultLauncher relative
@@ -174,12 +179,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                                 );
                                 args.putParcelable(
                                         AppValues.argLand,
-                                        new LandData(
-                                                currLand.getData().getId(),
-                                                currLand.getData().getTitle(),
-                                                currLand.getData().getBorder(),
-                                                currLand.getData().getHoles()
-                                        )
+                                        currLand.getData()
                                 );
                                 args.putSerializable(
                                         AppValues.argAction,
@@ -216,6 +216,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         startHoles = new ArrayList<>();
         currLand = null;
         address = null;
+        color = AppValues.defaultLandColor;
         currLocation = false;
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLand)) {
@@ -256,6 +257,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                     hole.remove(hole.size()-1);
         }
         startHoles.addAll(holes);
+
+        color = currLand.getData().getColor();
 
         mapStatus = LandActionStates.Disable;
         fileState = LandFileState.Disable;
@@ -339,6 +342,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             case (R.id.toolbar_action_edit_land_info):
                 toInfo(getActivity());
                 return true;
+            case (R.id.toolbar_action_edit_land_color):
+                showColorDialog();
+                return true;
             case (R.id.toolbar_action_add_on_end):
                 setAction(LandActionStates.AddEnd);
                 return true;
@@ -418,6 +424,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private void addToVM() {
         currLand.getData().setBorder(points);
         currLand.getData().setHoles(holes);
+        currLand.getData().setColor(color);
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.saveLand(currLand);
@@ -479,20 +486,21 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     //map relative
     private void drawMap() {
         mMap.clear();
+        LandData tempLandData = new LandData(color,points,holes);
         int strokeColor = Color.argb(
                 AppValues.defaultStrokeAlpha,
-                AppValues.defaultLandColor.getRed(),
-                AppValues.defaultLandColor.getGreen(),
-                AppValues.defaultLandColor.getBlue()
+                tempLandData.getColor().getRed(),
+                tempLandData.getColor().getGreen(),
+                tempLandData.getColor().getBlue()
         );
         int fillColor = Color.argb(
                 AppValues.defaultFillAlpha,
-                AppValues.defaultLandColor.getRed(),
-                AppValues.defaultLandColor.getGreen(),
-                AppValues.defaultLandColor.getBlue()
+                tempLandData.getColor().getRed(),
+                tempLandData.getColor().getGreen(),
+                tempLandData.getColor().getBlue()
         );
         PolygonOptions options = LandUtil.getPolygonOptions(
-                new LandData(points,holes),
+                tempLandData,
                 strokeColor,
                 fillColor,
                 false
@@ -979,6 +987,68 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                     }
                 }
             });
+        }
+    }
+    private void showColorDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            tempColor = new ColorData( color.getRed(), color.getGreen(), color.getBlue() );
+            dialog = DialogUtil.getColorPickerDialog(getContext())
+                    .setPositiveButton(getString(R.string.zone_title_positive),(d, w) -> {
+                        color = new ColorData(
+                                tempColor.getRed(),
+                                tempColor.getGreen(),
+                                tempColor.getBlue()
+                        );
+                        drawMap();
+                        d.dismiss();
+                    })
+                    .setNegativeButton(getString(R.string.zone_title_negative),(d, w) -> d.cancel())
+                    .show();
+
+            Slider redSlider = dialog.findViewById(R.id.slRedSlider);
+            Slider greenSlider = dialog.findViewById(R.id.slGreenSlider);
+            Slider blueSlider = dialog.findViewById(R.id.slBlueSlider);
+            FrameLayout colorBg = dialog.findViewById(R.id.flColorShower);
+
+            if(colorBg != null){
+                colorBg.setBackgroundColor(tempColor.getColor());
+            }
+
+            if(redSlider != null){
+                redSlider.setValue(tempColor.getRed());
+                redSlider.addOnChangeListener((range,value,user) -> {
+                    tempColor.setRed(Math.round(value));
+                    if(colorBg != null){
+                        colorBg.setBackgroundColor(tempColor.getColor());
+                    }
+                });
+            }
+
+            if(greenSlider != null){
+                greenSlider.setValue(tempColor.getGreen());
+                greenSlider.addOnChangeListener((range,value,user) -> {
+                    tempColor.setGreen(Math.round(value));
+                    if(colorBg != null){
+                        colorBg.setBackgroundColor(tempColor.getColor());
+                    }
+                });
+            }
+
+            if(blueSlider != null){
+                blueSlider.setValue(tempColor.getBlue());
+                blueSlider.addOnChangeListener((range,value,user) -> {
+                    tempColor.setBlue(Math.round(value));
+                    if(colorBg != null){
+                        colorBg.setBackgroundColor(tempColor.getColor());
+                    }
+                });
+            }
+
         }
     }
 

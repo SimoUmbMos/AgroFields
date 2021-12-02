@@ -54,6 +54,7 @@ public final class LandUtil {
         return new LandData(
                 currLandData.getId(),
                 currLandData.getTitle(),
+                currLandData.getColor(),
                 newBorder,
                 holes
         );
@@ -98,6 +99,7 @@ public final class LandUtil {
         return new LandData(
                 currLandData.getId(),
                 currLandData.getTitle(),
+                currLandData.getColor(),
                 newBorder,
                 holes
         );
@@ -108,6 +110,7 @@ public final class LandUtil {
             return new LandData(
                     record.getLandID(),
                     record.getLandTitle(),
+                    record.getLandColor(),
                     record.getBorder(),
                     record.getHoles()
             );

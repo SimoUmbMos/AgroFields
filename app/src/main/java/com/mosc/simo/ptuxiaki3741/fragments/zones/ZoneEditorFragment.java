@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.slider.Slider;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -39,9 +41,11 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentZoneEditorBinding;
 import com.mosc.simo.ptuxiaki3741.enums.ZoneEditorState;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.util.DialogUtil;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
@@ -71,6 +75,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private ZoneEditorState state;
 
     private String title;
+    private ColorData color,tempColor;
     private List<LatLng> border;
     private boolean isInit, forceBack;
     private int index1, index2, index3;
@@ -81,6 +86,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         otherZones = new ArrayList<>();
 
         title = "";
+        color = AppValues.defaultZoneColor;
         border = new ArrayList<>();
         zonePoints = new ArrayList<>();
 
@@ -101,6 +107,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
         if(zone != null){
             title = zone.getData().getTitle();
+            color = zone.getData().getColor();
             border.addAll(zone.getData().getBorder());
         }
     }
@@ -149,19 +156,21 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             mMap.clear();
             zonePolygon = null;
             zonePoints.clear();
-            int strokeColor = Color.argb(
-                    AppValues.defaultStrokeAlpha,
-                    AppValues.defaultLandColor.getRed(),
-                    AppValues.defaultLandColor.getGreen(),
-                    AppValues.defaultLandColor.getBlue()
-            );
-            int fillColor = Color.argb(
-                    AppValues.defaultFillAlpha,
-                    AppValues.defaultLandColor.getRed(),
-                    AppValues.defaultLandColor.getGreen(),
-                    AppValues.defaultLandColor.getBlue()
-            );
+            int strokeColor;
+            int fillColor;
             if(land.getData().getBorder().size()>0){
+                strokeColor = Color.argb(
+                        AppValues.defaultStrokeAlpha,
+                        land.getData().getColor().getRed(),
+                        land.getData().getColor().getGreen(),
+                        land.getData().getColor().getBlue()
+                );
+                fillColor = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        land.getData().getColor().getRed(),
+                        land.getData().getColor().getGreen(),
+                        land.getData().getColor().getBlue()
+                );
                 PolygonOptions options = LandUtil.getPolygonOptions(
                         land.getData(),
                         strokeColor,
@@ -171,6 +180,18 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 mMap.addPolygon(options.zIndex(1));
                 for(LandZone tempZone:otherZones){
                     if(tempZone.getData().getBorder().size()>0){
+                        strokeColor = Color.argb(
+                                AppValues.defaultStrokeAlpha,
+                                tempZone.getData().getColor().getRed(),
+                                tempZone.getData().getColor().getGreen(),
+                                tempZone.getData().getColor().getBlue()
+                        );
+                        fillColor = Color.argb(
+                                AppValues.defaultFillAlpha,
+                                tempZone.getData().getColor().getRed(),
+                                tempZone.getData().getColor().getGreen(),
+                                tempZone.getData().getColor().getBlue()
+                        );
                         options = LandUtil.getPolygonOptions(
                                 tempZone.getData(),
                                 strokeColor,
@@ -226,9 +247,10 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 if(isValidSave()){
                     if(zone != null){
                         zone.getData().setTitle(title);
+                        zone.getData().setColor(color);
                         zone.getData().setBorder(border);
                     }else{
-                        zone = new LandZone(new LandZoneData(land.getData().getId(),title,border));
+                        zone = new LandZone(new LandZoneData(land.getData().getId(),title,color,border));
                     }
                     try{
                         vmLands.saveZone(zone);
@@ -245,7 +267,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         String error = null;
         if(title.trim().isEmpty()){
             showTitleDialog();
-            error = getString(R.string.zone_title_error);
+            error = getString(R.string.title_error);
         }else if(land == null){
             error = getString(R.string.zone_null_error);
         }else if(border.size()<=2){
@@ -296,15 +318,16 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 TextInputEditText titleView = dialog.findViewById(R.id.etZoneTitle);
                 if(titleView != null){
                     if(titleView.getText() != null){
-                        String title = titleView.getText()
-                                .toString().trim().replaceAll("\\s{2,}", " ");
+                        String title = EncryptUtil.removeSpecialCharacters(
+                                titleView.getText().toString()
+                        );
                         if(isValidTitle(title)){
                             this.title = title;
                             updateUI();
                             dialog.dismiss();
                         }else{
                             if(titleLayoutView != null){
-                                titleLayoutView.setError(getString(R.string.zone_title_error));
+                                titleLayoutView.setError(getString(R.string.title_error));
                             }
                         }
                     }
@@ -312,6 +335,68 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     dialog.dismiss();
                 }
             });
+        }
+    }
+    private void showColorDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            tempColor = new ColorData( color.getRed(), color.getGreen(), color.getBlue() );
+            dialog = DialogUtil.getColorPickerDialog(getContext())
+                    .setPositiveButton(getString(R.string.zone_title_positive),(d, w) -> {
+                        color = new ColorData(
+                                tempColor.getRed(),
+                                tempColor.getGreen(),
+                                tempColor.getBlue()
+                        );
+                        updateMap();
+                        d.dismiss();
+                    })
+                    .setNegativeButton(getString(R.string.zone_title_negative),(d, w) -> d.cancel())
+                    .show();
+
+            Slider redSlider = dialog.findViewById(R.id.slRedSlider);
+            Slider greenSlider = dialog.findViewById(R.id.slGreenSlider);
+            Slider blueSlider = dialog.findViewById(R.id.slBlueSlider);
+            FrameLayout colorBg = dialog.findViewById(R.id.flColorShower);
+
+            if(colorBg != null){
+                colorBg.setBackgroundColor(tempColor.getColor());
+            }
+
+            if(redSlider != null){
+                redSlider.setValue(tempColor.getRed());
+                redSlider.addOnChangeListener((range,value,user) -> {
+                    tempColor.setRed(Math.round(value));
+                    if(colorBg != null){
+                        colorBg.setBackgroundColor(tempColor.getColor());
+                    }
+                });
+            }
+
+            if(greenSlider != null){
+                greenSlider.setValue(tempColor.getGreen());
+                greenSlider.addOnChangeListener((range,value,user) -> {
+                    tempColor.setGreen(Math.round(value));
+                    if(colorBg != null){
+                        colorBg.setBackgroundColor(tempColor.getColor());
+                    }
+                });
+            }
+
+            if(blueSlider != null){
+                blueSlider.setValue(tempColor.getBlue());
+                blueSlider.addOnChangeListener((range,value,user) -> {
+                    tempColor.setBlue(Math.round(value));
+                    if(colorBg != null){
+                        colorBg.setBackgroundColor(tempColor.getColor());
+                    }
+                });
+            }
+
         }
     }
 
@@ -326,6 +411,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 return true;
             case (R.id.toolbar_action_change_zone_name):
                 showTitleDialog();
+                return true;
+            case (R.id.toolbar_action_change_zone_color):
+                showColorDialog();
                 return true;
             case (R.id.toolbar_action_zone_add_point):
                 onStateUpdate(ZoneEditorState.AddPoint);
@@ -544,15 +632,15 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             if(border.size()>0){
                 int strokeColor = Color.argb(
                         AppValues.defaultStrokeAlpha,
-                        AppValues.defaultZoneColor.getRed(),
-                        AppValues.defaultZoneColor.getGreen(),
-                        AppValues.defaultZoneColor.getBlue()
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue()
                 );
                 int fillColor = Color.argb(
                         AppValues.defaultFillAlpha,
-                        AppValues.defaultZoneColor.getRed(),
-                        AppValues.defaultZoneColor.getGreen(),
-                        AppValues.defaultZoneColor.getBlue()
+                        color.getRed(),
+                        color.getGreen(),
+                        color.getBlue()
                 );
                 PolygonOptions options = LandUtil.getPolygonOptions(
                         new LandZoneData(border),

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class LandDataRecord {
     private final long landID;
     @ColumnInfo(name = "LandTitle")
     private final String landTitle;
+    @ColumnInfo(name = "LandColor")
+    private final ColorData landColor;
     @ColumnInfo(name = "ActionID")
     private final LandDBAction actionID;
     @ColumnInfo(name = "Date")
@@ -35,6 +38,7 @@ public class LandDataRecord {
     public LandDataRecord(LandData land, LandDBAction actionID, Date date) {
         this.landID = land.getId();
         this.landTitle = land.getTitle();
+        this.landColor = land.getColor();
         this.actionID = actionID;
         this.date = date;
         this.border = new ArrayList<>();
@@ -47,6 +51,7 @@ public class LandDataRecord {
         this.id = id;
         this.landID = land.getId();
         this.landTitle = land.getTitle();
+        this.landColor = land.getColor();
         this.actionID = actionID;
         this.date = date;
         this.border = new ArrayList<>();
@@ -55,12 +60,13 @@ public class LandDataRecord {
         setHoles(land.getHoles());
     }
 
-    public LandDataRecord(long id, long landID, String landTitle, LandDBAction actionID, Date date,
+    public LandDataRecord(long id, long landID, String landTitle, ColorData landColor, LandDBAction actionID, Date date,
                           List<LatLng> border, List<List<LatLng>> holes
     ) {
         this.id = id;
         this.landID = landID;
         this.landTitle = landTitle;
+        this.landColor = landColor;
         this.actionID = actionID;
         this.date = date;
         this.border = new ArrayList<>();
@@ -77,6 +83,9 @@ public class LandDataRecord {
     }
     public String getLandTitle() {
         return landTitle;
+    }
+    public ColorData getLandColor() {
+        return landColor;
     }
     public LandDBAction getActionID() {
         return actionID;

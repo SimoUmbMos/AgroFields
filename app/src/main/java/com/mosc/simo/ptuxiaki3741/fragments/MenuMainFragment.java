@@ -155,21 +155,22 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 binding.mvLands.setVisibility(View.VISIBLE);
                 binding.mainMenuAction.setVisibility(View.GONE);
 
-                int strokeColor = Color.argb(
-                        AppValues.defaultStrokeAlpha,
-                        AppValues.defaultLandColor.getRed(),
-                        AppValues.defaultLandColor.getGreen(),
-                        AppValues.defaultLandColor.getBlue()
-                );
-                int fillColor = Color.argb(
-                        AppValues.defaultFillAlpha,
-                        AppValues.defaultLandColor.getRed(),
-                        AppValues.defaultLandColor.getGreen(),
-                        AppValues.defaultLandColor.getBlue()
-                );
+
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Land land:data1){
+                    int strokeColor = Color.argb(
+                            AppValues.defaultStrokeAlpha,
+                            land.getData().getColor().getRed(),
+                            land.getData().getColor().getGreen(),
+                            land.getData().getColor().getBlue()
+                    );
+                    int fillColor = Color.argb(
+                            AppValues.defaultFillAlpha,
+                            land.getData().getColor().getRed(),
+                            land.getData().getColor().getGreen(),
+                            land.getData().getColor().getBlue()
+                    );
                     PolygonOptions options = LandUtil.getPolygonOptions(
                             land.getData(),
                             strokeColor,
@@ -209,20 +210,20 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 zonesPolygons.clear();
             }
             if(data2.size()>0){
-                int strokeColor = Color.argb(
-                        AppValues.defaultStrokeAlpha,
-                        AppValues.defaultZoneColor.getRed(),
-                        AppValues.defaultZoneColor.getGreen(),
-                        AppValues.defaultZoneColor.getBlue()
-                );
-                int fillColor = Color.argb(
-                        AppValues.defaultFillAlpha,
-                        AppValues.defaultZoneColor.getRed(),
-                        AppValues.defaultZoneColor.getGreen(),
-                        AppValues.defaultZoneColor.getBlue()
-                );
 
                 for(LandZone zone:data2){
+                    int strokeColor = Color.argb(
+                            AppValues.defaultStrokeAlpha,
+                            zone.getData().getColor().getRed(),
+                            zone.getData().getColor().getGreen(),
+                            zone.getData().getColor().getBlue()
+                    );
+                    int fillColor = Color.argb(
+                            AppValues.defaultFillAlpha,
+                            zone.getData().getColor().getRed(),
+                            zone.getData().getColor().getGreen(),
+                            zone.getData().getColor().getBlue()
+                    );
                     PolygonOptions options = LandUtil.getPolygonOptions(
                             zone.getData(),
                             strokeColor,

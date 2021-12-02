@@ -21,16 +21,19 @@ import android.view.inputmethod.InputMethodManager;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandInfoBinding;
+import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
-//fixme: cant use greek characters on land name
+    //fixme: cant use greek characters on land name
     private Land land;
+    private ColorData color;
     private FragmentLandInfoBinding binding;
 
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
@@ -62,15 +65,15 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     }
 
     private void initData() {
+        land = null;
+        color = AppValues.defaultLandColor;
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLand)){
                 land = getArguments().getParcelable(AppValues.argLand);
-            }else{
-                land = null;
             }
-        }else{
-            land = null;
         }
+        if(land != null)
+            color = land.getData().getColor();
     }
     private void initActivity(){
         MainActivity activity = (MainActivity) getActivity();
@@ -123,17 +126,18 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
         if(binding.etLandInfoAddress.getText()!=null){
             address = binding.etLandInfoAddress.getText().toString();
         }
-
-        landName = landName.replaceAll(
-                "[^a-zA-Z0-9]", " ");
-        landName = landName.trim().replaceAll(" +", " ");
+        landName = EncryptUtil.removeSpecialCharacters(landName);
+        binding.etLandInfoName.setText(landName);
         if(!landName.isEmpty()){
+            binding.etLandInfoAddressLayout.setError(null);
             submit(landName, address);
+        }else{
+            binding.etLandInfoAddressLayout.setError(getString(R.string.title_error));
         }
     }
     private void submit(String landName, String address) {
         if(land == null){
-            LandData landData = new LandData(landName);
+            LandData landData = new LandData(landName,color);
             if(address.trim().isEmpty()){
                 toLandMap(getActivity(),new Land(landData));
             }else{

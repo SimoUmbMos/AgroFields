@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey;
 import java.util.Objects;
 
 @Entity(tableName = "Contacts")
-public class Contact implements Parcelable,Cloneable {
+public class Contact implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "Username")
@@ -80,11 +80,6 @@ public class Contact implements Parcelable,Cloneable {
         return id == contact.id && username.equals(contact.username) && phone.equals(contact.phone) && email.equals(contact.email);
     }
 
-    @Override
-    @NonNull
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {
         @Override
         public Contact createFromParcel(Parcel in) {

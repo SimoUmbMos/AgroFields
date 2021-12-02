@@ -121,26 +121,21 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
     private void drawMap(GoogleMap googleMap) {
         PolygonOptions options;
 
-        int strokeColor = Color.argb(
-                AppValues.defaultStrokeAlpha,
-                AppValues.defaultLandColor.getRed(),
-                AppValues.defaultLandColor.getGreen(),
-                AppValues.defaultLandColor.getBlue()
-        );
-        int fillColor = Color.argb(
-                AppValues.defaultFillAlpha,
-                AppValues.defaultLandColor.getRed(),
-                AppValues.defaultLandColor.getGreen(),
-                AppValues.defaultLandColor.getBlue()
-        );
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         int builderSize = 0;
         boolean isClickable = false;
+        int strokeColor , fillColor;
         if(landData != null){
+            fillColor = Color.argb(
+                    AppValues.defaultFillAlpha,
+                    landData.getColor().getRed(),
+                    landData.getColor().getGreen(),
+                    landData.getColor().getBlue()
+            );
             options = LandUtil.getPolygonOptions(landData,fillColor,fillColor,false);
             if(options != null)
-                googleMap.addPolygon(options);
+                googleMap.addPolygon(options.zIndex(1));
             for(LatLng point:landData.getBorder()){
                 builder.include(point);
                 builderSize++;
@@ -148,9 +143,21 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
             isClickable = true;
         }
         for(LandData data:landDataList){
+            strokeColor = Color.argb(
+                    AppValues.defaultStrokeAlpha,
+                    data.getColor().getRed(),
+                    data.getColor().getGreen(),
+                    data.getColor().getBlue()
+            );
+            fillColor = Color.argb(
+                    AppValues.defaultFillAlpha,
+                    data.getColor().getRed(),
+                    data.getColor().getGreen(),
+                    data.getColor().getBlue()
+            );
             options = LandUtil.getPolygonOptions(data,strokeColor,fillColor,isClickable);
             if(options != null)
-                googleMap.addPolygon(options);
+                googleMap.addPolygon(options.zIndex(2));
             for(LatLng point:data.getBorder()){
                 builder.include(point);
                 builderSize++;

@@ -17,7 +17,7 @@
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
     <string name="clipboard_message">Text Copied</string>
-    <!-- Login Fragment -->
+    <string name="title_error">Title is incorrect</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_zones_button">Zones</string>
@@ -89,6 +89,7 @@
     <string name="edit_land_name">Edit Land Name</string>
     <string name="delete_land_title">Delete Land</string>
     <string name="delete_land_text">Are you sure you want to delete this land?</string>
+    <string name="edit_land_color">Change Land Color</string>
     <!-- History Menu Fragment -->
     <string name="land_history">Lands History</string>
     <string name="land_action_created">Created</string>
@@ -120,18 +121,15 @@
     <string name="zone_title">Zone Title</string>
     <string name="zone_title_positive">Submit</string>
     <string name="zone_title_negative">Cancel</string>
-    <string name="zone_title_error">Title is incorrect</string>
     <string name="zone_border_error">Zone must be 3 points minimum</string>
     <string name="zone_null_error">Something has goes wrong, try recreate the zone</string>
     <string name="zone_saved">Zone Saved</string>
     <string name="iv_desc_zone_editor_center_camera">center camera button</string>
-    <!-- User Profile Fragment -->
-    <!-- Contacts Container Fragment -->
-    <!-- User Contacts Fragment -->
-    <!-- Inbox User Requests Fragment -->
-    <!-- Outbox User Requests Fragment -->
-    <!-- Contact Profile Fragment -->
-    <!-- Selected Share Land Fragment -->
+    <string name="pick_color">Pick Color</string>
+    <string name="edit_zone_color">Change Zone Color</string>
+    <string name="color_dialog_red_label">Red:</string>
+    <string name="color_dialog_green_label">Green:</string>
+    <string name="color_dialog_blue_label">Blue:</string>
     <!-- App Settings Fragment-->
     <string name="app_settings_title">Settings</string>
     <string name="degree_info">Degree Info</string>

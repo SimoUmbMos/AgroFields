@@ -145,15 +145,15 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 Log.d(TAG, "drawOnMap: draw land");
                 int strokeColor1 = Color.argb(
                         AppValues.defaultStrokeAlpha,
-                        AppValues.defaultLandColor.getRed(),
-                        AppValues.defaultLandColor.getGreen(),
-                        AppValues.defaultLandColor.getBlue()
+                        land.getData().getColor().getRed(),
+                        land.getData().getColor().getGreen(),
+                        land.getData().getColor().getBlue()
                 );
                 int fillColor1 = Color.argb(
                         AppValues.defaultFillAlpha,
-                        AppValues.defaultLandColor.getRed(),
-                        AppValues.defaultLandColor.getGreen(),
-                        AppValues.defaultLandColor.getBlue()
+                        land.getData().getColor().getRed(),
+                        land.getData().getColor().getGreen(),
+                        land.getData().getColor().getBlue()
                 );
                 PolygonOptions options1 = new PolygonOptions();
                 options1.addAll(land.getData().getBorder());
@@ -167,15 +167,15 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 Log.d(TAG, "drawOnMap: draw zone");
                 int strokeColor2 = Color.argb(
                         AppValues.defaultStrokeAlpha,
-                        AppValues.defaultZoneColor.getRed(),
-                        AppValues.defaultZoneColor.getGreen(),
-                        AppValues.defaultZoneColor.getBlue()
+                        zone.getData().getColor().getRed(),
+                        zone.getData().getColor().getGreen(),
+                        zone.getData().getColor().getBlue()
                 );
                 int fillColor2 = Color.argb(
                         AppValues.defaultFillAlpha,
-                        AppValues.defaultZoneColor.getRed(),
-                        AppValues.defaultZoneColor.getGreen(),
-                        AppValues.defaultZoneColor.getBlue()
+                        zone.getData().getColor().getRed(),
+                        zone.getData().getColor().getGreen(),
+                        zone.getData().getColor().getBlue()
                 );
                 PolygonOptions options2 = new PolygonOptions();
                 options2.addAll(zone.getData().getBorder());

@@ -9,6 +9,8 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.models.ColorData;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ public class LandZoneData implements Parcelable {
     private long lid;
     @ColumnInfo(name = "Title")
     private String title;
+    @ColumnInfo(name = "Color")
+    private ColorData color;
     @ColumnInfo(name = "Border")
     private List<LatLng> border;
 
@@ -28,24 +32,28 @@ public class LandZoneData implements Parcelable {
         id = in.readLong();
         lid = in.readLong();
         title = in.readString();
+        color = in.readParcelable(ColorData.class.getClassLoader());
         border = in.createTypedArrayList(LatLng.CREATOR);
     }
     @Ignore
     public LandZoneData(List<LatLng> border) {
         this.lid = -1;
         this.title = "";
+        this.color = AppValues.defaultZoneColor;
         this.border = border;
     }
     @Ignore
-    public LandZoneData(long lid, String title, List<LatLng> border) {
+    public LandZoneData(long lid, String title, ColorData color, List<LatLng> border) {
         this.lid = lid;
         this.title = title;
+        this.color = color;
         this.border = border;
     }
-    public LandZoneData(long id, long lid, String title, List<LatLng> border) {
+    public LandZoneData(long id, long lid, String title, ColorData color, List<LatLng> border) {
         this.id = id;
         this.lid = lid;
         this.title = title;
+        this.color = color;
         this.border = border;
     }
 
@@ -57,6 +65,9 @@ public class LandZoneData implements Parcelable {
     }
     public String getTitle() {
         return title;
+    }
+    public ColorData getColor(){
+        return color;
     }
     public List<LatLng> getBorder() {
         return border;
@@ -71,6 +82,9 @@ public class LandZoneData implements Parcelable {
     public void setTitle(String title) {
         this.title = title;
     }
+    public void setColor(ColorData color) {
+        this.color = color;
+    }
     public void setBorder(List<LatLng> border) {
         this.border = border;
     }
@@ -80,6 +94,7 @@ public class LandZoneData implements Parcelable {
         dest.writeLong(id);
         dest.writeLong(lid);
         dest.writeString(title);
+        dest.writeParcelable(color,flags);
         dest.writeTypedList(border);
     }
 

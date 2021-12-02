@@ -30,7 +30,6 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapPreviewBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
@@ -108,48 +107,61 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
 
     //map relative
     private void drawLandOnMap() {
-        if (currLand != null && mMap != null) {
+        if (mMap != null) {
             mMap.clear();
-
-            int strokeColor = Color.argb(
+            int strokeColor, fillColor;
+            if(currLand != null){strokeColor = Color.argb(
                     AppValues.defaultStrokeAlpha,
-                    AppValues.defaultLandColor.getRed(),
-                    AppValues.defaultLandColor.getGreen(),
-                    AppValues.defaultLandColor.getBlue()
+                    currLand.getData().getColor().getRed(),
+                    currLand.getData().getColor().getGreen(),
+                    currLand.getData().getColor().getBlue()
             );
-            int fillColor = Color.argb(
-                    AppValues.defaultFillAlpha,
-                    AppValues.defaultLandColor.getRed(),
-                    AppValues.defaultLandColor.getGreen(),
-                    AppValues.defaultLandColor.getBlue()
-            );
+                fillColor = Color.argb(
+                        AppValues.defaultFillAlpha,
+                        currLand.getData().getColor().getRed(),
+                        currLand.getData().getColor().getGreen(),
+                        currLand.getData().getColor().getBlue()
+                );
 
-            PolygonOptions options = LandUtil.getPolygonOptions(
-                    currLand.getData(),
-                    strokeColor,
-                    fillColor,
-                    false
-            );
-            if(options != null)
-                mMap.addPolygon(options);
-            for(LandZone zone:currLandZones){
-                options = LandUtil.getPolygonOptions(
-                        new LandData(zone.getData().getBorder()),
+                PolygonOptions options = LandUtil.getPolygonOptions(
+                        currLand.getData(),
                         strokeColor,
                         fillColor,
                         false
                 );
                 if(options != null)
-                    mMap.addPolygon(options);
+                    mMap.addPolygon(options.zIndex(1));
+                for(LandZone zone:currLandZones){
+                    strokeColor = Color.argb(
+                            AppValues.defaultStrokeAlpha,
+                            zone.getData().getColor().getRed(),
+                            zone.getData().getColor().getGreen(),
+                            zone.getData().getColor().getBlue()
+                    );
+                    fillColor = Color.argb(
+                            AppValues.defaultFillAlpha,
+                            zone.getData().getColor().getRed(),
+                            zone.getData().getColor().getGreen(),
+                            zone.getData().getColor().getBlue()
+                    );
+                    options = LandUtil.getPolygonOptions(
+                            zone.getData(),
+                            strokeColor,
+                            fillColor,
+                            false
+                    );
+                    if(options != null)
+                        mMap.addPolygon(options.zIndex(2));
+                }
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for(LatLng point : currLand.getData().getBorder()){
+                    builder.include(point);
+                }
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                        builder.build(),
+                        AppValues.defaultPadding
+                ));
             }
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(LatLng point : currLand.getData().getBorder()){
-                builder.include(point);
-            }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                    builder.build(),
-                    AppValues.defaultPadding
-            ));
         }
     }
 

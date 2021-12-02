@@ -9,9 +9,14 @@
                 android:icon="@drawable/ic_menu_edit"
                 app:iconTint="@color/textColor"
                 app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_change_zone_color"
+                android:title="@string/edit_zone_color"
+                android:orderInCategory="2"
+                app:iconTint="@color/textColor"
+                app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_save_zone"
                 android:title="@string/save_zone"
-                android:orderInCategory="1"
+                android:orderInCategory="3"
                 android:icon="@drawable/ic_menu_save"
                 app:iconTint="@color/textColor"
                 app:showAsAction="ifRoom|withText" />

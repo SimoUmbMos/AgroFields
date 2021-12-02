@@ -16,6 +16,7 @@ import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,6 +122,19 @@ public class AppViewModel extends AndroidViewModel {
                         new Date()
                 );
                 appRepository.saveLandRecord(landRecord);
+                List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
+                if(zones != null){
+                    if(zones.size()>0){
+                        for(LandZone zone:zones){
+                            if(MapUtil.notContains(
+                                    zone.getData().getBorder(),
+                                    land.getData().getBorder()
+                            )){
+                                appRepository.deleteZone(zone);
+                            }
+                        }
+                    }
+                }
                 populateLists();
             });
         }
@@ -138,7 +152,19 @@ public class AppViewModel extends AndroidViewModel {
                     );
                     appRepository.saveLandRecord(landRecord);
                 }
-
+                List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
+                if(zones != null){
+                    if(zones.size()>0){
+                        for(LandZone zone:zones){
+                            if(MapUtil.notContains(
+                                    zone.getData().getBorder(),
+                                    land.getData().getBorder()
+                            )){
+                                appRepository.deleteZone(zone);
+                            }
+                        }
+                    }
+                }
                 populateLists();
             });
         }

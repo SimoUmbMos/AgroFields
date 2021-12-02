@@ -101,6 +101,7 @@ public class AppRepositoryImpl implements AppRepository {
                 id = db.landDao().insert(new LandData(
                         false,
                         landData.getTitle(),
+                        landData.getColor(),
                         landData.getBorder(),
                         landData.getHoles()
                 ));

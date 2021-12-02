@@ -11,4 +11,12 @@ public final class EncryptUtil {
         random.setSeed((id*4)/2);
         return String.format(Locale.getDefault(),"%04d", random.nextInt(10000));
     }
+    public static String removeSpecialCharacters(String string){
+        String ans = string.trim();
+        ans = ans.replaceAll(
+                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
+                ""
+        );
+        return ans.replaceAll(" +", " ");
+    }
 }
