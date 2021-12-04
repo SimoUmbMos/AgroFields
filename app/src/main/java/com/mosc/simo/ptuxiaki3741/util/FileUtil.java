@@ -4,19 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.OpenableColumns;
 
+import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLReader;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileExporter;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileReader;
+import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseExporter;
 import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 
 import org.jdom2.Document;
 import org.jdom2.output.Format;
@@ -27,6 +32,7 @@ import org.jdom2.output.support.XMLOutputProcessor;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -180,6 +186,21 @@ public final class FileUtil {
             writer.flush();
             writer.close();
             return true;
+        }
+        return false;
+    }
+
+    public static boolean createDbExportAFileFile( Context context ) throws IOException {
+        if(context != null){
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS
+            );
+            String fileName = "export_"+(System.currentTimeMillis()/1000)+".xlsx";
+            File mFile = new File(path, fileName);
+
+            FileOutputStream outputStream = new FileOutputStream(mFile);
+            RoomDatabase db = MainActivity.getRoomDb(context);
+            return OpenXmlDataBaseExporter.exportDB(outputStream,new AppRepositoryImpl(db));
         }
         return false;
     }

@@ -16,6 +16,7 @@ import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.List;
 public class AppViewModel extends AndroidViewModel {
     public static final String TAG = "LandViewModel";
 
-    private final AppRepositoryImpl appRepository;
+    private final AppRepository appRepository;
 
     private final MutableLiveData<List<Contact>> contacts = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();

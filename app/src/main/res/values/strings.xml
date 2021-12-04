@@ -140,6 +140,9 @@
         <item>Light Theme</item>
         <item>Dark Theme</item>
     </string-array>
+    <string name="export_database_button_label">Export DataBase</string>
+    <string name="export_db_success">Export DataBase Completed</string>
+    <string name="export_db_fail">Export DataBase Failed</string>
     <!-- Degree Info Fragment-->
     <string name="degree_info_menu_title">Degree Info</string>
     <!-- File Map Fragment -->

@@ -56,6 +56,11 @@ public class ColorData implements Parcelable {
         else this.blue = Math.min(blue, 255);
     }
 
+    @Override
+    public String toString() {
+        return String.format("#%06X", (0xFFFFFF & Color.rgb(red,green,blue)));
+    }
+
     public static final Creator<ColorData> CREATOR = new Creator<ColorData>() {
         @Override
         public ColorData createFromParcel(Parcel in) {

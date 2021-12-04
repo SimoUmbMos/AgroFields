@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,17 +20,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentAppSettingsBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
+import java.io.IOException;
+
 public class AppSettingsFragment extends Fragment implements FragmentBackPress{
+    private static final String TAG = "AppSettingsFragment";
     private FragmentAppSettingsBinding binding;
     private SharedPreferences sharedPref;
+    private boolean alreadyRunning;
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -73,6 +80,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }else{
             sharedPref = null;
         }
+        alreadyRunning = false;
     }
     private void initActivity(){
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -107,6 +115,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             }
             @Override public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+        binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
     }
 
     private void onThemeSpinnerItemSelect(int pos){
@@ -131,6 +140,43 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         MainActivity activity = (MainActivity) getActivity();
         if(activity != null)
             activity.checkThemeSettings();
+    }
+
+    private void onExportDBPressed() {
+        if(!alreadyRunning){
+            alreadyRunning = true;
+            new Thread(()->{
+                boolean result;
+                try{
+                    result = FileUtil.createDbExportAFileFile(getContext());
+                }catch (IOException e) {
+                    Log.e(TAG, "onExportDBPressed: ",e);
+                    result = false;
+                }
+                onExportDBResult(result);
+                alreadyRunning = false;
+            }).start();
+        }
+    }
+
+    private void onExportDBResult(boolean result) {
+        if(getActivity() != null){
+            getActivity().runOnUiThread(()->{
+                if(result){
+                    Toast.makeText(
+                            getActivity(),
+                            getString(R.string.export_db_success),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }else{
+                    Toast.makeText(
+                            getActivity(),
+                            getString(R.string.export_db_fail),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            });
+        }
     }
 
     private void factoryReset(){

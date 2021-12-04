@@ -57,6 +57,8 @@ dependencies {
     implementation "org.jdom:jdom2:2.0.6"
     implementation "org.jetbrains:annotations:16.0.2"
     implementation "org.osgeo:proj4j:0.1.0"
+    implementation "org.apache.poi:poi:5.1.0"
+    implementation "org.apache.poi:poi-ooxml:5.1.0"
     implementation "com.esri.arcgisruntime:arcgis-android:100.10.0"
     implementation files('libs/shapefilereader-1.0.jar')
 
