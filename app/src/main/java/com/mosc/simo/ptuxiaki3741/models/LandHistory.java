@@ -2,7 +2,7 @@ package com.mosc.simo.ptuxiaki3741.models;
 
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 
@@ -66,6 +66,6 @@ public class LandHistory {
     }
 
     public String getTitle() {
-        return landData.getTitle()+ " #"+ EncryptUtil.convert4digit(landData.getId());
+        return landData.getTitle()+ " #"+ DataUtil.convert4digit(landData.getId());
     }
 }

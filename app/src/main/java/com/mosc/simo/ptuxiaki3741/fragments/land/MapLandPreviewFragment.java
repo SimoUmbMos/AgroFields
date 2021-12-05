@@ -30,7 +30,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapPreviewBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -74,7 +74,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             ActionBar actionBar = activity.getSupportActionBar();
             if(actionBar != null){
                 String display = currLand.getData().getTitle()+
-                                " #"+ EncryptUtil.convert4digit(currLand.getData().getId());
+                                " #"+ DataUtil.convert4digit(currLand.getData().getId());
                 actionBar.setTitle(display);
                 actionBar.show();
             }

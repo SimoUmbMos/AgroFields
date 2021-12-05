@@ -15,7 +15,7 @@ import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLReader;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileExporter;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileReader;
-import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseExporter;
+import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBase;
 import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
@@ -200,7 +200,7 @@ public final class FileUtil {
 
             FileOutputStream outputStream = new FileOutputStream(mFile);
             RoomDatabase db = MainActivity.getRoomDb(context);
-            return OpenXmlDataBaseExporter.exportDB(outputStream,new AppRepositoryImpl(db));
+            return OpenXmlDataBase.exportDB(outputStream,new AppRepositoryImpl(db));
         }
         return false;
     }

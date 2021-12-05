@@ -4,6 +4,10 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
+
 public class ColorData implements Parcelable {
     private int red, green, blue;
     public ColorData(){
@@ -15,6 +19,18 @@ public class ColorData implements Parcelable {
         setRed(in.readInt());
         setGreen(in.readInt());
         setBlue(in.readInt());
+    }
+    public ColorData(String in) {
+        int red = 0, green = 0, blue = 0;
+        if(DataUtil.isColor(in)){
+            int color = Color.parseColor(in);
+            red = Color.red(color);
+            green = Color.green(color);
+            blue = Color.blue(color);
+        }
+        setRed(red);
+        setGreen(green);
+        setBlue(blue);
     }
     public ColorData(int red, int green, int blue){
         setRed(red);
@@ -57,6 +73,7 @@ public class ColorData implements Parcelable {
     }
 
     @Override
+    @NonNull
     public String toString() {
         return String.format("#%06X", (0xFFFFFF & Color.rgb(red,green,blue)));
     }

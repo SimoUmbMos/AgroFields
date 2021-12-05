@@ -19,7 +19,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.List;
@@ -110,7 +110,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         ){
             String display = land.getData().getTitle() +
                     " #" +
-                    EncryptUtil.convert4digit(land.getData().getId());
+                    DataUtil.convert4digit(land.getData().getId());
             if(showCheckBox){
                 binding.ctvLandName.setVisibility(View.VISIBLE);
                 binding.tvLandName.setVisibility(View.INVISIBLE);

@@ -56,7 +56,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.util.DialogUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
-import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
@@ -240,7 +240,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
 
         displayTitle = currLand.getData().getTitle();
         if(currLand.getData().getId() != -1){
-            displayTitle += " #"+ EncryptUtil.convert4digit(currLand.getData().getId());
+            displayTitle += " #"+ DataUtil.convert4digit(currLand.getData().getId());
         }
 
         points.addAll(currLand.getData().getBorder());

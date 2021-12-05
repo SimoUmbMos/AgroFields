@@ -6,6 +6,11 @@ public final class AppValues {
     /* DB VALUES */
     public static final int DATABASE_VERSION = 31;
     public static final int DATABASE_PAGE_SIZE = 24;
+    /* Open XML SDK */
+    public static final String sheetLandName = "Lands";
+    public static final String sheetLandRecordName = "Land Records";
+    public static final String sheetLandZoneName = "Zones";
+    public static final String sheetContactName = "Contacts";
     /* Common Values */
     public static final int defaultPadding = 16;
     public static final int defaultStrokeAlpha = 160;

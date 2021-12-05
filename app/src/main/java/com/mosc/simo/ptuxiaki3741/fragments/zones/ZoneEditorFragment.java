@@ -46,7 +46,7 @@ import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.util.DialogUtil;
-import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -318,7 +318,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 TextInputEditText titleView = dialog.findViewById(R.id.etZoneTitle);
                 if(titleView != null){
                     if(titleView.getText() != null){
-                        String title = EncryptUtil.removeSpecialCharacters(
+                        String title = DataUtil.removeSpecialCharacters(
                                 titleView.getText().toString()
                         );
                         if(isValidTitle(title)){
@@ -605,7 +605,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private void updateUI() {
         if(actionBar != null){
             if(zone != null){
-                actionBar.setTitle(title+" #"+ EncryptUtil.convert4digit(zone.getData().getId()));
+                actionBar.setTitle(title+" #"+ DataUtil.convert4digit(zone.getData().getId()));
             }else{
                 if(!title.trim().isEmpty()){
                     actionBar.setTitle(title);

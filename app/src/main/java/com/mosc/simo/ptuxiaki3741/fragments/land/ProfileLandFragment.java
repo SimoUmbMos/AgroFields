@@ -25,7 +25,7 @@ import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.util.EncryptUtil;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
@@ -125,7 +125,7 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
         if(binding.etLandInfoAddress.getText()!=null){
             address = binding.etLandInfoAddress.getText().toString();
         }
-        landName = EncryptUtil.removeSpecialCharacters(landName);
+        landName = DataUtil.removeSpecialCharacters(landName);
         binding.etLandInfoName.setText(landName);
         if(!landName.isEmpty()){
             binding.etLandInfoAddressLayout.setError(null);

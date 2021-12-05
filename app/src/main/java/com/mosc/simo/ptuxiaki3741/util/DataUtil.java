@@ -1,0 +1,111 @@
+package com.mosc.simo.ptuxiaki3741.util;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+
+import org.apache.commons.validator.routines.EmailValidator;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.regex.Pattern;
+
+public final class DataUtil {
+    private DataUtil(){}
+
+    public static String convert4digit(long id){
+        Random random = new Random();
+        random.setSeed((id*4)/2);
+        return String.format(Locale.getDefault(),"%04d", random.nextInt(10000));
+    }
+    public static String removeSpecialCharacters(String string){
+        String ans = string.trim();
+        ans = ans.replaceAll(
+                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
+                ""
+        );
+        return ans.replaceAll(" +", " ");
+    }
+    public static boolean isEmail(String string){
+        return EmailValidator.getInstance().isValid(string);
+    }
+    public static boolean isPhone(String string){
+        String phoneRegex = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
+        return string.matches(phoneRegex);
+    }
+    public static boolean isColor(String string){
+        String colorRegex = "^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
+        return string.matches(colorRegex);
+    }
+    public static boolean isLandDBAction(String string){
+        for(LandDBAction action:LandDBAction.values()){
+            if(action.name().equals(string)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean isDate(String string){
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault()
+        );
+        try{
+            Date date = sdf.parse(string);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+    public static LandDBAction getLandDBAction(String string){
+        for(LandDBAction action:LandDBAction.values()){
+            if(action.name().equals(string)){
+                return action;
+            }
+        }
+        return null;
+    }
+    public static Date getDate(String string){
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault()
+        );
+        Date date;
+        try{
+            date = sdf.parse(string);
+        }catch (Exception e){
+            date = null;
+        }
+        return date;
+    }
+    public static String printDate(Date date){
+        if(date == null)
+            return "";
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault()
+        );
+        return sdf.format(date);
+    }
+    public static String pointsPrettyPrint(List<List<LatLng>> pointsList){
+        List<List<double[]>> ans = new ArrayList<>();
+        List<double[]> row;
+        for(List<LatLng> points:pointsList){
+            row = new ArrayList<>();
+            for(LatLng point : points){
+                row.add(new double[]{point.longitude,point.latitude});
+            }
+            if(points.size()>1){
+                if(!points.get(0).equals(points.get(points.size()-1))){
+                    row.add(new double[]{points.get(0).longitude,points.get(0).latitude});
+                }
+            }
+            ans.add(row);
+        }
+        return new Gson().toJson(ans);
+    }
+}
