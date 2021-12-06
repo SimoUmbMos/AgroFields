@@ -2,9 +2,13 @@ package com.mosc.simo.ptuxiaki3741.fragments.user;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -25,25 +29,37 @@ import android.widget.Toast;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentAppSettingsBinding;
+import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseInput;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
+import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
+import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
+import com.mosc.simo.ptuxiaki3741.util.RealPathUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private static final String TAG = "AppSettingsFragment";
     private FragmentAppSettingsBinding binding;
     private SharedPreferences sharedPref;
     private boolean alreadyRunning;
+    private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            this::onFileResult
+    );
+
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         binding = FragmentAppSettingsBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
-
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
@@ -115,6 +131,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             }
             @Override public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+        binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
         binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
     }
 
@@ -148,7 +165,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             new Thread(()->{
                 boolean result;
                 try{
-                    result = FileUtil.createDbExportAFileFile(getContext());
+                    result = FileUtil.createDbExportAFileFileXLSX(getContext());
                 }catch (IOException e) {
                     Log.e(TAG, "onExportDBPressed: ",e);
                     result = false;
@@ -157,6 +174,10 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 alreadyRunning = false;
             }).start();
         }
+    }
+    private void onImportDBPressed(){
+        Intent intent = FileUtil.getFilePickerIntent();
+        fileLauncher.launch(intent);
     }
 
     private void onExportDBResult(boolean result) {
@@ -198,5 +219,56 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 if(nav != null)
                     nav.navigate(R.id.toDegreeInfo);
             });
+    }
+
+    private void onFileResult(ActivityResult result) {
+        Intent intent = result.getData();
+        int resultCode = result.getResultCode();
+        if (resultCode == Activity.RESULT_OK && intent != null) {
+            if(getActivity() == null)
+                return;
+            File file = RealPathUtil.getFile(getActivity(),intent.getData());
+
+            if(file == null){
+                Log.d(TAG, "onFileResult: file is null");
+                return;
+            }
+            if(!file.exists()){
+                Log.d(TAG, "onFileResult: file don't exist");
+                return;
+            }
+
+            if(!alreadyRunning){
+                alreadyRunning = true;
+                new Thread(()->{
+                    List<Land> lands = new ArrayList<>();
+                    List<LandZone> zones = new ArrayList<>();
+                    List<Contact> contacts = new ArrayList<>();
+                    if(OpenXmlDataBaseInput.importDB(file,lands,zones,contacts)){
+                        for(Land land : lands){
+                            Log.d(TAG, "land: "+
+                                    land.getData().getTitle()+" "+
+                                    land.getData().getColor().toString()
+                            );
+                        }
+                        for(LandZone zone : zones){
+                            Log.d(TAG, "zone: "+
+                                    zone.getData().getLid()+" "+
+                                    zone.getData().getTitle()+" "+
+                                    zone.getData().getColor().toString()
+                            );
+                        }
+                        for(Contact contact : contacts){
+                            Log.d(TAG, "contact: "+
+                                    contact.getUsername()+" "+
+                                    contact.getEmail()+" "+
+                                    contact.getPhone()
+                            );
+                        }
+                    }
+                    alreadyRunning = false;
+                }).start();
+            }
+        }
     }
 }

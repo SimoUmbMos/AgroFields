@@ -8,9 +8,13 @@ public final class AppValues {
     public static final int DATABASE_PAGE_SIZE = 24;
     /* Open XML SDK */
     public static final String sheetLandName = "Lands";
-    public static final String sheetLandRecordName = "Land Records";
+    public static final String sheetLandNameLowerCase = "lands";
     public static final String sheetLandZoneName = "Zones";
+    public static final String sheetLandZoneNameLowerCase = "zones";
     public static final String sheetContactName = "Contacts";
+    public static final String sheetContactNameLowerCase = "contacts";
+    public static final String sheetLandRecordName = "Land Records";
+    public static final String sheetLandRecordNameLowerCase = "land records";
     /* Common Values */
     public static final int defaultPadding = 16;
     public static final int defaultStrokeAlpha = 160;

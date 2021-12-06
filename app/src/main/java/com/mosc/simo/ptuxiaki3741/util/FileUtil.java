@@ -8,14 +8,13 @@ import android.os.Environment;
 import android.provider.OpenableColumns;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
-import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLReader;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileExporter;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileReader;
-import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBase;
+import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseOutput;
 import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
@@ -36,10 +35,13 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class FileUtil {
+    public static final String TAG = "FileUtil";
     public static final XMLOutputProcessor XMLOUTPUT = new AbstractXMLOutputProcessor() {
         @Override
         protected void printDeclaration(
@@ -77,6 +79,12 @@ public final class FileUtil {
         }else{
             chooseFile.setType("*/*");
         }
+        return chooseFile;
+    }
+    public static Intent getFilePickerIntent() {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+        chooseFile.setType("*/*");
         return chooseFile;
     }
     public static boolean fileIsValidImg(Context ctx, Intent response){
@@ -190,7 +198,24 @@ public final class FileUtil {
         return false;
     }
 
-    public static boolean createDbExportAFileFile( Context context ) throws IOException {
+    public static boolean createDbExportAFileFileXLS( Context context ) throws IOException {
+        if(context != null){
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS
+            );
+            String fileName = "export_"+(System.currentTimeMillis()/1000)+".xls";
+            File mFile = new File(path, fileName);
+
+            FileOutputStream outputStream = new FileOutputStream(mFile);
+            return OpenXmlDataBaseOutput.exportDBXLS(
+                    outputStream,
+                    new AppRepositoryImpl(MainActivity.getRoomDb(context))
+            );
+        }
+        return false;
+    }
+
+    public static boolean createDbExportAFileFileXLSX( Context context ) throws IOException {
         if(context != null){
             File path = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS
@@ -199,8 +224,10 @@ public final class FileUtil {
             File mFile = new File(path, fileName);
 
             FileOutputStream outputStream = new FileOutputStream(mFile);
-            RoomDatabase db = MainActivity.getRoomDb(context);
-            return OpenXmlDataBase.exportDB(outputStream,new AppRepositoryImpl(db));
+            return OpenXmlDataBaseOutput.exportDBXLSX(
+                    outputStream,
+                    new AppRepositoryImpl(MainActivity.getRoomDb(context))
+            );
         }
         return false;
     }
