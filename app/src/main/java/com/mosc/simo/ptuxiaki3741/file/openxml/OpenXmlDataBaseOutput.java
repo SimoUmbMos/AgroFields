@@ -3,7 +3,6 @@ package com.mosc.simo.ptuxiaki3741.file.openxml;
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
 import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 

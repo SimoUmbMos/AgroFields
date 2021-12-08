@@ -20,7 +20,6 @@ import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.List;

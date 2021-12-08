@@ -217,6 +217,12 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 backThread = null;
             });
             backThread.start();
+        }else{
+            Toast.makeText(
+                    getActivity(),
+                    getString(R.string.open_xml_action_not_ended_error),
+                    Toast.LENGTH_SHORT
+            ).show();
         }
     }
     private void onExportDBResult(boolean result) {
@@ -305,7 +311,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             }else{
                 Toast.makeText(
                         getActivity(),
-                        getString(R.string.import_db_running),
+                        getString(R.string.open_xml_action_not_ended_error),
                         Toast.LENGTH_SHORT
                 ).show();
             }

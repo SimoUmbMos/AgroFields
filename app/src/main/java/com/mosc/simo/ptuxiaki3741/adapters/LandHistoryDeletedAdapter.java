@@ -13,7 +13,6 @@ import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryDeletedBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.views.HistoryItemView;
 
 import java.text.DateFormat;

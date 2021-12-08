@@ -30,7 +30,6 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapPreviewBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;

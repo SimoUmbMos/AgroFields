@@ -21,12 +21,8 @@
     <!-- Main Menu Fragment -->
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_zones_button">Zones</string>
-    <string name="main_menu_contacts_button">Contacts</string>
-    <string name="main_menu_settings_button">Settings</string>
     <string name="iv_desc_land_button">Lands</string>
     <string name="iv_desc_zone_button">Zones</string>
-    <string name="iv_desc_settings_button">Settings</string>
-    <string name="iv_desc_contacts_button">Contacts</string>
     <string name="main_menu_loading">Loading..</string>
     <string name="main_menu_no_lands">No Land to show.</string>
     <!-- Land Menu Fragment -->
@@ -147,8 +143,6 @@
     </string-array>
     <string name="import_database_button_label">Import Data</string>
     <string name="export_database_button_label">Export Data</string>
-    <string name="import_db_running">Data Update running…</string>
-    <string name="export_db_running">Data Export running…</string>
     <string name="import_db_success">Data Updated</string>
     <string name="export_db_success">Data Export Completed</string>
     <string name="import_db_failed">Failed Data Update</string>

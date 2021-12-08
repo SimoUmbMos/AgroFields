@@ -7,7 +7,6 @@ import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
