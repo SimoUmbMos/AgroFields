@@ -30,7 +30,6 @@
         <!-- Accent -->
         <item name="colorAccent">@color/accentColor</item>
 
-        <item name="badgeStyle">@style/CustomBadge</item>
         <item name="fontFamily">@font/main_font</item>
         <item name="android:fontFamily">@font/main_font</item>
         <item name="windowActionModeOverlay">true</item>
@@ -45,10 +44,6 @@
     <style name="DrawerNavigationStyle" parent="AppTheme">
         <item name="colorSurface">@color/backgroundColor</item>
         <item name="android:colorBackground">@color/backgroundColor</item>
-    </style>
-    <style name="CustomBadge" parent="@style/Widget.MaterialComponents.Badge">
-        <item name="backgroundColor">@color/colorNotificationBadge</item>
-        <item name="badgeTextColor">@color/colorOnNotificationBadge</item>
     </style>
 
     <!-- fields styles -->

@@ -7,10 +7,13 @@
     android:padding="16dp"
     app:theme="@style/TextInputFields">
     <EditText
-        android:id="@+id/etZoneTitle"
+        android:id="@+id/etZoneNote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/zone_title"
-        android:inputType="text"
-        android:importantForAutofill="no" />
+        android:hint="@string/zone_note_hint"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:lines="2"
+        android:maxLines="2"
+        android:scrollbars="vertical" />
 </LinearLayout>

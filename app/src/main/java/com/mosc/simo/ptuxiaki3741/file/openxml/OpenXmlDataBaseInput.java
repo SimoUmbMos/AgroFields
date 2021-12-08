@@ -1,13 +1,12 @@
 package com.mosc.simo.ptuxiaki3741.file.openxml;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -29,11 +28,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,26 +40,44 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public final class OpenXmlDataBaseInput {
+    private static final String TAG = "OpenXmlDataBaseInput";
     private OpenXmlDataBaseInput(){}
-    public static boolean importDB(
-            File file,
-            List<Land> lands,
-            List<LandZone> zones,
-            List<Contact> contacts
-    ){
+    public static boolean importDB(InputStream is, List<Land> lands, List<LandZone> zones){
+        InputStream is1;
+        InputStream is2;
         try{
-            Workbook workbook = WorkbookFactory.create(file);
-            readDataFromWorkbook(workbook,lands,zones,contacts);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = is.read(buffer)) > -1 ) {
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+            is1 = new ByteArrayInputStream(baos.toByteArray());
+            is2 = new ByteArrayInputStream(baos.toByteArray());
+        }catch (Exception e){
+            return false;
+        }
+
+        try{
+            Workbook workbook = WorkbookFactory.create(is1);
+            lands.clear();
+            zones.clear();
+            readDataFromWorkbook(workbook,lands,zones);
             return true;
-        }catch (Exception ignored) {}
+        }catch (Exception e) {
+            Log.w(TAG, "importDB: ", e);
+        }
 
         try{
             OPCPackage container;
             String sheetName;
-            container = OPCPackage.open(file);
+            container = OPCPackage.open(is2);
             ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(container);
             XSSFReader xssfReader = new XSSFReader(container);
             XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
+            lands.clear();
+            zones.clear();
             while (iter.hasNext()) {
                 InputStream stream = iter.next();
                 sheetName = iter.getSheetName().toLowerCase().trim();
@@ -72,20 +89,14 @@ public final class OpenXmlDataBaseInput {
                     case AppValues.sheetLandZoneNameLowerCase:
                         processZonesSheet(strings, stream, zones);
                         break;
-                    case AppValues.sheetContactNameLowerCase:
-                        processContactsSheet(strings, stream, contacts);
-                        break;
-                    /*
-                    case AppValues.sheetLandRecordName:
-                        processRecordsSheet(strings, stream, records);
-                        break;
-                    */
                 }
 
                 stream.close();
             }
             return true;
-        }catch (Exception ignored){}
+        }catch (Exception e){
+            Log.w(TAG, "importDB: ", e);
+        }
 
         return false;
     }
@@ -93,8 +104,7 @@ public final class OpenXmlDataBaseInput {
     private static void readDataFromWorkbook(
             Workbook workbook,
             List<Land> lands,
-            List<LandZone> zones,
-            List<Contact> contacts
+            List<LandZone> zones
     ) throws IOException {
         for(Sheet sheet : workbook){
             String sheetName = sheet.getSheetName().toLowerCase().trim();
@@ -105,28 +115,33 @@ public final class OpenXmlDataBaseInput {
                 case (AppValues.sheetLandZoneNameLowerCase):
                     getLandZoneData(sheet, zones);
                     break;
-                case (AppValues.sheetContactNameLowerCase):
-                    getContactData(sheet, contacts);
-                    break;
             }
         }
         workbook.close();
     }
     private static void getLandData(Sheet sheet, List<Land> lands) {
         long id;
-        String title, points;
+        String title;
         ColorData color;
+        List<LatLng> border;
+        List<List<LatLng>> holes;
         for (Row row : sheet) {
             id = -1;
             title = "";
             color = null;
-            points = "";//FIXME:BORDER -> POINTS
+            border = new ArrayList<>();
+            holes = new ArrayList<>();
 
             for (Cell cell : row) {
                 switch (cell.getColumnIndex()){
                     case 0:
-                        if(cell.getCellType() == CellType.NUMERIC)
-                            id = Double.valueOf(cell.getNumericCellValue()).longValue();
+                        if(cell.getCellType() == CellType.NUMERIC){
+                            try{
+                                id = Double.valueOf(cell.getNumericCellValue()).longValue();
+                            }catch (Exception e){
+                                id = -1;
+                            }
+                        }
                         break;
                     case 1:
                         title = cell.getStringCellValue().trim();
@@ -135,129 +150,84 @@ public final class OpenXmlDataBaseInput {
                         color = new ColorData(cell.getStringCellValue().trim());
                         break;
                     case 3:
-                        points =  cell.getStringCellValue().trim();
+                        fillListsFromPointsString(
+                                border,
+                                holes,
+                                cell.getStringCellValue().trim()
+                        );
                         break;
                 }
             }
+            if(title.isEmpty() && border.size() == 0){
+                continue;
+            }
 
             if(id != -1){
-                lands.add(new Land(new LandData(id,title,color,new ArrayList<>(),new ArrayList<>())));
+                lands.add(new Land(new LandData(id,title,color,border,holes)));
             }else {
-                lands.add(new Land(new LandData(false,title,color,new ArrayList<>(),new ArrayList<>())));
+                lands.add(new Land(new LandData(false,title,color,border,holes)));
             }
         }
     }
     private static void getLandZoneData(Sheet sheet, List<LandZone> zones) {
         long id, lid;
-        String title, points;
+        String title, note;
         ColorData color;
+        List<LatLng> border;
         for (Row row : sheet) {
             id = -1;
             lid = -1;
             title = "";
+            note = "";
             color = null;
-            points = "";//FIXME:BORDER -> POINTS
+            border = new ArrayList<>();
 
             for (Cell cell : row) {
                 switch (cell.getColumnIndex()){
                     case 0:
-                        if(cell.getCellType() == CellType.NUMERIC)
-                            id = Double.valueOf(cell.getNumericCellValue()).longValue();
+                        if(cell.getCellType() == CellType.NUMERIC){
+                            try{
+                                id = Double.valueOf(cell.getNumericCellValue()).longValue();
+                            }catch (Exception e){
+                                id = -1;
+                            }
+                        }
                         break;
                     case 1:
-                        if(cell.getCellType() == CellType.NUMERIC)
-                            lid = Double.valueOf(cell.getNumericCellValue()).longValue();
+                        if(cell.getCellType() == CellType.NUMERIC){
+                            try{
+                                lid = Double.valueOf(cell.getNumericCellValue()).longValue();
+                            }catch (Exception e){
+                                lid = -1;
+                            }
+                        }
                         break;
                     case 2:
                         title = cell.getStringCellValue().trim();
                         break;
                     case 3:
-                        color = new ColorData(cell.getStringCellValue().trim());
+                        note = cell.getStringCellValue().trim();
                         break;
                     case 4:
-                        points = cell.getStringCellValue().trim();
+                        color = new ColorData(cell.getStringCellValue().trim());
+                        break;
+                    case 5:
+                        fillListsFromPointsString(
+                                border,
+                                new ArrayList<>(),
+                                cell.getStringCellValue().trim()
+                        );
                         break;
                 }
+            }
+            if(lid == -1 && title.isEmpty() && border.size() == 0){
+                continue;
             }
 
             if(id != -1){
-                zones.add(new LandZone(new LandZoneData(id,lid,title,color,new ArrayList<>())));
+                zones.add(new LandZone(new LandZoneData(id,lid,title,note,color,border)));
             }else{
-                zones.add(new LandZone(new LandZoneData(lid,title,color,new ArrayList<>())));
-            }
-        }
-    }
-    private static void getLandRecordData(Sheet sheet, List<LandDataRecord> records) {
-        long id, lid;
-        String title, cellValue;
-        ColorData color;
-        LandDBAction action;
-        Date date;
-        for (Row row : sheet) {
-            id = -1;
-            lid = -1;
-            title = "";
-            color = null;
-            action = null;
-            date = null;
-
-            for (Cell cell : row) {
-                if (cell.getCellType() == CellType.NUMERIC) {
-                    if(id == -1){
-                        id = Double.valueOf(cell.getNumericCellValue()).longValue();
-                    }else if(lid == -1){
-                        lid = Double.valueOf(cell.getNumericCellValue()).longValue();
-                    }
-                } else if (cell.getCellType() == CellType.STRING) {
-                    cellValue = cell.getStringCellValue().trim();
-                    if(DataUtil.isColor(cellValue)){
-                        color = new ColorData(cellValue);
-                    }else if(DataUtil.isLandDBAction(cellValue)){
-                        action = DataUtil.getLandDBAction(cellValue);
-                    }else if(DataUtil.isDate(cellValue)){
-                        date = DataUtil.getDate(cellValue);
-                    }else{
-                        title = cellValue;
-                    }
-                }
-            }
-
-            if(id != -1 && lid != -1 && !title.isEmpty() && color != null && action != null && date != null){
-                records.add(new LandDataRecord(id, lid,title,color,action,date,new ArrayList<>(),new ArrayList<>()));
-            }
-        }
-    }
-    private static void getContactData(Sheet sheet, List<Contact> contacts) {
-        long id;
-        String username, email, phone;
-        for (Row row : sheet) {
-            id = -1;
-            username = "";
-            email = "";
-            phone = "";
-
-            for (Cell cell : row) {
-                switch (cell.getColumnIndex()){
-                    case 0:
-                        if(cell.getCellType() == CellType.NUMERIC)
-                            id = Double.valueOf(cell.getNumericCellValue()).longValue();
-                        break;
-                    case 1:
-                        username = cell.getStringCellValue().trim();
-                        break;
-                    case 2:
-                        email = cell.getStringCellValue().trim();
-                        break;
-                    case 3:
-                        phone = cell.getStringCellValue().trim();
-                        break;
-                }
-            }
-
-            if (id != -1) {
-                contacts.add(new Contact(id, username, email, phone));
-            }else{
-                contacts.add(new Contact(username, email, phone));
+                zones.add(new LandZone(new LandZoneData(lid,title,note,color,border)));
             }
         }
     }
@@ -276,22 +246,25 @@ public final class OpenXmlDataBaseInput {
                 strings,
                 new XSSFSheetXMLHandler.SheetContentsHandler() {
                     private long id;
-                    private String title, color, points;
+                    private String title, color;
+                    List<LatLng> border;
+                    List<List<LatLng>> holes;
                     @Override
                     public void startRow(int rowNum) {
                         id = -1;
                         title = "";
                         color = "";
-                        points = "";
+                        border = new ArrayList<>();
+                        holes = new ArrayList<>();
                     }
 
                     @Override
                     public void endRow(int rowNum) {
                         Land land;
+                        if(title.isEmpty() && border.size() == 0){
+                            return;
+                        }
                         try{
-                            List<LatLng> border = new ArrayList<>();
-                            List<List<LatLng>> holes = new ArrayList<>();
-                            //fixme: points -> border && holes
                             if(id != -1)
                                 land = new Land(new LandData(id,title,new ColorData(color),border,holes));
                             else
@@ -311,7 +284,11 @@ public final class OpenXmlDataBaseInput {
                                 .trim();
                         switch (cellLetter){
                             case "A":
-                                id = Long.parseLong(value);
+                                try{
+                                    id = Double.valueOf(value).longValue();
+                                }catch (Exception e){
+                                    id = -1;
+                                }
                                 break;
                             case "B":
                                 title = value;
@@ -320,7 +297,11 @@ public final class OpenXmlDataBaseInput {
                                 color = value;
                                 break;
                             case "D":
-                                points = value;
+                                fillListsFromPointsString(
+                                        border,
+                                        holes,
+                                        value
+                                );
                                 break;
                         }
                     }
@@ -344,26 +325,29 @@ public final class OpenXmlDataBaseInput {
                 strings,
                 new XSSFSheetXMLHandler.SheetContentsHandler() {
                     private long id, lid;
-                    private String title,color,points;
+                    private String title,note,color;
+                    List<LatLng> border;
                     @Override
                     public void startRow(int rowNum) {
                         id = -1;
                         lid = -1;
                         title = "";
+                        note = "";
                         color = "";
-                        points = "";
+                        border = new ArrayList<>();
                     }
 
                     @Override
                     public void endRow(int rowNum) {
                         LandZone zone;
+                        if(lid == -1 && title.isEmpty() && border.size() == 0){
+                            return;
+                        }
                         try {
-                            List<LatLng> border = new ArrayList<>();
-                            //fixme: points -> border
                             if(id != -1)
-                                zone = new LandZone(new LandZoneData(id,lid,title,new ColorData(color),border));
+                                zone = new LandZone(new LandZoneData(id,lid,title,note,new ColorData(color),border));
                             else
-                                zone = new LandZone(new LandZoneData(lid,title,new ColorData(color),border));
+                                zone = new LandZone(new LandZoneData(lid,title,note,new ColorData(color),border));
                         }catch (Exception e){
                             zone = null;
                         }
@@ -379,88 +363,36 @@ public final class OpenXmlDataBaseInput {
                                 .trim();
                         switch (cellLetter){
                             case "A":
-                                id = Long.parseLong(value);
+                                try{
+                                    id = Double.valueOf(value).longValue();
+                                }catch (Exception e){
+                                    id = -1;
+                                }
                                 break;
                             case "B":
-                                lid = Long.parseLong(value);
+                                try{
+                                    lid = Double.valueOf(value).longValue();
+                                }catch (Exception e){
+                                    lid = -1;
+                                }
                                 break;
                             case "C":
                                 title = value;
                                 break;
                             case "D":
-                                color = value;
+                                note = value;
                                 break;
                             case "E":
-                                points = value;
-                                break;
-
-                        }
-                    }
-                },
-                false
-        );
-        sheetParser.setContentHandler(handler);
-        sheetParser.parse(sheetSource);
-    }
-    protected static void processRecordsSheet(
-            ReadOnlySharedStringsTable strings,
-            InputStream sheetInputStream,
-            List<LandDataRecord> records
-    ) throws IOException, SAXException, ParserConfigurationException {
-        InputSource sheetSource = new InputSource(sheetInputStream);
-        SAXParserFactory saxFactory = SAXParserFactory.newInstance();
-        SAXParser saxParser = saxFactory.newSAXParser();
-        XMLReader sheetParser = saxParser.getXMLReader();
-        ContentHandler handler = new XSSFSheetXMLHandler(
-                new StylesTable(),
-                strings,
-                new XSSFSheetXMLHandler.SheetContentsHandler() {
-                    private long id,lid;
-                    private String title,color,action,date,points;
-                    @Override
-                    public void startRow(int rowNum) {
-                        id = -1;
-                        lid = -1;
-                        title = "";
-                        color = "";
-                        action = "";
-                        date = "";
-                        points = "";
-                    }
-
-                    @Override
-                    public void endRow(int rowNum) {
-                        //Log.d(TAG, "Record "+id+": "+lid+" "+title+" "+color+" "+action+" "+date+" "+points);
-                    }
-
-                    @Override
-                    public void cell(String cellReference, String value, XSSFComment comment) {
-                        String cellLetter = cellReference
-                                .replaceAll("[0-9]","")
-                                .toUpperCase()
-                                .trim();
-                        switch (cellLetter){
-                            case "A":
-                                id = Long.parseLong(value);
-                                break;
-                            case "B":
-                                lid = Long.parseLong(value);
-                                break;
-                            case "C":
-                                title = value;
-                                break;
-                            case "D":
                                 color = value;
-                                break;
-                            case "E":
-                                action = value;
                                 break;
                             case "F":
-                                date = value;
+                                fillListsFromPointsString(
+                                        border,
+                                        new ArrayList<>(),
+                                        value
+                                );
                                 break;
-                            case "G":
-                                points = value;
-                                break;
+
                         }
                     }
                 },
@@ -469,69 +401,22 @@ public final class OpenXmlDataBaseInput {
         sheetParser.setContentHandler(handler);
         sheetParser.parse(sheetSource);
     }
-    protected static void processContactsSheet(
-            ReadOnlySharedStringsTable strings,
-            InputStream sheetInputStream,
-            List<Contact> contacts
-    ) throws IOException, SAXException, ParserConfigurationException {
-        InputSource sheetSource = new InputSource(sheetInputStream);
-        SAXParserFactory saxFactory = SAXParserFactory.newInstance();
-        SAXParser saxParser = saxFactory.newSAXParser();
-        XMLReader sheetParser = saxParser.getXMLReader();
-        ContentHandler handler = new XSSFSheetXMLHandler(
-                new StylesTable(),
-                strings,
-                new XSSFSheetXMLHandler.SheetContentsHandler() {
-                    private long id;
-                    private String username, email, phone;
-                    @Override
-                    public void startRow(int rowNum) {
-                        id = -1;
-                        username = "";
-                        email = "";
-                        phone = "";
-                    }
 
-                    @Override
-                    public void endRow(int rowNum) {
-                        Contact contact;
-                        try{
-                            if(id != -1)
-                                contact = new Contact(id,username,email,phone);
-                            else
-                                contact = new Contact(username,email,phone);
-                        }catch (Exception e){
-                            contact = null;
-                        }
-                        if(contact != null)
-                            contacts.add(contact);
-                    }
-
-                    @Override
-                    public void cell(String cellReference, String value, XSSFComment comment) {
-                        String cellLetter = cellReference
-                                .replaceAll("[0-9]","")
-                                .toUpperCase()
-                                .trim();
-                        switch (cellLetter){
-                            case "A":
-                                id = Long.parseLong(value);
-                                break;
-                            case "B":
-                                username = value;
-                                break;
-                            case "C":
-                                email = value;
-                                break;
-                            case "D":
-                                phone = value;
-                                break;
-                        }
-                    }
-                },
-                false
-        );
-        sheetParser.setContentHandler(handler);
-        sheetParser.parse(sheetSource);
+    private static void fillListsFromPointsString(List<LatLng> border, List<List<LatLng>> holes, String string){
+        List<List<LatLng>> points;
+        try{
+            points = DataUtil.pointsFromString(string);
+        }catch (Exception e){
+            points = new ArrayList<>();
+        }
+        border.clear();
+        if(points.size()>0){
+            border.addAll(points.get(0));
+            points.remove(0);
+        }
+        holes.clear();
+        if (points.size()>0) {
+            holes.addAll(points);
+        }
     }
 }

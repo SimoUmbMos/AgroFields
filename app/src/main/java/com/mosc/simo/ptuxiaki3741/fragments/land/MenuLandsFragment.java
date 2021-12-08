@@ -1,14 +1,10 @@
 package com.mosc.simo.ptuxiaki3741.fragments.land;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -100,14 +96,6 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
         }else{
             return true;
         }
-    }
-
-    private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            this::onRequestPermissionsResult
-    );
-    private void onRequestPermissionsResult(Boolean result) {
-        exportAction(result);
     }
 
     //init
@@ -345,18 +333,12 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
         exportAction = action;
         exportLands.clear();
         exportLands.addAll(returnSelectedLands());
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P){
-            exportAction(true);
-        }else{
-            permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
         deselectAllLands();
+        exportAction();
     }
-    private void exportAction(boolean result){
-        if(result){
-            if(exportLands.size()>0 && exportAction != FileType.NONE){
-                writeOnFile(exportLands, exportAction);
-            }
+    private void exportAction(){
+        if(exportLands.size()>0 && exportAction != FileType.NONE){
+            writeOnFile(exportLands, exportAction);
         }
         exportAction = FileType.NONE;
         exportLands.clear();

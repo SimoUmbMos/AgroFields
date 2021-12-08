@@ -110,7 +110,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         ){
             String display = land.getData().getTitle() +
                     " #" +
-                    DataUtil.convert4digit(land.getData().getId());
+                    land.getData().getId();
             if(showCheckBox){
                 binding.ctvLandName.setVisibility(View.VISIBLE);
                 binding.tvLandName.setVisibility(View.INVISIBLE);

@@ -74,7 +74,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
             ActionBar actionBar = activity.getSupportActionBar();
             if(actionBar != null){
                 String display = currLand.getData().getTitle()+
-                                " #"+ DataUtil.convert4digit(currLand.getData().getId());
+                                " #"+ currLand.getData().getId();
                 actionBar.setTitle(display);
                 actionBar.show();
             }

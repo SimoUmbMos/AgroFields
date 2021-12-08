@@ -15,10 +15,7 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentContactsContainerBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
-
-import java.util.List;
 
 public class ContactsContainerFragment extends Fragment implements FragmentBackPress {
     //fixme: recreate Contact list
@@ -67,12 +64,7 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
     private void initViewHolder(){
         if(getActivity() != null){
             AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            appVM.getContacts().observe(getViewLifecycleOwner(),this::onDataRefresh);
         }
-    }
-
-    private void onDataRefresh(List<Contact> contacts) {
-
     }
 
 }

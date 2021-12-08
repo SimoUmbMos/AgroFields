@@ -1,14 +1,12 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="colorError">#B00020</color>
-  <color name="colorNotificationBadge">#E91E1E</color>
-  <color name="colorOnNotificationBadge">#FFFFFF</color>
-  <color name="backgroundColor">#EDEEF0</color>
-  <color name="cardBackgroundColor">#BECED0</color>
-  <color name="errorTextColor">#EDEEF0</color>
-  <color name="accentColor">#F9718A</color>
-  <color name="textColor">#3A595C</color>
-
   <color name="mapButtonBackgroundColor">#fff</color>
   <color name="mapButtonTextColor">#404040</color>
+
+  <color name="colorError">#A30039</color>
+  <color name="backgroundColor">#EDEEF0</color>
+  <color name="cardBackgroundColor">#CFD8D7</color>
+  <color name="errorTextColor">#EDEEF0</color>
+  <color name="accentColor">#205B20</color>
+  <color name="textColor">#375258</color>
 </resources>

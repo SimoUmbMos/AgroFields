@@ -66,6 +66,6 @@ public class LandHistory {
     }
 
     public String getTitle() {
-        return landData.getTitle()+ " #"+ DataUtil.convert4digit(landData.getId());
+        return landData.getTitle()+ " #"+ landData.getId();
     }
 }

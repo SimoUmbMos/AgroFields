@@ -2,10 +2,12 @@ package com.mosc.simo.ptuxiaki3741.util;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,10 +19,11 @@ import java.util.regex.Pattern;
 public final class DataUtil {
     private DataUtil(){}
 
-    public static String convert4digit(long id){
-        Random random = new Random();
-        random.setSeed((id*4)/2);
-        return String.format(Locale.getDefault(),"%04d", random.nextInt(10000));
+    public static int lineCount(String string){
+        if(string == null)
+            return 1;
+        String[] lines = string.split("\r\n|\r|\n");
+        return  lines.length;
     }
     public static String removeSpecialCharacters(String string){
         String ans = string.trim();
@@ -107,5 +110,22 @@ public final class DataUtil {
             ans.add(row);
         }
         return new Gson().toJson(ans);
+    }
+    public static List<List<LatLng>> pointsFromString(String pointsString){
+        Type listType = new TypeToken<List<List<double[]>>>() {}.getType();
+        List<List<double[]>> pointsList = new Gson().fromJson(pointsString, listType);
+
+        List<List<LatLng>> ans = new ArrayList<>();
+        int size = 0;
+        for(List<double[]> points:pointsList){
+            ans.add(size,new ArrayList<>());
+            for(double[] point:points){
+                if(point.length == 2){
+                    ans.get(size).add(new LatLng(point[1],point[0]));
+                }
+            }
+            size++;
+        }
+        return ans;
     }
 }

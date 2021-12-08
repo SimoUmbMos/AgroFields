@@ -72,7 +72,7 @@ public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryD
         holder.binding.getRoot().setOnClickListener(v->onHistoryClick.onActionResult(item));
 
         String title = item.getLandData().getTitle() +
-                " #"+ DataUtil.convert4digit(item.getLandData().getId());
+                " #"+ item.getLandData().getId();
         holder.binding.tvHistoryTitle.setText(title);
 
         holder.binding.clHistoryData.removeAllViews();

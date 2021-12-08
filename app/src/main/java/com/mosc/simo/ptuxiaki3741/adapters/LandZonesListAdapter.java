@@ -105,8 +105,7 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
             ActionResult<LandZone> onLongClick
         ){
             String display = landZone.getData().getTitle() +
-                    " #" +
-                    DataUtil.convert4digit(landZone.getData().getId());
+                    " #"+ landZone.getData().getId();
             if(showCheckBox){
                 binding.ctvLandName.setVisibility(View.VISIBLE);
                 binding.tvLandName.setVisibility(View.INVISIBLE);

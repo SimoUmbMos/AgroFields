@@ -1,9 +1,12 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -36,6 +39,11 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LoadingFragment";
     private FragmentLoadingBinding binding;
     private Intent intent;
+
+    private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::handleFileAction
+    );
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,16 +100,23 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     }
 
     private void handleFile() {
-        Activity activity = getActivity();
-        new Thread(()->{
-            try {
-                ArrayList<LandData> data = FileUtil.handleFile(activity,intent);
-                toMapPreview(activity,data);
-            }catch (Exception e){
-                Log.e(TAG, "handleFile: ",e);
-                toMapPreview(activity,new ArrayList<>());
-            }
-        }).start();
+        permissionReadChecker.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+    private void handleFileAction(boolean permissionResult) {
+        if(permissionResult){
+            Activity activity = getActivity();
+            new Thread(()->{
+                try {
+                    ArrayList<LandData> data = FileUtil.handleFile(activity,intent);
+                    toMapPreview(activity,data);
+                }catch (Exception e){
+                    Log.e(TAG, "handleFile: ",e);
+                    if(getActivity() != null){
+                        getActivity().runOnUiThread(this::initViewModel);
+                    }
+                }
+            }).start();
+        }
     }
 
     private void toMenu(Activity activity) {

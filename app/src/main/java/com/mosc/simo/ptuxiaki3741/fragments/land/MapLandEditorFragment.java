@@ -90,30 +90,10 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private String displayTitle;
 
     //ActivityResultLauncher relative
-    private final ActivityResultLauncher<String> permissionFileLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
-            result -> {
-                toggleDrawer(false);
-                if (result) {
-                    extracted();
-                }
-                fileState = LandFileState.Disable;
-            }
+            this::onFilePermissionResult
     );
-    private void extracted() {
-        Intent intent = FileUtil.getFilePickerIntent(fileState);
-        switch (fileState) {
-            case Img:
-                imgFileLauncher.launch(intent);
-                break;
-            case File_Import:
-            case File_Add:
-            case File_Subtract:
-                fileLauncher.launch(intent);
-                break;
-        }
-    }
-
     @SuppressLint("MissingPermission")
     private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
@@ -150,6 +130,23 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
     }
 
+    private void onFilePermissionResult(boolean permissionsResult) {
+        toggleDrawer(false);
+        if (permissionsResult) {
+            Intent intent = FileUtil.getFilePickerIntent(fileState);
+            switch (fileState) {
+                case Img:
+                    imgFileLauncher.launch(intent);
+                    break;
+                case File_Import:
+                case File_Add:
+                case File_Subtract:
+                    fileLauncher.launch(intent);
+                    break;
+            }
+        }
+        fileState = LandFileState.Disable;
+    }
     private final ActivityResultLauncher<Intent> imgFileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result ->{
@@ -160,7 +157,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 }
             }
     );
-
     private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result ->{
@@ -240,7 +236,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
 
         displayTitle = currLand.getData().getTitle();
         if(currLand.getData().getId() != -1){
-            displayTitle += " #"+ DataUtil.convert4digit(currLand.getData().getId());
+            displayTitle += " #"+ currLand.getData().getId();
         }
 
         points.addAll(currLand.getData().getBorder());
@@ -480,7 +476,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 importAction = ImportAction.NONE;
                 break;
         }
-        permissionFileLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        permissionReadChecker.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     //map relative

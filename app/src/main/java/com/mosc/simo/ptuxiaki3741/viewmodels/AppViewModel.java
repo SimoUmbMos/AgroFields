@@ -13,7 +13,6 @@ import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
@@ -28,7 +27,6 @@ public class AppViewModel extends AndroidViewModel {
 
     private final AppRepository appRepository;
 
-    private final MutableLiveData<List<Contact>> contacts = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
     private final MutableLiveData<List<LandZone>> landZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandDataRecord>> landsHistory = new MutableLiveData<>();
@@ -39,9 +37,6 @@ public class AppViewModel extends AndroidViewModel {
         appRepository = new AppRepositoryImpl(db);
     }
 
-    public LiveData<List<Contact>> getContacts(){
-        return contacts;
-    }
     public LiveData<List<Land>> getLands(){
         return lands;
     }
@@ -57,21 +52,9 @@ public class AppViewModel extends AndroidViewModel {
     }
 
     private void populateLists() {
-        populateContacts();
         populateLands();
         populateLandZones();
         populateLandsRecords();
-    }
-    private void populateContacts(){
-        List<Contact> contactList;
-        if(contacts.getValue() != null){
-            contactList = contacts.getValue();
-            contactList.clear();
-            contactList.addAll(appRepository.getContacts());
-        }else{
-            contactList = new ArrayList<>(appRepository.getContacts());
-        }
-        contacts.postValue(contactList);
     }
     private void populateLands() {
         List<Land> landList;
@@ -110,11 +93,11 @@ public class AppViewModel extends AndroidViewModel {
     public void saveLand(Land land){
         if(land != null){
             AsyncTask.execute(()->{
-                LandDBAction action;
+                LandDBAction action = LandDBAction.CREATE;
                 if(land.getData().getId() != -1){
-                    action = LandDBAction.UPDATE;
-                }else{
-                    action = LandDBAction.CREATE;
+                    if(appRepository.getLandZonesByLID(land.getData().getId()).size()>0){
+                        action = LandDBAction.UPDATE;
+                    }
                 }
                 appRepository.saveLand(land);
                 LandDataRecord landRecord = new LandDataRecord(

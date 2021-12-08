@@ -3,7 +3,6 @@ package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -48,11 +47,14 @@ public class AppRepositoryImpl implements AppRepository {
     public List<LandDataRecord> getLandRecords() {
         return db.landHistoryDao().getLandRecords();
     }
-    @Override
-    public List<Contact> getContacts() {
-        return db.contactDao().getAllUsers();
-    }
 
+    @Override
+    public Land getLandByID(long id){
+        LandData data = db.landDao().getLandByID(id);
+        if(data != null)
+            return new Land(data);
+        return null;
+    }
     @Override
     public List<LandZone> getLandZonesByLID(long lid){
         List<LandZone> ans = new ArrayList<>();
@@ -64,30 +66,6 @@ public class AppRepositoryImpl implements AppRepository {
             }
         }
         return ans;
-    }
-    @Override
-    public List<Contact> userSearch(String search, int page) {
-        if(page<1)
-            page = 1;
-        if(search.length() > 3){
-            List<Contact> result = db.contactDao().searchUserByUserName(
-                    search,
-                    AppValues.DATABASE_PAGE_SIZE,
-                    (page-1)*AppValues.DATABASE_PAGE_SIZE
-            );
-            if(result != null)
-                return result;
-        }
-        return new ArrayList<>();
-    }
-    @Override
-    public int searchUserMaxPage(String search) {
-        if(search.length() > 3){
-            List<Long> result = db.contactDao().searchUserByUserNamePage(search);
-            if(result != null)
-                return (result.size() - 1) / AppValues.DATABASE_PAGE_SIZE + 1;
-        }
-        return 1;
     }
 
     @Override
@@ -124,15 +102,6 @@ public class AppRepositoryImpl implements AppRepository {
         long LRid = db.landHistoryDao().insert(landRecord);
         landRecord.setId(LRid);
     }
-    @Override
-    public Contact saveContact(Contact contact){
-        if(contact != null){
-            long id = db.contactDao().insert(contact);
-            contact.setId(id);
-            return contact;
-        }
-        return null;
-    }
 
     @Override
     public void deleteLand(Land land) {
@@ -147,11 +116,5 @@ public class AppRepositoryImpl implements AppRepository {
     @Override
     public void deleteZonesByLandID(long lid) {
         db.landZoneDao().deleteByLID(lid);
-    }
-    @Override
-    public void deleteContact(Contact contact){
-        if(contact != null){
-            db.contactDao().delete(contact);
-        }
     }
 }

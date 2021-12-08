@@ -1,9 +1,11 @@
 package com.mosc.simo.ptuxiaki3741.fragments.user;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import android.util.Log;
@@ -33,14 +36,13 @@ import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseInput;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.models.entities.Contact;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
-import com.mosc.simo.ptuxiaki3741.util.RealPathUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
+import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private static final String TAG = "AppSettingsFragment";
     private FragmentAppSettingsBinding binding;
     private SharedPreferences sharedPref;
-    private boolean alreadyRunning;
+    private AppViewModel viewModel;
+    private Thread backThread;
+    private List<Land> lands;
+    private List<LandZone> zones;
+    private boolean dataIsSaving;
+
+    private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::onImportDBAction
+    );
     private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             this::onFileResult
@@ -64,6 +75,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         super.onViewCreated(view, savedInstanceState);
         initData();
         initActivity();
+        initViewModel();
         initFragment();
     }
     @Override public void onDestroyView() {
@@ -87,16 +99,31 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
     }
     @Override public boolean onBackPressed() {
+        if(dataIsSaving){
+            Toast.makeText(
+                    getContext(),
+                    getString(R.string.open_xml_action_not_ended_error),
+                    Toast.LENGTH_SHORT
+            ).show();
+            return false;
+        }
+        if(backThread != null){
+            Toast.makeText(
+                    getContext(),
+                    getString(R.string.open_xml_action_not_ended_error),
+                    Toast.LENGTH_SHORT
+            ).show();
+            return false;
+        }
         return true;
     }
 
-    private void initData(){
+    private void initViewModel(){
         if(getActivity() != null){
-            sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
         }else{
-            sharedPref = null;
+            viewModel = null;
         }
-        alreadyRunning = false;
     }
     private void initActivity(){
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -108,6 +135,15 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 actionBar.show();
             }
         }
+    }
+    private void initData(){
+        if(getActivity() != null){
+            sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        }else{
+            sharedPref = null;
+        }
+        backThread = null;
+        dataIsSaving = false;
     }
     private void initFragment(){
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -159,27 +195,30 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             activity.checkThemeSettings();
     }
 
+
     private void onExportDBPressed() {
-        if(!alreadyRunning){
-            alreadyRunning = true;
-            new Thread(()->{
-                boolean result;
-                try{
-                    result = FileUtil.createDbExportAFileFileXLSX(getContext());
-                }catch (IOException e) {
-                    Log.e(TAG, "onExportDBPressed: ",e);
-                    result = false;
+        onExportDBAction();
+    }
+    private void onExportDBAction() {
+        if(backThread == null){
+            backThread = new Thread(()->{
+                boolean result = false;
+                lands = viewModel.getLands().getValue();
+                zones = viewModel.getLandZones().getValue();
+                if(lands != null){
+                    try{
+                        result = FileUtil.dbExportAFileFileXLSX(lands,zones);
+                    }catch (IOException e) {
+                        Log.e(TAG, "onExportDBPressed: ",e);
+                        result = false;
+                    }
                 }
                 onExportDBResult(result);
-                alreadyRunning = false;
-            }).start();
+                backThread = null;
+            });
+            backThread.start();
         }
     }
-    private void onImportDBPressed(){
-        Intent intent = FileUtil.getFilePickerIntent();
-        fileLauncher.launch(intent);
-    }
-
     private void onExportDBResult(boolean result) {
         if(getActivity() != null){
             getActivity().runOnUiThread(()->{
@@ -221,54 +260,97 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             });
     }
 
+    private void onImportDBPressed(){
+        permissionReadChecker.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+    private void onImportDBAction(boolean permission){
+        if(permission){
+            Intent intent = FileUtil.getFilePickerIntent();
+            fileLauncher.launch(intent);
+        }
+    }
     private void onFileResult(ActivityResult result) {
         Intent intent = result.getData();
         int resultCode = result.getResultCode();
         if (resultCode == Activity.RESULT_OK && intent != null) {
             if(getActivity() == null)
                 return;
-            File file = RealPathUtil.getFile(getActivity(),intent.getData());
-
-            if(file == null){
+            InputStream is;
+            try {
+                is = getActivity().getContentResolver().openInputStream(intent.getData());
+            }catch (Exception e){
+                Log.e(TAG, "onFileResult: ", e);
+                is = null;
+            }
+            if(is == null){
                 Log.d(TAG, "onFileResult: file is null");
                 return;
             }
-            if(!file.exists()){
-                Log.d(TAG, "onFileResult: file don't exist");
-                return;
-            }
-
-            if(!alreadyRunning){
-                alreadyRunning = true;
-                new Thread(()->{
-                    List<Land> lands = new ArrayList<>();
-                    List<LandZone> zones = new ArrayList<>();
-                    List<Contact> contacts = new ArrayList<>();
-                    if(OpenXmlDataBaseInput.importDB(file,lands,zones,contacts)){
-                        for(Land land : lands){
-                            Log.d(TAG, "land: "+
-                                    land.getData().getTitle()+" "+
-                                    land.getData().getColor().toString()
-                            );
+            final InputStream fis = is;
+            if(backThread == null){
+                backThread = new Thread(()->{
+                    lands = new ArrayList<>();
+                    zones = new ArrayList<>();
+                    if(OpenXmlDataBaseInput.importDB(fis,lands,zones)){
+                        onImportDBResult(true);
+                        if(getActivity() != null){
+                            getActivity().runOnUiThread(this::saveData);
                         }
-                        for(LandZone zone : zones){
-                            Log.d(TAG, "zone: "+
-                                    zone.getData().getLid()+" "+
-                                    zone.getData().getTitle()+" "+
-                                    zone.getData().getColor().toString()
-                            );
-                        }
-                        for(Contact contact : contacts){
-                            Log.d(TAG, "contact: "+
-                                    contact.getUsername()+" "+
-                                    contact.getEmail()+" "+
-                                    contact.getPhone()
-                            );
-                        }
+                    }else{
+                        onImportDBResult(false);
                     }
-                    alreadyRunning = false;
-                }).start();
+                    backThread = null;
+                });
+                backThread.start();
+            }else{
+                Toast.makeText(
+                        getActivity(),
+                        getString(R.string.import_db_running),
+                        Toast.LENGTH_SHORT
+                ).show();
             }
+        }
+    }
+
+    private void saveData() {
+        AsyncTask.execute(()->{
+            Log.d(TAG, "saveData: lands size = "+lands.size());
+            Log.d(TAG, "saveData: zones size = "+zones.size());
+            try {
+                dataIsSaving = true;
+                Log.d(TAG, "saveData: dataIsSaving = true");
+                for(Land land : lands){
+                    viewModel.saveLand(land);
+                }
+                for(LandZone zone : zones){
+                    viewModel.saveZone(zone);
+                }
+            }catch (Exception e){
+                Log.e(TAG, "saveData: ", e);
+            }finally {
+                dataIsSaving = false;
+                Log.d(TAG, "saveData: dataIsSaving = false");
+            }
+        });
+    }
+
+    private void onImportDBResult(boolean result) {
+        if(getActivity() != null){
+            getActivity().runOnUiThread(()->{
+                if(result){
+                    Toast.makeText(
+                            getActivity(),
+                            getString(R.string.import_db_success),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }else{
+                    Toast.makeText(
+                            getActivity(),
+                            getString(R.string.import_db_failed),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            });
         }
     }
 }

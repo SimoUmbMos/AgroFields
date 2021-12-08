@@ -1,11 +1,9 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="colorError">#F9718A</color>
-  <color name="colorNotificationBadge">#E91E1E</color>
-  <color name="colorOnNotificationBadge">#FFFFFF</color>
+  <color name="colorError">#F99AAB</color>
   <color name="backgroundColor">#212C2C</color>
   <color name="cardBackgroundColor">#314444</color>
   <color name="errorTextColor">#EDEEF0</color>
-  <color name="accentColor">#9571F9</color>
-  <color name="textColor">#BCD9D7</color>
+  <color name="accentColor">#AEC9A6</color>
+  <color name="textColor">#CFD8D7</color>
 </resources>

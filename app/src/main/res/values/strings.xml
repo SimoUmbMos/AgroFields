@@ -121,6 +121,11 @@
     <string name="zone_title">Zone Title</string>
     <string name="zone_title_positive">Submit</string>
     <string name="zone_title_negative">Cancel</string>
+    <string name="zone_note_label">Edit Zone Note</string>
+    <string name="zone_note_hint">Note</string>
+    <string name="edit_zone_note">Change Zone Note</string>
+    <string name="note_max_line_error">Note Max Line: 2</string>
+    <string name="note_max_char_error">Note Max Characters: 100</string>
     <string name="zone_border_error">Zone must be 3 points minimum</string>
     <string name="zone_null_error">Something has goes wrong, try recreate the zone</string>
     <string name="zone_saved">Zone Saved</string>
@@ -140,10 +145,15 @@
         <item>Light Theme</item>
         <item>Dark Theme</item>
     </string-array>
-    <string name="import_database_button_label">Import DataBase</string>
-    <string name="export_database_button_label">Export DataBase</string>
-    <string name="export_db_success">Export DataBase Completed</string>
-    <string name="export_db_fail">Export DataBase Failed</string>
+    <string name="import_database_button_label">Import Data</string>
+    <string name="export_database_button_label">Export Data</string>
+    <string name="import_db_running">Data Update running…</string>
+    <string name="export_db_running">Data Export running…</string>
+    <string name="import_db_success">Data Updated</string>
+    <string name="export_db_success">Data Export Completed</string>
+    <string name="import_db_failed">Failed Data Update</string>
+    <string name="export_db_fail">Failed Data Export</string>
+    <string name="open_xml_action_not_ended_error">Please Wait…</string>
     <!-- Degree Info Fragment-->
     <string name="degree_info_menu_title">Degree Info</string>
     <!-- File Map Fragment -->

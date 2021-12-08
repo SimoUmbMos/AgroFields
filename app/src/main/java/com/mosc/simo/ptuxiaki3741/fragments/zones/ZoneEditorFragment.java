@@ -21,7 +21,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,8 +36,6 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentZoneEditorBinding;
@@ -74,10 +74,10 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private ZoneEditorState state;
 
-    private String title;
+    private String title, note;
     private ColorData color,tempColor;
     private List<LatLng> border;
-    private boolean isInit, forceBack;
+    private boolean isInit, forceBack, showNote;
     private int index1, index2, index3;
 
     private void initData(){
@@ -86,12 +86,14 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         otherZones = new ArrayList<>();
 
         title = "";
+        note = "";
         color = AppValues.defaultZoneColor;
         border = new ArrayList<>();
         zonePoints = new ArrayList<>();
 
         isInit = false;
         forceBack = false;
+        showNote = false;
         state = ZoneEditorState.NormalState;
         index1 = -1;
         index2 = -1;
@@ -107,6 +109,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
         if(zone != null){
             title = zone.getData().getTitle();
+            note = zone.getData().getNote();
             color = zone.getData().getColor();
             border.addAll(zone.getData().getBorder());
         }
@@ -126,6 +129,8 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private void initFragment(){
         binding.navZoneMenu.setNavigationItemSelectedListener(this::onMenuClick);
         binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        binding.ibToggleNote.setOnClickListener(v->toggleNote());
+        updateUI();
         binding.mvZonePreview.getMapAsync(this::initMap);
     }
     private void initViewModel(){
@@ -247,10 +252,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 if(isValidSave()){
                     if(zone != null){
                         zone.getData().setTitle(title);
+                        zone.getData().setNote(note);
                         zone.getData().setColor(color);
                         zone.getData().setBorder(border);
                     }else{
-                        zone = new LandZone(new LandZoneData(land.getData().getId(),title,color,border));
+                        zone = new LandZone(new LandZoneData(land.getData().getId(),title,note,color,border));
                     }
                     try{
                         vmLands.saveZone(zone);
@@ -306,16 +312,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                         }
                     }).create();
             dialog.show();
-            TextInputEditText titleV = dialog.findViewById(R.id.etZoneTitle);
+            EditText titleV = dialog.findViewById(R.id.etZoneTitle);
             if(titleV != null){
                 titleV.setText(title);
             }
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v->{
-                TextInputLayout titleLayoutView = dialog.findViewById(R.id.etZoneTitleLayout);
-                if(titleLayoutView != null){
-                    titleLayoutView.setError(null);
-                }
-                TextInputEditText titleView = dialog.findViewById(R.id.etZoneTitle);
+                EditText titleView = dialog.findViewById(R.id.etZoneTitle);
                 if(titleView != null){
                     if(titleView.getText() != null){
                         String title = DataUtil.removeSpecialCharacters(
@@ -326,9 +328,64 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             updateUI();
                             dialog.dismiss();
                         }else{
-                            if(titleLayoutView != null){
-                                titleLayoutView.setError(getString(R.string.title_error));
+                            Toast.makeText(
+                                    getContext(),
+                                    getString(R.string.title_error),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
+                }else{
+                    dialog.dismiss();
+                }
+            });
+        }
+    }
+    @SuppressLint("CutPasteId")
+    private void showNoteDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setTitle(getString(R.string.zone_note_label))
+                    .setView(R.layout.view_text_area)
+                    .setPositiveButton(getString(R.string.zone_title_positive),null)
+                    .setNegativeButton(getString(R.string.zone_title_negative), (d, w)-> d.cancel())
+                    .create();
+            dialog.show();
+            EditText noteV = dialog.findViewById(R.id.etZoneNote);
+            if(noteV != null){
+                noteV.setText(note);
+            }
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v->{
+                EditText noteView = dialog.findViewById(R.id.etZoneNote);
+                if(noteView != null){
+                    if(noteView.getText() != null){
+                        String note = noteView.getText().toString()
+                                .trim()
+                                .replaceAll(" +", " ")
+                                .replaceAll("\n+", "\n");
+                        if(DataUtil.lineCount(note)<=2){
+                            if(note.length()<=100){
+                                this.note = note;
+                                updateUI();
+                                dialog.dismiss();
+                            }else{
+                                Toast.makeText(
+                                        getContext(),
+                                        getString(R.string.note_max_char_error),
+                                        Toast.LENGTH_SHORT
+                                ).show();
                             }
+                        }else{
+                            Toast.makeText(
+                                    getContext(),
+                                    getString(R.string.note_max_line_error),
+                                    Toast.LENGTH_SHORT
+                            ).show();
                         }
                     }
                 }else{
@@ -412,6 +469,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             case (R.id.toolbar_action_change_zone_name):
                 showTitleDialog();
                 return true;
+            case (R.id.toolbar_action_change_zone_note):
+                showNoteDialog();
+                return true;
             case (R.id.toolbar_action_change_zone_color):
                 showColorDialog();
                 return true;
@@ -441,6 +501,15 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }else{
                 binding.getRoot().closeDrawer(GravityCompat.END,false);
             }
+        }
+    }
+    private void toggleNote() {
+        if(showNote){
+            showNote = false;
+            binding.tvNote.setVisibility(View.GONE);
+        }else{
+            showNote = true;
+            binding.tvNote.setVisibility(View.VISIBLE);
         }
     }
 
@@ -605,7 +674,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private void updateUI() {
         if(actionBar != null){
             if(zone != null){
-                actionBar.setTitle(title+" #"+ DataUtil.convert4digit(zone.getData().getId()));
+                actionBar.setTitle(title+" #"+ zone.getData().getId());
             }else{
                 if(!title.trim().isEmpty()){
                     actionBar.setTitle(title);
@@ -614,7 +683,20 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 }
             }
         }
-        updateMap();
+        binding.tvNote.setText(note);
+        if(note.isEmpty()){
+            binding.tvNote.setVisibility(View.GONE);
+            binding.ibToggleNote.setVisibility(View.GONE);
+        }else{
+            binding.ibToggleNote.setVisibility(View.VISIBLE);
+            if(showNote){
+                binding.tvNote.setVisibility(View.VISIBLE);
+            }else{
+                binding.tvNote.setVisibility(View.GONE);
+            }
+        }
+        if(mMap != null)
+            updateMap();
     }
     private void updateUIBasedOnState() {
         //todo:code...

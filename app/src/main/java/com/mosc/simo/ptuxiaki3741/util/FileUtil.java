@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.OpenableColumns;
 
-import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
@@ -19,8 +18,8 @@ import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 
 import org.jdom2.Document;
 import org.jdom2.output.Format;
@@ -35,8 +34,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -198,37 +195,28 @@ public final class FileUtil {
         return false;
     }
 
-    public static boolean createDbExportAFileFileXLS( Context context ) throws IOException {
-        if(context != null){
-            File path = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS
-            );
-            String fileName = "export_"+(System.currentTimeMillis()/1000)+".xls";
-            File mFile = new File(path, fileName);
+    public static boolean dbExportAFileFileXLS(List<Land> lands, List<LandZone> zones) throws IOException {
+        File path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS
+        );
+        String fileName = "export_"+(System.currentTimeMillis()/1000)+".xls";
+        File mFile = new File(path, fileName);
 
-            FileOutputStream outputStream = new FileOutputStream(mFile);
-            return OpenXmlDataBaseOutput.exportDBXLS(
-                    outputStream,
-                    new AppRepositoryImpl(MainActivity.getRoomDb(context))
-            );
+        FileOutputStream outputStream = new FileOutputStream(mFile);
+        if(lands.size()>0){
+            return OpenXmlDataBaseOutput.exportDBXLS(outputStream, lands, zones);
         }
         return false;
     }
 
-    public static boolean createDbExportAFileFileXLSX( Context context ) throws IOException {
-        if(context != null){
-            File path = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS
-            );
-            String fileName = "export_"+(System.currentTimeMillis()/1000)+".xlsx";
-            File mFile = new File(path, fileName);
+    public static boolean dbExportAFileFileXLSX(List<Land> lands, List<LandZone> zones) throws IOException {
+        File path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS
+        );
+        String fileName = "export_"+(System.currentTimeMillis()/1000)+".xlsx";
+        File mFile = new File(path, fileName);
 
-            FileOutputStream outputStream = new FileOutputStream(mFile);
-            return OpenXmlDataBaseOutput.exportDBXLSX(
-                    outputStream,
-                    new AppRepositoryImpl(MainActivity.getRoomDb(context))
-            );
-        }
-        return false;
+        FileOutputStream outputStream = new FileOutputStream(mFile);
+        return OpenXmlDataBaseOutput.exportDBXLSX(outputStream, lands, zones);
     }
 }

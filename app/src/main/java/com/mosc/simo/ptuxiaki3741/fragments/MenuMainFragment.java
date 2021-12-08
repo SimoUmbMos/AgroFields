@@ -15,6 +15,7 @@ import androidx.navigation.NavController;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -66,7 +67,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         }
         if(actionBar != null){
             actionBar.setTitle("");
-            actionBar.hide();
+            actionBar.show();
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setDisplayShowHomeEnabled(false);
         }
@@ -81,8 +82,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnHistory.setOnClickListener(v -> toLandsZone(getActivity()));
-        binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
-        binding.btnSettings.setOnClickListener(v -> toSettings(getActivity()));
         binding.mvLands.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
@@ -302,9 +301,19 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mvLands.onLowMemory();
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
+        inflater.inflate(R.menu.main_menu_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_item_settings){
+            toSettings(getActivity());
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override public boolean onBackPressed() {
         return true;
     }
