@@ -6,17 +6,21 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity">
-    <com.google.android.material.appbar.AppBarLayout android:id="@+id/ablMainActivity"
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/ablMainActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:elevation="4dp"
-        app:elevation="4dp">
-        <androidx.appcompat.widget.Toolbar android:id="@+id/tbMainActivity"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tbMainActivity"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/backgroundColor"
             android:layoutDirection="inherit"
             app:titleTextColor="@color/textColor" />

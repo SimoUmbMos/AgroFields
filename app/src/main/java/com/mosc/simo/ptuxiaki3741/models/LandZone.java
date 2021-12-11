@@ -3,6 +3,8 @@ package com.mosc.simo.ptuxiaki3741.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 
 public class LandZone implements Parcelable {
@@ -20,18 +22,29 @@ public class LandZone implements Parcelable {
 
     private LandZoneData data;
     private boolean selected;
+    private String tag;
 
     protected LandZone(Parcel in) {
         data = in.readParcelable(LandZoneData.class.getClassLoader());
         selected = in.readByte() != 0;
+        tag = in.readString();
+    }
+    public LandZone(LandZoneData data, String tag) {
+        this.data = null;
+        this.selected = false;
+        this.tag = tag;
     }
     public LandZone(LandZoneData data){
         this.data = data;
         this.selected = false;
+        this.tag = "";
     }
 
     public void setData(LandZoneData data) {
         this.data = data;
+    }
+    public void setTag(String tag) {
+        this.tag = tag;
     }
     public void setSelected(boolean selected) {
         this.selected = selected;
@@ -39,6 +52,9 @@ public class LandZone implements Parcelable {
 
     public LandZoneData getData() {
         return data;
+    }
+    public String getTag() {
+        return tag;
     }
     public boolean isSelected() {
         return selected;
@@ -53,5 +69,16 @@ public class LandZone implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(data,i);
         parcel.writeByte((byte) (selected ? 1 : 0));
+        parcel.writeString(tag);
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        if(data != null)
+            return data.getTitle() + " #"+ data.getId();
+        if(!tag.isEmpty())
+            return tag;
+        return "";
     }
 }

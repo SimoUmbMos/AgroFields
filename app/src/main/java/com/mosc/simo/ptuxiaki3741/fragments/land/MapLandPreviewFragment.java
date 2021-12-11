@@ -92,12 +92,9 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         binding.mvLand.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap) {
+        binding.mvLand.setVisibility(View.INVISIBLE);
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        mMap.setMinZoomPreference(10);
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
-        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         drawLandOnMap();
@@ -108,12 +105,13 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         if (mMap != null) {
             mMap.clear();
             int strokeColor, fillColor;
-            if(currLand != null){strokeColor = Color.argb(
+            if(currLand != null){
+                strokeColor = Color.argb(
                     AppValues.defaultStrokeAlpha,
                     currLand.getData().getColor().getRed(),
                     currLand.getData().getColor().getGreen(),
                     currLand.getData().getColor().getBlue()
-            );
+                );
                 fillColor = Color.argb(
                         AppValues.defaultFillAlpha,
                         currLand.getData().getColor().getRed(),
@@ -155,6 +153,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
                 for(LatLng point : currLand.getData().getBorder()){
                     builder.include(point);
                 }
+                binding.mvLand.setVisibility(View.VISIBLE);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                         builder.build(),
                         AppValues.defaultPadding

@@ -45,7 +45,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     private List<Land> data1;
     private List<LandZone> data2;
     private GoogleMap mMap;
-    private boolean drawPolygon, firstLoad;
+    private boolean  firstLoad;
 
     private FragmentMenuMainBinding binding;
 
@@ -55,7 +55,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         zonesPolygons = new ArrayList<>();
         data1 = new ArrayList<>();
         data2 = new ArrayList<>();
-        drawPolygon = false;
         firstLoad = true;
     }
     private void initActivity() {
@@ -82,18 +81,15 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnHistory.setOnClickListener(v -> toLandsZone(getActivity()));
+        binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
+        binding.btnSettings.setOnClickListener(v -> toCalendar(getActivity()));
+        binding.mvLands.setClickable(false);
         binding.mvLands.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
+        binding.mvLands.setVisibility(View.INVISIBLE);
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
-        mMap.getUiSettings().setZoomGesturesEnabled(false);
-        mMap.setOnMapClickListener(p -> OnMapClick());
-        if(binding != null){
-            binding.mvLands.setVisibility(View.INVISIBLE);
-        }
+        mMap.getUiSettings().setAllGesturesEnabled(false);
         initLandObservers();
     }
     private void initLandObservers() {
@@ -133,14 +129,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
 
     //map
-    private void OnMapClick(){
-        if(drawPolygon) {
-            drawMapLands();
-            drawMapZones();
-        }
-    }
     private void drawMapLands(){
-        drawPolygon = false;
         if(mMap != null){
             if(landPolygons.size()>0){
                 for(Polygon polygon:landPolygons){
@@ -149,10 +138,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 landPolygons.clear();
             }
             if(data1.size()>0){
-                binding.mvLands.setVisibility(View.VISIBLE);
-                binding.mainMenuAction.setVisibility(View.GONE);
-
-
                 int size = 0;
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(Land land:data1){
@@ -183,6 +168,8 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                     }
                 }
                 if(size > 0){
+                    binding.mvLands.setVisibility(View.VISIBLE);
+                    binding.mainMenuAction.setVisibility(View.GONE);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                             builder.build(),
                             AppValues.defaultPadding
@@ -198,7 +185,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void drawMapZones(){
-        drawPolygon = false;
         if(mMap != null){
             if(zonesPolygons.size()>0){
                 for(Polygon polygon:zonesPolygons){
@@ -266,6 +252,14 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
                     nav.navigate(R.id.toMenuContacts);
+            });
+    }
+    public void toCalendar(@Nullable Activity activity) {
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
+                if(nav != null)
+                    nav.navigate(R.id.toCalendar);
             });
     }
 

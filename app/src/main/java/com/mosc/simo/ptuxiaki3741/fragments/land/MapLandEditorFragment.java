@@ -299,7 +299,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         mMap.setMinZoomPreference(AppValues.countryZoom-2);
         mMap.setMaxZoomPreference(AppValues.streetZoom+2);
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
@@ -308,6 +307,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         mMap.setOnMapClickListener(this::processClick);
         binding.btnLandTerrain.setOnClickListener(v -> changeMapType());
         initLocation();
+        binding.mvLand.setVisibility(View.VISIBLE);
     }
     private void initLocation() {
         if(points.size() == 0){

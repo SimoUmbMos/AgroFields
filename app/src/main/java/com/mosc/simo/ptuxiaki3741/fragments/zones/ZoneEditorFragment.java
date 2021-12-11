@@ -140,7 +140,6 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         mMap.setMinZoomPreference(AppValues.countryZoom-2);
         mMap.setMaxZoomPreference(AppValues.streetZoom+2);
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -148,7 +147,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         mMap.setOnMapClickListener(this::onMapClick);
         binding.ibCenterCamera.setOnClickListener(v-> zoomOnLand());
         zoomOnLand();
-        mMap.setOnMapLoadedCallback(this::initObservers);
+        initObservers();
     }
     private void initObservers(){
         if(vmLands != null){

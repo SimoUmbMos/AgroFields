@@ -33,6 +33,17 @@
         <item name="fontFamily">@font/main_font</item>
         <item name="android:fontFamily">@font/main_font</item>
         <item name="windowActionModeOverlay">true</item>
+
+        <item name="materialCalendarTheme">@style/AppTheme.DatePicker</item>
+    </style>
+    <!-- dialog styles -->
+    <style name="AppTheme.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/backgroundColor</item>
+
+        <item name="colorSurface">@color/backgroundColor</item>
+        <item name="colorOnSurface">@color/textColor</item>
     </style>
 
     <!-- menu styles -->

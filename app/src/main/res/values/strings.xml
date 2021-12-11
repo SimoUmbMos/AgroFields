@@ -158,4 +158,11 @@
     <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
+    <string name="calendar_fragment_title">Calendar</string>
+    <string name="default_land_spinner_value">Select Land</string>
+    <string name="default_zone_spinner_value">All Land</string>
+    <string name="calendar_pop_up_title">Select a date</string>
+    <string name="select_land_label">Select Land:</string>
+    <string name="select_zone_label">Select Zone:</string>
+    <string name="select_date_label">Select Date:</string>
 </resources>

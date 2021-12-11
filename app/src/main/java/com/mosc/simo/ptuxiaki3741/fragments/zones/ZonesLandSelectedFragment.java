@@ -238,6 +238,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         }
     }
     private void exportAction(){
+        //fixme: create zone export
         List<LandZone> selectedZones = getSelectedZones();
         if(selectedZones.size()>0){
             Snackbar.make(binding.getRoot(), R.string.zone_export, Snackbar.LENGTH_SHORT).show();

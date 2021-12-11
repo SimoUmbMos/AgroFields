@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
@@ -16,6 +17,7 @@ import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
+import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
 import java.util.ArrayList;
@@ -95,7 +97,7 @@ public class AppViewModel extends AndroidViewModel {
             AsyncTask.execute(()->{
                 LandDBAction action = LandDBAction.CREATE;
                 if(land.getData().getId() != -1){
-                    if(appRepository.getLandZonesByLID(land.getData().getId()).size()>0){
+                    if(appRepository.getLandByID(land.getData().getId()) != null){
                         action = LandDBAction.UPDATE;
                     }
                 }
@@ -108,12 +110,23 @@ public class AppViewModel extends AndroidViewModel {
                 appRepository.saveLandRecord(landRecord);
                 List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
                 if(zones != null){
-                    if(zones.size()>0){
-                        for(LandZone zone:zones){
-                            if(MapUtil.notContains(
+                    for(LandZone zone:zones){
+                        if(MapUtil.notContains(
+                                zone.getData().getBorder(),
+                                land.getData().getBorder()
+                        )){
+                            appRepository.deleteZone(zone);
+                        }else{
+                            List<LatLng> tempBorders = MapUtil.intersection(
                                     zone.getData().getBorder(),
                                     land.getData().getBorder()
-                            )){
+                            );
+                            if(tempBorders.size()>0){
+                                if(!ListUtils.arraysMatch(tempBorders,zone.getData().getBorder())){
+                                    zone.getData().setBorder(tempBorders);
+                                    appRepository.saveZone(zone);
+                                }
+                            }else{
                                 appRepository.deleteZone(zone);
                             }
                         }

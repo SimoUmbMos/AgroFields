@@ -107,9 +107,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             ActionResult<Land> onClick,
             ActionResult<Land> onLongClick
         ){
-            String display = land.getData().getTitle() +
-                    " #" +
-                    land.getData().getId();
+            String display = land.toString();
             if(showCheckBox){
                 binding.ctvLandName.setVisibility(View.VISIBLE);
                 binding.tvLandName.setVisibility(View.INVISIBLE);
@@ -134,11 +132,12 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
                 zoomOnLand(land);
                 drawOnMap(land);
             }else{
+                binding.mapView.setClickable(false);
                 binding.mapView.getMapAsync(googleMap -> {
                     MapsInitializer.initialize(binding.getRoot().getContext());
+                    binding.mapView.setVisibility(View.INVISIBLE);
                     mMap = googleMap;
-                    mMap.getUiSettings().setAllGesturesEnabled(false);
-                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    mMap.getUiSettings().setMapToolbarEnabled(false);
                     zoomOnLand(land);
                     drawOnMap(land);
                 });
@@ -175,9 +174,10 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             for(LatLng point : land.getData().getBorder()){
                 builder.include(point);
             }
+            binding.mapView.setVisibility(View.VISIBLE);
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                     builder.build(),
-                    AppValues.defaultPadding
+                    AppValues.defaultPaddingLite
             ));
         }
     }

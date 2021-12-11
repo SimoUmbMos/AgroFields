@@ -11,7 +11,8 @@ public final class AppValues {
     public static final String sheetLandZoneName = "Zones";
     public static final String sheetLandZoneNameLowerCase = "zones";
     /* Common Values */
-    public static final int defaultPadding = 16;
+    public static final int defaultPadding = 64;
+    public static final int defaultPaddingLite = 16;
     public static final int defaultStrokeAlpha = 160;
     public static final int defaultFillAlpha = 80;
     public static final ColorData defaultLandColor = new ColorData(20, 249, 80);

@@ -105,7 +105,6 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
         binding.mvFileMap.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
-        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         initMapUI(googleMap,landData == null);
         googleMap.setOnMapLoadedCallback(()->drawMap(googleMap));
     }

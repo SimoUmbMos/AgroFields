@@ -21,7 +21,8 @@
         <com.google.android.gms.maps.MapView
             android:id="@+id/mvLands"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:mapType="satellite" />
 
         <TextView
             android:id="@+id/mainMenuAction"

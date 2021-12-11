@@ -127,11 +127,12 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 zoomOnLand(land);
                 drawOnMap(land, landZone);
             }else{
+                binding.mapView.setClickable(false);
                 binding.mapView.getMapAsync(googleMap -> {
                     MapsInitializer.initialize(binding.getRoot().getContext());
+                    binding.mapView.setVisibility(View.INVISIBLE);
                     mMap = googleMap;
-                    mMap.getUiSettings().setAllGesturesEnabled(false);
-                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    mMap.getUiSettings().setMapToolbarEnabled(false);
                     zoomOnLand(land);
                     drawOnMap(land, landZone);
                 });
@@ -160,28 +161,28 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 options1.clickable(false);
                 options1.zIndex(1);
                 mMap.addPolygon(options1);
-            }
-            if(zone.getData().getBorder().size()>0){
-                Log.d(TAG, "drawOnMap: draw zone");
-                int strokeColor2 = Color.argb(
-                        AppValues.defaultStrokeAlpha,
-                        zone.getData().getColor().getRed(),
-                        zone.getData().getColor().getGreen(),
-                        zone.getData().getColor().getBlue()
-                );
-                int fillColor2 = Color.argb(
-                        AppValues.defaultFillAlpha,
-                        zone.getData().getColor().getRed(),
-                        zone.getData().getColor().getGreen(),
-                        zone.getData().getColor().getBlue()
-                );
-                PolygonOptions options2 = new PolygonOptions();
-                options2.addAll(zone.getData().getBorder());
-                options2.strokeColor(strokeColor2);
-                options2.fillColor(fillColor2);
-                options2.clickable(false);
-                options2.zIndex(2);
-                mMap.addPolygon(options2);
+                if(zone.getData().getBorder().size()>0){
+                    Log.d(TAG, "drawOnMap: draw zone");
+                    int strokeColor2 = Color.argb(
+                            AppValues.defaultStrokeAlpha,
+                            zone.getData().getColor().getRed(),
+                            zone.getData().getColor().getGreen(),
+                            zone.getData().getColor().getBlue()
+                    );
+                    int fillColor2 = Color.argb(
+                            AppValues.defaultFillAlpha,
+                            zone.getData().getColor().getRed(),
+                            zone.getData().getColor().getGreen(),
+                            zone.getData().getColor().getBlue()
+                    );
+                    PolygonOptions options2 = new PolygonOptions();
+                    options2.addAll(zone.getData().getBorder());
+                    options2.strokeColor(strokeColor2);
+                    options2.fillColor(fillColor2);
+                    options2.clickable(false);
+                    options2.zIndex(2);
+                    mMap.addPolygon(options2);
+                }
             }
         }
         private void zoomOnLand(Land land){
@@ -191,11 +192,13 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 builder.include(point);
                 size++;
             }
-            if(size>0)
+            if(size>0){
+                binding.mapView.setVisibility(View.VISIBLE);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                         builder.build(),
-                        AppValues.defaultPadding
+                        AppValues.defaultPaddingLite
                 ));
+            }
         }
     }
 }

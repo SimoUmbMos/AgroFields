@@ -86,6 +86,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/alert_dialog_zone_title.xml" value="0.2348684210526316" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_app_settings.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_blank.xml" value="0.178125" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar.xml" value="0.37083333333333335" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_contact_profile.xml" value="0.36737884314747266" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_contacts_container.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_degree_info.xml" value="0.3578125" />
@@ -96,7 +97,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_selected.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_info.xml" value="0.14767932489451477" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_list.xml" value="0.18645833333333334" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map.xml" value="0.1970074812967581" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map_content.xml" value="0.20885416666666667" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map_preview.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_loading.xml" value="0.371875" />
@@ -128,6 +129,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_edit_text.xml" value="0.21458333333333332" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_history_entry.xml" value="0.2596401028277635" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_history_item.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_calendar_cell.xml" value="0.26481481481481484" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_history.xml" value="0.2671957671957672" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_history_deleted.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_history_selected.xml" value="0.371875" />
@@ -143,6 +145,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_land_history_item.xml" value="0.31431159420289856" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_land_list.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_text_area.xml" value="0.23958333333333334" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_text_label.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/app_settings_menu.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/contact_profile_menu.xml" value="0.190625" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/contacts_container_bottom_menu.xml" value="0.371875" />
@@ -173,6 +176,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.37743589743589745" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap/app_icon.xml" value="0.24166666666666667" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap/app_icon_round.xml" value="0.2296875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Sdk/platforms/android-31/data/res/layout/simple_list_item_1.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import androidx.room.Ignore;
 
@@ -27,20 +28,32 @@ public class Land implements Parcelable {
     private LandData data;
     @Ignore
     private boolean selected;
+    @Ignore
+    private String tag;
 
     @Ignore
     protected Land(Parcel in) {
         data = in.readParcelable(LandData.class.getClassLoader());
         selected = in.readByte() != 0;
+        tag = in.readString();
     }
-
+    @Ignore
+    public Land(LandData data, String tag){
+        this.data = data;
+        this.selected=false;
+        this.tag = tag;
+    }
     public Land(LandData data){
         this.data = data;
         this.selected=false;
+        this.tag = "";
     }
 
     public boolean isSelected(){
         return selected;
+    }
+    public String getTag() {
+        return tag;
     }
     public LandData getData() {
         return data;
@@ -48,6 +61,9 @@ public class Land implements Parcelable {
 
     public void setSelected(boolean selected){
         this.selected = selected;
+    }
+    public void setTag(String tag) {
+        this.tag = tag;
     }
     public void setData(LandData data) {
         this.data = data;
@@ -62,6 +78,7 @@ public class Land implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(data, flags);
         dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeString(tag);
     }
 
     @Override
@@ -79,5 +96,15 @@ public class Land implements Parcelable {
     @Override
     public int hashCode() {
         return Objects.hash(data);
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        if(data != null)
+            return data.getTitle() + " #"+ data.getId();
+        if(!tag.isEmpty())
+            return tag;
+        return "";
     }
 }

@@ -18,7 +18,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 public class ContactsContainerFragment extends Fragment implements FragmentBackPress {
-    //fixme: recreate Contact list
+    //fixme: change to live map
     public static final String TAG = "ContactsContainerFragment";
     private FragmentContactsContainerBinding binding;
 

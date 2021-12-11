@@ -20,7 +20,10 @@
             app:layout_constraintBottom_toTopOf="@+id/titleLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:liteMode="true"
+            app:cameraZoom="0"
+            app:mapType="satellite"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/titleLayout"

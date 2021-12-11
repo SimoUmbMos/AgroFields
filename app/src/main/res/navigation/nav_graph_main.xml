@@ -123,6 +123,9 @@
             app:destination="@id/ContactsContainerFragment" />
         <action android:id="@+id/toAppSettings"
             app:destination="@id/AppSettingsFragment" />
+        <action
+            android:id="@+id/toCalendar"
+            app:destination="@id/CalendarFragment" />
     </fragment>
     <fragment android:id="@+id/ProfileLandFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.land.ProfileLandFragment"
@@ -138,5 +141,10 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.ContactsContainerFragment"
         android:label="fragment_contacts_container"
         tools:layout="@layout/fragment_contacts_container"/>
+    <fragment
+        android:id="@+id/CalendarFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.user.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" />
 
 </navigation>
