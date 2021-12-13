@@ -29,15 +29,18 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CalendarFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "CalendarFragment";
     private FragmentCalendarBinding binding;
     private Calendar myCalendar;
     private List<Land> lands;
-    private List<LandZone> zones, displayZones;
+    private List<LandZone> displayZones;
+    private Map<Long,List<LandZone>> zones;
     private LandSpinnerAdapter landSpinnerAdapter;
     private ZoneSpinnerAdapter zoneSpinnerAdapter;
     private Land selectedLand;
@@ -69,7 +72,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
 
     private void initData(){
         lands = new ArrayList<>();
-        zones = new ArrayList<>();
+        zones = new HashMap<>();
         displayZones = new ArrayList<>();
         selectedLand = new Land(null);
         selectedZone = new LandZone(null);
@@ -130,10 +133,10 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     private void onLandsUpdate(List<Land> lands){
         initLandSpinner(lands);
     }
-    private void onZonesUpdate(List<LandZone> zones){
+    private void onZonesUpdate(Map<Long,List<LandZone>> zones){
         this.zones.clear();
         if(zones != null){
-            this.zones.addAll(zones);
+            this.zones.putAll(zones);
         }
         initZonesSpinner();
     }
@@ -157,15 +160,14 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     }
     private void initZonesSpinner() {
         displayZones.clear();
-        this.displayZones.add(new LandZone(null, getString(R.string.default_zone_spinner_value)));
+        displayZones.add(new LandZone(null, getString(R.string.default_zone_spinner_value)));
         if (selectedLand.getData() != null) {
             binding.svSelectedZone.setEnabled(true);
             binding.svSelectedZone.setVisibility(View.VISIBLE);
             binding.tvSelectZoneLabel.setVisibility(View.VISIBLE);
-            for (LandZone zone : this.zones) {
-                if (zone.getData().getLid() == selectedLand.getData().getId()) {
-                    this.displayZones.add(zone);
-                }
+            List<LandZone> tempZones = zones.getOrDefault(selectedLand.getData().getId(),null);
+            if(tempZones != null){
+                displayZones.addAll(tempZones);
             }
         }else{
             binding.svSelectedZone.setEnabled(false);

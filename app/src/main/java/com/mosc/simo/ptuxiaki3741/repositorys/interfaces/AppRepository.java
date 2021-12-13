@@ -5,10 +5,11 @@ import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AppRepository {
     List<Land> getLands();
-    List<LandZone> getLandZones();
+    Map<Long,List<LandZone>> getLandZones();
     List<LandDataRecord> getLandRecords();
 
     Land getLandByID(long id);

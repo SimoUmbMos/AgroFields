@@ -9,7 +9,9 @@ import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AppRepositoryImpl implements AppRepository {
     private final RoomDatabase db;
@@ -31,13 +33,19 @@ public class AppRepositoryImpl implements AppRepository {
         return lands;
     }
     @Override
-    public List<LandZone> getLandZones(){
-        List<LandZone> ans = new ArrayList<>();
+    public Map<Long,List<LandZone>> getLandZones(){
+        Map<Long,List<LandZone>> ans = new HashMap<>();
 
-        List<LandZoneData> zones = db.landZoneDao().getZones();
-        if(zones != null){
-            for(LandZoneData zone : zones){
-                ans.add(new LandZone(zone));
+        List<LandZone> zones;
+        List<LandZoneData> zonesData = db.landZoneDao().getZones();
+        if(zonesData != null){
+            for(LandZoneData zoneData : zonesData){
+                zones = ans.getOrDefault(zoneData.getLid(),null);
+                if(zones == null){
+                    zones = new ArrayList<>();
+                }
+                zones.add(new LandZone(zoneData));
+                ans.put(zoneData.getLid(),zones);
             }
         }
         return ans;

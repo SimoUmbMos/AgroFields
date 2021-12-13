@@ -22,7 +22,9 @@ import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AppViewModel extends AndroidViewModel {
     public static final String TAG = "LandViewModel";
@@ -30,7 +32,7 @@ public class AppViewModel extends AndroidViewModel {
     private final AppRepository appRepository;
 
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
-    private final MutableLiveData<List<LandZone>> landZones = new MutableLiveData<>();
+    private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandDataRecord>> landsHistory = new MutableLiveData<>();
 
     public AppViewModel(@NonNull Application application) {
@@ -42,7 +44,7 @@ public class AppViewModel extends AndroidViewModel {
     public LiveData<List<Land>> getLands(){
         return lands;
     }
-    public LiveData<List<LandZone>> getLandZones(){
+    public LiveData<Map<Long,List<LandZone>>> getLandZones(){
         return landZones;
     }
     public LiveData<List<LandDataRecord>> getLandsHistory() {
@@ -70,13 +72,13 @@ public class AppViewModel extends AndroidViewModel {
         lands.postValue(landList);
     }
     private void populateLandZones(){
-        List<LandZone> zoneList;
+        Map<Long,List<LandZone>> zoneList;
         if(landZones.getValue() != null){
             zoneList = landZones.getValue();
             zoneList.clear();
-            zoneList.addAll(appRepository.getLandZones());
+            zoneList.putAll(appRepository.getLandZones());
         }else{
-            zoneList = new ArrayList<>(appRepository.getLandZones());
+            zoneList = new HashMap<>(appRepository.getLandZones());
         }
         landZones.postValue(zoneList);
     }

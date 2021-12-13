@@ -36,6 +36,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ZonesLandSelectedFragment extends Fragment implements FragmentBackPress {
     private FragmentZonesLandSelectedBinding binding;
@@ -143,14 +144,12 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         }
     }
     @SuppressLint("NotifyDataSetChanged")
-    private void onDataUpdate(List<LandZone> zones) {
+    private void onDataUpdate(Map<Long,List<LandZone>> zones) {
         data.clear();
         if(selectedLand != null && zones != null){
-            for(LandZone zone : zones){
-                if(zone.getData().getLid() == selectedLand.getData().getId()){
-                    data.add(zone);
-                }
-            }
+            List<LandZone> temp = zones.getOrDefault(selectedLand.getData().getId(),null);
+            if(temp != null)
+                data.addAll(temp);
         }
         adapter.notifyDataSetChanged();
         updateUI();

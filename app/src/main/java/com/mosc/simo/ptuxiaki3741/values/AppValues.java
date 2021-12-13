@@ -30,6 +30,9 @@ public final class AppValues {
     public static final float countryZoom = 6.0f;
     public static final float cityZoom = 13.0f;
     public static final float streetZoom = 16.0f;
+    /* Live Map Fragment Values */
+    public static final float personZoom = 17.0f;
+    public static final float personTilt = 45.0f;
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";

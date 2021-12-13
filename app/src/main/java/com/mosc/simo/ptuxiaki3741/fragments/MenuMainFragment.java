@@ -37,13 +37,15 @@ import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MenuMainFragment extends Fragment implements FragmentBackPress {
     private AppViewModel vmLands;
     private List<Polygon> landPolygons,zonesPolygons;
     private List<Land> data1;
-    private List<LandZone> data2;
+    private Map<Long,List<LandZone>> data2;
     private GoogleMap mMap;
     private boolean  firstLoad;
 
@@ -54,7 +56,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         landPolygons = new ArrayList<>();
         zonesPolygons = new ArrayList<>();
         data1 = new ArrayList<>();
-        data2 = new ArrayList<>();
+        data2 = new HashMap<>();
         firstLoad = true;
     }
     private void initActivity() {
@@ -102,30 +104,22 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
 
     //observers
     private void onLandUpdate(List<Land> newData) {
-        AsyncTask.execute(()->{
-            data1.clear();
-            if(newData != null){
-                data1.addAll(newData);
-            }
-            if(getActivity() != null)
-                getActivity().runOnUiThread(()->{
-                    drawMapLands();
-                    if(firstLoad){
-                        firstLoad = false;
-                        binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
-                    }
-                });
-        });
+        data1.clear();
+        if(newData != null){
+            data1.addAll(newData);
+        }
+        drawMapLands();
+        if(firstLoad){
+            firstLoad = false;
+            binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
+        }
     }
-    private void onLandZoneUpdate(List<LandZone> newData) {
-        AsyncTask.execute(()->{
-            data2.clear();
-            if(newData != null){
-                data2.addAll(newData);
-            }
-            if(getActivity() != null)
-                getActivity().runOnUiThread(this::drawMapZones);
-        });
+    private void onLandZoneUpdate(Map<Long,List<LandZone>> newData) {
+        data2.clear();
+        if(newData != null){
+            data2.putAll(newData);
+        }
+        drawMapZones();
     }
 
     //map
@@ -193,30 +187,31 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 zonesPolygons.clear();
             }
             if(data2.size()>0){
-
-                for(LandZone zone:data2){
-                    int strokeColor = Color.argb(
-                            AppValues.defaultStrokeAlpha,
-                            zone.getData().getColor().getRed(),
-                            zone.getData().getColor().getGreen(),
-                            zone.getData().getColor().getBlue()
-                    );
-                    int fillColor = Color.argb(
-                            AppValues.defaultFillAlpha,
-                            zone.getData().getColor().getRed(),
-                            zone.getData().getColor().getGreen(),
-                            zone.getData().getColor().getBlue()
-                    );
-                    PolygonOptions options = LandUtil.getPolygonOptions(
-                            zone.getData(),
-                            strokeColor,
-                            fillColor,
-                            false
-                    );
-                    if(options != null){
-                        zonesPolygons.add(mMap.addPolygon(options.zIndex(2)));
+                data2.forEach((k,v)->{
+                    for(LandZone zone : v){
+                        int strokeColor = Color.argb(
+                                AppValues.defaultStrokeAlpha,
+                                zone.getData().getColor().getRed(),
+                                zone.getData().getColor().getGreen(),
+                                zone.getData().getColor().getBlue()
+                        );
+                        int fillColor = Color.argb(
+                                AppValues.defaultFillAlpha,
+                                zone.getData().getColor().getRed(),
+                                zone.getData().getColor().getGreen(),
+                                zone.getData().getColor().getBlue()
+                        );
+                        PolygonOptions options = LandUtil.getPolygonOptions(
+                                zone.getData(),
+                                strokeColor,
+                                fillColor,
+                                false
+                        );
+                        if(options != null){
+                            zonesPolygons.add(mMap.addPolygon(options.zIndex(2)));
+                        }
                     }
-                }
+                });
             }
         }
     }

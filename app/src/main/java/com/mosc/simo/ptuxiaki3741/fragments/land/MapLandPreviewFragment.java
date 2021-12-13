@@ -37,6 +37,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "MapLandPreviewFragment";
@@ -173,13 +174,12 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         }
         drawLandOnMap();
     }
-    private void onLandZoneUpdate(List<LandZone> zones) {
+    private void onLandZoneUpdate(Map<Long,List<LandZone>> zones) {
         currLandZones.clear();
         if(currLand != null){
-            for(LandZone zone:zones){
-                if(zone.getData().getLid() == currLand.getData().getId()){
-                    currLandZones.add(zone);
-                }
+            List<LandZone> temp = zones.getOrDefault(currLand.getData().getId(),null);
+            if(temp != null){
+                currLandZones.addAll(temp);
             }
         }
         drawLandOnMap();

@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private static final String TAG = "AppSettingsFragment";
@@ -144,6 +145,8 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
         backThread = null;
         dataIsSaving = false;
+        lands = new ArrayList<>();
+        zones = new ArrayList<>();
     }
     private void initFragment(){
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -203,8 +206,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         if(backThread == null){
             backThread = new Thread(()->{
                 boolean result = false;
-                lands = viewModel.getLands().getValue();
-                zones = viewModel.getLandZones().getValue();
+                lands.clear();
+                zones.clear();
+                List<Land> temp1 = viewModel.getLands().getValue();
+                if(temp1 != null) {
+                    lands.addAll(temp1);
+                }
+                Map<Long,List<LandZone>> temp2 = viewModel.getLandZones().getValue();
+                if(temp2 != null){
+                    temp2.forEach((k,v)-> zones.addAll(v));
+                }
                 if(lands != null){
                     try{
                         result = FileUtil.dbExportAFileFileXLSX(lands,zones);
@@ -214,6 +225,8 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                     }
                 }
                 onExportDBResult(result);
+                lands.clear();
+                zones.clear();
                 backThread = null;
             });
             backThread.start();
@@ -295,8 +308,8 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             final InputStream fis = is;
             if(backThread == null){
                 backThread = new Thread(()->{
-                    lands = new ArrayList<>();
-                    zones = new ArrayList<>();
+                    lands.clear();
+                    zones.clear();
                     if(OpenXmlDataBaseInput.importDB(fis,lands,zones)){
                         onImportDBResult(true);
                         if(getActivity() != null){
@@ -305,6 +318,8 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                     }else{
                         onImportDBResult(false);
                     }
+                    lands.clear();
+                    zones.clear();
                     backThread = null;
                 });
                 backThread.start();

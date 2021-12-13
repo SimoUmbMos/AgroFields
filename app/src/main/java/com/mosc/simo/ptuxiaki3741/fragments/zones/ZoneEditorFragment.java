@@ -54,6 +54,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "ZoneEditorFragment";
@@ -512,28 +513,24 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
 
-    private void onZonesUpdate(List<LandZone> zones){
+    private void onZonesUpdate(Map<Long,List<LandZone>> zones){
         otherZones.clear();
+        if(land != null){
+            List<LandZone> temp = zones.getOrDefault(land.getData().getId(),null);
+            if(temp != null){
+                otherZones.addAll(temp);
+            }
+        }
         if(zone != null){
-            for(LandZone temp:zones){
-                if(temp.getData().getId() == zone.getData().getId()){
-                    zone = temp;
-                    border.clear();
-                    border.addAll(zone.getData().getBorder());
-                }else if(land != null){
-                    if(land.getData().getId() == temp.getData().getLid()){
-                        otherZones.add(temp);
-                    }
+            for(LandZone zoneTemp : otherZones){
+                if(zone.getData().getId() == zoneTemp.getData().getId()) {
+                    zone = zoneTemp;
+                    break;
                 }
             }
-        }else{
-            for(LandZone temp:zones){
-                if(land != null){
-                    if(land.getData().getId() == temp.getData().getLid()){
-                        otherZones.add(temp);
-                    }
-                }
-            }
+            otherZones.remove(zone);
+            border.clear();
+            border.addAll(zone.getData().getBorder());
         }
         initDrawMap();
         updateUI();
