@@ -4,6 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -15,12 +19,16 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.Process;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -30,9 +38,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
+import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentContactsContainerBinding;
 import com.mosc.simo.ptuxiaki3741.enums.LocationStates;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
@@ -48,18 +59,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ContactsContainerFragment extends Fragment implements FragmentBackPress {
+public class ContactsContainerFragment extends Fragment implements FragmentBackPress{
+    public static final String TAG = "ContactsContainerFragment";
     private FragmentContactsContainerBinding binding;
     private ActionBar actionBar;
     private List<Land> lands;
     private Map<Long,List<LandZone>> zones;
+    private GoogleMap mMap;
+    private float lastBearing, currTilt, currZoom, currBearing;
+    private Location lastLocation;
+    private boolean autoGesture,hasUserMovedCamera;
+    private Circle currPosition;
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationStates locationPermission;
-    private boolean locationUpdateRunning;
     private LocationCallback locationCallback;
-    private Location lastLocation;
-    private GoogleMap mMap;
+    private SensorEventListener sensorCallback;
+    private HandlerThread mSensorThreadAccelerometer, mSensorThreadMagneticField,mLocationThread;
+    private boolean locationUpdateRunning;
+
 
     private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
@@ -86,13 +104,62 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
     }
     @Override public void onResume() {
         super.onResume();
+
         binding.mvLiveMap.onResume();
+
+        if(getActivity() != null){
+            SensorManager mSensorManager =
+                    (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+            Sensor mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+            Sensor mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+            if (mAccelerometer != null) {
+                mSensorThreadAccelerometer = new HandlerThread("Sensor thread", android.os.Process.THREAD_PRIORITY_LESS_FAVORABLE);
+                mSensorThreadAccelerometer.start();
+                Handler mSensorHandlerAccelerometer = new Handler(mSensorThreadAccelerometer.getLooper());
+                mSensorManager.registerListener(
+                        sensorCallback,
+                        mAccelerometer,
+                        SensorManager.SENSOR_DELAY_NORMAL ,
+                        mSensorHandlerAccelerometer
+                );
+            }
+            if (mMagneticField != null) {
+                mSensorThreadMagneticField = new HandlerThread("Sensor thread", Process.THREAD_PRIORITY_LESS_FAVORABLE);
+                mSensorThreadMagneticField.start();
+                Handler mSensorHandlerMagneticField = new Handler(mSensorThreadAccelerometer.getLooper());
+                mSensorManager.registerListener(
+                        sensorCallback,
+                        mMagneticField,
+                        SensorManager.SENSOR_DELAY_NORMAL ,
+                        mSensorHandlerMagneticField
+                );
+            }
+        }
+
         startLocationUpdates();
     }
     @Override public void onPause() {
         super.onPause();
-        binding.mvLiveMap.onPause();
+
         stopLocationUpdates();
+
+        if(getActivity() != null){
+            SensorManager mSensorManager =
+                    (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+            mSensorManager.unregisterListener(
+                    sensorCallback
+            );
+            if(mSensorThreadAccelerometer != null){
+                mSensorThreadAccelerometer.quitSafely();
+            }
+            if(mSensorThreadMagneticField != null){
+                mSensorThreadMagneticField.quitSafely();
+            }
+        }
+
+        binding.mvLiveMap.onPause();
     }
     @Override public void onLowMemory() {
         super.onLowMemory();
@@ -105,10 +172,45 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
     private void initData() {
         locationPermission = LocationStates.DISABLE;
         locationUpdateRunning = false;
+        hasUserMovedCamera = false;
         fusedLocationClient = null;
         lastLocation = null;
+        lastBearing = 0;
         lands = new ArrayList<>();
         zones = new HashMap<>();
+        sensorCallback = new SensorEventListener(){
+            private float[] mGravity;
+            private float[] mGeomagnetic;
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                if(!autoGesture) return;
+
+                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+                    mGravity = event.values;
+                }else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD){
+                    mGeomagnetic = event.values;
+                }
+
+                if (mGravity != null && mGeomagnetic != null) {
+                    float[] R = new float[9];
+                    float[] I = new float[9];
+                    boolean success = SensorManager.getRotationMatrix(R, I, mGravity,
+                            mGeomagnetic);
+                    if (success) {
+                        float[] orientation = new float[3];
+                        SensorManager.getOrientation(R, orientation);
+                        float bearing = orientation[0];
+                        bearing = (float) (Math.toDegrees(bearing)+360) % 360;
+                        bearing = (float)  Math.floor(bearing);
+                        if(Math.abs(bearing - lastBearing) >= AppValues.bearingSensitivity){
+                            onUpdateBearing(bearing);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+        };
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -116,6 +218,7 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
                 onLocationUpdate(locationResult);
             }
         };
+        startAutoGesture();
     }
     private void initActivity() {
         if(getActivity() != null){
@@ -124,7 +227,7 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
                 activity.setOnBackPressed(this);
                 actionBar = activity.getSupportActionBar();
                 if(actionBar != null){
-                    actionBar.setTitle("");
+                    actionBar.setTitle(getString(R.string.default_live_map_title));
                     actionBar.show();
                 }
             }
@@ -139,36 +242,51 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
             appVM.getLandZones().observe(getViewLifecycleOwner(),this::onZonesUpdate);
         }
     }
-
-    private void onLandsUpdate(List<Land> lands) {
-        this.lands.clear();
-        if(lands != null){
-            this.lands.addAll(lands);
-        }
-        updateMap();
-    }
-    private void onZonesUpdate(Map<Long,List<LandZone>> zones) {
-        this.zones.clear();
-        if(zones != null)
-            this.zones.putAll(zones);
-        updateMap();
-    }
     private void initFragment() {
         binding.mvLiveMap.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap){
+        binding.mvLiveMap.setVisibility(View.INVISIBLE);
+
         mMap = googleMap;
+
+        mMap.setMinZoomPreference(AppValues.cityZoom);
+        mMap.setMaxZoomPreference(AppValues.personZoom);
 
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.getUiSettings().setTiltGesturesEnabled(true);
-
-        mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setCompassEnabled(false);
+
+        mMap.getUiSettings().setRotateGesturesEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
+        mMap.getUiSettings().setTiltGesturesEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        currBearing = mMap.getCameraPosition().bearing;
+        currTilt = AppValues.defaultTilt;
+        currZoom = AppValues.streetZoom;
+        mMap.setOnCameraMoveListener(()->{
+            currBearing = mMap.getCameraPosition().bearing;
+            currTilt = mMap.getCameraPosition().tilt;
+            currZoom = mMap.getCameraPosition().zoom;
+
+            if(lastLocation != null){
+                if(currPosition != null){
+                    double radius = AppValues.currPositionSize * Math.pow(AppValues.currPowSize, AppValues.personZoom - currZoom);
+                    radius = Math.floor(radius);
+                    double radiusStroke = AppValues.currPositionSizeStroke * Math.pow(AppValues.currPowSizeStroke, AppValues.personZoom - currZoom);
+                    radiusStroke = Math.floor(radiusStroke);
+                    currPosition.setRadius(radius);
+                    currPosition.setStrokeWidth((float)radiusStroke);
+                }
+            }
+        });
+        mMap.setOnCameraMoveStartedListener(id->{
+            if(id == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE)
+                hasUserMovedCamera = true;
+        });
 
         updateMap();
         requestPermissions();
@@ -259,9 +377,8 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
 
         displayNotification(currentLand,currentZone);
     }
-
     private void displayNotification(Land currentLand, LandZone currentZone) {
-        String title = "";
+        String title = getString(R.string.default_live_map_title);
         String display = "";
         boolean isNew = false;
         if(currentLand != null){
@@ -288,70 +405,16 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
             vibratePhone();
         }
     }
-
     private void vibratePhone() {
         if(getContext() == null) return;
         Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
     }
-
     private void requestPermissions() {
         locationPermissionRequest.launch(new String[] {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
-    }
-
-    private void onPermissionResult(Map<String, Boolean> result) {
-        Boolean fineLocationGranted = result.getOrDefault(
-                Manifest.permission.ACCESS_FINE_LOCATION, false);
-        Boolean coarseLocationGranted = result.getOrDefault(
-                Manifest.permission.ACCESS_COARSE_LOCATION,false);
-
-        if (fineLocationGranted != null && fineLocationGranted){
-            locationPermission = LocationStates.FINE_LOCATION;
-        }else if(coarseLocationGranted != null && coarseLocationGranted){
-            locationPermission = LocationStates.COARSE_LOCATION;
-        }else{
-            locationPermission = LocationStates.DISABLE;
-        }
-
-        startLocationUpdates();
-    }
-    private void onLocationUpdate(LocationResult locationResult){
-        Location location = locationResult.getLastLocation();
-        if(lastLocation == null){
-            updateLocation(location);
-        }else if(
-                lastLocation.getLongitude() != location.getLongitude() &&
-                lastLocation.getLatitude() != location.getLatitude()
-        ){
-            updateLocation(location);
-        }
-    }
-
-    private void updateLocation(Location location) {
-        if(mMap != null){
-            CameraPosition.Builder position = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(),location.getLongitude()))
-                    .bearing(location.getBearing());
-            if(lastLocation != null){
-                mMap.stopAnimation();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position
-                        .tilt(mMap.getCameraPosition().tilt)
-                        .zoom(mMap.getCameraPosition().zoom)
-                        .build()
-                ));
-            }else{
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(position
-                        .tilt(AppValues.personTilt)
-                        .zoom(AppValues.personZoom)
-                        .build()
-                ));
-            }
-        }
-        lastLocation = location;
-        updateUi();
     }
 
     private void startLocationUpdates() {
@@ -368,7 +431,6 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
                 break;
         }
     }
-
     @SuppressLint("MissingPermission")
     private void startCoarseLocationUpdates() {
         if(fusedLocationClient == null) return;
@@ -378,18 +440,21 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
             stopLocationUpdates();
         }
 
+        mLocationThread = new HandlerThread("MyHandlerThread", Process.THREAD_PRIORITY_MORE_FAVORABLE);
+        mLocationThread.start();
+        Looper looper = mLocationThread.getLooper();
+
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        fusedLocationClient.requestLocationUpdates(locationRequest,
+        fusedLocationClient.requestLocationUpdates(
+                locationRequest,
                 locationCallback,
-                Looper.getMainLooper());
-
-        if(mMap != null) mMap.setMyLocationEnabled(true);
+                looper
+        );
 
         locationUpdateRunning = true;
     }
-
     @SuppressLint("MissingPermission")
     private void startFineLocationUpdates() {
         if(fusedLocationClient == null) return;
@@ -399,29 +464,175 @@ public class ContactsContainerFragment extends Fragment implements FragmentBackP
             stopLocationUpdates();
         }
 
+        mLocationThread = new HandlerThread("MyHandlerThread", Process.THREAD_PRIORITY_MORE_FAVORABLE);
+        mLocationThread.start();
+        Looper looper = mLocationThread.getLooper();
+
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        fusedLocationClient.requestLocationUpdates(locationRequest,
+        fusedLocationClient.requestLocationUpdates(
+                locationRequest,
                 locationCallback,
-                Looper.getMainLooper());
-
-        if(mMap != null) mMap.setMyLocationEnabled(true);
+                looper
+        );
 
         locationUpdateRunning = true;
     }
-
     @SuppressLint("MissingPermission")
     private void stopLocationUpdates() {
         if(fusedLocationClient == null) return;
 
-        if(mMap != null) mMap.setMyLocationEnabled(false);
-
         if(locationUpdateRunning){
             fusedLocationClient.removeLocationUpdates(locationCallback);
 
+            if(mLocationThread != null) mLocationThread.quitSafely();
+
             locationUpdateRunning = false;
         }
+    }
+
+    private void startAutoGesture(){
+        autoGesture = true;
+        //fixme: init ui
+    }
+    private void stopAutoGesture(){
+        autoGesture = false;
+        //fixme: init ui
+    }
+
+    private void onLandsUpdate(List<Land> lands) {
+        this.lands.clear();
+        if(lands != null){
+            this.lands.addAll(lands);
+        }
+        updateMap();
+    }
+    private void onZonesUpdate(Map<Long,List<LandZone>> zones) {
+        this.zones.clear();
+        if(zones != null)
+            this.zones.putAll(zones);
+        updateMap();
+    }
+    private void onPermissionResult(Map<String, Boolean> result) {
+        Boolean fineLocationGranted = result.getOrDefault(
+                Manifest.permission.ACCESS_FINE_LOCATION, false);
+        Boolean coarseLocationGranted = result.getOrDefault(
+                Manifest.permission.ACCESS_COARSE_LOCATION,false);
+
+        if (fineLocationGranted != null && fineLocationGranted){
+            locationPermission = LocationStates.FINE_LOCATION;
+        }else if(coarseLocationGranted != null && coarseLocationGranted){
+            locationPermission = LocationStates.COARSE_LOCATION;
+        }else{
+            locationPermission = LocationStates.DISABLE;
+        }
+
+        if(locationPermission != LocationStates.DISABLE){
+            startLocationUpdates();
+        }else{
+            goBack();
+        }
+    }
+    private void onLocationUpdate(LocationResult locationResult){
+        Location location = locationResult.getLastLocation();
+        LatLng locationLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+        if(lastLocation == null){
+            onUpdateLocation(location);
+        }else{
+            LatLng lastLatLng = new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
+            if(MapUtil.distanceBetween(lastLatLng,locationLatLng) > AppValues.locationSensitivity){
+                onUpdateLocation(location);
+            }
+        }
+    }
+    private void onUpdateLocation(Location location) {
+        if(location == null) return;
+        if(mMap == null) return;
+
+        CameraPosition position;
+        boolean isInit;
+        if(lastLocation == null){
+            position= new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(),location.getLongitude()))
+                    .bearing(location.getBearing())
+                    .tilt(AppValues.defaultTilt)
+                    .zoom(AppValues.streetZoom)
+                    .build();
+            isInit = true;
+        }else{
+            position = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(),location.getLongitude()))
+                    .bearing(currBearing)
+                    .tilt(currTilt)
+                    .zoom(currZoom)
+                    .build();
+            isInit = false;
+        }
+        lastLocation = location;
+        if(getActivity() != null){
+            getActivity().runOnUiThread(()->{
+                if(isInit){
+                    if(currPosition != null)
+                        currPosition.remove();
+                    currPosition = mMap.addCircle(new CircleOptions()
+                            .center(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude()))
+                            .fillColor(AppValues.defaultPersonColorFill)
+                            .strokeColor(AppValues.defaultPersonColorStroke)
+                            .zIndex(3)
+                    );
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(position));
+                    binding.mvLiveMap.setVisibility(View.VISIBLE);
+                }else{
+                    if(currPosition != null){
+                        currPosition.setCenter(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude()));
+                    }
+                    mMap.stopAnimation();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+                }
+                updateUi();
+            });
+        }
+    }
+    private void onUpdateBearing(float bearing) {
+        if(lastLocation == null) return;
+
+        if (checkIfUserChangedBearing()) {
+            stopAutoGesture();
+            return;
+        }
+        lastBearing = bearing;
+        if(mMap != null && getActivity() != null){
+            getActivity().runOnUiThread(()->{
+                mMap.stopAnimation();
+                CameraPosition position = new CameraPosition.Builder()
+                        .target(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude()))
+                        .bearing(lastBearing)
+                        .tilt(currTilt)
+                        .zoom(currZoom)
+                        .build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+            });
+        }
+    }
+
+    private boolean checkIfUserChangedBearing() {
+        if(hasUserMovedCamera){
+            hasUserMovedCamera = false;
+            if(Math.abs(lastBearing - currBearing) >= AppValues.bearingSensitivity) {
+                return Math.abs(lastLocation.getBearing() - currBearing) >= AppValues.bearingSensitivity;
+            }
+        }
+        return false;
+    }
+
+    private void goBack(){
+        Toast.makeText(
+                getContext(),
+                getString(R.string.live_map_permission_error),
+                Toast.LENGTH_SHORT
+        ).show();
+        if(getActivity() != null) getActivity().onBackPressed();
     }
 }

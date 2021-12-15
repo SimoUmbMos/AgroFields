@@ -1,5 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.values;
 
+import android.graphics.Color;
+
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 
 public final class AppValues {
@@ -17,6 +19,8 @@ public final class AppValues {
     public static final int defaultFillAlpha = 80;
     public static final ColorData defaultLandColor = new ColorData(20, 249, 80);
     public static final ColorData defaultZoneColor = new ColorData(80, 20, 249);
+    public static final int defaultPersonColorFill = Color.parseColor("#3777f1");
+    public static final int defaultPersonColorStroke = Color.parseColor("#ffffff");
     /* Args Values */
     public static final String argLand = "land";
     public static final String argLands = "lands";
@@ -30,9 +34,15 @@ public final class AppValues {
     public static final float countryZoom = 6.0f;
     public static final float cityZoom = 13.0f;
     public static final float streetZoom = 16.0f;
+    public static final float personZoom = 19.0f;
     /* Live Map Fragment Values */
-    public static final float personZoom = 17.0f;
-    public static final float personTilt = 45.0f;
+    public static final float defaultTilt = 0.0f;
+    public static final float locationSensitivity = 0.0015f;
+    public static final float bearingSensitivity = 3.0f;
+    public static final double currPositionSize = 2.0;
+    public static final double currPositionSizeStroke = 3.0;
+    public static final double currPowSize = 1.725;
+    public static final double currPowSizeStroke = 1.025;
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";

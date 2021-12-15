@@ -225,8 +225,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                     }
                 }
                 onExportDBResult(result);
-                lands.clear();
-                zones.clear();
                 backThread = null;
             });
             backThread.start();
@@ -318,8 +316,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                     }else{
                         onImportDBResult(false);
                     }
-                    lands.clear();
-                    zones.clear();
                     backThread = null;
                 });
                 backThread.start();

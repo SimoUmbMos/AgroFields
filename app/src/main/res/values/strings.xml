@@ -165,4 +165,6 @@
     <string name="select_land_label">Select Land:</string>
     <string name="select_zone_label">Select Zone:</string>
     <string name="select_date_label">Select Date:</string>
+    <string name="live_map_permission_error">Live Map Needs Location Permission</string>
+    <string name="default_live_map_title">Not Inside Land</string>
 </resources>
