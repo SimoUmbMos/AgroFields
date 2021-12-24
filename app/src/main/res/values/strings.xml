@@ -18,6 +18,8 @@
     <string name="cancel">Cancel</string>
     <string name="clipboard_message">Text Copied</string>
     <string name="title_error">Title is incorrect</string>
+    <string name="notification_channel_name">Land Declaration</string>
+    <string name="notification_channel_description">Land Declaration Notifications</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_zones_button">Zones</string>

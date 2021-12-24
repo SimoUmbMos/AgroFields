@@ -2,7 +2,6 @@ package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -82,7 +81,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mainMenuAction.setVisibility(View.VISIBLE);
         binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
-        binding.btnHistory.setOnClickListener(v -> toLandsZone(getActivity()));
+        binding.btnZones.setOnClickListener(v -> toLandsZone(getActivity()));
         binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
         binding.btnSettings.setOnClickListener(v -> toCalendar(getActivity()));
         binding.mvLands.setClickable(false);
@@ -92,6 +91,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.mvLands.setVisibility(View.INVISIBLE);
         mMap = googleMap;
         mMap.getUiSettings().setAllGesturesEnabled(false);
+        mMap.setOnMapClickListener(P->toUserContacts(getActivity()));
         initLandObservers();
     }
     private void initLandObservers() {

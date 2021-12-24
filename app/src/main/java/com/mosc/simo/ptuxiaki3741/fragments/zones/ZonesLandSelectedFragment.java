@@ -7,12 +7,14 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,29 +22,39 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandZonesListAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentZonesLandSelectedBinding;
+import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandListMenuState;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
+import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ZonesLandSelectedFragment extends Fragment implements FragmentBackPress {
+    private static final String TAG = "ZonesLandSelectedFragment";
     private FragmentZonesLandSelectedBinding binding;
     private LandZonesListAdapter adapter;
     private Land selectedLand;
     private List<LandZone> data;
+
+    private AlertDialog dialog;
+    private int dialogChecked;
 
     private LandListMenuState state;
     private ActionMode actionMenu;
@@ -134,7 +146,11 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
                 deleteAction();
                 return true;
             case (R.id.menu_export_action):
-                exportAction();
+                if(getSelectedZones().size() > 0){
+                    showExportDialog();
+                }else{
+                    updateMenu(LandListMenuState.NormalState);
+                }
                 return true;
             case (R.id.menu_select_all_action):
                 toggleAllZone();
@@ -236,12 +252,90 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             updateMenu(LandListMenuState.NormalState);
         }
     }
-    private void exportAction(){
-        //fixme: create zone export
-        List<LandZone> selectedZones = getSelectedZones();
-        if(selectedZones.size()>0){
-            Snackbar.make(binding.getRoot(), R.string.zone_export, Snackbar.LENGTH_SHORT).show();
-            updateMenu(LandListMenuState.NormalState);
+    private void showExportDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            dialogChecked = 0;
+            String[] dataTypes = {"KML","GeoJson","GML"};
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setTitle(getString(R.string.file_type_select_title))
+                    .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
+                    .setOnDismissListener(dialog -> updateMenu(LandListMenuState.NormalState))
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> {
+                        switch (dialogChecked) {
+                            case 0:
+                                exportSelectedZones(FileType.KML);
+                                break;
+                            case 1:
+                                exportSelectedZones(FileType.GEOJSON);
+                                break;
+                            case 2:
+                                exportSelectedZones(FileType.GML);
+                                break;
+                            default:
+                                exportSelectedZones(FileType.NONE);
+                                break;
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
+    }
+    private void exportSelectedZones(FileType action){
+        List<LandZone> exportZones = new ArrayList<>(getSelectedZones());
+        deselectAllZones();
+        exportAction(exportZones,action);
+    }
+    private void exportAction(List<LandZone> exportZones, FileType exportAction){
+        if(exportZones.size()>0 && exportAction != FileType.NONE){
+            writeOnFile(exportZones, exportAction);
+        }
+    }
+    private void writeOnFile(List<LandZone> zones, FileType action) {
+        if(zones.size()>0){
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS
+            );
+            String landTitle = selectedLand.getData().getTitle();
+            landTitle = landTitle.replaceAll("\\s{2,}", " ").trim();
+            landTitle = landTitle.replaceAll(" ","_");
+            String fileName = landTitle+"_"+(System.currentTimeMillis()/1000)+"_"+zones.size();
+            try{
+                boolean isPathCreated = false, pathExist = path.exists();
+                if (!pathExist) {
+                    isPathCreated = path.mkdirs();
+                    pathExist = path.exists();
+                }
+                if( pathExist || isPathCreated ){
+                    String output="";
+                    switch(action){
+                        case KML:
+                            output = FileUtil.zonesToKmlString(zones,fileName);
+                            fileName = fileName+".kml";
+                            break;
+                        case GEOJSON:
+                            output = FileUtil.zonesToGeoJsonString(zones);
+                            fileName = fileName+".json";
+                            break;
+                        case GML:
+                            output = FileUtil.zonesToGmlString(zones);
+                            fileName = fileName+".gml";
+                            break;
+                    }
+                    if(FileUtil.createFile(output, fileName, path)){
+                        Toast.makeText(getContext(), getString(R.string.file_created), Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getContext(), getString(R.string.file_not_created), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "writeOnFile: ", e);
+            }
         }
     }
 

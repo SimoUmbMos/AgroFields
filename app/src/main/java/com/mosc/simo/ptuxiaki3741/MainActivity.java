@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,11 +19,12 @@ import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     private ActivityMainBinding binding;
     private NavHostFragment navHostFragment;
+    private NotificationManager notificationManager;
 
     private FragmentBackPress fragmentBackPress;
 
@@ -75,6 +78,17 @@ public class MainActivity extends AppCompatActivity{
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         checkThemeSettings();
+        initNotificationChannel();
+    }
+    public void initNotificationChannel() {
+        CharSequence name = getString(R.string.notification_channel_name);
+        String description = getString(R.string.notification_channel_description);
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel channel = new NotificationChannel(AppValues.NotificationChannelID, name, importance);
+        channel.enableVibration(true);
+        channel.setDescription(description);
+        notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 
     public Intent getIntentIfCalledByFile(){
@@ -84,6 +98,10 @@ public class MainActivity extends AppCompatActivity{
             }
         }
         return null;
+    }
+    public NotificationManager getNotificationManager(){
+        if(notificationManager == null) initNotificationChannel();
+        return notificationManager;
     }
 
     public void showToast(CharSequence text) {

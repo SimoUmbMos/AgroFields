@@ -36,8 +36,9 @@ public final class AppValues {
     public static final float streetZoom = 16.0f;
     public static final float personZoom = 19.0f;
     /* Live Map Fragment Values */
+    public static final int FastAnimation = 200;
     public static final float defaultTilt = 0.0f;
-    public static final float locationSensitivity = 0.0015f;
+    public static final float locationSensitivity = 1.0f;
     public static final float bearingSensitivity = 3.0f;
     public static final double currPositionSize = 2.0;
     public static final double currPositionSizeStroke = 3.0;
@@ -47,4 +48,5 @@ public final class AppValues {
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";
     public static final int doubleTapBack = 2750;
+    public static final String NotificationChannelID = "";
 }

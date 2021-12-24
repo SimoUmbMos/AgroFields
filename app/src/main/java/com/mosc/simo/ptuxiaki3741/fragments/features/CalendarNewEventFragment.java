@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments.user;
+package com.mosc.simo.ptuxiaki3741.fragments.features;
 
 import android.os.Bundle;
 
@@ -19,7 +19,7 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandSpinnerAdapter;
 import com.mosc.simo.ptuxiaki3741.adapters.ZoneSpinnerAdapter;
-import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarBinding;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarNewEventBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class CalendarFragment extends Fragment implements FragmentBackPress {
+public class CalendarNewEventFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "CalendarFragment";
-    private FragmentCalendarBinding binding;
+    private FragmentCalendarNewEventBinding binding;
     private Calendar myCalendar;
     private List<Land> lands;
     private List<LandZone> displayZones;
@@ -49,7 +49,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentCalendarBinding.inflate(inflater,container,false);
+        binding = FragmentCalendarNewEventBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
     @Override
@@ -215,14 +215,14 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     }
     private void printData(String TAG) {
         if(selectedLand.getData() != null){
-            Log.d(CalendarFragment.TAG, TAG+": selected land = " + selectedLand.toString());
+            Log.d(CalendarNewEventFragment.TAG, TAG+": selected land = " + selectedLand.toString());
         }else{
-            Log.d(CalendarFragment.TAG, TAG+": selected land = null");
+            Log.d(CalendarNewEventFragment.TAG, TAG+": selected land = null");
         }
         if(selectedZone.getData() != null){
-            Log.d(CalendarFragment.TAG, TAG+": selected zone = " + selectedZone.toString());
+            Log.d(CalendarNewEventFragment.TAG, TAG+": selected zone = " + selectedZone.toString());
         }else{
-            Log.d(CalendarFragment.TAG, TAG+": selected zone = null");
+            Log.d(CalendarNewEventFragment.TAG, TAG+": selected zone = null");
         }
     }
 }

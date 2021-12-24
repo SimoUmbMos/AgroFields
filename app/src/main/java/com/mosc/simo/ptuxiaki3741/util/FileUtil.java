@@ -68,6 +68,27 @@ public final class FileUtil {
         result = result.replace(" standalone=\"yes\"","");
         return result;
     }
+    public static String zonesToKmlString(List<LandZone> zones, String label) {
+        List<Land> lands = new ArrayList<>();
+        for(LandZone zone:zones){
+            lands.add(new Land(new LandData(zone.getData().getBorder())));
+        }
+        return landsToKmlString(lands,label);
+    }
+    public static String zonesToGeoJsonString(List<LandZone> zones) {
+        List<Land> lands = new ArrayList<>();
+        for(LandZone zone:zones){
+            lands.add(new Land(new LandData(zone.getData().getBorder())));
+        }
+        return landsToGeoJsonString(lands);
+    }
+    public static String zonesToGmlString(List<LandZone> zones) {
+        List<Land> lands = new ArrayList<>();
+        for(LandZone zone:zones){
+            lands.add(new Land(new LandData(zone.getData().getBorder())));
+        }
+        return landsToGmlString(lands);
+    }
     public static Intent getFilePickerIntent(LandFileState state) {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.addCategory(Intent.CATEGORY_OPENABLE);

@@ -7,14 +7,14 @@
     app:startDestination="@id/LoadingFragment">
 
     <fragment android:id="@+id/AppSettingsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.user.AppSettingsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.settings.AppSettingsFragment"
         android:label="fragment_app_settings"
         tools:layout="@layout/fragment_app_settings" >
         <action android:id="@+id/toDegreeInfo"
             app:destination="@id/DegreeInfoFragment" />
     </fragment>
     <fragment android:id="@+id/DegreeInfoFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.user.DegreeInfoFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.settings.DegreeInfoFragment"
         android:label="fragment_degree_info"
         tools:layout="@layout/fragment_degree_info" />
     <fragment android:id="@+id/LoadingFragment"
@@ -138,13 +138,13 @@
             app:popUpToInclusive="false" />
     </fragment>
     <fragment android:id="@+id/ContactsContainerFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.contacts.ContactsContainerFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.features.LiveMapFragment"
         android:label="fragment_contacts_container"
-        tools:layout="@layout/fragment_contacts_container"/>
+        tools:layout="@layout/fragment_live_map"/>
     <fragment
         android:id="@+id/CalendarFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.user.CalendarFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.features.CalendarNewEventFragment"
         android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" />
+        tools:layout="@layout/fragment_calendar_new_event" />
 
 </navigation>
