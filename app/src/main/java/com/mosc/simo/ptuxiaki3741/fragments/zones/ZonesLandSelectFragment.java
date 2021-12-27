@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ZonesLandSelectFragment extends Fragment implements FragmentBackPress {
-
+    //fixme: tags search
     private FragmentZonesLandSelectBinding binding;
     private LandListAdapter adapter;
 

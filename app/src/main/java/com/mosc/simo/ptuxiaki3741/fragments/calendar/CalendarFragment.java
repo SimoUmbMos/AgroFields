@@ -16,6 +16,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarBinding;
 
 public class CalendarFragment extends Fragment {
+    //fixme: create fragment
     private FragmentCalendarBinding binding;
 
     @Override

@@ -47,7 +47,7 @@ import java.util.List;
 
 public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
-
+    //fixme: tags search
     private final List<Land> data = new ArrayList<>();
     private final List<Land> exportLands = new ArrayList<>();
     private FileType exportAction;

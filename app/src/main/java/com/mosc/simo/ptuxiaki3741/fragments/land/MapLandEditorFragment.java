@@ -67,6 +67,7 @@ import java.util.List;
 public class MapLandEditorFragment extends Fragment implements FragmentBackPress, View.OnTouchListener {
     public static final String TAG = "LandMapEditorFragment";
     //fixme: points marker are big on zoom
+    //fixme: use location helper
     private boolean mapIsLocked = false, beforeMoveWasLocked = false;
     private int index1, index2, index3;
 

@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ZonesLandSelectedFragment extends Fragment implements FragmentBackPress {
+    //fixme: tags search
     private static final String TAG = "ZonesLandSelectedFragment";
     private FragmentZonesLandSelectedBinding binding;
     private LandZonesListAdapter adapter;

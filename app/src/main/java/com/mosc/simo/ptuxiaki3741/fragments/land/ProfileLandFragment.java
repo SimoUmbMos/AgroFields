@@ -31,6 +31,8 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandInfoFragment";
+    //fixme: add tags
+    //fixme: add color here
     private Land land;
     private ColorData color;
     private FragmentLandInfoBinding binding;

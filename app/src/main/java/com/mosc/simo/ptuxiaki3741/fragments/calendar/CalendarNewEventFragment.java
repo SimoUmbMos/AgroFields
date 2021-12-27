@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class CalendarNewEventFragment extends Fragment implements FragmentBackPress {
+    //fixme: create new event
     private static final String TAG = "CalendarFragment";
     private FragmentCalendarNewEventBinding binding;
     private Calendar myCalendar;
