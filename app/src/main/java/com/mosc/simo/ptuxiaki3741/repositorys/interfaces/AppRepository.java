@@ -21,6 +21,5 @@ public interface AppRepository {
 
     void deleteLand(Land land);
     void deleteZone(LandZone zone);
-    void deleteZonesByLandID(long lid);
 
 }

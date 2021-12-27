@@ -36,6 +36,7 @@ public class LandDataRecord {
 
     @Ignore
     public LandDataRecord(LandData land, LandDBAction actionID, Date date) {
+        this.id = 0;
         this.landID = land.getId();
         this.landTitle = land.getTitle();
         this.landColor = land.getColor();

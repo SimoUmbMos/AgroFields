@@ -80,17 +80,7 @@ public class AppRepositoryImpl implements AppRepository {
         LandData landData = land.getData();
         if(landData != null){
             long id;
-            if(landData.getId() != -1){
-                id = db.landDao().insert(landData);
-            }else{
-                id = db.landDao().insert(new LandData(
-                        false,
-                        landData.getTitle(),
-                        landData.getColor(),
-                        landData.getBorder(),
-                        landData.getHoles()
-                ));
-            }
+            id = db.landDao().insert(landData);
             landData.setId(id);
             land.setData(landData);
         }
@@ -112,16 +102,12 @@ public class AppRepositoryImpl implements AppRepository {
 
     @Override
     public void deleteLand(Land land) {
-        LandData landData = land.getData();
-        db.landDao().delete(landData);
+        if(land.getData() != null)
+            db.landDao().delete(land.getData());
     }
     @Override
     public void deleteZone(LandZone zone) {
-        LandZoneData zoneData = zone.getData();
-        db.landZoneDao().delete(zoneData);
-    }
-    @Override
-    public void deleteZonesByLandID(long lid) {
-        db.landZoneDao().deleteByLID(lid);
+        if(zone.getData() != null)
+            db.landZoneDao().delete(zone.getData());
     }
 }

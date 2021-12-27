@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.fragments.features;
+package com.mosc.simo.ptuxiaki3741.fragments.calendar;
 
 import android.os.Bundle;
 
@@ -86,7 +86,7 @@ public class CalendarNewEventFragment extends Fragment implements FragmentBackPr
             mainActivity.setOnBackPressed(this);
             ActionBar actionBar = mainActivity.getSupportActionBar();
             if(actionBar != null){
-                actionBar.setTitle(getString(R.string.calendar_fragment_title));
+                actionBar.setTitle(getString(R.string.calendar_new_instance_fragment_title));
                 actionBar.show();
             }
         }
@@ -103,9 +103,7 @@ public class CalendarNewEventFragment extends Fragment implements FragmentBackPr
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
         binding.svSelectedZone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -114,9 +112,7 @@ public class CalendarNewEventFragment extends Fragment implements FragmentBackPr
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
 
         updateDateLabel();

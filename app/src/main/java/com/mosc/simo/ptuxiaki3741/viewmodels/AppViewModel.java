@@ -98,7 +98,7 @@ public class AppViewModel extends AndroidViewModel {
         if(land != null){
             AsyncTask.execute(()->{
                 LandDBAction action = LandDBAction.CREATE;
-                if(land.getData().getId() != -1){
+                if(land.getData().getId() != 0){
                     if(appRepository.getLandByID(land.getData().getId()) != null){
                         action = LandDBAction.UPDATE;
                     }
@@ -141,7 +141,7 @@ public class AppViewModel extends AndroidViewModel {
     public void restoreLand(Land land) {
         if(land != null){
             AsyncTask.execute(()->{
-                if(land.getData().getId() != -1){
+                if(land.getData().getId() != 0){
                     LandDBAction action = LandDBAction.RESTORE;
                     appRepository.saveLand(land);
                     LandDataRecord landRecord = new LandDataRecord(
@@ -150,16 +150,16 @@ public class AppViewModel extends AndroidViewModel {
                             new Date()
                     );
                     appRepository.saveLandRecord(landRecord);
-                }
-                List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
-                if(zones != null){
-                    if(zones.size()>0){
-                        for(LandZone zone:zones){
-                            if(MapUtil.notContains(
-                                    zone.getData().getBorder(),
-                                    land.getData().getBorder()
-                            )){
-                                appRepository.deleteZone(zone);
+                    List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
+                    if(zones != null){
+                        if(zones.size()>0){
+                            for(LandZone zone:zones){
+                                if(MapUtil.notContains(
+                                        zone.getData().getBorder(),
+                                        land.getData().getBorder()
+                                )){
+                                    appRepository.deleteZone(zone);
+                                }
                             }
                         }
                     }
@@ -176,9 +176,8 @@ public class AppViewModel extends AndroidViewModel {
                         LandDBAction.DELETE,
                         new Date()
                 );
-                appRepository.deleteZonesByLandID(land.getData().getId());
-                appRepository.deleteLand(land);
                 appRepository.saveLandRecord(landRecord);
+                appRepository.deleteLand(land);
                 populateLists();
             });
         }
@@ -193,9 +192,8 @@ public class AppViewModel extends AndroidViewModel {
                             LandDBAction.DELETE,
                             new Date()
                     );
-                    appRepository.deleteZonesByLandID(land.getData().getId());
-                    appRepository.deleteLand(land);
                     appRepository.saveLandRecord(landRecord);
+                    appRepository.deleteLand(land);
                 }
                 populateLists();
             });
@@ -225,5 +223,30 @@ public class AppViewModel extends AndroidViewModel {
                 populateLists();
             });
         }
+    }
+
+    public void importLandsAndZones(List<Land> lands, List<LandZone> zones) {
+        if(lands != null){
+            LandDataRecord landRecord;
+            for(Land land:lands){
+                appRepository.saveLand(land);
+                landRecord = new LandDataRecord(
+                        land.getData(),
+                        LandDBAction.IMPORTED,
+                        new Date()
+                );
+                appRepository.saveLandRecord(landRecord);
+            }
+        }
+        if(zones != null){
+            Land temp;
+            for(LandZone zone : zones){
+                temp = appRepository.getLandByID(zone.getData().getLid());
+                if(temp != null){
+                    appRepository.saveZone(zone);
+                }
+            }
+        }
+        populateLists();
     }
 }

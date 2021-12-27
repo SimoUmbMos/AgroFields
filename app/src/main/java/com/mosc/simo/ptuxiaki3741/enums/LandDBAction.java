@@ -4,5 +4,6 @@ public enum LandDBAction {
     CREATE,
     UPDATE,
     DELETE,
-    RESTORE
+    RESTORE,
+    IMPORTED
 }

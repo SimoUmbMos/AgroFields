@@ -126,7 +126,7 @@ public final class OpenXmlDataBaseInput {
         List<LatLng> border;
         List<List<LatLng>> holes;
         for (Row row : sheet) {
-            id = -1;
+            id = 0;
             title = "";
             color = null;
             border = new ArrayList<>();
@@ -139,7 +139,7 @@ public final class OpenXmlDataBaseInput {
                             try{
                                 id = Double.valueOf(cell.getNumericCellValue()).longValue();
                             }catch (Exception e){
-                                id = -1;
+                                id = 0;
                             }
                         }
                         break;
@@ -162,11 +162,7 @@ public final class OpenXmlDataBaseInput {
                 continue;
             }
 
-            if(id != -1){
-                lands.add(new Land(new LandData(id,title,color,border,holes)));
-            }else {
-                lands.add(new Land(new LandData(false,title,color,border,holes)));
-            }
+            lands.add(new Land(new LandData(id,title,color,border,holes)));
         }
     }
     private static void getLandZoneData(Sheet sheet, List<LandZone> zones) {
@@ -175,7 +171,7 @@ public final class OpenXmlDataBaseInput {
         ColorData color;
         List<LatLng> border;
         for (Row row : sheet) {
-            id = -1;
+            id = 0;
             lid = -1;
             title = "";
             note = "";
@@ -189,7 +185,7 @@ public final class OpenXmlDataBaseInput {
                             try{
                                 id = Double.valueOf(cell.getNumericCellValue()).longValue();
                             }catch (Exception e){
-                                id = -1;
+                                id = 0;
                             }
                         }
                         break;
@@ -224,11 +220,7 @@ public final class OpenXmlDataBaseInput {
                 continue;
             }
 
-            if(id != -1){
-                zones.add(new LandZone(new LandZoneData(id,lid,title,note,color,border)));
-            }else{
-                zones.add(new LandZone(new LandZoneData(lid,title,note,color,border)));
-            }
+            zones.add(new LandZone(new LandZoneData(id,lid,title,note,color,border)));
         }
     }
 
@@ -251,7 +243,7 @@ public final class OpenXmlDataBaseInput {
                     List<List<LatLng>> holes;
                     @Override
                     public void startRow(int rowNum) {
-                        id = -1;
+                        id = 0;
                         title = "";
                         color = "";
                         border = new ArrayList<>();
@@ -260,20 +252,12 @@ public final class OpenXmlDataBaseInput {
 
                     @Override
                     public void endRow(int rowNum) {
-                        Land land;
+                        boolean doAction = true;
                         if(title.isEmpty() && border.size() == 0){
-                            return;
+                            doAction = false;
                         }
-                        try{
-                            if(id != -1)
-                                land = new Land(new LandData(id,title,new ColorData(color),border,holes));
-                            else
-                                land = new Land(new LandData(false,title,new ColorData(color),border,holes));
-                        }catch (Exception e){
-                            land = null;
-                        }
-                        if(land != null)
-                            lands.add(land);
+                        if(doAction)
+                            lands.add(new Land(new LandData(id,title,new ColorData(color),border,holes)));
                     }
 
                     @Override
@@ -287,7 +271,7 @@ public final class OpenXmlDataBaseInput {
                                 try{
                                     id = Double.valueOf(value).longValue();
                                 }catch (Exception e){
-                                    id = -1;
+                                    id = 0;
                                 }
                                 break;
                             case "B":
@@ -329,7 +313,7 @@ public final class OpenXmlDataBaseInput {
                     List<LatLng> border;
                     @Override
                     public void startRow(int rowNum) {
-                        id = -1;
+                        id = 0;
                         lid = -1;
                         title = "";
                         note = "";
@@ -339,20 +323,12 @@ public final class OpenXmlDataBaseInput {
 
                     @Override
                     public void endRow(int rowNum) {
-                        LandZone zone;
+                        boolean doAction = true;
                         if(lid == -1 && title.isEmpty() && border.size() == 0){
-                            return;
+                            doAction = false;
                         }
-                        try {
-                            if(id != -1)
-                                zone = new LandZone(new LandZoneData(id,lid,title,note,new ColorData(color),border));
-                            else
-                                zone = new LandZone(new LandZoneData(lid,title,note,new ColorData(color),border));
-                        }catch (Exception e){
-                            zone = null;
-                        }
-                        if(zone != null)
-                            zones.add(zone);
+                        if(doAction)
+                            zones.add(new LandZone(new LandZoneData(id,lid,title,note,new ColorData(color),border)));
                     }
 
                     @Override
@@ -366,7 +342,7 @@ public final class OpenXmlDataBaseInput {
                                 try{
                                     id = Double.valueOf(value).longValue();
                                 }catch (Exception e){
-                                    id = -1;
+                                    id = 0;
                                 }
                                 break;
                             case "B":

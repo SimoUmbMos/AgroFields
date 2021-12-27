@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryDeletedBinding;
+import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
@@ -20,13 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryDeletedAdapter.HistoryItemDeletedViewHolder>{
+public class LandHistoryAdapter extends RecyclerView.Adapter<LandHistoryAdapter.HistoryItemViewHolder>{
     private final List<LandHistory> data;
     private final String[] values;
     private final ActionResult<LandHistory> onHistoryClick;
     private final ActionResult<LandDataRecord> onRecordClick;
     private final DateFormat dateFormat;
-    public LandHistoryDeletedAdapter(
+    public LandHistoryAdapter(
             List<LandHistory> data,
             String[] values,
             ActionResult<LandHistory> onHistoryClick,
@@ -41,16 +41,16 @@ public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryD
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
     }
 
-    @NonNull @Override public HistoryItemDeletedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    @NonNull @Override public HistoryItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.view_holder_history_deleted,
+                R.layout.view_holder_history,
                 parent,
                 false
         );
-        return new HistoryItemDeletedViewHolder(view);
+        return new HistoryItemViewHolder(view);
     }
-    @Override public void onBindViewHolder(@NonNull HistoryItemDeletedViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull HistoryItemViewHolder holder, int position) {
         if(position < data.size()){
             if(data.get(position) != null){
                 setupViewHolder(holder, position);
@@ -65,7 +65,7 @@ public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryD
         return 0;
     }
 
-    private void setupViewHolder(@NonNull HistoryItemDeletedViewHolder holder, int position) {
+    private void setupViewHolder(@NonNull HistoryItemViewHolder holder, int position) {
         LandHistory item = data.get(position);
 
         holder.binding.getRoot().setOnClickListener(v->onHistoryClick.onActionResult(item));
@@ -98,8 +98,11 @@ public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryD
                     case RESTORE:
                         action = values[2];
                         break;
-                    case DELETE:
+                    case IMPORTED:
                         action = values[3];
+                        break;
+                    case DELETE:
+                        action = values[4];
                         break;
                     default:
                         action = "";
@@ -123,11 +126,11 @@ public class LandHistoryDeletedAdapter extends RecyclerView.Adapter<LandHistoryD
             holder.binding.clHistoryData.setVisibility(View.GONE);
         }
     }
-    public static class HistoryItemDeletedViewHolder extends RecyclerView.ViewHolder {
-        public final ViewHolderHistoryDeletedBinding binding;
-        public HistoryItemDeletedViewHolder(@NonNull View view) {
+    public static class HistoryItemViewHolder extends RecyclerView.ViewHolder {
+        public final ViewHolderHistoryBinding binding;
+        public HistoryItemViewHolder(@NonNull View view) {
             super(view);
-            binding = ViewHolderHistoryDeletedBinding.bind(view);
+            binding = ViewHolderHistoryBinding.bind(view);
         }
     }
 }

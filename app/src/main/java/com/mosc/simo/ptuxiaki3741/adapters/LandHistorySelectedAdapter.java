@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistorySelectedAdapter.HistoryItemViewHolder>{
+public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistorySelectedAdapter.HistoryItemSelectedViewHolder>{
     private final List<LandDataRecord> data;
     private final String[] values;
     private final ActionResult<LandDataRecord> onClick;
@@ -33,16 +33,16 @@ public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistory
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
     }
 
-    @NonNull @Override public HistoryItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    @NonNull @Override public HistoryItemSelectedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.view_holder_history_selected,
                 parent,
                 false
         );
-        return new HistoryItemViewHolder(view);
+        return new HistoryItemSelectedViewHolder(view);
     }
-    @Override public void onBindViewHolder(@NonNull HistoryItemViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull HistoryItemSelectedViewHolder holder, int position) {
         if(position < data.size()){
             if(data.get(position) != null){
                 setupViewHolder(holder, position);
@@ -57,7 +57,7 @@ public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistory
         return 0;
     }
 
-    private void setupViewHolder(@NonNull HistoryItemViewHolder holder, int position) {
+    private void setupViewHolder(@NonNull HistoryItemSelectedViewHolder holder, int position) {
         LandDataRecord item = data.get(position);
         holder.binding.getRoot().setOnClickListener(v->onClick.onActionResult(item));
 
@@ -75,16 +75,19 @@ public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistory
             case RESTORE:
                 action = values[2];
                 break;
-            case DELETE:
+            case IMPORTED:
                 action = values[3];
+                break;
+            case DELETE:
+                action = values[4];
                 break;
         }
         holder.binding.hiData.setAction(action);
 
     }
-    public static class HistoryItemViewHolder extends RecyclerView.ViewHolder {
+    public static class HistoryItemSelectedViewHolder extends RecyclerView.ViewHolder {
         public final ViewHolderHistorySelectedBinding binding;
-        public HistoryItemViewHolder(@NonNull View view) {
+        public HistoryItemSelectedViewHolder(@NonNull View view) {
             super(view);
             binding = ViewHolderHistorySelectedBinding.bind(view);
         }

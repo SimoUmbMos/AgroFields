@@ -43,7 +43,7 @@ public class LandData implements Parcelable {
     }
     @Ignore
     public LandData(List<LatLng> border) {
-        this.id = -1;
+        this.id = 0;
         this.title = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
@@ -52,7 +52,7 @@ public class LandData implements Parcelable {
     }
     @Ignore
     public LandData(List<LatLng> border,List<List<LatLng>> holes) {
-        this.id = -1;
+        this.id = 0;
         this.title = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
@@ -62,7 +62,7 @@ public class LandData implements Parcelable {
     }
     @Ignore
     public LandData(ColorData color, List<LatLng> border,List<List<LatLng>> holes) {
-        this.id = -1;
+        this.id = 0;
         this.title = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
@@ -72,17 +72,15 @@ public class LandData implements Parcelable {
     }
     @Ignore
     public LandData(String title, ColorData color) {
-        this.id = -1;
+        this.id = 0;
         this.title = title;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
         this.color = color;
     }
     @Ignore
-    public LandData(boolean setId, String title, ColorData color, List<LatLng> border, List<List<LatLng>> holes) {
-        if(setId){
-            this.id = -1;
-        }
+    public LandData(String title, ColorData color, List<LatLng> border, List<List<LatLng>> holes) {
+        this.id = 0;
         this.title = title;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();

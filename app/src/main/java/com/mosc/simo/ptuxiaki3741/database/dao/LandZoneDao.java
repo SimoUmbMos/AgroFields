@@ -20,10 +20,7 @@ public interface LandZoneDao {
     List<LandZoneData> getLandZonesByLandID(long lid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(LandZoneData landMemo);
+    long insert(LandZoneData zone);
     @Delete
-    void delete(LandZoneData land);
-    @Query("DELETE FROM LandZoneData " +
-            "WHERE LandID = :lid")
-    void deleteByLID(long lid);
+    void delete(LandZoneData zone);
 }

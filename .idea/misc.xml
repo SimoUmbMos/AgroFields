@@ -83,6 +83,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_reset.xml" value="0.1814814814814815" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_save.xml" value="0.1814814814814815" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/menu_ic_select_all.xml" value="0.1814814814814815" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/trasparent_divider.xml" value="0.3267543859649123" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_import.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_main.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/activity_main_content.xml" value="0.371875" />
@@ -90,6 +91,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_app_settings.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_blank.xml" value="0.178125" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar.xml" value="0.37083333333333335" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_new_event.xml" value="0.3131578947368421" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_contact_profile.xml" value="0.36737884314747266" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_contacts_container.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_degree_info.xml" value="0.3578125" />
@@ -147,6 +149,8 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_holder_user_send_request.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_land_history_item.xml" value="0.31431159420289856" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_land_list.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_land_tag.xml" value="0.3131578947368421" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_tag_input.xml" value="0.3131578947368421" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_text_area.xml" value="0.23958333333333334" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/view_text_label.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/menu/app_settings_menu.xml" value="0.371875" />

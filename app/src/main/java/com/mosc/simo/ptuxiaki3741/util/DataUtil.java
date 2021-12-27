@@ -31,6 +31,10 @@ public final class DataUtil {
         );
         return ans.replaceAll(" +", " ");
     }
+    public static String dividersToSpace(String string){
+        String ans = string.replaceAll("[,.\r\n]", " ");
+        return ans.replaceAll(" +", " ");
+    }
     public static boolean isEmail(String string){
         return EmailValidator.getInstance().isValid(string);
     }

@@ -112,6 +112,7 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
                 getString(R.string.land_action_created),
                 getString(R.string.land_action_updated),
                 getString(R.string.land_action_restored),
+                getString(R.string.land_action_imported),
                 getString(R.string.land_action_deleted)
         };
         adapter = new LandHistorySelectedAdapter(

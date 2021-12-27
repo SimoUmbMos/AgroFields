@@ -20,6 +20,10 @@
     <string name="title_error">Title is incorrect</string>
     <string name="notification_channel_name">Land Declaration</string>
     <string name="notification_channel_description">Land Declaration Notifications</string>
+    <!-- View Elements -->
+    <string name="tag_input_view_label">Tags:</string>
+    <!-- Main Activity -->
+    <string name="double_tap_exit">Tap again to exit</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_zones_button">Zones</string>
@@ -93,6 +97,7 @@
     <string name="land_action_created">Created</string>
     <string name="land_action_updated">Updated</string>
     <string name="land_action_restored">Restored</string>
+    <string name="land_action_imported">Imported</string>
     <string name="land_action_deleted">Deleted</string>
     <string name="toggle_history_list">Toggle List</string>
     <!-- Zone Land Select Fragment -->
@@ -158,15 +163,17 @@
     <string name="file_map_fragment_error">File Error</string>
     <string name="file_map_fragment_add_action">Click Land To Add</string>
     <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
-    <!-- Main Activity -->
-    <string name="double_tap_exit">Tap again to exit</string>
+    <!-- Calendar Fragment -->
     <string name="calendar_fragment_title">Calendar</string>
+    <!-- Calendar New Event Fragment -->
+    <string name="calendar_new_instance_fragment_title">Calendar: New Event</string>
     <string name="default_land_spinner_value">Select Land</string>
     <string name="default_zone_spinner_value">All Land</string>
     <string name="calendar_pop_up_title">Select a date</string>
     <string name="select_land_label">Select Land:</string>
     <string name="select_zone_label">Select Zone:</string>
     <string name="select_date_label">Select Date:</string>
+    <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Live Map Needs Location Permission</string>
     <string name="default_live_map_title">Not Inside Land</string>
 </resources>

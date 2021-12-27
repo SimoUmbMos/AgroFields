@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -14,12 +16,24 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.List;
 
-@Entity(tableName = "LandZoneData")
+@Entity(tableName = "LandZoneData",
+        indices = {
+                @Index("LandID")
+        },
+        foreignKeys = {
+                @ForeignKey(
+                        entity = LandData.class,
+                        parentColumns = "id",
+                        childColumns = "LandID",
+                        onDelete = ForeignKey.CASCADE
+                )
+        }
+)
 public class LandZoneData implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "LandID")
-    private long lid;
+    private final long lid;
     @ColumnInfo(name = "Title")
     private String title;
     @ColumnInfo(name = "Note")
@@ -40,7 +54,8 @@ public class LandZoneData implements Parcelable {
     }
     @Ignore
     public LandZoneData(List<LatLng> border) {
-        this.lid = -1;
+        this.id = 0;
+        this.lid = 0;
         this.title = "";
         this.note = "";
         this.color = AppValues.defaultZoneColor;
@@ -48,6 +63,7 @@ public class LandZoneData implements Parcelable {
     }
     @Ignore
     public LandZoneData(long lid, String title, String note, ColorData color, List<LatLng> border) {
+        this.id = 0;
         this.lid = lid;
         this.title = title;
         this.note = note;
@@ -84,9 +100,6 @@ public class LandZoneData implements Parcelable {
 
     public void setId(long id) {
         this.id = id;
-    }
-    public void setLid(long lid) {
-        this.lid = lid;
     }
     public void setTitle(String title) {
         this.title = title;

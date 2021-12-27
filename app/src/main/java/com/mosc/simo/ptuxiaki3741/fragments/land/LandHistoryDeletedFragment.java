@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryDeletedAdapter;
+import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandHistoryDeletedBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
@@ -38,7 +38,7 @@ import java.util.List;
 
 public class LandHistoryDeletedFragment extends Fragment implements FragmentBackPress {
     public static final String TAG = "LandHistoryDeletedFragment";
-    private LandHistoryDeletedAdapter adapter;
+    private LandHistoryAdapter adapter;
     private FragmentLandHistoryDeletedBinding binding;
 
     private int openIndex;
@@ -72,9 +72,10 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
                 getString(R.string.land_action_created),
                 getString(R.string.land_action_updated),
                 getString(R.string.land_action_restored),
+                getString(R.string.land_action_imported),
                 getString(R.string.land_action_deleted)
         };
-        adapter = new LandHistoryDeletedAdapter(
+        adapter = new LandHistoryAdapter(
                 data,
                 values,
                 this::onLandHistoryClick,

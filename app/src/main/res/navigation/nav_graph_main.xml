@@ -143,7 +143,7 @@
         tools:layout="@layout/fragment_live_map"/>
     <fragment
         android:id="@+id/CalendarFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.features.CalendarNewEventFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarNewEventFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar_new_event" />
 

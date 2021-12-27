@@ -234,7 +234,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
 
         displayTitle = currLand.getData().getTitle();
-        if(currLand.getData().getId() != -1){
+        if(currLand.getData().getId() != 0){
             displayTitle += " #"+ currLand.getData().getId();
         }
 
@@ -452,7 +452,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         toMenu(getActivity());
     }
     private void removeFromVM() {
-        if(getActivity() != null && currLand.getData().getId() >= 0){
+        if(getActivity() != null && currLand.getData().getId() > 0){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.removeLand(currLand);
         }
@@ -934,7 +934,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
 
         if(currLand != null){
             tempMenu.findItem(R.id.toolbar_action_delete_land)
-                    .setEnabled(currLand.getData().getId() != -1);
+                    .setEnabled(currLand.getData().getId() != 0);
         }else{
             tempMenu.findItem(R.id.toolbar_action_delete_land).setEnabled(false);
         }
