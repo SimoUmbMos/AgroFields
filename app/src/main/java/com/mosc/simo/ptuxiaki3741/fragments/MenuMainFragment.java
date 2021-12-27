@@ -79,7 +79,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
     private void initFragment() {
         binding.mainMenuAction.setVisibility(View.VISIBLE);
-        binding.mainMenuAction.setText(getString(R.string.main_menu_loading));
+        binding.mainMenuAction.setText(getString(R.string.loading_label));
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnZones.setOnClickListener(v -> toLandsZone(getActivity()));
         binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));

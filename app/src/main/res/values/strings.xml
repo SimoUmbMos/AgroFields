@@ -20,6 +20,8 @@
     <string name="title_error">Title is incorrect</string>
     <string name="notification_channel_name">Land Declaration</string>
     <string name="notification_channel_description">Land Declaration Notifications</string>
+    <string name="saving_label">Saving…</string>
+    <string name="loading_label">Loading…</string>
     <!-- View Elements -->
     <string name="tag_input_view_label">Tags:</string>
     <!-- Main Activity -->
@@ -29,7 +31,6 @@
     <string name="main_menu_zones_button">Zones</string>
     <string name="iv_desc_land_button">Lands</string>
     <string name="iv_desc_zone_button">Zones</string>
-    <string name="main_menu_loading">Loading..</string>
     <string name="main_menu_no_lands">No Land to show.</string>
     <!-- Land Menu Fragment -->
     <string name="contextual_menu_land_label">Select Land\'s</string>

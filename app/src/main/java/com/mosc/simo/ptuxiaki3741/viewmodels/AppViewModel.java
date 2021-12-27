@@ -17,7 +17,6 @@ import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
-import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
 import java.util.ArrayList;
@@ -96,76 +95,70 @@ public class AppViewModel extends AndroidViewModel {
 
     public void saveLand(Land land){
         if(land != null){
-            AsyncTask.execute(()->{
-                LandDBAction action = LandDBAction.CREATE;
-                if(land.getData().getId() != 0){
-                    if(appRepository.getLandByID(land.getData().getId()) != null){
-                        action = LandDBAction.UPDATE;
+            LandDBAction action = LandDBAction.CREATE;
+            if(land.getData().getId() != 0){
+                if(appRepository.getLandByID(land.getData().getId()) != null){
+                    action = LandDBAction.UPDATE;
+                }
+            }
+            List<LandZone> zones = appRepository.getLandZonesByLID(land.getData().getId());
+            appRepository.saveLand(land);
+            LandDataRecord landRecord = new LandDataRecord(
+                    land.getData(),
+                    action,
+                    new Date()
+            );
+            appRepository.saveLandRecord(landRecord);
+            if(zones != null){
+                for(LandZone zone:zones){
+                    if(!MapUtil.notContains(
+                            zone.getData().getBorder(),
+                            land.getData().getBorder()
+                    )){
+                        List<LatLng> tempBorders = MapUtil.intersection(
+                                zone.getData().getBorder(),
+                                land.getData().getBorder()
+                        );
+                        if(tempBorders.size()>0){
+                            zone.getData().setBorder(tempBorders);
+                            appRepository.saveZone(zone);
+                        }
                     }
                 }
+            }
+            populateLists();
+        }
+    }
+    public void restoreLand(Land land) {
+        if(land != null){
+            if(land.getData().getId() != 0){
+                List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
                 appRepository.saveLand(land);
                 LandDataRecord landRecord = new LandDataRecord(
                         land.getData(),
-                        action,
+                        LandDBAction.RESTORE,
                         new Date()
                 );
                 appRepository.saveLandRecord(landRecord);
-                List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
                 if(zones != null){
                     for(LandZone zone:zones){
-                        if(MapUtil.notContains(
+                        if(!MapUtil.notContains(
                                 zone.getData().getBorder(),
                                 land.getData().getBorder()
                         )){
-                            appRepository.deleteZone(zone);
-                        }else{
                             List<LatLng> tempBorders = MapUtil.intersection(
                                     zone.getData().getBorder(),
                                     land.getData().getBorder()
                             );
                             if(tempBorders.size()>0){
-                                if(!ListUtils.arraysMatch(tempBorders,zone.getData().getBorder())){
-                                    zone.getData().setBorder(tempBorders);
-                                    appRepository.saveZone(zone);
-                                }
-                            }else{
-                                appRepository.deleteZone(zone);
+                                zone.getData().setBorder(tempBorders);
+                                appRepository.saveZone(zone);
                             }
                         }
                     }
                 }
-                populateLists();
-            });
-        }
-    }
-    public void restoreLand(Land land) {
-        if(land != null){
-            AsyncTask.execute(()->{
-                if(land.getData().getId() != 0){
-                    LandDBAction action = LandDBAction.RESTORE;
-                    appRepository.saveLand(land);
-                    LandDataRecord landRecord = new LandDataRecord(
-                            land.getData(),
-                            action,
-                            new Date()
-                    );
-                    appRepository.saveLandRecord(landRecord);
-                    List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
-                    if(zones != null){
-                        if(zones.size()>0){
-                            for(LandZone zone:zones){
-                                if(MapUtil.notContains(
-                                        zone.getData().getBorder(),
-                                        land.getData().getBorder()
-                                )){
-                                    appRepository.deleteZone(zone);
-                                }
-                            }
-                        }
-                    }
-                }
-                populateLists();
-            });
+            }
+            populateLists();
         }
     }
     public void removeLand(Land land) {

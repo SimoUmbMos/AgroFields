@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -22,6 +23,7 @@ import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class LocationHelper extends ContextWrapper {
+    private static final String TAG = "LocationHelper";
     private final FusedLocationProviderClient fusedLocationClient;
     private HandlerThread mLocationThread;
     private final LocationCallback locationCallback;
@@ -49,6 +51,7 @@ public class LocationHelper extends ContextWrapper {
                     doUpdate = true;
                 }
                 if(doUpdate){
+                    Log.d(TAG, "onLocationResult: update");
                     lastLocation = location;
                     onLocationUpdate.onActionResult(location);
                 }
@@ -109,6 +112,7 @@ public class LocationHelper extends ContextWrapper {
                     looper
             );
             locationUpdateRunning = true;
+            Log.d(TAG, "startCoarseLocationUpdates: started");
         }
     }
     private void startFineLocationUpdates() {
@@ -137,6 +141,7 @@ public class LocationHelper extends ContextWrapper {
                     looper
             );
             locationUpdateRunning = true;
+            Log.d(TAG, "startFineLocationUpdates: started");
         }
     }
     private void stopLocationUpdates() {
@@ -152,6 +157,8 @@ public class LocationHelper extends ContextWrapper {
             }
 
             locationUpdateRunning = false;
+
+            Log.d(TAG, "stopLocationUpdates: ended");
         }
     }
 }

@@ -3,12 +3,10 @@ package com.mosc.simo.ptuxiaki3741.fragments.land;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,6 +47,8 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapBinding;
 import com.mosc.simo.ptuxiaki3741.enums.ImportAction;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.enums.LandActionStates;
+import com.mosc.simo.ptuxiaki3741.enums.LocationStates;
+import com.mosc.simo.ptuxiaki3741.helpers.LocationHelper;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -67,7 +67,6 @@ import java.util.List;
 public class MapLandEditorFragment extends Fragment implements FragmentBackPress, View.OnTouchListener {
     public static final String TAG = "LandMapEditorFragment";
     //fixme: points marker are big on zoom
-    //fixme: use location helper
     private boolean mapIsLocked = false, beforeMoveWasLocked = false;
     private int index1, index2, index3;
 
@@ -79,6 +78,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private FragmentLandMapBinding binding;
     private GoogleMap mMap;
     private AlertDialog dialog;
+
+    private LocationHelper locationHelper;
 
     private List<LatLng> points,startPoints;
     private List<List<LatLng>> holes,startHoles;
@@ -102,31 +103,32 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                             Manifest.permission.ACCESS_FINE_LOCATION, false);
                     Boolean coarseLocationGranted = result.getOrDefault(
                             Manifest.permission.ACCESS_COARSE_LOCATION,false);
-                    if (
-                            (fineLocationGranted != null && fineLocationGranted) ||
-                            (coarseLocationGranted != null && coarseLocationGranted)
-                    ){
-                        if(mMap != null) mMap.setMyLocationEnabled(true);
-                        if(getContext() != null && currLocation){
-                            LocationManager locationManager = (LocationManager) getContext()
-                                    .getSystemService(Context.LOCATION_SERVICE);
-                            String locationProvider = LocationManager.GPS_PROVIDER;
-                            moveCameraOnLocation(locationManager.getLastKnownLocation(locationProvider));
-                        }
+
+                    LocationStates locationPermission;
+                    if (fineLocationGranted != null && fineLocationGranted){
+                        locationPermission = LocationStates.FINE_LOCATION;
+                    }else if(coarseLocationGranted != null && coarseLocationGranted){
+                        locationPermission = LocationStates.COARSE_LOCATION;
                     }else{
-                        if(mMap != null) mMap.setMyLocationEnabled(false);
+                        locationPermission = LocationStates.DISABLE;
+                    }
+
+                    if(locationPermission != LocationStates.DISABLE){
+                        binding.tvLoadingLabel.setVisibility(View.VISIBLE);
+                        locationHelper.setLocationPermission(locationPermission);
                     }
             }
     );
     private void moveCameraOnLocation(Location location) {
         if(location != null){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(
-                            location.getLatitude(),
-                            location.getLongitude()
-                    ),
-                    AppValues.streetZoom
-            ));
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            if(getActivity() != null){
+                getActivity().runOnUiThread(()->{
+                    binding.tvLoadingLabel.setVisibility(View.GONE);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, AppValues.streetZoom));
+                });
+            }
+            locationHelper.onPause();
         }
     }
 
@@ -271,6 +273,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                     actionBar.show();
                 }
             }
+            locationHelper = new LocationHelper(getActivity(),this::moveCameraOnLocation);
         }
     }
     private void initDataToView() {
@@ -278,6 +281,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         clearUndo();
     }
     private void initViews() {
+        binding.tvLoadingLabel.setVisibility(View.GONE);
         binding.clLandControls.setVisibility(View.GONE);
         binding.ivLandOverlay.setVisibility(View.GONE);
         Log.d(TAG, "ivLandOverlay: GONE");
@@ -312,11 +316,14 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void initLocation() {
         if(points.size() == 0){
-            locationPermissionRequest.launch(new String[] {
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-            });
-            moveCameraOnLocation();
+            if(currLocation){
+                locationPermissionRequest.launch(new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                });
+            }else{
+                moveCameraOnLocation();
+            }
         }else{
             zoomOnPoints();
         }
@@ -392,7 +399,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     //save relative
     private void saveLand(LandData data) {
         if(isValidToSave(data)){
-            addToVM(data);
+            binding.tvLoadingLabel.setText(getString(R.string.saving_label));
+            binding.btnLandTerrain.setVisibility(View.GONE);
+            binding.tvLoadingLabel.setVisibility(View.VISIBLE);
+            AsyncTask.execute(()-> {
+                addToVM(data);
+                toMenu(getActivity());
+            });
         }
     }
     private boolean isValidToSave(LandData data) {
@@ -409,8 +422,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void saveLand() {
         if(isValidToSave()){
-            addToVM();
-            toMenu(getActivity());
+            binding.tvLoadingLabel.setText(getString(R.string.saving_label));
+            binding.btnLandTerrain.setVisibility(View.GONE);
+            binding.tvLoadingLabel.setVisibility(View.VISIBLE);
+            AsyncTask.execute(()->{
+                addToVM();
+                toMenu(getActivity());
+            });
         }
     }
     private boolean isValidToSave() {
@@ -933,14 +951,22 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private void setupSideMenu(){
         Menu tempMenu = binding.navLandMenu.getMenu();
 
-        if(currLand != null){
-            tempMenu.findItem(R.id.toolbar_action_delete_land)
-                    .setEnabled(currLand.getData().getId() != 0);
-        }else{
-            tempMenu.findItem(R.id.toolbar_action_delete_land).setEnabled(false);
+        MenuItem deleteLand = tempMenu.findItem(R.id.toolbar_action_delete_land);
+        if(deleteLand != null){
+            if(currLand != null){
+                deleteLand.setEnabled(currLand.getData().getId() != 0);
+                deleteLand.setVisible(currLand.getData().getId() != 0);
+            }else{
+                deleteLand.setEnabled(false);
+                deleteLand.setVisible(false);
+            }
         }
 
-        tempMenu.findItem(R.id.toolbar_action_make_land_editable).setEnabled(holes.size()>0);
+        MenuItem editableLand = tempMenu.findItem(R.id.toolbar_action_make_land_editable);
+        if(editableLand != null){
+            editableLand.setEnabled(holes.size()>0);
+            editableLand.setVisible(holes.size()>0);
+        }
 
         tempMenu.findItem(R.id.toolbar_action_add_on_end).setEnabled(!(holes.size()>0));
         tempMenu.findItem(R.id.toolbar_action_add_between).setEnabled(!(holes.size()>0));
@@ -1101,7 +1127,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         LandData data = handleImport();
         if(data != null){
             saveLand(data);
-            toMenu(getActivity());
         }else{
             if(initData()){
                 initActivity();

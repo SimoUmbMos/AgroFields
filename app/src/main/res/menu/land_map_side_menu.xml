@@ -13,6 +13,36 @@
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
+    <item android:title="@string/land_actions_group_title">
+        <menu>
+            <item
+                android:id="@+id/toolbar_action_make_land_editable"
+                android:icon="@drawable/ic_drawer_menu_edit"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="1"
+                android:title="@string/make_land_editable"
+                app:showAsAction="ifRoom|withText" />
+            <item
+                android:id="@+id/toolbar_action_edit_land_info"
+                android:icon="@drawable/ic_drawer_menu_edit"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="2"
+                android:title="@string/edit_land_name"
+                app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_edit_land_color"
+                android:title="@string/edit_land_color"
+                android:orderInCategory="3"
+                app:iconTint="@color/textColor"
+                app:showAsAction="ifRoom|withText" />
+            <item
+                android:id="@+id/toolbar_action_delete_land"
+                android:icon="@drawable/ic_menu_delete"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="4"
+                android:title="@string/delete_land"
+                app:showAsAction="ifRoom|withText" />
+        </menu>
+    </item>
     <item android:title="@string/points_actions_group_title">
         <menu>
             <item
@@ -81,36 +111,6 @@
                 app:iconTint="@color/textColor"
                 android:orderInCategory="4"
                 android:title="@string/opacity_img"
-                app:showAsAction="ifRoom|withText" />
-        </menu>
-    </item>
-    <item android:title="@string/land_actions_group_title">
-        <menu>
-            <item
-                android:id="@+id/toolbar_action_make_land_editable"
-                android:icon="@drawable/ic_drawer_menu_edit"
-                app:iconTint="@color/textColor"
-                android:orderInCategory="1"
-                android:title="@string/make_land_editable"
-                app:showAsAction="ifRoom|withText" />
-            <item
-                android:id="@+id/toolbar_action_edit_land_info"
-                android:icon="@drawable/ic_drawer_menu_edit"
-                app:iconTint="@color/textColor"
-                android:orderInCategory="2"
-                android:title="@string/edit_land_name"
-                app:showAsAction="ifRoom|withText" />
-            <item android:id="@+id/toolbar_action_edit_land_color"
-                android:title="@string/edit_land_color"
-                android:orderInCategory="3"
-                app:iconTint="@color/textColor"
-                app:showAsAction="ifRoom|withText" />
-            <item
-                android:id="@+id/toolbar_action_delete_land"
-                android:icon="@drawable/ic_menu_delete"
-                app:iconTint="@color/textColor"
-                android:orderInCategory="4"
-                android:title="@string/delete_land"
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>

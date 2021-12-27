@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.fragments.land;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -57,6 +58,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argIsHistory)){
                 isHistory = getArguments().getBoolean(AppValues.argIsHistory);
+                //FIXME: SAVE ZONES ON LAND HISTORY
             }
             if(getArguments().containsKey(AppValues.argLand)){
                 currLand = getArguments().getParcelable(AppValues.argLand);
@@ -187,8 +189,11 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
 
     //restore relative
     private void restoreLand() {
-        restoreToVM();
-        finish(getActivity());
+        AsyncTask.execute(()->{
+            //FIXME: Restore ZONES ON LAND HISTORY
+            restoreToVM();
+            finish(getActivity());
+        });
     }
     private void restoreToVM() {
         if(getActivity() != null){
