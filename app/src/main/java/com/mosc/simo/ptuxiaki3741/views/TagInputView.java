@@ -22,6 +22,7 @@ import java.util.List;
 public class TagInputView extends LinearLayout {
     private final ViewTagInputBinding binding;
     private final List<Chip> chips;
+    private final List<TagData> tags, tagsHints;
     private OnTagUpdateListener onTagsUpdate;
 
     public TagInputView(Context context) {
@@ -30,6 +31,8 @@ public class TagInputView extends LinearLayout {
                 inflate(getContext(), R.layout.view_tag_input, this)
         );
         chips = new ArrayList<>();
+        tags = new ArrayList<>();
+        tagsHints = new ArrayList<>();
         onTagsUpdate = null;
         init();
     }
@@ -39,6 +42,8 @@ public class TagInputView extends LinearLayout {
                 inflate(getContext(), R.layout.view_tag_input, this)
         );
         chips = new ArrayList<>();
+        tags = new ArrayList<>();
+        tagsHints = new ArrayList<>();
         onTagsUpdate = null;
         init();
     }
@@ -48,14 +53,23 @@ public class TagInputView extends LinearLayout {
                 inflate(getContext(), R.layout.view_tag_input, this)
         );
         chips = new ArrayList<>();
+        tags = new ArrayList<>();
+        tagsHints = new ArrayList<>();
         onTagsUpdate = null;
         init();
     }
 
+    public void setTags(List<TagData> tags) {
+        this.tags.clear();
+        if(tags != null) {
+            this.tags.addAll(tags);
+        }
+        updateChipsTags();
+    }
     public void setOnTagsUpdate(OnTagUpdateListener onTagsUpdate) {
         this.onTagsUpdate = onTagsUpdate;
     }
-    public void setTags(List<TagData> tags) {
+    public void setSelectedTags(List<TagData> tags) {
         if(chips.size()>0){
             for(Chip chip : chips) {
                 binding.flChipContainer.removeView(chip);
@@ -102,6 +116,7 @@ public class TagInputView extends LinearLayout {
                         addChip(new TagData(tags.get(0)),true);
                     }
                 }
+                populateTagHints(s.toString());
             }
         });
     }
@@ -143,6 +158,48 @@ public class TagInputView extends LinearLayout {
         }
         binding.flChipContainer.removeView(chip);
         chips.remove(chip);
+    }
+
+    private void updateChipsTags(){
+        for(Chip chip : chips){
+            if(chip.getTag() == null) continue;
+            TagData chipTag = (TagData) chip.getTag();
+            if(chipTag.getId() != 0) continue;
+            for(TagData tag : tags){
+                if (chipTag.getLabel().equals(tag.getLabel())) {
+                    chip.setTag(tag);
+                    break;
+                }
+            }
+        }
+
+    }
+    private void populateTagHints(String text){
+        tagsHints.clear();
+        String search = text.trim().toLowerCase();
+        if(search.length() == 0) return;
+
+        String tempLabel;
+        for(TagData tag : tags){
+            if(tag == null) continue;
+
+            tempLabel = tag.getLabel().toLowerCase();
+            if(tempLabel.contains(search)){
+                tagsHints.add(tag);
+            }
+        }
+        for(Chip chip : chips){
+            if(chip.getTag() == null) continue;
+            if(chip.getTag().getClass() != TagData.class) continue;
+
+            tempLabel = ((TagData) chip.getTag()).getLabel();
+            for(TagData tag : tags){
+                if(tempLabel.equals(tag.getLabel())){
+                    tagsHints.remove(tag);
+                    break;
+                }
+            }
+        }
     }
 
     public interface OnTagUpdateListener{

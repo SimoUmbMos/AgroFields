@@ -8,5 +8,6 @@
   <color name="cardBackgroundColor">#CFD8D7</color>
   <color name="errorTextColor">#EDEEF0</color>
   <color name="accentColor">#205B20</color>
+  <color name="rippleColor">#2D9516</color>
   <color name="textColor">#375258</color>
 </resources>

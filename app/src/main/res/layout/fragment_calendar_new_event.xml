@@ -4,76 +4,142 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:orientation="vertical"
     tools:context=".fragments.calendar.CalendarNewEventFragment">
 
-    <TextView
-        android:id="@+id/tvSelectLandLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/select_land_label"
-        android:textAlignment="textEnd"
-        app:layout_constraintBottom_toBottomOf="@+id/svSelectedLand"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/svSelectedLand" />
-
-    <TextView
-        android:id="@+id/tvSelectZoneLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/select_zone_label"
-        android:textAlignment="textEnd"
-        app:layout_constraintBottom_toBottomOf="@+id/svSelectedZone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/svSelectedZone" />
-
-    <TextView
-        android:id="@+id/tvSelectDateLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/select_date_label"
-        android:textAlignment="textEnd"
-        app:layout_constraintBottom_toBottomOf="@+id/etSelectedDate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etSelectedDate" />
-
-    <Spinner
-        android:id="@+id/svSelectedLand"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:theme="@style/TextInputFields"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvSelectLandLabel"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Spinner
-        android:id="@+id/svSelectedZone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvSelectZoneLabel"
-        app:layout_constraintTop_toBottomOf="@+id/svSelectedLand" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSelectLand"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/select_land_label"
+            android:labelFor="@id/tvSelectLand">
 
-    <EditText
-        android:id="@+id/etSelectedDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:focusable="false"
-        android:hint="@string/select_date_label"
-        android:importantForAutofill="no"
-        android:inputType="date"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvSelectDateLabel"
-        app:layout_constraintTop_toBottomOf="@+id/svSelectedZone" />
+            <AutoCompleteTextView
+                android:id="@+id/tvSelectLand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="false"
+                android:inputType="none" />
 
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSelectZone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/select_zone_label"
+            android:labelFor="@id/tvSelectZone">
+
+            <AutoCompleteTextView
+                android:id="@+id/tvSelectZone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="false"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilSelectDate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:hint="@string/select_date_label"
+                android:labelFor="@id/tvSelectDate">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tvSelectDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="false"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="textNoSuggestions" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilSelectTime"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:hint="@string/select_time_label"
+                android:labelFor="@id/tvSelectTime">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tvSelectTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="false"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="textNoSuggestions" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSelectTitle"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/select_title_label"
+            android:labelFor="@id/tvSelectTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvSelectTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="false"
+                android:imeOptions="actionDone"
+                android:inputType="textShortMessage" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSelectMessage"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/select_message_label"
+            android:labelFor="@id/tvSelectMessage">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvSelectMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="false"
+                android:imeOptions="actionDone"
+                android:inputType="textShortMessage" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

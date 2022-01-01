@@ -4,6 +4,7 @@ import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.models.entities.TagData;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
@@ -54,6 +55,10 @@ public class AppRepositoryImpl implements AppRepository {
     public List<LandDataRecord> getLandRecords() {
         return db.landHistoryDao().getLandRecords();
     }
+    @Override
+    public List<TagData> getTags() {
+        return db.tagDao().getTags();
+    }
 
     @Override
     public Land getLandByID(long id){
@@ -99,6 +104,11 @@ public class AppRepositoryImpl implements AppRepository {
         long LRid = db.landHistoryDao().insert(landRecord);
         landRecord.setId(LRid);
     }
+    @Override
+    public void saveTag(TagData tag) {
+        if(tag != null)
+            db.tagDao().insert(tag);
+    }
 
     @Override
     public void deleteLand(Land land) {
@@ -109,5 +119,10 @@ public class AppRepositoryImpl implements AppRepository {
     public void deleteZone(LandZone zone) {
         if(zone.getData() != null)
             db.landZoneDao().delete(zone.getData());
+    }
+    @Override
+    public void deleteTag(TagData tag) {
+        if(tag != null)
+            db.tagDao().delete(tag);
     }
 }

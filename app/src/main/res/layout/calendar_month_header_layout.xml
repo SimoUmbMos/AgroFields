@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="6">
+
+    <Button
+        android:id="@+id/headerPreviousMonth"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_weight="1"
+        android:text="@string/arrow_left" />
+    <TextView android:id="@+id/headerTextView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:padding="16dp"
+        android:textSize="26sp"
+        android:gravity="center"
+        tools:text="October 2019"/>
+
+    <Button
+        android:id="@+id/headerNextMonth"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_weight="1"
+        android:text="@string/arrow_right" />
+</LinearLayout>

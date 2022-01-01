@@ -174,39 +174,14 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
 
         mMap = googleMap;
 
-        mMap.setMinZoomPreference(AppValues.cityZoom);
+        mMap.setMinZoomPreference(AppValues.personZoom);
         mMap.setMaxZoomPreference(AppValues.personZoom);
 
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
 
         mMap.getUiSettings().setAllGesturesEnabled(false);
-        mMap.getUiSettings().setRotateGesturesEnabled(true);
-
-        currBearing = mMap.getCameraPosition().bearing;
-        mMap.setOnCameraMoveListener(() -> {
-            currBearing = mMap.getCameraPosition().bearing;
-
-            if (currPosition != null) {
-                double radius = AppValues.currPositionSize * Math.pow(
-                        AppValues.currPowSize,
-                        AppValues.personZoom - mMap.getCameraPosition().zoom
-                );
-                currPosition.setRadius(radius);
-
-                double radiusStroke = AppValues.currPositionSizeStroke * Math.pow(
-                        AppValues.currPowSizeStroke,
-                        AppValues.personZoom - mMap.getCameraPosition().zoom
-                );
-                currPosition.setStrokeWidth((float) radiusStroke);
-            }
-        });
-        mMap.setOnCameraMoveStartedListener(id -> {
-            if (id == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                stopAutoGesture();
-            }
-        });
 
         onMapUpdate();
 
@@ -293,56 +268,34 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
 
         if(!orientationHelper.isAutoGesture()){
             orientationHelper.setAutoGesture(true);
-            //fixme: code toggle ui
-        }
-    }
-    private void stopAutoGesture(){
-        if(orientationHelper == null) return;
-
-        if(orientationHelper.isAutoGesture()){
-            orientationHelper.setAutoGesture(false);
-            //fixme: code toggle ui
         }
     }
 
     private void onUpdateLocation(Location location) {
+        if(mMap == null) return;
         if(location == null) return;
-        LatLng position = new LatLng(location.getLatitude(),location.getLongitude());
 
+        LatLng position = new LatLng(location.getLatitude(),location.getLongitude());
         if(getActivity() != null){
             getActivity().runOnUiThread(()->{
-                if(mMap == null) return;
                 if(currPosition == null){
+                    currBearing = location.getBearing();
+
                     currPosition = mMap.addCircle(new CircleOptions()
                             .center(position)
+                            .radius(AppValues.currPositionSize)
+                            .strokeWidth(AppValues.currPositionSizeStroke)
                             .fillColor(AppValues.defaultPersonColorFill)
                             .strokeColor(AppValues.defaultPersonColorStroke)
                             .zIndex(3));
 
-                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition.Builder()
-                                    .target(position)
-                                    .zoom(AppValues.streetZoom)
-                                    .build()
-                            )
-                    );
+                    initCameraToCurrPosition();
 
                     binding.mvLiveMap.setVisibility(View.VISIBLE);
                     binding.tvLiveTitle.setVisibility(View.VISIBLE);
                 }else{
                     currPosition.setCenter(position);
-
-                    mMap.stopAnimation();
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                            new CameraPosition.Builder()
-                                    .target(position)
-                                    .bearing(currBearing)
-                                    .zoom(mMap.getCameraPosition().zoom)
-                                    .build()
-                            ),
-                            AppValues.FastAnimation,
-                            null
-                    );
+                    moveCameraToCurrPosition(false);
                 }
             });
         }
@@ -351,21 +304,43 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     }
     private void onUpdateBearing(float bearing) {
         if(currPosition == null) return;
-        if(mMap != null && getActivity() != null){
-            getActivity().runOnUiThread(()->{
-                mMap.stopAnimation();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition.Builder()
-                                .target(currPosition.getCenter())
-                                .bearing(bearing)
-                                .zoom(mMap.getCameraPosition().zoom)
-                                .build()
-                        ),
-                        AppValues.FastAnimation,
-                        null
-                );
-            });
+
+        currBearing = bearing;
+        if(getActivity() != null){
+            getActivity().runOnUiThread(() -> moveCameraToCurrPosition(true));
         }
+    }
+
+    private void initCameraToCurrPosition() {
+        if(mMap == null) return;
+        if(currPosition == null) return;
+
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+                .target(currPosition.getCenter())
+                .bearing(currBearing)
+                .tilt(AppValues.defaultTilt)
+                .zoom(AppValues.personZoom)
+                .build()
+        ));
+    }
+    private void moveCameraToCurrPosition(boolean rotate) {
+        if(mMap == null) return;
+        if(currPosition == null) return;
+
+        mMap.stopAnimation();
+        if (!rotate) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currPosition.getCenter()));
+        }
+        CameraPosition position = new CameraPosition.Builder()
+                .target(currPosition.getCenter())
+                .bearing(currBearing)
+                .tilt(mMap.getCameraPosition().tilt)
+                .zoom(mMap.getCameraPosition().zoom)
+                .build();
+        mMap.animateCamera(
+                CameraUpdateFactory.newCameraPosition(position),
+                AppValues.AnimationRotate,
+                null);
     }
 
     private void CheckInsidePolygon(LatLng position) {

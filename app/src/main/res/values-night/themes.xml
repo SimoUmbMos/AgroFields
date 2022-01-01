@@ -35,15 +35,7 @@
         <item name="windowActionModeOverlay">true</item>
 
         <item name="materialCalendarTheme">@style/AppTheme.DatePicker</item>
-    </style>
-    <!-- dialog styles -->
-    <style name="AppTheme.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
-        <item name="colorPrimary">@color/textColor</item>
-        <item name="android:textColorPrimary">@color/textColor</item>
-        <item name="colorOnPrimary">@color/backgroundColor</item>
-
-        <item name="colorSurface">@color/backgroundColor</item>
-        <item name="colorOnSurface">@color/textColor</item>
+        <item name="materialTimePickerTheme">@style/AppTheme.TimePicker</item>
     </style>
 
     <!-- menu styles -->
@@ -61,7 +53,6 @@
     <style name="TextInputFields" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
-
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
@@ -74,6 +65,22 @@
     </style>
 
     <!-- dialog -->
+    <style name="AppTheme.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/backgroundColor</item>
+
+        <item name="colorSurface">@color/backgroundColor</item>
+        <item name="colorOnSurface">@color/textColor</item>
+    </style>
+    <style name="AppTheme.TimePicker" parent="@style/ThemeOverlay.MaterialComponents.TimePicker">
+        <item name="colorPrimary">@color/textColor</item>
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/backgroundColor</item>
+
+        <item name="colorSurface">@color/backgroundColor</item>
+        <item name="colorOnSurface">@color/textColor</item>
+    </style>
     <style name="MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <!-- text -->
         <item name="materialAlertDialogTitleTextStyle">@style/NormalAlertDialogTitleTextStyle</item>

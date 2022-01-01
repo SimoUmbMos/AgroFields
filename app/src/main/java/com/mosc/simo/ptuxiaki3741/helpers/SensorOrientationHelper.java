@@ -6,125 +6,76 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Process;
 
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
-public class SensorOrientationHelper extends ContextWrapper {
-    private final SensorEventListener sensorCallback;
-    private HandlerThread mSensorThreadAccelerometer;
-    private HandlerThread mSensorThreadMagneticField;
-    private boolean autoGesture;
-    private Float lastBearing;
+public class SensorOrientationHelper extends ContextWrapper implements SensorEventListener{
+    private final SensorManager sensorManager;
+    private final float[] accelerometerReading = new float[3];
+    private final float[] magnetometerReading = new float[3];
+    private final float[] rotationMatrix = new float[9];
+    private final float[] orientationAngles = new float[3];
+    private final ActionResult<Float> onBearingUpdate;
+
+    private boolean isRunning, autoGesture, isAccelInit, isMagnetInit;
+    private float lastBearing;
 
     public SensorOrientationHelper(Context base, ActionResult<Float> onBearingUpdate) {
         super(base);
+        this.onBearingUpdate = onBearingUpdate;
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        isRunning = false;
         autoGesture = false;
-        lastBearing = null;
+        isAccelInit = false;
+        isMagnetInit = false;
+        lastBearing = -1;
+    }
 
-        sensorCallback = new SensorEventListener() {
-            private float[] mGravity;
-            private float[] mGeomagnetic;
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, accelerometerReading,
+                    0, accelerometerReading.length);
+            isAccelInit = true;
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, magnetometerReading,
+                    0, magnetometerReading.length);
+            isMagnetInit = true;
+        }
 
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                if (!autoGesture) return;
+        if(autoGesture){
+            updateOrientationAngles();
+        }
+    }
 
-                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    mGravity = event.values;
-                } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                    mGeomagnetic = event.values;
-                }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-                if (mGravity != null && mGeomagnetic != null) {
-                    float[] R = new float[9];
-                    float[] I = new float[9];
-                    boolean success = SensorManager.getRotationMatrix(R, I, mGravity,
-                            mGeomagnetic);
-                    if (success) {
-                        float[] orientation = new float[3];
-                        SensorManager.getOrientation(R, orientation);
-                        float bearing = orientation[0];
-                        bearing = (float) (Math.toDegrees(bearing) + 360) % 360;
-                        bearing = (float) Math.floor(bearing);
-                        boolean doUpdate = false;
-                        if(lastBearing != null){
-                            if(Math.abs(lastBearing - bearing) > AppValues.bearingSensitivity) {
-                                doUpdate = true;
-                            }
-                        }else{
-                            doUpdate = true;
-                        }
-                        if(doUpdate){
-                            lastBearing = bearing;
-                            onBearingUpdate.onActionResult(bearing);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            }
-        };
     }
 
     public void onResume(){
-        if(mSensorThreadAccelerometer != null) {
-            if (mSensorThreadAccelerometer.isAlive()) {
-                mSensorThreadAccelerometer.quitSafely();
+        if(!isRunning){
+            Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            if (accelerometer != null) {
+                sensorManager.registerListener(this, accelerometer,
+                        SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
             }
-        }
-        if(mSensorThreadMagneticField != null) {
-            if (mSensorThreadMagneticField.isAlive()) {
-                mSensorThreadMagneticField.quitSafely();
+            Sensor magneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+            if (magneticField != null) {
+                sensorManager.registerListener(this, magneticField,
+                        SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
             }
-        }
-
-        SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        Sensor mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if (mAccelerometer != null) {
-            mSensorThreadAccelerometer = new HandlerThread("Accelerometer Sensor Thread", Process.THREAD_PRIORITY_LESS_FAVORABLE);
-            mSensorThreadAccelerometer.start();
-            Handler mSensorHandlerAccelerometer = new Handler(mSensorThreadAccelerometer.getLooper());
-            mSensorManager.registerListener(
-                    sensorCallback,
-                    mAccelerometer,
-                    SensorManager.SENSOR_DELAY_NORMAL,
-                    mSensorHandlerAccelerometer
-            );
-        }
-
-        Sensor mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        if (mMagneticField != null) {
-            mSensorThreadMagneticField = new HandlerThread("Magnetic Field Sensor Thread", Process.THREAD_PRIORITY_LESS_FAVORABLE);
-            mSensorThreadMagneticField.start();
-            Handler mSensorHandlerMagneticField = new Handler(mSensorThreadAccelerometer.getLooper());
-            mSensorManager.registerListener(
-                    sensorCallback,
-                    mMagneticField,
-                    SensorManager.SENSOR_DELAY_NORMAL,
-                    mSensorHandlerMagneticField
-            );
+            isRunning = true;
         }
     }
     public void onPause(){
-        SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensorManager.unregisterListener(sensorCallback);
-
-        if(mSensorThreadAccelerometer != null) {
-            if (mSensorThreadAccelerometer.isAlive()) {
-                mSensorThreadAccelerometer.quitSafely();
-            }
-        }
-        if(mSensorThreadMagneticField != null) {
-            if (mSensorThreadMagneticField.isAlive()) {
-                mSensorThreadMagneticField.quitSafely();
-            }
+        if(isRunning){
+            sensorManager.unregisterListener(this);
+            isAccelInit = false;
+            isMagnetInit = false;
+            lastBearing = -1;
+            isRunning = false;
         }
     }
 
@@ -133,5 +84,21 @@ public class SensorOrientationHelper extends ContextWrapper {
     }
     public boolean isAutoGesture() {
         return autoGesture;
+    }
+
+    private void updateOrientationAngles() {
+        if(isAccelInit && isMagnetInit){
+            boolean success = SensorManager.getRotationMatrix(rotationMatrix, null,
+                    accelerometerReading, magnetometerReading);
+            if(success){
+                SensorManager.getOrientation(rotationMatrix, orientationAngles);
+                float bearing = orientationAngles[0];
+                bearing = (float) Math.floor( Math.toDegrees( bearing ) );
+                if(lastBearing == -1 || Math.abs(lastBearing - bearing) >= AppValues.bearingSensitivity){
+                    lastBearing = bearing;
+                    onBearingUpdate.onActionResult(bearing);
+                }
+            }
+        }
     }
 }

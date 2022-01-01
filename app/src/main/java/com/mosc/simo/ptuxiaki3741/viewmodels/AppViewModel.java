@@ -14,6 +14,8 @@ import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
+import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.models.entities.TagData;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
@@ -33,10 +35,11 @@ public class AppViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandDataRecord>> landsHistory = new MutableLiveData<>();
+    private final MutableLiveData<List<TagData>> tags = new MutableLiveData<>();
 
     public AppViewModel(@NonNull Application application) {
         super(application);
-        RoomDatabase db = MainActivity.getRoomDb(application.getApplicationContext());
+        RoomDatabase db = MainActivity.getRoomDb(application);
         appRepository = new AppRepositoryImpl(db);
     }
 
@@ -49,6 +52,9 @@ public class AppViewModel extends AndroidViewModel {
     public LiveData<List<LandDataRecord>> getLandsHistory() {
         return landsHistory;
     }
+    public LiveData<List<TagData>> getTags() {
+        return tags;
+    }
 
     public void init(){
         AsyncTask.execute(this::populateLists);
@@ -58,6 +64,7 @@ public class AppViewModel extends AndroidViewModel {
         populateLands();
         populateLandZones();
         populateLandsRecords();
+        populateTags();
     }
     private void populateLands() {
         List<Land> landList;
@@ -91,6 +98,17 @@ public class AppViewModel extends AndroidViewModel {
             landsHistoryList = new ArrayList<>(appRepository.getLandRecords());
         }
         landsHistory.postValue(landsHistoryList);
+    }
+    private void populateTags() {
+        List<TagData> tagsList;
+        if(tags.getValue() != null){
+            tagsList = tags.getValue();
+            tagsList.clear();
+            tagsList.addAll(appRepository.getTags());
+        }else{
+            tagsList = new ArrayList<>(appRepository.getTags());
+        }
+        tags.postValue(tagsList);
     }
 
     public void saveLand(Land land){
@@ -241,5 +259,30 @@ public class AppViewModel extends AndroidViewModel {
             }
         }
         populateLists();
+    }
+
+    public void saveTag(TagData tag) {
+        if(tag != null){
+            AsyncTask.execute(()-> {
+                appRepository.saveTag(tag);
+                populateLists();
+            });
+        }
+    }
+    public void removeTag(TagData tag) {
+        if(tag != null){
+            AsyncTask.execute(()-> {
+                appRepository.deleteTag(tag);
+                populateLists();
+            });
+        }
+    }
+
+    public void saveNotification(CalendarNotification calendarNotification) {
+
+    }
+
+    public void removeNotification(CalendarNotification calendarNotification) {
+
     }
 }

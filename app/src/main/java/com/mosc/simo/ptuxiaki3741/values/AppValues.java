@@ -5,6 +5,7 @@ import android.graphics.Color;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 
 public final class AppValues {
+    private AppValues(){}
     /* DB VALUES */
     public static final int DATABASE_VERSION = 37;
     /* Open XML SDK */
@@ -29,21 +30,23 @@ public final class AppValues {
     public static final String argAddress = "address";
     public static final String argImportLand = "import_land";
     public static final String argIsHistory = "is_history";
+    public static final String argNotification = "calendar_notification";
+    /* Calendar Fragment Values */
+    public static int defaultDayColor1 = Color.argb(192,128,128,128);
+    public static int defaultDayColor2 = Color.argb(64,128,128,128);
     /* Land Map Editor Fragment Values */
     public static final double distanceToMapActionKM = 100;
     public static final float countryZoom = 6.0f;
     public static final float cityZoom = 13.0f;
     public static final float streetZoom = 16.0f;
-    public static final float personZoom = 19.0f;
     /* Live Map Fragment Values */
-    public static final int FastAnimation = 200;
-    public static final float defaultTilt = 0.0f;
+    public static final int AnimationRotate = 140;
+    public static final float defaultTilt = 67.5f;
     public static final float locationSensitivity = 1.0f;
-    public static final float bearingSensitivity = 3.0f;
-    public static final double currPositionSize = 2.0;
-    public static final double currPositionSizeStroke = 3.0;
-    public static final double currPowSize = 1.725;
-    public static final double currPowSizeStroke = 1.025;
+    public static final float bearingSensitivity = 1.0f;
+    public static final double currPositionSize = 4.0;
+    public static final float currPositionSizeStroke = 6.0f;
+    public static final float personZoom = 18.0f;
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";

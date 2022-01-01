@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
 
@@ -21,15 +22,12 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
-
     private ActivityMainBinding binding;
     private NavHostFragment navHostFragment;
     private NotificationManager notificationManager;
-
     private FragmentBackPress fragmentBackPress;
-
     private boolean overrideDoubleBack = false,
-            doubleBackToExitPressedOnce = false;
+            doubleBackToExit = false;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,16 +47,17 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if(fragmentBackPress.onBackPressed()){
-            if(navHostFragment.getChildFragmentManager().getBackStackEntryCount() == 0){
-                if (doubleBackToExitPressedOnce) {
+            FragmentManager fm = navHostFragment.getChildFragmentManager();
+            if(fm.getBackStackEntryCount() > 0){
+                navHostFragment.getNavController().popBackStack();
+            }else{
+                if (doubleBackToExit) {
                     super.onBackPressed();
                     return;
                 }
+                doubleBackToExit = true;
+                new Handler().postDelayed(() -> doubleBackToExit=false, AppValues.doubleTapBack);
                 showToast(getResources().getText(R.string.double_tap_exit));
-                doubleBackToExitPressedOnce = true;
-                new Handler().postDelayed(() -> doubleBackToExitPressedOnce=false, AppValues.doubleTapBack);
-            }else{
-                super.onBackPressed();
             }
         }
     }

@@ -2,6 +2,8 @@
 <resources>
     <!-- not translatable -->
     <!-- Degree Info Fragment-->
+    <string name="arrow_left" translatable="false">←</string>
+    <string name="arrow_right" translatable="false">→</string>
     <string name="degree_info_title" translatable="false">Χαρτογράφηση αγροκτήματος με συμμετοχή θέσης, ορίων και παρεμβολής με χάρτες</string>
     <string name="degree_info_par1" translatable="false">Σκοπός της πτυχιακής αυτής είναι σχεδίαση μια εφαρμογής σε κινητό τηλέφωνο και σε υπολογιστή γραφείου η οποία θα επιτρέπει αγρότες να χαρτογραφούν τα αγροκτήματα τους. Η Εφαρμογή θα επιτρέπει τον χρήστη όχι μόνο να ορίσει την τοποθεσία στο google maps αλλά να ορίσει τα σύνορα και τους ιδιοκτήτες όπως και την δυνατότητα παρεμβολής χαρτών με αγροτική υπηρεσία και ΤΟΕΒ. Αποτέλεσμα αυτής της εφαρμογής θα είναι ένα προϊόν το οποίο θα δίνει μια ξεκάθαρη εικόνα στον αγρότη για το χαρτογραφικό υπόβαθρο του αγροκτήματος του, καθώς και η μεταφορά δεδομένων σε άλλα συστήματα όπως εξαγωγή χάρτη σε άλλες εφαρμογές θα του επιτρέψει την έγκυρη επίλυση προβλημάτων με οργανισμούς και διαχειριστή αγροκτήματος.</string>
     <string name="degree_info_par2" translatable="false">Η εφαρμογή θα επιτρέπει την έτοιμη εισαγωγή και εξαγωγή χωραφιών από το κτήμα καθώς και τις δυνατότητες διαίρεσης και πρόσθεσης γειτονικών κτημάτων. Ύπαρξη δυνατότητας ιστορικού για το πότε δημιουργήθηκε και από ποιον θα είναι βασικά ιστορικά δεδομένα που αφορούν άλλες εφαρμογές.</string>
@@ -168,12 +170,16 @@
     <string name="calendar_fragment_title">Calendar</string>
     <!-- Calendar New Event Fragment -->
     <string name="calendar_new_instance_fragment_title">Calendar: New Event</string>
-    <string name="default_land_spinner_value">Select Land</string>
-    <string name="default_zone_spinner_value">All Land</string>
-    <string name="calendar_pop_up_title">Select a date</string>
-    <string name="select_land_label">Select Land:</string>
-    <string name="select_zone_label">Select Zone:</string>
-    <string name="select_date_label">Select Date:</string>
+    <string name="default_land_spinner_value">All Lands</string>
+    <string name="default_zone_spinner_value">All Zones</string>
+    <string name="calendar_pop_up_date_title">Select date</string>
+    <string name="calendar_pop_up_time_title">Select time</string>
+    <string name="select_land_label">Land</string>
+    <string name="select_zone_label">Zone</string>
+    <string name="select_date_label">Date</string>
+    <string name="select_time_label">Time</string>
+    <string name="select_title_label">Title</string>
+    <string name="select_message_label">Message</string>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Live Map Needs Location Permission</string>
     <string name="default_live_map_title">Not Inside Land</string>

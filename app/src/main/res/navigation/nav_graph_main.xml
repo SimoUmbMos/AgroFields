@@ -115,16 +115,15 @@
         android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuMainFragment"
         android:label="fragment_menu"
         tools:layout="@layout/fragment_menu_main" >
+        <action android:id="@+id/toAppSettings"
+            app:destination="@id/AppSettingsFragment" />
         <action android:id="@+id/toMenuLands"
             app:destination="@id/MenuLandsFragment" />
         <action android:id="@+id/toMenuZoneLands"
             app:destination="@id/ZonesLandSelectFragment" />
-        <action android:id="@+id/toMenuContacts"
-            app:destination="@id/ContactsContainerFragment" />
-        <action android:id="@+id/toAppSettings"
-            app:destination="@id/AppSettingsFragment" />
-        <action
-            android:id="@+id/toCalendar"
+        <action android:id="@+id/toLiveMap"
+            app:destination="@id/LiveMapFragment" />
+        <action android:id="@+id/toCalendar"
             app:destination="@id/CalendarFragment" />
     </fragment>
     <fragment android:id="@+id/ProfileLandFragment"
@@ -137,12 +136,21 @@
             app:popUpTo="@id/MenuLandsFragment"
             app:popUpToInclusive="false" />
     </fragment>
-    <fragment android:id="@+id/ContactsContainerFragment"
+    <fragment android:id="@+id/LiveMapFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.features.LiveMapFragment"
         android:label="fragment_contacts_container"
         tools:layout="@layout/fragment_live_map"/>
     <fragment
         android:id="@+id/CalendarFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/toCalendarNewEvent"
+            app:destination="@id/CalendarNewEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CalendarNewEventFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarNewEventFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar_new_event" />

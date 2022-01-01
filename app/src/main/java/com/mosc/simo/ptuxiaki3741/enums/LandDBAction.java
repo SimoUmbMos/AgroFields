@@ -5,5 +5,9 @@ public enum LandDBAction {
     UPDATE,
     DELETE,
     RESTORE,
-    IMPORTED
+    IMPORTED,
+    ZONE_IMPORTED, //TODO
+    ZONE_ADDED, //TODO
+    ZONE_UPDATED, //TODO
+    ZONE_REMOVED //TODO
 }

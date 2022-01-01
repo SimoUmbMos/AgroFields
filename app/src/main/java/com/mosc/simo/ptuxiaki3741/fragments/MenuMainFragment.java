@@ -246,7 +246,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
-                    nav.navigate(R.id.toMenuContacts);
+                    nav.navigate(R.id.toLiveMap);
             });
     }
     public void toCalendar(@Nullable Activity activity) {
