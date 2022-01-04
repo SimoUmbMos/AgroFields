@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -214,6 +216,7 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         binding = FragmentFileMapBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
@@ -239,6 +242,11 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
     @Override public void onLowMemory() {
         super.onLowMemory();
         binding.mvFileMap.onLowMemory();
+    }
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.empty_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public boolean onBackPressed() {
         return true;

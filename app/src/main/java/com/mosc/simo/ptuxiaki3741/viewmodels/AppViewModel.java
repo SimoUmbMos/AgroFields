@@ -19,8 +19,10 @@ import com.mosc.simo.ptuxiaki3741.models.entities.TagData;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ public class AppViewModel extends AndroidViewModel {
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandDataRecord>> landsHistory = new MutableLiveData<>();
     private final MutableLiveData<List<TagData>> tags = new MutableLiveData<>();
+    private final MutableLiveData<Map<LocalDate,List<CalendarNotification>>> notifications = new MutableLiveData<>();
 
     public AppViewModel(@NonNull Application application) {
         super(application);
@@ -55,6 +58,9 @@ public class AppViewModel extends AndroidViewModel {
     public LiveData<List<TagData>> getTags() {
         return tags;
     }
+    public LiveData<Map<LocalDate,List<CalendarNotification>>> getNotifications() {
+        return notifications;
+    }
 
     public void init(){
         AsyncTask.execute(this::populateLists);
@@ -65,6 +71,7 @@ public class AppViewModel extends AndroidViewModel {
         populateLandZones();
         populateLandsRecords();
         populateTags();
+        populateNotifications();
     }
     private void populateLands() {
         List<Land> landList;
@@ -109,6 +116,17 @@ public class AppViewModel extends AndroidViewModel {
             tagsList = new ArrayList<>(appRepository.getTags());
         }
         tags.postValue(tagsList);
+    }
+    private void populateNotifications() {
+        Map<LocalDate,List<CalendarNotification>> notificationsList;
+        if(notifications.getValue() != null){
+            notificationsList = notifications.getValue();
+            notificationsList.clear();
+            notificationsList.putAll(appRepository.getNotifications());
+        }else{
+            notificationsList = new HashMap<>(appRepository.getNotifications());
+        }
+        notifications.postValue(notificationsList);
     }
 
     public void saveLand(Land land){
@@ -278,11 +296,34 @@ public class AppViewModel extends AndroidViewModel {
         }
     }
 
-    public void saveNotification(CalendarNotification calendarNotification) {
-
+    public void saveNotification(CalendarNotification notification) {
+        if(notification != null){
+            AsyncTask.execute(()-> {
+                if(notification.getId() != 0){
+                    DataUtil.removeNotificationToAlertManager(
+                            getApplication().getApplicationContext(),
+                            appRepository.getNotification(notification.getId())
+                    );
+                }
+                appRepository.saveNotification(notification);
+                populateLists();
+                DataUtil.addNotificationToAlertManager(
+                        getApplication().getApplicationContext(),
+                        notification
+                );
+            });
+        }
     }
-
-    public void removeNotification(CalendarNotification calendarNotification) {
-
+    public void removeNotification(CalendarNotification notification) {
+        if(notification != null){
+            AsyncTask.execute(()-> {
+                DataUtil.removeNotificationToAlertManager(
+                        getApplication().getApplicationContext(),
+                        notification
+                );
+                appRepository.deleteNotification(notification);
+                populateLists();
+            });
+        }
     }
 }

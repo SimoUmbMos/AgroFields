@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -94,6 +96,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         binding = FragmentLiveMapBinding.inflate(inflater, container, false);
         binding.mvLiveMap.onCreate(savedInstanceState);
         return binding.getRoot();
@@ -130,6 +133,11 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     public void onLowMemory() {
         super.onLowMemory();
         binding.mvLiveMap.onLowMemory();
+    }
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.empty_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
     @Override
     public boolean onBackPressed() {

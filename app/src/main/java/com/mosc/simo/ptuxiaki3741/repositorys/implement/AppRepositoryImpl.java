@@ -3,12 +3,15 @@ package com.mosc.simo.ptuxiaki3741.repositorys.implement;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
+import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.models.entities.TagData;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +62,30 @@ public class AppRepositoryImpl implements AppRepository {
     public List<TagData> getTags() {
         return db.tagDao().getTags();
     }
+    @Override
+    public Map<LocalDate, List<CalendarNotification>> getNotifications() {
+        Map<LocalDate, List<CalendarNotification>> ans = new HashMap<>();
+        List<CalendarNotification> calendarNotifications =
+                db.calendarNotificationDao().getNotifications();
+
+        List<CalendarNotification> temp;
+        LocalDate localDate;
+        if(calendarNotifications != null){
+            for(CalendarNotification calendarNotification : calendarNotifications){
+                if(calendarNotification.getDate() == null) continue;
+
+                localDate = DataUtil.dateToLocalDate(calendarNotification.getDate());
+                temp = ans.getOrDefault(localDate,null);
+                if(temp == null){
+                    temp = new ArrayList<>();
+                }
+                temp.add(calendarNotification);
+                ans.put(localDate,temp);
+            }
+        }
+
+        return ans;
+    }
 
     @Override
     public Land getLandByID(long id){
@@ -78,6 +105,10 @@ public class AppRepositoryImpl implements AppRepository {
             }
         }
         return ans;
+    }
+    @Override
+    public CalendarNotification getNotification(long id) {
+        return db.calendarNotificationDao().getNotificationsById(id);
     }
 
     @Override
@@ -109,6 +140,11 @@ public class AppRepositoryImpl implements AppRepository {
         if(tag != null)
             db.tagDao().insert(tag);
     }
+    @Override
+    public void saveNotification(CalendarNotification notification) {
+        if(notification != null)
+            db.calendarNotificationDao().insert(notification);
+    }
 
     @Override
     public void deleteLand(Land land) {
@@ -124,5 +160,10 @@ public class AppRepositoryImpl implements AppRepository {
     public void deleteTag(TagData tag) {
         if(tag != null)
             db.tagDao().delete(tag);
+    }
+    @Override
+    public void deleteNotification(CalendarNotification notification) {
+        if(notification != null)
+            db.calendarNotificationDao().delete(notification);
     }
 }

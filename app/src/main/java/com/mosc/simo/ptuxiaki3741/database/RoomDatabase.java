@@ -3,10 +3,12 @@ package com.mosc.simo.ptuxiaki3741.database;
 import androidx.room.Database;
 import androidx.room.TypeConverters;
 
+import com.mosc.simo.ptuxiaki3741.database.dao.CalendarNotificationDao;
 import com.mosc.simo.ptuxiaki3741.database.dao.LandDao;
 import com.mosc.simo.ptuxiaki3741.database.dao.LandHistoryDao;
 import com.mosc.simo.ptuxiaki3741.database.dao.LandZoneDao;
 import com.mosc.simo.ptuxiaki3741.database.dao.TagDao;
+import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.models.entities.JunctionLandTag;
 import com.mosc.simo.ptuxiaki3741.models.entities.JunctionZoneTag;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -23,6 +25,7 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
         TagData.class,
         JunctionZoneTag.class,
         JunctionLandTag.class,
+        CalendarNotification.class
 }, version = AppValues.DATABASE_VERSION)
 @TypeConverters({
         DBTypesConverter.class
@@ -32,4 +35,5 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase {
     public abstract LandZoneDao landZoneDao();
     public abstract LandHistoryDao landHistoryDao();
     public abstract TagDao tagDao();
+    public abstract CalendarNotificationDao calendarNotificationDao();
 }

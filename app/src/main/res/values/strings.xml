@@ -20,8 +20,11 @@
     <string name="cancel">Cancel</string>
     <string name="clipboard_message">Text Copied</string>
     <string name="title_error">Title is incorrect</string>
-    <string name="notification_channel_name">Land Declaration</string>
-    <string name="notification_channel_description">Land Declaration Notifications</string>
+    <string name="notification_channel_name">In App Notifications</string>
+    <string name="notification_channel_description">Notifications inside the Application</string>
+    <string name="calendar_notification_channel_name">Calendar Notifications</string>
+    <string name="calendar_notification_channel_description">Background Calendar Notifications</string>
+
     <string name="saving_label">Saving…</string>
     <string name="loading_label">Loading…</string>
     <!-- View Elements -->
@@ -168,8 +171,12 @@
     <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_title">Calendar</string>
-    <!-- Calendar New Event Fragment -->
+    <!-- Calendar Event List Fragment -->
+    <string name="calendar_event_list_fragment_title_1">Calendar:</string>
+    <string name="calendar_event_list_fragment_title_2">Event\'s</string>
+    <!-- Calendar Event Fragment -->
     <string name="calendar_new_instance_fragment_title">Calendar: New Event</string>
+    <string name="calendar_edit_instance_fragment_title">Calendar: Edit Event</string>
     <string name="default_land_spinner_value">All Lands</string>
     <string name="default_zone_spinner_value">All Zones</string>
     <string name="calendar_pop_up_date_title">Select date</string>
@@ -180,7 +187,10 @@
     <string name="select_time_label">Time</string>
     <string name="select_title_label">Title</string>
     <string name="select_message_label">Message</string>
+    <string name="notification_title_error">Enter Title Or Select a Land</string>
+    <string name="notification_message_error">Enter a message</string>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Live Map Needs Location Permission</string>
     <string name="default_live_map_title">Not Inside Land</string>
+    <string name="plus_sign">+</string>
 </resources>

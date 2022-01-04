@@ -80,14 +80,29 @@ public class MainActivity extends AppCompatActivity {
         initNotificationChannel();
     }
     public void initNotificationChannel() {
-        CharSequence name = getString(R.string.notification_channel_name);
-        String description = getString(R.string.notification_channel_description);
-        int importance = NotificationManager.IMPORTANCE_LOW;
-        NotificationChannel channel = new NotificationChannel(AppValues.NotificationChannelID, name, importance);
-        channel.enableVibration(true);
-        channel.setDescription(description);
+        CharSequence name1 = getString(R.string.notification_channel_name);
+        String description1 = getString(R.string.notification_channel_description);
+
+        NotificationChannel channel1 = new NotificationChannel(
+                AppValues.NotificationChannelID,
+                name1,
+                NotificationManager.IMPORTANCE_LOW
+        );
+        channel1.setDescription(description1);
+        channel1.enableVibration(true);
+
+        CharSequence name2 = getString(R.string.calendar_notification_channel_name);
+        String description2 = getString(R.string.calendar_notification_channel_description);
+        NotificationChannel channel2 = new NotificationChannel(
+                AppValues.CalendarNotificationChannelID,
+                name2,
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        channel2.setDescription(description2);
+
         notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
+        notificationManager.createNotificationChannel(channel1);
+        notificationManager.createNotificationChannel(channel2);
     }
 
     public Intent getIntentIfCalledByFile(){

@@ -22,7 +22,7 @@
         app:alignContent="space_around"
         app:alignItems="stretch"
         app:flexWrap="wrap"
-        app:dividerDrawable="@drawable/transparent_divider"
+        app:dividerDrawable="@drawable/divider_transparent"
         app:showDivider="middle">
 
         <EditText

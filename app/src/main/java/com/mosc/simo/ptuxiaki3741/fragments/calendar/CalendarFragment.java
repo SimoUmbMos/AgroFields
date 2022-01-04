@@ -1,18 +1,18 @@
 package com.mosc.simo.ptuxiaki3741.fragments.calendar;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,10 +21,10 @@ import com.kizitonwose.calendarview.model.CalendarMonth;
 import com.kizitonwose.calendarview.model.DayOwner;
 import com.kizitonwose.calendarview.ui.DayBinder;
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder;
-import com.kizitonwose.calendarview.ui.ViewContainer;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarBinding;
+import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -34,21 +34,21 @@ import com.mosc.simo.ptuxiaki3741.views.MonthHeaderContainer;
 
 import java.text.DateFormatSymbols;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.WeekFields;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class CalendarFragment extends Fragment {
-    //fixme: create fragment
+import kotlin.Unit;
+
+public class CalendarFragment extends Fragment implements FragmentBackPress {
     private FragmentCalendarBinding binding;
     private YearMonth currentMonth;
     private DayOfWeek firstDayOfWeek;
-    private List<CalendarNotification> notificationList;
-    private int textColor;
+    private Map<LocalDate, List<CalendarNotification>> notifications;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -70,38 +70,36 @@ public class CalendarFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.empty_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override
+    public boolean onBackPressed() {
+        return true;
+    }
 
     private void initData(){
-        notificationList = new ArrayList<>();
+        notifications = new HashMap<>();
         currentMonth = YearMonth.now();
         firstDayOfWeek = WeekFields.of(Locale.getDefault()).getFirstDayOfWeek();
-        if(getContext() != null){
-            textColor = ContextCompat.getColor(getContext(),R.color.textColor);
-        }else{
-            textColor = AppValues.defaultDayColor1;
-        }
     }
     private void initActivity(){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(()-> true);
-            ActionBar actionBar = mainActivity.getSupportActionBar();
-            if(actionBar != null){
-                actionBar.setTitle(getString(R.string.calendar_fragment_title));
-                actionBar.show();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.setTitle(getString(R.string.calendar_fragment_title));
+                    actionBar.hide();
+                }
             }
         }
     }
     private void initFragment(){
         binding.fabNewEvent.setOnClickListener(v->toNewEvent(getActivity()));
-        initCalendar();
-    }
-    private void initViewModel(){
-        if(getActivity() != null){
-            AppViewModel viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-        }
-    }
-    private void initCalendar() {
         binding.calendarView.setDayBinder(new DayBinder<DayViewContainer>() {
             @NonNull
             @Override
@@ -110,30 +108,22 @@ public class CalendarFragment extends Fragment {
             }
             @Override
             public void bind(@NonNull DayViewContainer container, @NonNull CalendarDay day) {
-                container.calendarDayText.setText(
-                        String.valueOf(day.getDate().getDayOfMonth())
-                );
-                container.calendarDayBadge.setVisibility(View.GONE);
-                if (day.getOwner() == DayOwner.THIS_MONTH) {
-                    container.calendarDayText.setTextColor(textColor);
-                    if(notificationList.size()>0){
-                        final int dayOFYear = day.getDate().getDayOfYear();
-                        final int year = day.getDate().getYear();
-                        final Calendar calendar = Calendar.getInstance();
-                        int tempDayOfYear;
-                        int tempYear;
-                        for(CalendarNotification notification : notificationList){
-                            calendar.setTime(notification.getDate());
-                            tempDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-                            tempYear = calendar.get(Calendar.YEAR);
-                            if( tempDayOfYear == dayOFYear && tempYear == year ){
-                                container.calendarDayBadge.setVisibility(View.VISIBLE);
-                                break;
-                            }
-                        }
+                if(day.getOwner() == DayOwner.THIS_MONTH){
+                    container.setText(
+                            String.valueOf(day.getDate().getDayOfMonth())
+                    );
+                    container.setOnClick(v->onDayClick(day.getDate()));
+                    List<CalendarNotification> temp =
+                            notifications.getOrDefault(day.getDate(),null);
+                    if(temp != null){
+                        container.setBadgeCount(temp.size());
+                    }else{
+                        container.setBadgeCount(0);
                     }
                 }else{
-                    container.calendarDayText.setTextColor(AppValues.defaultDayColor2);
+                    container.setText("");
+                    container.setOnClick(null);
+                    container.setBadgeCount(0);
                 }
             }
         });
@@ -150,20 +140,43 @@ public class CalendarFragment extends Fragment {
                         getMonth(month.getMonth()), month.getYear()
                 ));
                 container.headerPreviousMonth.setOnClickListener(v->
-                        binding.calendarView.scrollToMonth(month.getYearMonth().minusMonths(1))
+                        onCalendarUpdate(month.getYearMonth().minusMonths(1))
                 );
                 container.headerNextMonth.setOnClickListener(v->
-                        binding.calendarView.scrollToMonth(month.getYearMonth().plusMonths(1))
+                        onCalendarUpdate(month.getYearMonth().plusMonths(1))
                 );
             }
         });
-        YearMonth firstMonth = currentMonth.minusMonths(24);
-        YearMonth lastMonth = currentMonth.plusMonths(24);
-        binding.calendarView.setup(firstMonth, lastMonth, firstDayOfWeek);
-        binding.calendarView.scrollToMonth(currentMonth);
+    }
+    private void initViewModel(){
+        if(getActivity() != null){
+            AppViewModel viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            viewModel.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
+        }
+    }
+    private void onCalendarUpdate(YearMonth currentMonth) {
+        binding.loadingView.setVisibility(View.VISIBLE);
+        binding.calendarView.setupAsync(
+                currentMonth,
+                currentMonth,
+                firstDayOfWeek,
+                ()->{
+                    binding.loadingView.setVisibility(View.GONE);
+                    return Unit.INSTANCE;
+                }
+        );
+    }
+    private void onDayClick(LocalDate date){
+        toEventList(getActivity(), date);
     }
 
-    public String getMonth(int month) {
+    private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
+        this.notifications.clear();
+        this.notifications.putAll(notifications);
+        onCalendarUpdate(currentMonth);
+    }
+
+    private String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month-1];
     }
 
@@ -173,6 +186,17 @@ public class CalendarFragment extends Fragment {
                 NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
                 if(nav != null)
                     nav.navigate(R.id.toCalendarNewEvent);
+            });
+    }
+    private void toEventList(@Nullable Activity activity, LocalDate localDate) {
+        if(localDate == null) return;
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(AppValues.argDate, localDate);
+                if(nav != null)
+                    nav.navigate(R.id.toCalendarEventsList, bundle);
             });
     }
 }

@@ -148,10 +148,25 @@
         <action
             android:id="@+id/toCalendarNewEvent"
             app:destination="@id/CalendarNewEventFragment" />
+        <action
+            android:id="@+id/toCalendarEventsList"
+            app:destination="@id/CalendarEventListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CalendarEventListFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarEventListFragment"
+        android:label="fragment_calendar_event_list"
+        tools:layout="@layout/fragment_calendar_event_list" >
+        <action
+            android:id="@+id/toCalendarNewEvent"
+            app:destination="@id/CalendarNewEventFragment" />
+        <action
+            android:id="@+id/toCalendarEditEvent"
+            app:destination="@id/CalendarNewEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/CalendarNewEventFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarNewEventFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarEventFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar_new_event" />
 

@@ -1,8 +1,13 @@
 package com.mosc.simo.ptuxiaki3741.models.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -29,13 +34,13 @@ import java.util.Date;
                 )
         }
 )
-public class CalendarNotification {
+public class CalendarNotification implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "LandID")
-    private long lid;
+    private Long lid;
     @ColumnInfo(name = "ZoneID")
-    private long zid;
+    private Long zid;
     @ColumnInfo(name = "Title")
     private String title;
     @ColumnInfo(name = "Message")
@@ -43,7 +48,19 @@ public class CalendarNotification {
     @ColumnInfo(name = "Date")
     private Date date;
 
-    public CalendarNotification(long id, long lid, long zid, String title, String message, Date date) {
+    @Ignore
+    public CalendarNotification(Parcel in){
+        id = in.readLong();
+        lid = in.readLong();
+        zid = in.readLong();
+        title = in.readString();
+        message = in.readString();
+        date = (Date) in.readSerializable();
+
+        if(lid == 0) lid = null;
+        if(zid == 0) zid = null;
+    }
+    public CalendarNotification(long id, Long lid, Long zid, String title, String message, Date date) {
         setId(id);
         setLid(lid);
         setZid(zid);
@@ -55,10 +72,10 @@ public class CalendarNotification {
     public long getId() {
         return id;
     }
-    public long getLid() {
+    public Long getLid() {
         return lid;
     }
-    public long getZid() {
+    public Long getZid() {
         return zid;
     }
     public String getTitle() {
@@ -74,10 +91,10 @@ public class CalendarNotification {
     public void setId(long id) {
         this.id = id;
     }
-    public void setLid(long lid) {
+    public void setLid(Long lid) {
         this.lid = lid;
     }
-    public void setZid(long zid) {
+    public void setZid(Long zid) {
         this.zid = zid;
     }
     public void setTitle(String title) {
@@ -88,5 +105,49 @@ public class CalendarNotification {
     }
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(title);
+        if(id != 0) {
+            builder.append(" #");
+            builder.append(id);
+        }
+        return builder.toString();
+    }
+    public static final Creator<CalendarNotification> CREATOR = new Creator<CalendarNotification>() {
+        @Override
+        public CalendarNotification createFromParcel(Parcel in) {
+            return new CalendarNotification(in);
+        }
+
+        @Override
+        public CalendarNotification[] newArray(int size) {
+            return new CalendarNotification[size];
+        }
+    };
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeLong(id);
+        if(lid == null){
+            out.writeLong(0);
+        }else{
+            out.writeLong(lid);
+        }
+        if(zid == null){
+            out.writeLong(0);
+        }else{
+            out.writeLong(zid);
+        }
+        out.writeString(title);
+        out.writeString(message);
+        out.writeSerializable(date);
     }
 }

@@ -2,6 +2,11 @@
 <resources>
   <color name="mapButtonBackgroundColor">#fff</color>
   <color name="mapButtonTextColor">#404040</color>
+  <color name="badge1">#99CC00</color>
+  <color name="badge2">#CCFFBB33</color>
+  <color name="badge3">#99FF4444</color>
+  <color name="badge4">#66AA66CC</color>
+  <color name="badgeMore">#3333B5E5</color>
 
   <color name="colorError">#A30039</color>
   <color name="backgroundColor">#EDEEF0</color>

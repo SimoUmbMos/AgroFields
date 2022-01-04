@@ -1,20 +1,34 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mosc.simo.ptuxiaki3741.broadcast_receivers.CalendarReceiver;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public final class DataUtil {
+    private static final String TAG = "DataUtil";
     private DataUtil(){}
 
     public static int lineCount(String string){
@@ -129,5 +143,44 @@ public final class DataUtil {
             size++;
         }
         return ans;
+    }
+    public static LocalDate dateToLocalDate(Date date){
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+    public static void addNotificationToAlertManager(Context ctx, CalendarNotification n){
+        if(n == null) return;
+        if(Calendar.getInstance().getTimeInMillis() > n.getDate().getTime()) return;
+
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Activity.ALARM_SERVICE);
+
+        Intent intent = new Intent(ctx, CalendarReceiver.class);
+        intent.putExtra(AppValues.argNotification,n);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                ctx,
+                (int) n.getId(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        am.setExact(AlarmManager.RTC_WAKEUP, n.getDate().getTime(), pendingIntent);
+        Log.d(TAG, "addNotificationToAlertManager: added");
+    }
+    public static void removeNotificationToAlertManager(Context ctx, CalendarNotification n){
+        if(n == null) return;
+        if(Calendar.getInstance().getTimeInMillis() > n.getDate().getTime()) return;
+
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Activity.ALARM_SERVICE);
+
+        Intent intent = new Intent(ctx, CalendarReceiver.class);
+        intent.putExtra(AppValues.argNotification,n);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                ctx,
+                (int) n.getId(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        am.cancel(pendingIntent);
+        Log.d(TAG, "removeNotificationToAlertManager: removed");
     }
 }

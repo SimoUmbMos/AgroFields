@@ -7,7 +7,7 @@ import com.mosc.simo.ptuxiaki3741.models.ColorData;
 public final class AppValues {
     private AppValues(){}
     /* DB VALUES */
-    public static final int DATABASE_VERSION = 37;
+    public static final int DATABASE_VERSION = 39;
     /* Open XML SDK */
     public static final String sheetLandName = "Lands";
     public static final String sheetLandNameLowerCase = "lands";
@@ -30,10 +30,8 @@ public final class AppValues {
     public static final String argAddress = "address";
     public static final String argImportLand = "import_land";
     public static final String argIsHistory = "is_history";
+    public static final String argDate = "calendar_date";
     public static final String argNotification = "calendar_notification";
-    /* Calendar Fragment Values */
-    public static int defaultDayColor1 = Color.argb(192,128,128,128);
-    public static int defaultDayColor2 = Color.argb(64,128,128,128);
     /* Land Map Editor Fragment Values */
     public static final double distanceToMapActionKM = 100;
     public static final float countryZoom = 6.0f;
@@ -51,5 +49,6 @@ public final class AppValues {
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";
     public static final int doubleTapBack = 2750;
-    public static final String NotificationChannelID = "";
+    public static final String NotificationChannelID = "In Application Notifications";
+    public static final String CalendarNotificationChannelID = "Calendar Notifications";
 }

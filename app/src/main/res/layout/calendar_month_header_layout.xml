@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:weightSum="6">
-
-    <Button
-        android:id="@+id/headerPreviousMonth"
+    <Button android:id="@+id/headerPreviousMonth"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -21,9 +20,7 @@
         android:textSize="26sp"
         android:gravity="center"
         tools:text="October 2019"/>
-
-    <Button
-        android:id="@+id/headerNextMonth"
+    <Button android:id="@+id/headerNextMonth"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="match_parent"
