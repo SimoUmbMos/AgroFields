@@ -18,6 +18,7 @@
     <string name="empty_list">List is empty</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
+    <string name="file_type_select_title">Select File Type</string>
     <string name="clipboard_message">Text Copied</string>
     <string name="title_error">Title is incorrect</string>
     <string name="notification_channel_name">In App Notifications</string>
@@ -43,7 +44,6 @@
     <string name="land_bar_label">My Land\'s</string>
     <string name="file_created">File created</string>
     <string name="file_not_created">File not created</string>
-    <string name="file_type_select_title">Select File Type</string>
     <string name="delete_lands_title">Delete Lands</string>
     <string name="delete_lands_text">Are you sure you want to delete the selected lands?</string>
     <string name="add">Add</string>

@@ -10,7 +10,7 @@ import org.jdom2.Namespace;
 
 import java.util.List;
 
-public class KmlFileExporter {
+public class KmlExporter {
     public static Document kmlFileExporter(String key,List<Land> lands){
         Document doc = new Document();
         try{
@@ -53,6 +53,13 @@ public class KmlFileExporter {
                     .append(point.latitude)
                     .append(" ");
         }
+        if(data.getBorder().size()>0){
+            coordinatesString
+                    .append(data.getBorder().get(0).longitude)
+                    .append(",")
+                    .append(data.getBorder().get(0).latitude)
+                    .append(" ");
+        }
         coordinates.addContent(coordinatesString.toString());
         linearRing.addContent(coordinates);
         outerBoundaryIs.addContent(linearRing);
@@ -67,6 +74,13 @@ public class KmlFileExporter {
                         .append(point.longitude)
                         .append(",")
                         .append(point.latitude)
+                        .append(" ");
+            }
+            if(hole.size()>0){
+                coordinatesString
+                        .append(hole.get(0).longitude)
+                        .append(",")
+                        .append(hole.get(0).latitude)
                         .append(" ");
             }
             coordinates.addContent(coordinatesString.toString());

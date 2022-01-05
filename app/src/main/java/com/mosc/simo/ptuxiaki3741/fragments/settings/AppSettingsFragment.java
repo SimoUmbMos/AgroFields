@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -29,6 +30,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentAppSettingsBinding;
@@ -56,6 +59,8 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private List<Land> lands;
     private List<LandZone> zones;
     private boolean dataIsSaving;
+    private AlertDialog dialog;
+    private int dialogChecked;
 
     private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
@@ -200,12 +205,32 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
 
 
     private void onExportDBPressed() {
-        onExportDBAction();
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            dialogChecked = 0;
+            String[] dataTypes = {"XLS","XLSX"};
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setTitle(getString(R.string.file_type_select_title))
+                    .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> {
+                        if(dialogChecked == 0){
+                            onExportDBActionXLS();
+                        }else{
+                            onExportDBActionXLSX();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        }
     }
-    private void onExportDBAction() {
+    private void onExportDBActionXLSX() {
         if(backThread == null){
             backThread = new Thread(()->{
-                boolean result = false;
                 lands.clear();
                 zones.clear();
                 List<Land> temp1 = viewModel.getLands().getValue();
@@ -216,13 +241,52 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 if(temp2 != null){
                     temp2.forEach((k,v)-> zones.addAll(v));
                 }
-                if(lands != null){
-                    try{
+                boolean result;
+                try{
+                    if(lands.size() > 0 || zones.size()>0){
                         result = FileUtil.dbExportAFileFileXLSX(lands,zones);
-                    }catch (IOException e) {
-                        Log.e(TAG, "onExportDBPressed: ",e);
+                    }else{
                         result = false;
                     }
+                }catch (IOException e) {
+                    Log.e(TAG, "onExportDBActionXLSX: ",e);
+                    result = false;
+                }
+                onExportDBResult(result);
+                backThread = null;
+            });
+            backThread.start();
+        }else{
+            Toast.makeText(
+                    getActivity(),
+                    getString(R.string.open_xml_action_not_ended_error),
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
+    }
+    private void onExportDBActionXLS() {
+        if(backThread == null){
+            backThread = new Thread(()->{
+                lands.clear();
+                zones.clear();
+                List<Land> temp1 = viewModel.getLands().getValue();
+                if(temp1 != null) {
+                    lands.addAll(temp1);
+                }
+                Map<Long,List<LandZone>> temp2 = viewModel.getLandZones().getValue();
+                if(temp2 != null){
+                    temp2.forEach((k,v)-> zones.addAll(v));
+                }
+                boolean result;
+                try{
+                    if(lands.size() > 0 || zones.size()>0){
+                        result = FileUtil.dbExportAFileFileXLS(lands,zones);
+                    }else{
+                        result = false;
+                    }
+                }catch (IOException e) {
+                    Log.e(TAG, "onExportDBActionXLS: ",e);
+                    result = false;
                 }
                 onExportDBResult(result);
                 backThread = null;
@@ -239,19 +303,17 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void onExportDBResult(boolean result) {
         if(getActivity() != null){
             getActivity().runOnUiThread(()->{
+                String text;
                 if(result){
-                    Toast.makeText(
-                            getActivity(),
-                            getString(R.string.export_db_success),
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    text = getString(R.string.export_db_success);
                 }else{
-                    Toast.makeText(
-                            getActivity(),
-                            getString(R.string.export_db_fail),
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    text = getString(R.string.export_db_fail);
                 }
+                Snackbar.make(
+                        binding.getRoot(),
+                        text,
+                        Snackbar.LENGTH_LONG
+                ).show();
             });
         }
     }
@@ -349,19 +411,17 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void onImportDBResult(boolean result) {
         if(getActivity() != null){
             getActivity().runOnUiThread(()->{
+                String text;
                 if(result){
-                    Toast.makeText(
-                            getActivity(),
-                            getString(R.string.import_db_success),
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    text = getString(R.string.import_db_success);
                 }else{
-                    Toast.makeText(
-                            getActivity(),
-                            getString(R.string.import_db_failed),
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    text = getString(R.string.import_db_failed);
                 }
+                Snackbar.make(
+                        binding.getRoot(),
+                        text,
+                        Snackbar.LENGTH_LONG
+                ).show();
             });
         }
     }

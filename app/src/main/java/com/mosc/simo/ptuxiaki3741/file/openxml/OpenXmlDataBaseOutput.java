@@ -32,10 +32,14 @@ public final class OpenXmlDataBaseOutput {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         //Land Sheet
-        createLandSheetXLS(lands, workbook);
+        if(lands.size()>0){
+            createLandSheetXLS(lands, workbook);
+        }
 
         //Zone Sheet
-        createLandZoneSheetXLS(zones, workbook);
+        if(zones.size()>0){
+            createLandZoneSheetXLS(zones, workbook);
+        }
 
         workbook.write(outputStream);
         workbook.close();
@@ -129,10 +133,14 @@ public final class OpenXmlDataBaseOutput {
         XSSFWorkbook workbook = new XSSFWorkbook();
 
         //Land Sheet
-        createLandSheetXLSX(lands, workbook);
+        if(lands.size()>0){
+            createLandSheetXLSX(lands, workbook);
+        }
 
         //Zone Sheet
-        createLandZoneSheetXLSX(zones, workbook);
+        if(zones.size()>0){
+            createLandZoneSheetXLSX(zones, workbook);
+        }
 
         workbook.write(outputStream);
         workbook.close();

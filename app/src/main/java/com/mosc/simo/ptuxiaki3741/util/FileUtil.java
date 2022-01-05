@@ -11,7 +11,7 @@ import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLReader;
-import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileExporter;
+import com.mosc.simo.ptuxiaki3741.file.kml.KmlExporter;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileReader;
 import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseOutput;
 import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
@@ -52,7 +52,7 @@ public final class FileUtil {
     private FileUtil(){}
 
     public static String landsToKmlString(List<Land> lands,String label) {
-        Document document = KmlFileExporter.kmlFileExporter(label, lands);
+        Document document = KmlExporter.kmlFileExporter(label, lands);
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
         return xmOut.outputString(document);
     }
@@ -64,8 +64,12 @@ public final class FileUtil {
         Document document = GMLExporter.exportList(lands);
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
         String result = xmOut.outputString(document);
-        result = result.replace("xmlns:schemaLocation","xsi:schemaLocation");
         result = result.replace(" standalone=\"yes\"","");
+        result = result.replace("xmlns:schemaLocation","xsi:schemaLocation");
+        result = result.replace(
+                "xsi:schemaLocation=\"http://www.opengis.net/gml http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"",
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/gml http://schemas.opengis.net/gml/2.1.2/feature.xsd\""
+        );
         return result;
     }
     public static String zonesToKmlString(List<LandZone> zones, String label) {

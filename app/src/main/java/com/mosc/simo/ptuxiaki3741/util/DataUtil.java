@@ -147,6 +147,21 @@ public final class DataUtil {
     public static LocalDate dateToLocalDate(Date date){
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
+    public static List<LatLng> removeSamePointStartEnd(List<LatLng> p){
+        List<LatLng> tempPointList = new ArrayList<>(p);
+        boolean continueRemoving = true;
+        while (tempPointList.size()>1 && continueRemoving){
+            if(
+                    tempPointList.get(0).longitude == tempPointList.get(tempPointList.size()-1).longitude &&
+                            tempPointList.get(0).latitude == tempPointList.get(tempPointList.size()-1).latitude
+            ){
+                tempPointList.remove(tempPointList.size()-1);
+            }else{
+                continueRemoving = false;
+            }
+        }
+        return tempPointList;
+    }
     public static void addNotificationToAlertManager(Context ctx, CalendarNotification n){
         if(n == null) return;
         if(Calendar.getInstance().getTimeInMillis() > n.getDate().getTime()) return;

@@ -138,6 +138,15 @@ public class AppViewModel extends AndroidViewModel {
                 }
             }
             List<LandZone> zones = appRepository.getLandZonesByLID(land.getData().getId());
+
+            List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
+            List<List<LatLng>> tempHoles = new ArrayList<>();
+            for(List<LatLng> hole : land.getData().getHoles()){
+                tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
+            }
+            land.getData().setBorder(tempPointList);
+            land.getData().setHoles(tempHoles);
+
             appRepository.saveLand(land);
             LandDataRecord landRecord = new LandDataRecord(
                     land.getData(),
@@ -231,6 +240,8 @@ public class AppViewModel extends AndroidViewModel {
 
     public void saveZone(LandZone zone) {
         if(zone != null){
+            List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
+            zone.getData().setBorder(tempPointList);
             appRepository.saveZone(zone);
             populateLists();
         }

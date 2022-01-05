@@ -10,6 +10,23 @@ import org.jdom2.Namespace;
 import java.util.List;
 
 public class GMLExporter {
+    private static final Namespace ns1 = Namespace.getNamespace(
+            "gml",
+            "http://www.opengis.net/gml"
+    );
+    private static final Namespace ns2 = Namespace.getNamespace(
+            "xsi",
+            "http://www.w3.org/2001/XMLSchema-instance"
+    );
+    private static final Namespace ns3 = Namespace.getNamespace(
+            "schemaLocation",
+            "http://www.opengis.net/gml http://schemas.opengis.net/gml/2.1.2/feature.xsd"
+    );
+    private static final Namespace ns4 = Namespace.getNamespace(
+            "feature",
+            "http://example.com/feature"
+    );
+
     public static Document exportList(List<Land> lands){
         Document doc = new Document();
         Element root = createRootElement();
@@ -25,63 +42,43 @@ public class GMLExporter {
     }
 
     private static Element createElementFromLand(Land land){
-        Element featureMember = createElement("featureMember");
-        Element geom = createOGRElement();
-        Element multiPolygon = createMultiPolygonElement();
-        Element polygonMember = createElement("polygonMember");
-        Element polygon = createElement("Polygon");
-        Element outerBoundary = createElement("outerBoundaryIs");
-        Element linearRing = createElement("LinearRing");
-        if(land.getData().getBorder() != null){
-            if(land.getData().getBorder().size()>0){
-                linearRing.addContent(createElementCoordinates(land.getData().getBorder()));
-                outerBoundary.addContent(linearRing);
-                polygon.addContent(outerBoundary);
-                polygonMember.addContent(polygon);
-                multiPolygon.addContent(polygonMember);
-                geom.addContent(multiPolygon);
-                featureMember.addContent(geom);
-                return featureMember;
-            }
+        if(land.getData() != null){
+            Element featureMember = createElement("featureMember", ns1);
+            Element feature = createElement("feature", ns4);
+            Element geometry = createElement("geometry", ns4);
+            Element polygon = createElement("Polygon", ns1);
+            Element outerBoundaryIs = createElement("outerBoundaryIs", ns1);
+            Element linearRing = createElement("LinearRing", ns1);
+            linearRing.addContent(createElementCoordinates(land.getData().getBorder()));
+            outerBoundaryIs.addContent(linearRing);
+            polygon.addContent(outerBoundaryIs);
+            geometry.addContent(polygon);
+            feature.addContent(geometry);
+            featureMember.addContent(feature);
+            return featureMember;
         }
         return null;
     }
 
     private static Element createRootElement(){
-        Namespace ns2 = Namespace.getNamespace("ogr", "http://ogr.maptools.org/");
-        Namespace ns3 = Namespace.getNamespace("gml", "http://www.opengis.net/gml");
-        Namespace ns4 = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        Namespace ns5 = Namespace.getNamespace("schemaLocation", "http://ogr.maptools.org/ kml_template.xsd");
-
-        Element element = new Element("FeatureCollection",ns2);
-        element.setNamespace(ns2);
+        Element element = new Element("FeatureCollection",ns1);
+        element.setNamespace(ns1);
         element.addNamespaceDeclaration(ns2);
         element.addNamespaceDeclaration(ns3);
-        element.addNamespaceDeclaration(ns4);
-        element.addNamespaceDeclaration(ns5);
         return element;
     }
-    private static Element createOGRElement(){
-        Namespace ns2 = Namespace.getNamespace("ogr", "http://ogr.maptools.org/");
 
-        Element element = new Element("geom",ns2);
-        element.setNamespace(ns2);
+    private static Element createElement(String elementTag, Namespace ns){
+        Element element = new Element(elementTag,ns);
+        element.setNamespace(ns);
         return element;
     }
-    private static Element createMultiPolygonElement(){
-        Namespace ns = Namespace.getNamespace("gml", "http://www.opengis.net/gml");
-        Element element = new Element("MultiPolygon",ns);
-        element.setAttribute("srsName","EPSG:4326");
-        return element;
-    }
-    private static Element createElement(String elementTag){
-        Namespace ns = Namespace.getNamespace("gml", "http://www.opengis.net/gml");
-        return new Element(elementTag,ns);
-    }
+
     private static Element createElementCoordinates(List<LatLng> borders){
-        Element root = createElement("coordinates");
-        Namespace ns = Namespace.getNamespace("gml", "http://www.opengis.net/gml");
-        root.setNamespace(ns);
+        Element root = createElement("coordinates", ns1);
+        root.setAttribute("decimal",".");
+        root.setAttribute("cs",",");
+        root.setAttribute("ts"," ");
         StringBuilder coordinatesString = new StringBuilder();
         for(LatLng point:borders){
             coordinatesString
@@ -90,8 +87,14 @@ public class GMLExporter {
                     .append(point.latitude)
                     .append(" ");
         }
+        if(borders.size()>0){
+            coordinatesString
+                    .append(borders.get(0).longitude)
+                    .append(",")
+                    .append(borders.get(0).latitude)
+                    .append(" ");
+        }
         root.addContent(coordinatesString.toString());
         return root;
     }
-
 }
