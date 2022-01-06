@@ -40,27 +40,18 @@ public class GMLReader {
             switch (eventType){
                 case XmlPullParser.START_TAG:
                     tagName = parser.getName();
-                    if (tagName.equalsIgnoreCase("Polygon")){
-                        if(converter == null){
-                            attributeValue = parser.getAttributeValue(null,"srsName");
-                            if(attributeValue != null){
-                                if(initConverter(attributeValue)){
-                                    converterInitOn = tagName;
-                                }
+                    if(converter == null){
+                        attributeValue = parser.getAttributeValue(null,"srsName");
+                        if(attributeValue != null){
+                            if(initConverter(attributeValue)){
+                                converterInitOn = tagName;
                             }
                         }
+                    }
+                    if (tagName.equalsIgnoreCase("Polygon")){
                         temp = parsePolygon(parser);
                         if(temp != null) {
                             border_fragment.add(temp);
-                        }
-                    }else if(tagName.equalsIgnoreCase("MultiPolygon")){
-                        if(converter == null){
-                            attributeValue = parser.getAttributeValue(null,"srsName");
-                            if(attributeValue != null){
-                                if(initConverter(attributeValue)){
-                                    converterInitOn = tagName;
-                                }
-                            }
                         }
                     }
                     break;
@@ -81,9 +72,19 @@ public class GMLReader {
     }
 
     private static boolean initConverter(String value){
+        String code;
         String[] values = value.split("#");
         if(values.length>1){
-            String code = values[values.length-1];
+            code = values[values.length-1];
+            code = "EPSG:"+code;
+            if(CoordinatesConverter.checkIfValid(code)){
+                converter = new CoordinatesConverter(code);
+                return true;
+            }
+        }
+        values = value.split(":");
+        if(values.length>1){
+            code = values[values.length-1];
             code = "EPSG:"+code;
             if(CoordinatesConverter.checkIfValid(code)){
                 converter = new CoordinatesConverter(code);
