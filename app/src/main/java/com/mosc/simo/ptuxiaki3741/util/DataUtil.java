@@ -151,10 +151,7 @@ public final class DataUtil {
         List<LatLng> tempPointList = new ArrayList<>(p);
         boolean continueRemoving = true;
         while (tempPointList.size()>1 && continueRemoving){
-            if(
-                    tempPointList.get(0).longitude == tempPointList.get(tempPointList.size()-1).longitude &&
-                            tempPointList.get(0).latitude == tempPointList.get(tempPointList.size()-1).latitude
-            ){
+            if(tempPointList.get(0).equals(tempPointList.get(tempPointList.size()-1))){
                 tempPointList.remove(tempPointList.size()-1);
             }else{
                 continueRemoving = false;

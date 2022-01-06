@@ -4,6 +4,7 @@ public enum FileType {
     KML,
     GEOJSON,
     GML,
+    WKT,
     SHAPEFILE,
     NONE
 }

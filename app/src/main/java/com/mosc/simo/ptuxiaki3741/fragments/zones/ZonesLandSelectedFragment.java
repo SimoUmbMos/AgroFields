@@ -261,7 +261,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
                 dialog = null;
             }
             dialogChecked = 0;
-            String[] dataTypes = {"KML","GeoJson","GML"};
+            String[] dataTypes = {"KML","GeoJson","GML","Well Known Text"};
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setTitle(getString(R.string.file_type_select_title))
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
@@ -277,6 +277,9 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
                                 break;
                             case 2:
                                 exportSelectedZones(FileType.GML);
+                                break;
+                            case 3:
+                                exportSelectedZones(FileType.WKT);
                                 break;
                             default:
                                 exportSelectedZones(FileType.NONE);
@@ -327,6 +330,10 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
                         case GML:
                             output = FileUtil.zonesToGmlString(zones);
                             fileName = fileName+".gml";
+                            break;
+                        case WKT:
+                            output = FileUtil.zonesToWKTString(zones);
+                            fileName = fileName+".txt";
                             break;
                     }
                     if(FileUtil.createFile(output, fileName, path)){

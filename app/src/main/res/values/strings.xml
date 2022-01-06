@@ -124,6 +124,10 @@
     <string name="zone_border_actions_group_title">Zone Border Actions</string>
     <string name="zone_add_point">Add Point</string>
     <string name="zone_add_between_points">Add Point Between Points</string>
+    <string name="zone_add_between_points_1">Select First Point</string>
+    <string name="zone_add_between_points_2">Select Second Point</string>
+    <string name="zone_add_between_points_3">Place New Point</string>
+    <string name="zone_add_between_points_4">Edit New Point</string>
     <string name="zone_edit_point">Edit Point</string>
     <string name="zone_delete_point">Delete Point</string>
     <string name="zone_title_label">Enter Zone Title</string>

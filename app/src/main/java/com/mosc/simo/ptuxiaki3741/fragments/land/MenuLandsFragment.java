@@ -370,6 +370,10 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                             output = FileUtil.landsToGmlString(lands);
                             fileName = fileName+".gml";
                             break;
+                        case WKT:
+                            output = FileUtil.landsToWKTString(lands);
+                            fileName = fileName+".txt";
+                            break;
                     }
                     if(FileUtil.createFile(output, fileName, path)){
                         Toast.makeText(getContext(), getString(R.string.file_created), Toast.LENGTH_SHORT).show();
@@ -440,7 +444,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                 dialog = null;
             }
             dialogChecked = 0;
-            String[] dataTypes = {"KML","GeoJson","GML"};
+            String[] dataTypes = {"KML","GeoJson","GML","Well Known Text"};
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setTitle(getString(R.string.file_type_select_title))
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
@@ -456,6 +460,12 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                                 break;
                             case 2:
                                 exportSelectedLands(FileType.GML);
+                                break;
+                            case 3:
+                                exportSelectedLands(FileType.WKT);
+                                break;
+                            default:
+                                exportSelectedLands(FileType.NONE);
                                 break;
                         }
                     })

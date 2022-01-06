@@ -603,7 +603,6 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
-
     private void selectFirstPointForBetween(LatLng point) {
         index1 = MapUtil.closestPoint(border,point);
         if(index1 > -1 && index1 < border.size()){
@@ -669,17 +668,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private void updateUI() {
-        if(actionBar != null){
-            if(zone != null){
-                actionBar.setTitle(title+" #"+ zone.getData().getId());
-            }else{
-                if(!title.trim().isEmpty()){
-                    actionBar.setTitle(title);
-                }else{
-                    actionBar.setTitle(getString(R.string.new_zone_bar_label));
-                }
-            }
-        }
+        updateUIBasedOnState();
         binding.tvNote.setText(note);
         if(note.isEmpty()){
             binding.tvNote.setVisibility(View.GONE);
@@ -696,7 +685,48 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             updateMap();
     }
     private void updateUIBasedOnState() {
-        //todo:code...
+        if(actionBar != null){
+            switch (state){
+                case AddPoint:
+                    actionBar.setTitle(getString(R.string.zone_add_point));
+                    break;
+                case AddBetweenPoint:
+                    String display;
+                    if(index1 != -1){
+                        if(index2 != -1){
+                            if(index3 != -1){
+                                display = getString(R.string.zone_add_between_points_4);
+                            }else{
+                                display = getString(R.string.zone_add_between_points_3);
+                            }
+                        }else{
+                            display = getString(R.string.zone_add_between_points_2);
+                        }
+                    }else{
+                        display = getString(R.string.zone_add_between_points_1);
+                    }
+                    actionBar.setTitle(display);
+                    break;
+                case EditPoint:
+                    actionBar.setTitle(getString(R.string.zone_edit_point));
+                    break;
+                case DeletePoint:
+                    actionBar.setTitle(getString(R.string.zone_delete_point));
+                    break;
+                case NormalState:
+                default:
+                    if(zone != null){
+                        actionBar.setTitle(title+" #"+ zone.getData().getId());
+                    }else{
+                        if(!title.trim().isEmpty()){
+                            actionBar.setTitle(title);
+                        }else{
+                            actionBar.setTitle(getString(R.string.new_zone_bar_label));
+                        }
+                    }
+                    break;
+            }
+        }
     }
     private void updateMap(){
         if(mMap != null){

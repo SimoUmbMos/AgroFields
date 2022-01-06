@@ -17,6 +17,7 @@ import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseOutput;
 import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
+import com.mosc.simo.ptuxiaki3741.file.wkt.WellKnownTextExporter;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -56,6 +57,9 @@ public final class FileUtil {
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
         return xmOut.outputString(document);
     }
+    public static String landsToWKTString(List<Land> lands) {
+        return WellKnownTextExporter.WellKnownTextExport(lands);
+    }
     public static String landsToGeoJsonString(List<Land> lands) {
         JSONObject export = GeoJsonExporter.geoJsonExport(lands);
         return export.toString();
@@ -78,6 +82,13 @@ public final class FileUtil {
             lands.add(new Land(new LandData(zone.getData().getBorder())));
         }
         return landsToKmlString(lands,label);
+    }
+    public static String zonesToWKTString(List<LandZone> zones) {
+        List<Land> lands = new ArrayList<>();
+        for(LandZone zone:zones){
+            lands.add(new Land(new LandData(zone.getData().getBorder())));
+        }
+        return landsToWKTString(lands);
     }
     public static String zonesToGeoJsonString(List<LandZone> zones) {
         List<Land> lands = new ArrayList<>();
