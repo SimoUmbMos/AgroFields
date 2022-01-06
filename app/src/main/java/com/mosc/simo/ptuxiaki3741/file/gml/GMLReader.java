@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.file.gml;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.file.geojson.helper.CoordinatesConverter;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -18,6 +19,8 @@ import java.util.List;
 
 public class GMLReader {
     public static String TAG = "GMLReader";
+    public static CoordinatesConverter converter;
+
     public static ArrayList<LandData> exec(InputStream is) throws Exception{
         ArrayList<LandData> border_fragment = new ArrayList<>();
 
@@ -26,21 +29,68 @@ public class GMLReader {
         factory.setNamespaceAware(true);
         XmlPullParser  parser = factory.newPullParser();
         parser.setInput(new StringReader(s.replace("&","&amp;")));
-        String tagName;
+        String tagName, attributeValue;
         LandData temp;
+
+        converter = null;
+        String converterInitOn = "";
+
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            tagName = parser.getName();
-            if (eventType == XmlPullParser.START_TAG) {
-                if (tagName.equalsIgnoreCase("Polygon")){
-                    temp = parsePolygon(parser);
-                    if(temp != null)
-                        border_fragment.add(temp);
-                }
+            switch (eventType){
+                case XmlPullParser.START_TAG:
+                    tagName = parser.getName();
+                    if (tagName.equalsIgnoreCase("Polygon")){
+                        if(converter == null){
+                            attributeValue = parser.getAttributeValue(null,"srsName");
+                            if(attributeValue != null){
+                                if(initConverter(attributeValue)){
+                                    converterInitOn = tagName;
+                                }
+                            }
+                        }
+                        temp = parsePolygon(parser);
+                        if(temp != null) {
+                            border_fragment.add(temp);
+                        }
+                    }else if(tagName.equalsIgnoreCase("MultiPolygon")){
+                        if(converter == null){
+                            attributeValue = parser.getAttributeValue(null,"srsName");
+                            if(attributeValue != null){
+                                if(initConverter(attributeValue)){
+                                    converterInitOn = tagName;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    if(converter != null){
+                        tagName = parser.getName();
+                        if (tagName.equals(converterInitOn)){
+                            converter = null;
+                            converterInitOn = "";
+                        }
+                    }
+                    break;
             }
             eventType = parser.next();
         }
+        converter = null;
         return border_fragment;
+    }
+
+    private static boolean initConverter(String value){
+        String[] values = value.split("#");
+        if(values.length>1){
+            String code = values[values.length-1];
+            code = "EPSG:"+code;
+            if(CoordinatesConverter.checkIfValid(code)){
+                converter = new CoordinatesConverter(code);
+                return true;
+            }
+        }
+        return false;
     }
 
     private static LandData parsePolygon(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -174,10 +224,17 @@ public class GMLReader {
         List<LatLng> result = new ArrayList<>();
         String[] coordinatePairs = s.split(" ");
         for (String coord : coordinatePairs) {
-            result.add(new LatLng(
-                    Double.parseDouble(coord.split(",")[1]),
-                    Double.parseDouble(coord.split(",")[0])
-            ));
+            if(converter != null){
+                result.add(converter.convertEPSG(
+                        Double.parseDouble(coord.split(",")[0]),
+                        Double.parseDouble(coord.split(",")[1])
+                ));
+            }else{
+                result.add(new LatLng(
+                        Double.parseDouble(coord.split(",")[1]),
+                        Double.parseDouble(coord.split(",")[0])
+                ));
+            }
         }
         return result;
     }
@@ -190,10 +247,17 @@ public class GMLReader {
             coordPairs.add(new ArrayList<>(Arrays.asList(coord).subList(i-dimension,i)));
         }
         for(List<String> coordPair : coordPairs){
-            result.add(new LatLng(
-                    Double.parseDouble(coordPair.get(1)),
-                    Double.parseDouble(coordPair.get(0))
-            ));
+            if(converter != null){
+                result.add(converter.convertEPSG(
+                        Double.parseDouble(coordPair.get(0)),
+                        Double.parseDouble(coordPair.get(1))
+                ));
+            }else{
+                result.add(new LatLng(
+                        Double.parseDouble(coordPair.get(1)),
+                        Double.parseDouble(coordPair.get(0))
+                ));
+            }
         }
         return result;
     }
