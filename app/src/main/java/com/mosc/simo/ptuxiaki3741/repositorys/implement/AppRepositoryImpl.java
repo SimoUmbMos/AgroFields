@@ -137,13 +137,17 @@ public class AppRepositoryImpl implements AppRepository {
     }
     @Override
     public void saveTag(TagData tag) {
-        if(tag != null)
-            db.tagDao().insert(tag);
+        if(tag != null){
+            long id = db.tagDao().insert(tag);
+            tag.setId(id);
+        }
     }
     @Override
     public void saveNotification(CalendarNotification notification) {
-        if(notification != null)
-            db.calendarNotificationDao().insert(notification);
+        if(notification != null){
+            long id = db.calendarNotificationDao().insert(notification);
+            notification.setId(id);
+        }
     }
 
     @Override

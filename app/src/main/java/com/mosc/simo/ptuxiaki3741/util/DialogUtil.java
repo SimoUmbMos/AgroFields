@@ -9,7 +9,6 @@ import com.google.android.material.timepicker.TimeFormat;
 import com.mosc.simo.ptuxiaki3741.R;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public final class DialogUtil {
     private DialogUtil(){}

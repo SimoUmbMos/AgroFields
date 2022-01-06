@@ -52,7 +52,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public ViewNotificationItemBinding binding;
+        public final ViewNotificationItemBinding binding;
         public ViewHolder(@NonNull View view) {
             super(view);
             binding = ViewNotificationItemBinding.bind(view);

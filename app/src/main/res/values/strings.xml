@@ -114,7 +114,7 @@
     <string name="contextual_menu_zone_label_multi_delete">multi_delete</string>
     <string name="contextual_menu_zone_label_multi_export">multi_export</string>
     <string name="zone_delete">"Zones Deleted"</string>
-    <string name="zone_export">"Zones Exported "</string>
+    <string name="zone_export">"Zones Exported"</string>
     <!-- Zone Preview Fragment -->
     <string name="new_zone_bar_label">New Zone</string>
     <string name="edit_zone">Edit Zone</string>
@@ -192,5 +192,4 @@
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Live Map Needs Location Permission</string>
     <string name="default_live_map_title">Not Inside Land</string>
-    <string name="plus_sign">+</string>
 </resources>

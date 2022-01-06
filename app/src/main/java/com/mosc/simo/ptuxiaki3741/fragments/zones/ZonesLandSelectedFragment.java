@@ -247,8 +247,8 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         List<LandZone> selectedZones = getSelectedZones();
         if(selectedZones.size()>0){
             if(vmLands != null){
-                Snackbar.make(binding.getRoot(), R.string.zone_delete, Snackbar.LENGTH_SHORT).show();
                 vmLands.removeZones(selectedZones);
+                Snackbar.make(binding.getRoot(), R.string.zone_delete, Snackbar.LENGTH_SHORT).show();
             }
             updateMenu(LandListMenuState.NormalState);
         }
@@ -295,6 +295,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
     private void exportAction(List<LandZone> exportZones, FileType exportAction){
         if(exportZones.size()>0 && exportAction != FileType.NONE){
             writeOnFile(exportZones, exportAction);
+            Snackbar.make(binding.getRoot(), R.string.zone_export, Snackbar.LENGTH_SHORT).show();
         }
     }
     private void writeOnFile(List<LandZone> zones, FileType action) {

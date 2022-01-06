@@ -10,10 +10,18 @@ import org.osgeo.proj4j.ProjCoordinate;
 public class CoordinatesConverter {
     private final BasicCoordinateTransform transform;
 
-    public CoordinatesConverter(String code1,String code2){
-        CRSFactory factory = new CRSFactory();
-        CoordinateReferenceSystem srcCrs = factory.createFromName("EPSG:" + code1);
-        CoordinateReferenceSystem dstCrs = factory.createFromName("EPSG:" + code2);
+    public static boolean checkIfValid(String crs){
+        try{
+            CoordinateReferenceSystem test = new CRSFactory().createFromName(crs);
+            return test != null;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    public CoordinatesConverter(String crs){
+        CoordinateReferenceSystem srcCrs = new CRSFactory().createFromName(crs);
+        CoordinateReferenceSystem dstCrs = new CRSFactory().createFromName("EPSG:4326");
         transform = new BasicCoordinateTransform(srcCrs, dstCrs);
     }
 
