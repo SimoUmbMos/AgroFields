@@ -3,27 +3,25 @@ package com.mosc.simo.ptuxiaki3741.file.geojson;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.file.geojson.helper.CoordinatesConverter;
+import com.mosc.simo.ptuxiaki3741.helpers.CoordinatesHelper;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GeoJsonReader {
     private static final String TAG = "GeoJsonReader";
-    private static CoordinatesConverter converter;
+    private static CoordinatesHelper converter;
 
     public static ArrayList<LandData> exec(InputStream inputStream) throws Exception{
         List<List<List<LatLng>>> lands = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject(slurp(inputStream));
+        JSONObject jsonObject = new JSONObject(DataUtil.inputSteamToString(inputStream));
         if(!jsonObject.has("type")){
             return new ArrayList<>();
         }
@@ -59,16 +57,6 @@ public class GeoJsonReader {
         return ans;
     }
 
-    private static String slurp(InputStream is) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        br.close();
-        return sb.toString();
-    }
     private static void initConverter(JSONObject root) throws JSONException{
         converter = null;
         if(root.has("crs")){
@@ -81,8 +69,8 @@ public class GeoJsonReader {
                             .replace("OGC:1.3:","")
                             .replace("::",":")
                             .toUpperCase();
-                    if(CoordinatesConverter.checkIfValid(crs_name)){
-                        converter = new CoordinatesConverter(crs_name);
+                    if(CoordinatesHelper.checkIfValid(crs_name)){
+                        converter = new CoordinatesHelper(crs_name);
                     }
                 }
             }

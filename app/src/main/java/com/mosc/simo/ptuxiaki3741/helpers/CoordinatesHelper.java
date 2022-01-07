@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.file.geojson.helper;
+package com.mosc.simo.ptuxiaki3741.helpers;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -7,7 +7,7 @@ import org.osgeo.proj4j.CRSFactory;
 import org.osgeo.proj4j.CoordinateReferenceSystem;
 import org.osgeo.proj4j.ProjCoordinate;
 
-public class CoordinatesConverter {
+public class CoordinatesHelper {
     private final BasicCoordinateTransform transform;
 
     public static boolean checkIfValid(String crs){
@@ -19,7 +19,7 @@ public class CoordinatesConverter {
         }
     }
 
-    public CoordinatesConverter(String crs){
+    public CoordinatesHelper(String crs){
         CoordinateReferenceSystem srcCrs = new CRSFactory().createFromName(crs);
         CoordinateReferenceSystem dstCrs = new CRSFactory().createFromName("EPSG:4326");
         transform = new BasicCoordinateTransform(srcCrs, dstCrs);

@@ -6,18 +6,20 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.OpenableColumns;
+import android.util.Log;
 
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLExporter;
 import com.mosc.simo.ptuxiaki3741.file.gml.GMLReader;
 import com.mosc.simo.ptuxiaki3741.file.kml.KmlExporter;
-import com.mosc.simo.ptuxiaki3741.file.kml.KmlFileReader;
+import com.mosc.simo.ptuxiaki3741.file.kml.KmlReader;
 import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseOutput;
 import com.mosc.simo.ptuxiaki3741.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.LandFileState;
 import com.mosc.simo.ptuxiaki3741.file.wkt.WellKnownTextExporter;
+import com.mosc.simo.ptuxiaki3741.file.wkt.WellKnownTextReader;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
@@ -126,10 +128,12 @@ public final class FileUtil {
     }
     public static boolean fileIsValid(Context ctx, Intent response){
         return
+                isJSON(ctx, response) ||
                 isKML(ctx, response) ||
-                        isJSON(ctx, response) ||
-                        isGML(ctx, response) ||
-                        isShapeFile(ctx, response);
+                isGML(ctx, response) ||
+                isXML(ctx, response) ||
+                isText(ctx, response) ||
+                isShapeFile(ctx, response);
     }
     public static ArrayList<LandData> handleFile(Context ctx, Intent result) throws Exception{
         if(result != null){
@@ -144,6 +148,33 @@ public final class FileUtil {
                         return handleJson(ctx, uri);
                     case GML:
                         return handleGML(ctx, uri);
+                    case XML:
+                        ArrayList<LandData> dataXML = new ArrayList<>();
+                        try{
+                            dataXML.addAll(handleGML(ctx, uri));
+                        }catch (Exception e){
+                            Log.e(TAG, "handleWKT: ", e);
+                            dataXML.clear();
+                        }
+                        if(dataXML.size()>0){
+                            return dataXML;
+                        }
+                        try{
+                            dataXML.addAll(handleKml(ctx, uri));
+                        }catch (Exception e){
+                            Log.e(TAG, "handleWKT: ", e);
+                            dataXML.clear();
+                        }
+                        return dataXML;
+                    case TEXT:
+                        ArrayList<LandData> dataText = new ArrayList<>();
+                        try{
+                            dataText.addAll(handleWKT(ctx, uri));
+                        }catch (Exception e){
+                            Log.e(TAG, "handleWKT: ", e);
+                            dataText.clear();
+                        }
+                        return dataText;
                 }
             }
         }
@@ -159,6 +190,10 @@ public final class FileUtil {
             return FileType.SHAPEFILE;
         else if(isGML(ctx, result))
             return FileType.GML;
+        else if(isText(ctx, result))
+            return FileType.TEXT;
+        else if(isXML(ctx, result))
+            return FileType.XML;
         return FileType.NONE;
     }
     private static boolean isKML(Context ctx, Intent response){
@@ -172,6 +207,14 @@ public final class FileUtil {
     private static boolean isShapeFile(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
         return extension.equals("shp");
+    }
+    private static boolean isText(Context ctx, Intent response){
+        String extension = getExtension(getFileName(ctx, response));
+        return extension.equals("txt");
+    }
+    private static boolean isXML(Context ctx, Intent response){
+        String extension = getExtension(getFileName(ctx, response));
+        return extension.equals("xml");
     }
     private static boolean isGML(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
@@ -200,13 +243,16 @@ public final class FileUtil {
         return displayName;
     }
     private static ArrayList<LandData> handleKml(Context ctx, Uri uri) throws Exception{
-        return KmlFileReader.exec(ctx.getContentResolver().openInputStream(uri));
+        return KmlReader.exec(ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleJson(Context ctx, Uri uri) throws Exception{
         return GeoJsonReader.exec(ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleGML(Context ctx, Uri uri) throws Exception{
         return GMLReader.exec(ctx.getContentResolver().openInputStream(uri));
+    }
+    private static ArrayList<LandData> handleWKT(Context ctx, Uri uri) throws Exception{
+        return WellKnownTextReader.exec(ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleShapeFile(Context ctx, Uri uri) throws Exception{
         return MyShapeFileReader.exec(ctx.getContentResolver().openInputStream(uri));

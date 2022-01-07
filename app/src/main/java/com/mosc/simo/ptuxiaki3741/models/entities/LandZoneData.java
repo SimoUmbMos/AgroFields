@@ -58,7 +58,7 @@ public class LandZoneData implements Parcelable {
         this.lid = 0;
         this.title = "";
         this.note = "";
-        this.color = AppValues.defaultZoneColor;
+        this.color = new ColorData(80, 20, 249);
         this.border = border;
     }
     @Ignore

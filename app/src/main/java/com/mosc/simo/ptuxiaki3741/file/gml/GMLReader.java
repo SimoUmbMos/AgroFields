@@ -1,7 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.file.gml;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.file.geojson.helper.CoordinatesConverter;
+import com.mosc.simo.ptuxiaki3741.helpers.CoordinatesHelper;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class GMLReader {
     public static String TAG = "GMLReader";
-    public static CoordinatesConverter converter;
+    public static CoordinatesHelper converter;
 
     public static ArrayList<LandData> exec(InputStream is) throws Exception{
         ArrayList<LandData> border_fragment = new ArrayList<>();
@@ -77,8 +77,8 @@ public class GMLReader {
         if(values.length>1){
             code = values[values.length-1];
             code = "EPSG:"+code;
-            if(CoordinatesConverter.checkIfValid(code)){
-                converter = new CoordinatesConverter(code);
+            if(CoordinatesHelper.checkIfValid(code)){
+                converter = new CoordinatesHelper(code);
                 return true;
             }
         }
@@ -86,8 +86,8 @@ public class GMLReader {
         if(values.length>1){
             code = values[values.length-1];
             code = "EPSG:"+code;
-            if(CoordinatesConverter.checkIfValid(code)){
-                converter = new CoordinatesConverter(code);
+            if(CoordinatesHelper.checkIfValid(code)){
+                converter = new CoordinatesHelper(code);
                 return true;
             }
         }

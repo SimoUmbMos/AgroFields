@@ -12,7 +12,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.ParcelableHole;
 import com.mosc.simo.ptuxiaki3741.util.ListUtils;
-import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ public class LandData implements Parcelable {
         this.title = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = AppValues.defaultLandColor;
+        this.color = new ColorData(20, 249, 80);
         setBorder(border);
     }
     @Ignore
@@ -56,7 +55,7 @@ public class LandData implements Parcelable {
         this.title = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = AppValues.defaultLandColor;
+        this.color = new ColorData(20, 249, 80);
         setBorder(border);
         setHoles(holes);
     }

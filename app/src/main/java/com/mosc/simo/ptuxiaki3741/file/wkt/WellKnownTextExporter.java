@@ -12,9 +12,9 @@ public class WellKnownTextExporter {
         StringBuilder builder = new StringBuilder();
         if(lands.size()>0){
             if(lands.size() > 1){
-                builder.append("GEOMETRYCOLLECTION (");
+                builder.append("MULTIPOLYGON (");
                 for(int i = 0; i < lands.size(); i++){
-                    createLandWKT(lands.get(i).getData(), builder);
+                    createMultiLandWKT(lands.get(i).getData(), builder);
                     if(i != lands.size()-1){
                         builder.append(", ");
                     }
@@ -37,6 +37,32 @@ public class WellKnownTextExporter {
         if(isEmpty){
             builder.append("EMPTY");
         }else{
+            builder.append("(");
+            for(int i = 0; i < tempData.size(); i++){
+                builder.append("(");
+                for(int j = 0; j < tempData.get(i).size(); j++){
+                    builder.append(tempData.get(i).get(j).latitude);
+                    builder.append(" ");
+                    builder.append(tempData.get(i).get(j).longitude);
+                    builder.append(", ");
+                }
+                builder.append(tempData.get(i).get(0).latitude);
+                builder.append(" ");
+                builder.append(tempData.get(i).get(0).longitude);
+                builder.append(")");
+                if(i != tempData.size()-1){
+                    builder.append(", ");
+                }
+            }
+            builder.append(")");
+        }
+    }
+
+    private static void createMultiLandWKT(LandData data, StringBuilder builder) {
+        List<List<LatLng>> tempData = new ArrayList<>(data.getHoles());
+        tempData.add(0,data.getBorder());
+        boolean isEmpty = tempData.isEmpty();
+        if(!isEmpty) {
             builder.append("(");
             for(int i = 0; i < tempData.size(); i++){
                 builder.append("(");

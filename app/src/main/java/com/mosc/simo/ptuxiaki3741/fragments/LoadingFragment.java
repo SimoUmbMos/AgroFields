@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -108,11 +109,37 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             new Thread(()->{
                 try {
                     ArrayList<LandData> data = FileUtil.handleFile(activity,intent);
-                    toMapPreview(activity,data);
+                    if(data.size()>0){
+                        toMapPreview(activity,data);
+                    }else{
+                        if(getActivity() != null){
+                            if(getActivity().getClass() == MainActivity.class){
+                                MainActivity mainActivity = (MainActivity) getActivity();
+                                mainActivity.runOnUiThread(()->{
+                                    Toast.makeText(
+                                            mainActivity,
+                                            getText(R.string.file_input_error),
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                    mainActivity.finish();
+                                });
+                            }
+                        }
+                    }
                 }catch (Exception e){
                     Log.e(TAG, "handleFile: ",e);
                     if(getActivity() != null){
-                        getActivity().runOnUiThread(this::initViewModel);
+                        if(getActivity().getClass() == MainActivity.class){
+                            MainActivity mainActivity = (MainActivity) getActivity();
+                            mainActivity.runOnUiThread(()->{
+                                Toast.makeText(
+                                        mainActivity,
+                                        getText(R.string.file_input_error),
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                                mainActivity.finish();
+                            });
+                        }
                     }
                 }
             }).start();

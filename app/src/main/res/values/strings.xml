@@ -32,6 +32,8 @@
     <string name="tag_input_view_label">Tags:</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Tap again to exit</string>
+    <!-- Loading Fragment -->
+    <string name="file_input_error">Error reading the file</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_zones_button">Zones</string>

@@ -58,7 +58,6 @@
                 <data android:scheme="content" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.geojson" />
-                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -70,7 +69,6 @@
                 <data android:scheme="content" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.json" />
-                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -82,7 +80,6 @@
                 <data android:scheme="content" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.kml" />
-                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -94,7 +91,6 @@
                 <data android:scheme="content" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.shp" />
-                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -106,7 +102,6 @@
                 <data android:scheme="content" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.xml" />
-                <data android:host="*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -118,7 +113,17 @@
                 <data android:scheme="content" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.gml" />
-                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.txt" />
             </intent-filter>
         </activity>
     </application>

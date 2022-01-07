@@ -11,21 +11,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mosc.simo.ptuxiaki3741.broadcast_receivers.CalendarReceiver;
-import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
-import org.apache.commons.validator.routines.EmailValidator;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public final class DataUtil {
     private static final String TAG = "DataUtil";
@@ -49,66 +48,9 @@ public final class DataUtil {
         String ans = string.replaceAll("[,.\r\n]", " ");
         return ans.replaceAll(" +", " ");
     }
-    public static boolean isEmail(String string){
-        return EmailValidator.getInstance().isValid(string);
-    }
-    public static boolean isPhone(String string){
-        String phoneRegex = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
-        return string.matches(phoneRegex);
-    }
     public static boolean isColor(String string){
         String colorRegex = "^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
         return string.matches(colorRegex);
-    }
-    public static boolean isLandDBAction(String string){
-        for(LandDBAction action:LandDBAction.values()){
-            if(action.name().equals(string)){
-                return true;
-            }
-        }
-        return false;
-    }
-    public static boolean isDate(String string){
-        SimpleDateFormat sdf = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss",
-                Locale.getDefault()
-        );
-        try{
-            Date date = sdf.parse(string);
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
-    public static LandDBAction getLandDBAction(String string){
-        for(LandDBAction action:LandDBAction.values()){
-            if(action.name().equals(string)){
-                return action;
-            }
-        }
-        return null;
-    }
-    public static Date getDate(String string){
-        SimpleDateFormat sdf = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss",
-                Locale.getDefault()
-        );
-        Date date;
-        try{
-            date = sdf.parse(string);
-        }catch (Exception e){
-            date = null;
-        }
-        return date;
-    }
-    public static String printDate(Date date){
-        if(date == null)
-            return "";
-        SimpleDateFormat sdf = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss",
-                Locale.getDefault()
-        );
-        return sdf.format(date);
     }
     public static String pointsPrettyPrint(List<List<LatLng>> pointsList){
         List<List<double[]>> ans = new ArrayList<>();
@@ -158,6 +100,24 @@ public final class DataUtil {
             }
         }
         return tempPointList;
+    }
+    public static String inputSteamToString(InputStream is){
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            br.close();
+        }catch (IOException e){
+            Log.e(TAG, "inputSteamToString: ", e);
+            sb = null;
+        }
+        if(sb != null) {
+            return sb.toString();
+        }
+        return "";
     }
     public static void addNotificationToAlertManager(Context ctx, CalendarNotification n){
         if(n == null) return;

@@ -15,7 +15,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-public class KmlFileReader {
+public class KmlReader {
     public static ArrayList<LandData> exec(InputStream is) throws Exception{
         ArrayList<LandData> border_fragment = new ArrayList<>();
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
