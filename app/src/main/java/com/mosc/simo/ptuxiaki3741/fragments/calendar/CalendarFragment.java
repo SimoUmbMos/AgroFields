@@ -13,9 +13,11 @@ import androidx.navigation.NavController;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.kizitonwose.calendarview.model.CalendarDay;
 import com.kizitonwose.calendarview.model.CalendarMonth;
 import com.kizitonwose.calendarview.model.DayOwner;
@@ -46,9 +48,11 @@ import kotlin.Unit;
 
 public class CalendarFragment extends Fragment implements FragmentBackPress {
     private FragmentCalendarBinding binding;
+    private ActionBar actionBar;
     private YearMonth currentMonth;
-    private DayOfWeek firstDayOfWeek;
+    private DayOfWeek[] daysOfWeek;
     private Map<LocalDate, List<CalendarNotification>> notifications;
+    private boolean listView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -72,8 +76,43 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     }
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
+        inflater.inflate(R.menu.calendar_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem grid = menu.findItem(R.id.menu_item_grid_view);
+        MenuItem list = menu.findItem(R.id.menu_item_list_view);
+        grid.setVisible(listView);
+        list.setVisible(!listView);
+        grid.setEnabled(listView);
+        list.setEnabled(!listView);
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case (R.id.menu_item_grid_view):
+                listView = false;
+                if(getActivity() != null){
+                    getActivity().invalidateOptionsMenu();
+                }
+                updateView();
+                return true;
+            case (R.id.menu_item_list_view):
+                listView = true;
+                if(getActivity() != null){
+                    getActivity().invalidateOptionsMenu();
+                }
+                updateView();
+                return true;
+            case (R.id.menu_item_filter):
+                Snackbar.make(binding.getRoot(),"TODO", Snackbar.LENGTH_LONG).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
     @Override
     public boolean onBackPressed() {
@@ -83,22 +122,55 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     private void initData(){
         notifications = new HashMap<>();
         currentMonth = YearMonth.now();
-        firstDayOfWeek = WeekFields.of(Locale.getDefault()).getFirstDayOfWeek();
+        daysOfWeek = daysOfWeekFromLocale();
+        listView = false;
     }
+
+    private DayOfWeek[] daysOfWeekFromLocale() {
+        DayOfWeek firstDayOfWeek = WeekFields.of(Locale.getDefault()).getFirstDayOfWeek();
+        DayOfWeek[] daysOfWeek = DayOfWeek.values();
+        if (firstDayOfWeek != DayOfWeek.MONDAY) {
+            DayOfWeek[] days = new DayOfWeek[7];
+            int index = 0,size = 0;
+            for(int i = 0; i< daysOfWeek.length;i++){
+                if(firstDayOfWeek == daysOfWeek[i]){
+                    index = i;
+                    break;
+                }
+            }
+            for(int i = index; i < daysOfWeek.length;i++){
+                days[size++] = daysOfWeek[i];
+            }
+            for(int i = 0; i < index; i++){
+                days[size++] = daysOfWeek[i];
+            }
+            System.arraycopy(days, 0, daysOfWeek, 0, days.length);
+        }
+        return daysOfWeek;
+    }
+
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                ActionBar actionBar = mainActivity.getSupportActionBar();
+                actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.setTitle(getString(R.string.calendar_fragment_title));
-                    actionBar.hide();
+                    actionBar.show();
                 }
             }
         }
     }
     private void initFragment(){
+        binding.headerPreviousMonth.setOnClickListener(v->{
+            currentMonth = currentMonth.minusMonths(1);
+            onCalendarUpdate();
+        });
+        binding.headerNextMonth.setOnClickListener(v->{
+            currentMonth = currentMonth.plusMonths(1);
+            onCalendarUpdate();
+        });
         binding.fabNewEvent.setOnClickListener(v->toNewEvent(getActivity()));
         binding.calendarView.setDayBinder(new DayBinder<DayViewContainer>() {
             @NonNull
@@ -108,11 +180,12 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             }
             @Override
             public void bind(@NonNull DayViewContainer container, @NonNull CalendarDay day) {
+                container.setText(String.valueOf(day.getDate().getDayOfMonth()));
+                container.setOnClick(v->onDayClick(day.getDate()));
+                LocalDate localDate2 = LocalDate.now();
+                container.setToday(localDate2.equals(day.getDate()));
                 if(day.getOwner() == DayOwner.THIS_MONTH){
-                    container.setText(
-                            String.valueOf(day.getDate().getDayOfMonth())
-                    );
-                    container.setOnClick(v->onDayClick(day.getDate()));
+                    container.setEnable(true);
                     List<CalendarNotification> temp =
                             notifications.getOrDefault(day.getDate(),null);
                     if(temp != null){
@@ -121,9 +194,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
                         container.setBadgeCount(0);
                     }
                 }else{
-                    container.setText("");
-                    container.setOnClick(null);
-                    container.setBadgeCount(0);
+                    container.setEnable(false);
                 }
             }
         });
@@ -136,15 +207,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
 
             @Override
             public void bind(@NonNull MonthHeaderContainer container, @NonNull CalendarMonth month) {
-                container.headerTextView.setText(String.format(Locale.getDefault(), "%s %d",
-                        getMonth(month.getMonth()), month.getYear()
-                ));
-                container.headerPreviousMonth.setOnClickListener(v->
-                        onCalendarUpdate(month.getYearMonth().minusMonths(1))
-                );
-                container.headerNextMonth.setOnClickListener(v->
-                        onCalendarUpdate(month.getYearMonth().plusMonths(1))
-                );
+                container.setDaysHeader(daysOfWeek);
             }
         });
     }
@@ -154,12 +217,22 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             viewModel.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
         }
     }
-    private void onCalendarUpdate(YearMonth currentMonth) {
+    private void onCalendarUpdate() {
         binding.loadingView.setVisibility(View.VISIBLE);
+        if(actionBar != null){
+            actionBar.setTitle(String.format(Locale.getDefault(), "%s %d",
+                    getMonth(currentMonth.getMonth().getValue()), currentMonth.getYear()
+            ));
+        }
+        int sum = 0;
+        for(LocalDate key : notifications.keySet()){
+            if(key.getMonth() == currentMonth.getMonth() && key.getYear() == currentMonth.getYear()) sum++;
+        }
+        binding.headerTextView.setText(String.valueOf(sum));
         binding.calendarView.setupAsync(
                 currentMonth,
                 currentMonth,
-                firstDayOfWeek,
+                daysOfWeek[0],
                 ()->{
                     binding.loadingView.setVisibility(View.GONE);
                     return Unit.INSTANCE;
@@ -169,15 +242,18 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     private void onDayClick(LocalDate date){
         toEventList(getActivity(), date);
     }
+    private void updateView() {
+
+    }
 
     private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
         this.notifications.clear();
         this.notifications.putAll(notifications);
-        onCalendarUpdate(currentMonth);
+        onCalendarUpdate();
     }
 
     private String getMonth(int month) {
-        return new DateFormatSymbols().getMonths()[month-1];
+        return new DateFormatSymbols().getShortMonths()[month-1];
     }
 
     private void toNewEvent(@Nullable Activity activity) {

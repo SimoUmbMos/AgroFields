@@ -156,6 +156,9 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 );
                 PolygonOptions options1 = new PolygonOptions();
                 options1.addAll(land.getData().getBorder());
+                for(List<LatLng> hole : land.getData().getHoles()){
+                    options1.addHole(hole);
+                }
                 options1.strokeColor(strokeColor1);
                 options1.fillColor(fillColor1);
                 options1.clickable(false);

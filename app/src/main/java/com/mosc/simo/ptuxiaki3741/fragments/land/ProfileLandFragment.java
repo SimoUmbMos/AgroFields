@@ -129,10 +129,10 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
         landName = DataUtil.removeSpecialCharacters(landName);
         binding.etLandInfoName.setText(landName);
         if(!landName.isEmpty()){
-            binding.etLandInfoAddressLayout.setError(null);
+            binding.etLandInfoNameLayout.setError(null);
             submit(landName, address);
         }else{
-            binding.etLandInfoAddressLayout.setError(getString(R.string.title_error));
+            binding.etLandInfoNameLayout.setError(getString(R.string.title_error));
         }
     }
     private void submit(String landName, String address) {

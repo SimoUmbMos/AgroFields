@@ -37,6 +37,8 @@
     <!-- Main Menu Fragment -->
     <string name="main_menu_lands_button">Lands</string>
     <string name="main_menu_zones_button">Zones</string>
+    <string name="main_menu_calendar_button">Calendar</string>
+    <string name="main_menu_live_map_button">Live Map</string>
     <string name="iv_desc_land_button">Lands</string>
     <string name="iv_desc_zone_button">Zones</string>
     <string name="main_menu_no_lands">No Land to show.</string>
@@ -73,6 +75,8 @@
     <string name="save_land">Save Land</string>
     <string name="map_view_actions_group_title">Map Actions</string>
     <string name="lock_map">Lock map</string>
+    <string name="show_road_name">Show Road Names</string>
+    <string name="hide_road_name">Hide Road Names</string>
     <string name="points_actions_group_title">Points Actions</string>
     <string name="create_point">Add Point</string>
     <string name="create_between_points">Add Between Points</string>
@@ -177,6 +181,9 @@
     <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_title">Calendar</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_grid_view">Grid View</string>
+    <string name="menu_list_view">List View</string>
     <!-- Calendar Event List Fragment -->
     <string name="calendar_event_list_fragment_title_1">Calendar:</string>
     <string name="calendar_event_list_fragment_title_2">Event\'s</string>
@@ -193,7 +200,7 @@
     <string name="select_time_label">Time</string>
     <string name="select_title_label">Title</string>
     <string name="select_message_label">Message</string>
-    <string name="notification_title_error">Enter Title Or Select a Land</string>
+    <string name="notification_title_error">Enter Title</string>
     <string name="notification_message_error">Enter a message</string>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Live Map Needs Location Permission</string>

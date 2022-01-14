@@ -1,30 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/daysContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:weightSum="6">
-    <Button android:id="@+id/headerPreviousMonth"
-        style="@style/Widget.AppCompat.Button.Borderless"
+    android:weightSum="7">
+
+    <TextView
+        android:id="@+id/day1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
         android:layout_weight="1"
-        android:text="@string/arrow_left" />
-    <TextView android:id="@+id/headerTextView"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
-        android:padding="16dp"
-        android:textSize="26sp"
         android:gravity="center"
-        tools:text="October 2019"/>
-    <Button android:id="@+id/headerNextMonth"
-        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/textColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="SUN" />
+
+
+    <TextView
+        android:id="@+id/day2"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
         android:layout_weight="1"
-        android:text="@string/arrow_right" />
+        android:gravity="center"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/textColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="SUN" />
+
+    <TextView
+        android:id="@+id/day3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/textColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="SUN" />
+
+    <TextView
+        android:id="@+id/day4"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/textColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="SUN" />
+
+    <TextView
+        android:id="@+id/day5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/textColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="SUN" />
+
+    <TextView
+        android:id="@+id/day6"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/textColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="SUN" />
+
+    <TextView
+        android:id="@+id/day7"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/textColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="SUN" />
+
 </LinearLayout>

@@ -39,12 +39,12 @@ public final class AppValues {
     public static final float streetZoom = 16.0f;
     /* Live Map Fragment Values */
     public static final int AnimationRotate = 140;
-    public static final float defaultTilt = 67.5f;
+    public static final float defaultTilt = 62.5f;
     public static final float locationSensitivity = 1.0f;
     public static final float bearingSensitivity = 1.0f;
-    public static final double currPositionSize = 4.0;
-    public static final float currPositionSizeStroke = 6.0f;
-    public static final float personZoom = 18.0f;
+    public static final double currPositionSize = 7.0;
+    public static final float currPositionSizeStroke = 5.0f;
+    public static final float personZoom = 16.8f;
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";

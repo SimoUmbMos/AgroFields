@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_item_list_view"
+        android:orderInCategory="1"
+        android:title="@string/menu_list_view"
+        android:icon="@drawable/ic_menu_list_view"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_item_grid_view"
+        android:orderInCategory="2"
+        android:title="@string/menu_grid_view"
+        android:icon="@drawable/ic_menu_grid_view"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_item_filter"
+        android:orderInCategory="3"
+        android:title="@string/menu_filter"
+        android:icon="@drawable/ic_menu_filter"
+        app:showAsAction="always" />
+</menu>

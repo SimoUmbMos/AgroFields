@@ -85,7 +85,11 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
                 }
 
                 if(locationPermission != LocationStates.DISABLE){
-                    locationHelper.setLocationPermission(locationPermission);
+                    if(locationHelper != null){
+                        locationHelper.setLocationPermission(locationPermission);
+                        locationHelper.getLastKnownLocation();
+                        locationHelper.start();
+                    }
                     startAutoGesture();
                 }else{
                     goBack();
@@ -119,14 +123,14 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     public void onResume() {
         super.onResume();
         binding.mvLiveMap.onResume();
-        if(locationHelper != null) locationHelper.onResume();
+        if(locationHelper != null) locationHelper.start();
         if(orientationHelper != null) orientationHelper.onResume();
     }
     @Override
     public void onPause() {
         super.onPause();
         if(orientationHelper != null) orientationHelper.onPause();
-        if(locationHelper != null) locationHelper.onPause();
+        if(locationHelper != null) locationHelper.stop();
         binding.mvLiveMap.onPause();
     }
     @Override
@@ -357,7 +361,15 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         for(Land land : lands){
             if(MapUtil.contains(position,land.getData().getBorder())){
                 currLand = land;
-                break;
+                for(List<LatLng> hole : land.getData().getHoles()) {
+                    if (MapUtil.contains(position, hole)) {
+                        currLand = null;
+                        break;
+                    }
+                }
+                if(currLand != null) {
+                    break;
+                }
             }
         }
         if(currLand != null){

@@ -20,26 +20,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:mapType="satellite" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnLandTerrain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="16dp"
-            android:alpha="0.75"
-            android:backgroundTint="@android:color/white"
-            android:clickable="true"
-            android:contentDescription="@string/change_terrain_type"
-            android:focusable="true"
-            android:foregroundTint="@android:color/white"
-            android:tint="@android:color/darker_gray"
-            app:backgroundTint="@android:color/white"
-            app:fabSize="mini"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_menu_map_mode"
-            app:tint="@android:color/darker_gray" />
-
         <ImageView
             android:id="@+id/ivLandOverlay"
             android:layout_width="0dp"
@@ -54,7 +34,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
+            app:srcCompat="@android:drawable/ic_menu_gallery"
+            tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clLandControls"
@@ -141,7 +122,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clLandControls" />
+            app:layout_constraintTop_toBottomOf="@+id/clLandControls"
+            tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView android:id="@+id/navLandMenu"
         android:layout_width="wrap_content"

@@ -156,14 +156,23 @@ public class AppViewModel extends AndroidViewModel {
             appRepository.saveLandRecord(landRecord);
             if(zones != null){
                 for(LandZone zone:zones){
-                    if(!MapUtil.notContains(
+                    if(MapUtil.contains(
                             zone.getData().getBorder(),
                             land.getData().getBorder()
                     )){
-                        List<LatLng> tempBorders = MapUtil.intersection(
+                        List<LatLng> tempBorders = DataUtil.removeSamePointStartEnd(
+                            MapUtil.intersection(
                                 zone.getData().getBorder(),
                                 land.getData().getBorder()
+                            )
                         );
+                        for(List<LatLng> hole : land.getData().getHoles()){
+                            if(MapUtil.contains(tempBorders,hole)){
+                                List<LatLng> tempDifference = MapUtil.getBiggerAreaZoneDifference(tempBorders,hole);
+                                tempBorders.clear();
+                                tempBorders.addAll(DataUtil.removeSamePointStartEnd(tempDifference));
+                            }
+                        }
                         if(tempBorders.size()>0){
                             zone.getData().setBorder(tempBorders);
                             appRepository.saveZone(zone);
@@ -187,7 +196,7 @@ public class AppViewModel extends AndroidViewModel {
                 appRepository.saveLandRecord(landRecord);
                 if(zones != null){
                     for(LandZone zone:zones){
-                        if(!MapUtil.notContains(
+                        if(MapUtil.contains(
                                 zone.getData().getBorder(),
                                 land.getData().getBorder()
                         )){

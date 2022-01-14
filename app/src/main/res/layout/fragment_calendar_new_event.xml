@@ -22,45 +22,46 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilSelectLand"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:id="@+id/tilSelectTitle"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/select_land_label"
-            android:labelFor="@id/tvSelectLand">
+            android:hint="@string/select_title_label"
+            android:labelFor="@id/tvSelectTitle"
+            app:errorEnabled="true">
 
-            <AutoCompleteTextView
-                android:id="@+id/tvSelectLand"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvSelectTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="false"
-                android:inputType="none" />
+                android:imeOptions="actionDone"
+                android:inputType="textShortMessage" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilSelectZone"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:id="@+id/tilSelectMessage"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/select_zone_label"
-            android:labelFor="@id/tvSelectZone">
+            android:hint="@string/select_message_label"
+            android:labelFor="@id/tvSelectMessage"
+            app:errorEnabled="true">
 
-            <AutoCompleteTextView
-                android:id="@+id/tvSelectZone"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvSelectMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="false"
-                android:inputType="none" />
+                android:imeOptions="actionDone"
+                android:inputType="textShortMessage" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -108,42 +109,41 @@
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilSelectTitle"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/tilSelectLand"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/select_title_label"
-            android:labelFor="@id/tvSelectTitle"
-            app:errorEnabled="true">
+            android:layout_marginTop="16dp"
+            android:hint="@string/select_land_label"
+            android:labelFor="@id/tvSelectLand">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tvSelectTitle"
+            <AutoCompleteTextView
+                android:id="@+id/tvSelectLand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="false"
-                android:imeOptions="actionDone"
-                android:inputType="textShortMessage" />
+                android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilSelectMessage"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/tilSelectZone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/select_message_label"
-            android:labelFor="@id/tvSelectMessage"
-            app:errorEnabled="true">
+            android:layout_marginTop="16dp"
+            android:hint="@string/select_zone_label"
+            android:labelFor="@id/tvSelectZone">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tvSelectMessage"
+            <AutoCompleteTextView
+                android:id="@+id/tvSelectZone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="false"
-                android:imeOptions="actionDone"
-                android:inputType="textShortMessage" />
+                android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 
     <LinearLayout

@@ -175,11 +175,11 @@ public final class MapUtil {
         }
         return false;
     }
-    public static boolean notContains(List<LatLng> p1,List<LatLng> p2){
+    public static boolean contains(List<LatLng> p1,List<LatLng> p2){
         if(p1 != null && p2 !=null){
             for(LatLng p:p1){
                 if(contains(p,p2))
-                    return false;
+                    return true;
             }
             if(p1.size()>1){
                 List<LatLng> line = new ArrayList<>();
@@ -193,11 +193,11 @@ public final class MapUtil {
                         line.add(p1.get(0));
                     }
                     if(intersects(line,p2))
-                        return false;
+                        return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     public static boolean disjoint(List<LatLng> p1, List<LatLng> p2) {
@@ -331,8 +331,6 @@ public final class MapUtil {
         return intersectionList;
     }
     public static boolean intersects(List<LatLng> p1, List<LatLng> p2) {
-        List<LatLng> intersectionList = new ArrayList<>();
-
         com.esri.arcgisruntime.geometry.Polygon
                 polygon1 = convert(p1),
                 polygon2 = convert(p2);
@@ -345,6 +343,40 @@ public final class MapUtil {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static List<LatLng> getBiggerAreaZoneIntersections(List<LatLng> p1, List<LatLng> p2){
+        List<LatLng> ans = new ArrayList<>();
+        if(!MapUtil.contains(p1,p2)){
+            Log.d(TAG, "getBiggerAreaZoneIntersections: don't contains");
+            return ans;
+        }
+        List<LatLng> tempBorders = MapUtil.intersection(p1,p2);
+        if(tempBorders.size()>0){
+            ans.addAll(tempBorders);
+        }
+        return ans;
+    }
+    public static List<LatLng> getBiggerAreaZoneDifference(List<LatLng> p1, List<LatLng> p2){
+        List<LatLng> ans = new ArrayList<>(p1);
+        if(!MapUtil.contains(p1,p2)){
+            return ans;
+        }
+        List<List<LatLng>> tempBorders = MapUtil.difference(p1,p2);
+        double area,max_area=0;
+        int index = -1;
+        for(int i =0; i<tempBorders.size(); i++){
+            area = MapUtil.area(tempBorders.get(i));
+            if(area>max_area){
+                max_area = area;
+                index = i;
+            }
+        }
+        if(index != -1){
+            ans.clear();
+            ans.addAll(tempBorders.get(index));
+        }
+        return ans;
     }
 
     @Nullable private static com.esri.arcgisruntime.geometry.Polygon convert(List<LatLng> p){

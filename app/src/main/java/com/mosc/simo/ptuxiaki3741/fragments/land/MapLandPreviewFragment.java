@@ -97,6 +97,8 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     private void initMap(GoogleMap googleMap) {
         binding.mvLand.setVisibility(View.INVISIBLE);
         mMap = googleMap;
+        mMap.setMinZoomPreference(AppValues.countryZoom-1);
+        mMap.setMaxZoomPreference(AppValues.streetZoom+1);
         mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);

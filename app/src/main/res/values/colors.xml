@@ -15,4 +15,8 @@
   <color name="accentColor">#205B20</color>
   <color name="rippleColor">#2D9516</color>
   <color name="textColor">#375258</color>
+
+  <color name="cardBackgroundCalendarEnable">#EDEEF0</color>
+  <color name="cardBackgroundCalendarToday">#DCE0E2</color>
+  <color name="cardBackgroundCalendarDisable">#CCD2D4</color>
 </resources>

@@ -37,33 +37,29 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:alpha="0.8"
             android:orientation="horizontal"
-            app:layout_constraintDimensionRatio="w,2:1"
+            android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNote">
 
             <ImageButton
                 android:id="@+id/ibToggleNote"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:backgroundTint="@color/mapButtonBackgroundColor"
                 android:contentDescription="@string/iv_desc_zone_editor_center_camera"
-                android:minHeight="48dp"
                 android:src="@drawable/ic_menu_menu"
                 app:tint="@color/mapButtonTextColor" />
 
             <ImageButton
                 android:id="@+id/ibCenterCamera"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:backgroundTint="@color/mapButtonBackgroundColor"
                 android:contentDescription="@string/iv_desc_zone_editor_center_camera"
-                android:minHeight="48dp"
                 android:src="@drawable/ic_menu_location"
                 app:tint="@color/mapButtonTextColor" />
 

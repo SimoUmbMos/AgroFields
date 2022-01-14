@@ -11,6 +11,13 @@
                 app:iconTint="@color/textColor"
                 android:title="@string/lock_map"
                 app:showAsAction="ifRoom|withText" />
+            <item
+                android:id="@+id/toolbar_action_toggle_map_road_label"
+                android:orderInCategory="2"
+                android:icon="@drawable/ic_button_toggle_route_name"
+                app:iconTint="@color/textColor"
+                android:title="@string/show_road_name"
+                app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
     <item android:title="@string/land_actions_group_title">
@@ -32,6 +39,7 @@
             <item android:id="@+id/toolbar_action_edit_land_color"
                 android:title="@string/edit_land_color"
                 android:orderInCategory="3"
+                android:icon="@drawable/ic_menu_color_palette"
                 app:iconTint="@color/textColor"
                 app:showAsAction="ifRoom|withText" />
             <item

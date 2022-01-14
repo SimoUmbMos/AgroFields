@@ -107,27 +107,10 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
         if(permissionResult){
             Activity activity = getActivity();
             new Thread(()->{
-                try {
-                    ArrayList<LandData> data = FileUtil.handleFile(activity,intent);
-                    if(data.size()>0){
-                        toMapPreview(activity,data);
-                    }else{
-                        if(getActivity() != null){
-                            if(getActivity().getClass() == MainActivity.class){
-                                MainActivity mainActivity = (MainActivity) getActivity();
-                                mainActivity.runOnUiThread(()->{
-                                    Toast.makeText(
-                                            mainActivity,
-                                            getText(R.string.file_input_error),
-                                            Toast.LENGTH_SHORT
-                                    ).show();
-                                    mainActivity.finish();
-                                });
-                            }
-                        }
-                    }
-                }catch (Exception e){
-                    Log.e(TAG, "handleFile: ",e);
+                ArrayList<LandData> data = FileUtil.handleFile(activity,intent);
+                if(data.size()>0){
+                    toMapPreview(activity,data);
+                }else{
                     if(getActivity() != null){
                         if(getActivity().getClass() == MainActivity.class){
                             MainActivity mainActivity = (MainActivity) getActivity();

@@ -18,6 +18,7 @@
             <item android:id="@+id/toolbar_action_change_zone_color"
                 android:title="@string/edit_zone_color"
                 android:orderInCategory="3"
+                android:icon="@drawable/ic_menu_color_palette"
                 app:iconTint="@color/textColor"
                 app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_save_zone"

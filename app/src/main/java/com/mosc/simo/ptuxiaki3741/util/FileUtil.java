@@ -135,46 +135,71 @@ public final class FileUtil {
                 isText(ctx, response) ||
                 isShapeFile(ctx, response);
     }
-    public static ArrayList<LandData> handleFile(Context ctx, Intent result) throws Exception{
+    public static ArrayList<LandData> handleFile(Context ctx, Intent result){
         if(result != null){
             if(fileIsValid(ctx, result)){
                 Uri uri = result.getData();
+                ArrayList<LandData> data = new ArrayList<>();
                 switch (getFileType(ctx, result)){
                     case KML:
-                        return handleKml(ctx, uri);
+                        try{
+                            data.addAll(handleKml(ctx, uri));
+                            return data;
+                        }catch (Exception e){
+                            Log.e(TAG, "handleKml: ", e);
+                        }
+                        break;
                     case SHAPEFILE:
-                        return handleShapeFile(ctx, uri);
+                        try{
+                            data.addAll(handleShapeFile(ctx, uri));
+                            return data;
+                        }catch (Exception e){
+                            Log.e(TAG, "handleShapeFile: ", e);
+                        }
+                        break;
                     case GEOJSON:
-                        return handleJson(ctx, uri);
+                        try{
+                            data.addAll(handleJson(ctx, uri));
+                            return data;
+                        }catch (Exception e){
+                            Log.e(TAG, "handleJson: ", e);
+                        }
+                        break;
                     case GML:
-                        return handleGML(ctx, uri);
+                        try{
+                            data.addAll(handleGML(ctx, uri));
+                            return data;
+                        }catch (Exception e){
+                            Log.e(TAG, "handleGML: ", e);
+                        }
+                        break;
                     case XML:
-                        ArrayList<LandData> dataXML = new ArrayList<>();
                         try{
-                            dataXML.addAll(handleGML(ctx, uri));
+                            data.addAll(handleGML(ctx, uri));
+                            if(data.size()>0){
+                                return data;
+                            }
                         }catch (Exception e){
-                            Log.e(TAG, "handleWKT: ", e);
-                            dataXML.clear();
+                            Log.e(TAG, "handleGML: ", e);
                         }
-                        if(dataXML.size()>0){
-                            return dataXML;
-                        }
+                        data.clear();
                         try{
-                            dataXML.addAll(handleKml(ctx, uri));
+                            data.addAll(handleKml(ctx, uri));
+                            if(data.size()>0){
+                                return data;
+                            }
                         }catch (Exception e){
-                            Log.e(TAG, "handleWKT: ", e);
-                            dataXML.clear();
+                            Log.e(TAG, "handleKml: ", e);
                         }
-                        return dataXML;
+                        break;
                     case TEXT:
-                        ArrayList<LandData> dataText = new ArrayList<>();
                         try{
-                            dataText.addAll(handleWKT(ctx, uri));
+                            data.addAll(handleWKT(ctx, uri));
+                            return data;
                         }catch (Exception e){
                             Log.e(TAG, "handleWKT: ", e);
-                            dataText.clear();
                         }
-                        return dataText;
+                        break;
                 }
             }
         }

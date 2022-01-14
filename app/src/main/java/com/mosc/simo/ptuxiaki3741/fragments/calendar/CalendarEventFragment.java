@@ -306,12 +306,6 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
                 landStrings
         );
         binding.tvSelectLand.setAdapter(adapterLands);
-
-        if(selectedLand.getData() == null){
-            binding.tilSelectTitle.setVisibility(View.VISIBLE);
-        }else{
-            binding.tilSelectTitle.setVisibility(View.GONE);
-        }
     }
     private void updateZoneSelect(){
         binding.tvSelectZone.setText(selectedZone.toString(), false);
@@ -378,16 +372,13 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
             lid = selectedLand.getData().getId();
             if(selectedZone.getData() != null){
                 zid = selectedZone.getData().getId();
-                title = selectedZone.getData().getTitle();
-            }else{
-                title = selectedLand.getData().getTitle();
             }
         }
 
         boolean hasError = false;
         binding.tilSelectTitle.setError(null);
         binding.tilSelectMessage.setError(null);
-        if(title.isEmpty() && lid == null) {
+        if(title.isEmpty()) {
             binding.tilSelectTitle.setError(getString(R.string.notification_title_error));
             hasError = true;
         }

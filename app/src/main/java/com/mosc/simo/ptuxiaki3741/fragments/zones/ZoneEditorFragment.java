@@ -14,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,7 +60,6 @@ import java.util.Map;
 public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "ZoneEditorFragment";
     //todo: make better ui
-    //fixme: points marker are big on zoom
     //fixme: add tags
     private FragmentZoneEditorBinding binding;
     private GoogleMap mMap;
@@ -79,7 +79,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private String title, note;
     private ColorData color,tempColor;
     private List<LatLng> border;
-    private boolean isInit, forceBack, showNote;
+    private boolean forceBack, showNote, mapLoaded, doubleBackToExit;
     private int index1, index2, index3;
 
     private void initData(){
@@ -93,7 +93,8 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         border = new ArrayList<>();
         zonePoints = new ArrayList<>();
 
-        isInit = false;
+        doubleBackToExit = false;
+        mapLoaded = false;
         forceBack = false;
         showNote = false;
         state = ZoneEditorState.NormalState;
@@ -142,13 +143,18 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMinZoomPreference(AppValues.countryZoom-2);
-        mMap.setMaxZoomPreference(AppValues.streetZoom+2);
+        mMap.setMinZoomPreference(AppValues.countryZoom-1);
+        mMap.setMaxZoomPreference(AppValues.streetZoom+1);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-        mMap.setOnMapClickListener(this::onMapClick);
         binding.ibCenterCamera.setOnClickListener(v-> zoomOnLand());
         zoomOnLand();
+        drawLand();
+        mMap.setOnMapLoadedCallback(this::MapLoaded);
+    }
+    private void MapLoaded() {
+        mapLoaded = true;
+        mMap.setOnMapClickListener(this::onMapClick);
         initObservers();
     }
     private void initObservers(){
@@ -157,63 +163,69 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initDrawMap(){
-        if(mMap != null && land != null){
-            zoomOnLand();
-            mMap.clear();
-            zonePolygon = null;
-            zonePoints.clear();
-            int strokeColor;
-            int fillColor;
-            if(land.getData().getBorder().size()>0){
+        if(mMap != null) mMap.clear();
+        drawLand();
+        drawOtherZones();
+        updateUI();
+    }
+    private void drawLand(){
+        if(mMap == null) return;
+        if(land == null) return;
+        zoomOnLand();
+        zonePolygon = null;
+        zonePoints.clear();
+        int strokeColor;
+        int fillColor;
+        if(land.getData().getBorder().size()>0){
+            strokeColor = Color.argb(
+                    AppValues.defaultStrokeAlpha,
+                    land.getData().getColor().getRed(),
+                    land.getData().getColor().getGreen(),
+                    land.getData().getColor().getBlue()
+            );
+            fillColor = Color.argb(
+                    AppValues.defaultFillAlpha,
+                    land.getData().getColor().getRed(),
+                    land.getData().getColor().getGreen(),
+                    land.getData().getColor().getBlue()
+            );
+            PolygonOptions options = LandUtil.getPolygonOptions(
+                    land.getData(),
+                    strokeColor,
+                    fillColor,
+                    false
+            );
+            mMap.addPolygon(options.zIndex(1));
+        }
+    }
+    private void drawOtherZones(){
+        if(mMap == null) return;
+        int strokeColor;
+        int fillColor;
+        PolygonOptions options;
+        for(LandZone tempZone:otherZones){
+            if(tempZone.getData().getBorder().size()>0){
                 strokeColor = Color.argb(
                         AppValues.defaultStrokeAlpha,
-                        land.getData().getColor().getRed(),
-                        land.getData().getColor().getGreen(),
-                        land.getData().getColor().getBlue()
+                        tempZone.getData().getColor().getRed(),
+                        tempZone.getData().getColor().getGreen(),
+                        tempZone.getData().getColor().getBlue()
                 );
                 fillColor = Color.argb(
                         AppValues.defaultFillAlpha,
-                        land.getData().getColor().getRed(),
-                        land.getData().getColor().getGreen(),
-                        land.getData().getColor().getBlue()
+                        tempZone.getData().getColor().getRed(),
+                        tempZone.getData().getColor().getGreen(),
+                        tempZone.getData().getColor().getBlue()
                 );
-                PolygonOptions options = LandUtil.getPolygonOptions(
-                        land.getData(),
+                options = LandUtil.getPolygonOptions(
+                        tempZone.getData(),
                         strokeColor,
                         fillColor,
                         false
                 );
-                mMap.addPolygon(options.zIndex(1));
-                for(LandZone tempZone:otherZones){
-                    if(tempZone.getData().getBorder().size()>0){
-                        strokeColor = Color.argb(
-                                AppValues.defaultStrokeAlpha,
-                                tempZone.getData().getColor().getRed(),
-                                tempZone.getData().getColor().getGreen(),
-                                tempZone.getData().getColor().getBlue()
-                        );
-                        fillColor = Color.argb(
-                                AppValues.defaultFillAlpha,
-                                tempZone.getData().getColor().getRed(),
-                                tempZone.getData().getColor().getGreen(),
-                                tempZone.getData().getColor().getBlue()
-                        );
-                        options = LandUtil.getPolygonOptions(
-                                tempZone.getData(),
-                                strokeColor,
-                                fillColor,
-                                false
-                        );
-                        mMap.addPolygon(options.zIndex(2));
-                    }
-                }
+                mMap.addPolygon(options.zIndex(2));
             }
         }
-        if(zone == null){
-            isInit = true;
-            showTitleDialog();
-        }
-        updateUI();
     }
     private void zoomOnLand(){
         if(mMap != null && land != null){
@@ -234,19 +246,20 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         toggleDrawer(false);
         if(isValidSave()){
             AsyncTask.execute(()->{
-                List<LatLng> temp = new ArrayList<>(getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
+                List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
                 border.clear();
                 border.addAll(temp);
                 for(LandZone zone : otherZones){
                     temp.clear();
-                    temp.addAll(getBiggerAreaZoneDifference(border,zone.getData().getBorder()));
+                    temp.addAll(MapUtil.getBiggerAreaZoneDifference(border,zone.getData().getBorder()));
                     border.clear();
                     border.addAll(temp);
                 }
-                temp.clear();
-                temp.addAll(MapUtil.simplify(border));
-                border.clear();
-                border.addAll(temp);
+                for(List<LatLng> hole : land.getData().getHoles()){
+                    List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
+                    border.clear();
+                    border.addAll(tempBorder);
+                }
                 if(getActivity() != null){
                     getActivity().runOnUiThread(this::updateMap);
                 }
@@ -307,8 +320,8 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     .setPositiveButton(getString(R.string.zone_title_positive),null)
                     .setNegativeButton(getString(R.string.zone_title_negative),(d, w)-> {
                         d.cancel();
-                        if(isInit){
-                            isInit = false;
+                        if(zone == null && title.isEmpty()){
+                            forceBack = true;
                             goBack();
                         }
                     }).create();
@@ -459,6 +472,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private boolean onMenuClick(MenuItem item) {
+        if( !mapLoaded ) return false;
         onStateUpdate(ZoneEditorState.NormalState);
         switch (item.getItemId()){
             case (R.id.menu_item_edit_zone):
@@ -681,8 +695,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 binding.tvNote.setVisibility(View.GONE);
             }
         }
-        if(mMap != null)
+        if(mMap != null) {
             updateMap();
+        }
+        if( zone == null && title.isEmpty() && mapLoaded ){
+            showTitleDialog();
+        }
     }
     private void updateUIBasedOnState() {
         if(actionBar != null){
@@ -778,40 +796,6 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         index3 = -1;
     }
 
-    private List<LatLng> getBiggerAreaZoneIntersections(List<LatLng> p1, List<LatLng> p2){
-        List<LatLng> ans = new ArrayList<>();
-        if(MapUtil.notContains(p1,p2)){
-            Log.d(TAG, "getBiggerAreaZoneIntersections: don't contains");
-            return ans;
-        }
-        List<LatLng> tempBorders = MapUtil.intersection(p1,p2);
-        if(tempBorders.size()>0){
-            ans.addAll(tempBorders);
-        }
-        return ans;
-    }
-    private List<LatLng> getBiggerAreaZoneDifference(List<LatLng> p1, List<LatLng> p2){
-        List<LatLng> ans = new ArrayList<>(p1);
-        if(MapUtil.notContains(p1,p2)){
-            return ans;
-        }
-        List<List<LatLng>> tempBorders = MapUtil.difference(p1,p2);
-        double area,max_area=0;
-        int index = -1;
-        for(int i =0; i<tempBorders.size(); i++){
-            area = MapUtil.area(tempBorders.get(i));
-            if(area>max_area){
-                max_area = area;
-                index = i;
-            }
-        }
-        if(index != -1){
-            ans.clear();
-            ans.addAll(tempBorders.get(index));
-        }
-        return ans;
-    }
-
     private void goBack(){
         forceBack = true;
         if(getActivity() != null)
@@ -865,7 +849,16 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             onStateUpdate(ZoneEditorState.NormalState);
             return false;
         }
-        //todo:check if saved
+        if(zone == null){
+            if (doubleBackToExit) {
+                return true;
+            }
+            doubleBackToExit = true;
+            new Handler().postDelayed(() -> doubleBackToExit=false, AppValues.doubleTapBack);
+            Snackbar.make(binding.getRoot(),getText(R.string.double_tap_exit),Snackbar.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
         return true;
     }
 }
