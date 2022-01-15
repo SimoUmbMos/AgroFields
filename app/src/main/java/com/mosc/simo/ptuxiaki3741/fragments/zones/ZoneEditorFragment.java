@@ -1,10 +1,14 @@
 package com.mosc.simo.ptuxiaki3741.fragments.zones;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -32,6 +36,8 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -40,7 +46,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentZoneEditorBinding;
+import com.mosc.simo.ptuxiaki3741.enums.LocationStates;
 import com.mosc.simo.ptuxiaki3741.enums.ZoneEditorState;
+import com.mosc.simo.ptuxiaki3741.helpers.LocationHelper;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
@@ -76,13 +84,53 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private ZoneEditorState state;
 
+    private List<List<LatLng>> undoList;
+
+    private LocationHelper locationHelperPoint;
+    private Marker positionMarker;
+    private boolean locationPointWasRunning;
+
     private String title, note;
     private ColorData color,tempColor;
     private List<LatLng> border;
     private boolean forceBack, showNote, mapLoaded, doubleBackToExit;
     private int index1, index2, index3;
 
+    private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            result -> {
+                Boolean fineLocationGranted = result.getOrDefault(
+                        Manifest.permission.ACCESS_FINE_LOCATION, false);
+                Boolean coarseLocationGranted = result.getOrDefault(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,false);
+
+                LocationStates locationPermission;
+                if (fineLocationGranted != null && fineLocationGranted){
+                    locationPermission = LocationStates.FINE_LOCATION;
+                }else if(coarseLocationGranted != null && coarseLocationGranted){
+                    locationPermission = LocationStates.COARSE_LOCATION;
+                }else{
+                    locationPermission = LocationStates.DISABLE;
+                }
+
+                if(locationHelperPoint != null){
+                    locationHelperPoint.setLocationPermission(locationPermission);
+                    if(state == ZoneEditorState.AddLocation){
+                        if(locationPermission != LocationStates.DISABLE){
+                            locationHelperPoint.getLastKnownLocation();
+                            locationHelperPoint.start();
+                        }else{
+                            onStateUpdate(ZoneEditorState.NormalState);
+                        }
+                    }
+                }
+            }
+    );
+
     private void initData(){
+        positionMarker = null;
+        locationPointWasRunning = false;
+
         land = null;
         zone = null;
         otherZones = new ArrayList<>();
@@ -127,10 +175,13 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     actionBar.show();
                 }
             }
+            locationHelperPoint = new LocationHelper(getActivity(),this::onLocationUpdate);
         }
     }
     private void initFragment(){
         binding.navZoneMenu.setNavigationItemSelectedListener(this::onMenuClick);
+        binding.ibUndo.setOnClickListener(v->undo());
+        binding.btnClearState.setOnClickListener(v-> onStateUpdate(ZoneEditorState.NormalState));
         binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.ibToggleNote.setOnClickListener(v->toggleNote());
         updateUI();
@@ -147,14 +198,32 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         mMap.setMaxZoomPreference(AppValues.streetZoom+1);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-        binding.ibCenterCamera.setOnClickListener(v-> zoomOnLand());
+        binding.ibCenterCamera.setOnClickListener(v-> {
+            if(state != ZoneEditorState.AddLocation){
+                zoomOnLand();
+            }else{
+                if(positionMarker != null){
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            positionMarker.getPosition(),
+                            mMap.getCameraPosition().zoom
+                    ));
+                }else{
+                    zoomOnLand();
+                }
+            }
+        });
         zoomOnLand();
         drawLand();
         mMap.setOnMapLoadedCallback(this::MapLoaded);
     }
+    @SuppressLint("PotentialBehaviorOverride")
     private void MapLoaded() {
         mapLoaded = true;
         mMap.setOnMapClickListener(this::onMapClick);
+        mMap.setOnMarkerClickListener(marker -> {
+            onMapClick(marker.getPosition());
+            return true;
+        });
         initObservers();
     }
     private void initObservers(){
@@ -167,6 +236,10 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         drawLand();
         drawOtherZones();
         updateUI();
+        locationPermissionRequest.launch(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
     }
     private void drawLand(){
         if(mMap == null) return;
@@ -493,6 +566,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             case (R.id.toolbar_action_zone_add_point):
                 onStateUpdate(ZoneEditorState.AddPoint);
                 return true;
+            case (R.id.toolbar_action_zone_add_point_location):
+                onStateUpdate(ZoneEditorState.AddLocation);
+                return true;
             case (R.id.toolbar_action_zone_add_between_points):
                 if(border.size()>1){
                     onStateUpdate(ZoneEditorState.AddBetweenPoint);
@@ -552,10 +628,33 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     private void onStateUpdate(ZoneEditorState state){
         if(this.state != state){
+            if(this.state == ZoneEditorState.AddLocation){
+                locationHelperPoint.stop();
+                cleanPositionMarker();
+            }
             this.state = state;
+            clearUndo();
             clearIndexBetweenPoint();
             updateUI();
             toggleDrawer(false);
+            if(state == ZoneEditorState.AddLocation){
+                if(locationHelperPoint.getLocationPermission() == LocationStates.DISABLE){
+                    locationPermissionRequest.launch(new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    });
+                }else{
+                    locationHelperPoint.getLastKnownLocation();
+                    locationHelperPoint.start();
+                }
+            }
+        }
+    }
+    private void onLocationUpdate(Location location){
+        if(getActivity() != null){
+            getActivity().runOnUiThread(()->
+                    drawPositionMarker(new LatLng(location.getLatitude(),location.getLongitude()))
+            );
         }
     }
     private void onMapClick(LatLng point) {
@@ -573,6 +672,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 onAddBetweenPoint(point);
                 doMapUpdate = true;
                 break;
+            case AddLocation:
+                if(positionMarker != null){
+                    onAddPoint(positionMarker.getPosition());
+                    doMapUpdate = true;
+                }
+                break;
             case EditPoint:
                 Log.d(TAG, "onMapClick: EditPoint");
                 onEditPoint(point);
@@ -588,6 +693,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             updateMap();
     }
     private void onAddPoint(LatLng point) {
+        addPointsToUndo();
         border.add(point);
     }
     private void onAddBetweenPoint(LatLng point) {
@@ -605,6 +711,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         int index = MapUtil.closestPoint(border,point);
         if(index > -1 && index < border.size()){
             if(AppValues.distanceToMapActionKM >= MapUtil.distanceBetween(border.get(index),point)){
+                addPointsToUndo();
                 border.set(index,point);
             }
         }
@@ -613,6 +720,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         int index = MapUtil.closestPoint(border,point);
         if(index > -1 && index < border.size()){
             if(AppValues.distanceToMapActionKM >= MapUtil.distanceBetween(border.get(index),point)){
+                addPointsToUndo();
                 border.remove(index);
             }
         }
@@ -640,6 +748,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void placePointBetween(LatLng point) {
+        addPointsToUndo();
         if(index2 == (border.size() - 1)){
             if(index1 == 0){
                 index3=border.size();
@@ -656,6 +765,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void editPointBetween(LatLng point) {
+        addPointsToUndo();
         border.set(index3,point);
     }
     private void checkIndexBetween() {
@@ -680,7 +790,42 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         if(reset)
             clearIndexBetweenPoint();
     }
+    private void drawPositionMarker(LatLng currLocation) {
+        if(positionMarker == null){
+            positionMarker = mMap.addMarker(new MarkerOptions()
+                    .position(currLocation)
+                    .draggable(false)
+            );
+        }else{
+            positionMarker.setPosition(currLocation);
+        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                currLocation,
+                mMap.getCameraPosition().zoom
+        ));
+    }
+    private void cleanPositionMarker(){
+        positionMarker.remove();
+        positionMarker = null;
 
+        if(land == null) return;
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        int size = 0;
+        for(LatLng point: land.getData().getBorder()){
+            builder.include(point);
+            size++;
+        }
+        for(LatLng point: border){
+            builder.include(point);
+            size++;
+        }
+        if(size > 0){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                    builder.build(),
+                    AppValues.defaultPadding
+            ));
+        }
+    }
     private void updateUI() {
         updateUIBasedOnState();
         binding.tvNote.setText(note);
@@ -701,12 +846,20 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         if( zone == null && title.isEmpty() && mapLoaded ){
             showTitleDialog();
         }
+        if( state == ZoneEditorState.NormalState){
+            binding.llControlLayout.setVisibility(View.GONE);
+        }else{
+            binding.llControlLayout.setVisibility(View.VISIBLE);
+        }
     }
     private void updateUIBasedOnState() {
         if(actionBar != null){
             switch (state){
                 case AddPoint:
                     actionBar.setTitle(getString(R.string.zone_add_point));
+                    break;
+                case AddLocation:
+                    actionBar.setTitle(getString(R.string.zone_add_location));
                     break;
                 case AddBetweenPoint:
                     String display;
@@ -790,6 +943,28 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
 
+    private void undo(){
+        border.clear();
+        border.addAll(undoList.get(undoList.size()-1));
+        if(undoList.size() > 1){
+            undoList.remove(undoList.size()-1);
+        }
+        if(state == ZoneEditorState.AddBetweenPoint && undoList.size() == 1){
+            clearIndexBetweenPoint();
+        }
+        updateUI();
+    }
+    private void addPointsToUndo(){
+        undoList.add(new ArrayList<>(border));
+    }
+    private void clearUndo(){
+        if(undoList == null){
+            undoList = new ArrayList<>();
+        }else{
+            undoList.clear();
+        }
+        undoList.add(new ArrayList<>(border));
+    }
     private void clearIndexBetweenPoint(){
         index1 = -1;
         index2 = -1;
@@ -823,10 +998,18 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onResume() {
         super.onResume();
+        if(locationPointWasRunning){
+            locationPointWasRunning = false;
+            locationHelperPoint.start();
+        }
         binding.mvZonePreview.onResume();
     }
     @Override public void onPause() {
         super.onPause();
+        if(locationHelperPoint.isRunning()){
+            locationPointWasRunning = true;
+            locationHelperPoint.stop();
+        }
         binding.mvZonePreview.onPause();
     }
     @Override public void onLowMemory() {

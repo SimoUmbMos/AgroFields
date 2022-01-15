@@ -48,7 +48,6 @@ import kotlin.Unit;
 
 public class CalendarFragment extends Fragment implements FragmentBackPress {
     private FragmentCalendarBinding binding;
-    private ActionBar actionBar;
     private YearMonth currentMonth;
     private DayOfWeek[] daysOfWeek;
     private Map<LocalDate, List<CalendarNotification>> notifications;
@@ -154,7 +153,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                actionBar = mainActivity.getSupportActionBar();
+                ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.setTitle(getString(R.string.calendar_fragment_title));
                     actionBar.show();
@@ -219,16 +218,9 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     }
     private void onCalendarUpdate() {
         binding.loadingView.setVisibility(View.VISIBLE);
-        if(actionBar != null){
-            actionBar.setTitle(String.format(Locale.getDefault(), "%s %d",
-                    getMonth(currentMonth.getMonth().getValue()), currentMonth.getYear()
-            ));
-        }
-        int sum = 0;
-        for(LocalDate key : notifications.keySet()){
-            if(key.getMonth() == currentMonth.getMonth() && key.getYear() == currentMonth.getYear()) sum++;
-        }
-        binding.headerTextView.setText(String.valueOf(sum));
+        binding.headerTextView.setText(String.format(Locale.getDefault(), "%s %d",
+                getMonth(currentMonth.getMonth().getValue()), currentMonth.getYear()
+        ));
         binding.calendarView.setupAsync(
                 currentMonth,
                 currentMonth,

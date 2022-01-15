@@ -80,6 +80,7 @@
     <string name="points_actions_group_title">Points Actions</string>
     <string name="create_point">Add Point</string>
     <string name="create_between_points">Add Between Points</string>
+    <string name="create_point_location">Add Point By Location</string>
     <string name="selectFirstPoint">select first point</string>
     <string name="selectSecondPoint">select second point</string>
     <string name="placePoint">place point</string>
@@ -129,6 +130,7 @@
     <string name="edit_zone_title">Change Zone Title</string>
     <string name="zone_border_actions_group_title">Zone Border Actions</string>
     <string name="zone_add_point">Add Point</string>
+    <string name="zone_add_location">Add Point By Location</string>
     <string name="zone_add_between_points">Add Point Between Points</string>
     <string name="zone_add_between_points_1">Select First Point</string>
     <string name="zone_add_between_points_2">Select Second Point</string>
@@ -137,6 +139,8 @@
     <string name="zone_edit_point">Edit Point</string>
     <string name="zone_delete_point">Delete Point</string>
     <string name="zone_title_label">Enter Zone Title</string>
+    <string name="zone_action_undo">Undo</string>
+    <string name="zone_action_done">Done</string>
     <string name="zone_title">Zone Title</string>
     <string name="zone_title_positive">Submit</string>
     <string name="zone_title_negative">Cancel</string>

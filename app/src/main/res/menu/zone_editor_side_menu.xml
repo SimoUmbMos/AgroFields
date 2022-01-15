@@ -43,17 +43,23 @@
                 app:iconTint="@color/textColor"
                 android:orderInCategory="2"
                 app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_zone_add_point_location"
+                android:title="@string/zone_add_location"
+                android:icon="@drawable/ic_drawer_menu_add"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="3"
+                app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_zone_edit_point"
                 android:title="@string/zone_edit_point"
                 android:icon="@drawable/ic_drawer_menu_edit"
                 app:iconTint="@color/textColor"
-                android:orderInCategory="3"
+                android:orderInCategory="4"
                 app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_zone_delete_point"
                 android:title="@string/zone_delete_point"
                 android:icon="@drawable/ic_drawer_menu_delete"
                 app:iconTint="@color/textColor"
-                android:orderInCategory="4"
+                android:orderInCategory="5"
                 app:showAsAction="ifRoom|withText" />
         </menu>
     </item>

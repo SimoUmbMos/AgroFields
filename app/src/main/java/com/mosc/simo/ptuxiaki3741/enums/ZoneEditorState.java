@@ -4,6 +4,7 @@ public enum ZoneEditorState {
     NormalState,
     AddPoint,
     AddBetweenPoint,
+    AddLocation,
     EditPoint,
     DeletePoint
 }

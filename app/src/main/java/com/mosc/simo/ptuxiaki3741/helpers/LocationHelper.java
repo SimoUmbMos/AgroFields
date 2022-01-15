@@ -32,10 +32,13 @@ public class LocationHelper extends ContextWrapper {
     private LocationStates locationPermission;
     private boolean locationUpdateRunning;
     private Location lastLocation;
+    private int interval, fastInterval;
 
     public LocationHelper(Context base, ActionResult<Location> l) {
         super(base);
         this.onLocationUpdate = l;
+        interval = 10000;
+        fastInterval = 1000;
         lastLocation = null;
         locationPermission = LocationStates.DISABLE;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -75,6 +78,30 @@ public class LocationHelper extends ContextWrapper {
             start();
         }
     }
+    public LocationStates getLocationPermission() {
+        return locationPermission;
+    }
+    public void setInterval(int interval) {
+        boolean wasRunning = isRunning();
+        if (wasRunning) {
+            stop();
+        }
+        this.interval = interval;
+        if (wasRunning) {
+            start();
+        }
+    }
+    public void setFastInterval(int fastInterval) {
+        boolean wasRunning = isRunning();
+        if (wasRunning) {
+            stop();
+        }
+        this.fastInterval = fastInterval;
+        if (wasRunning) {
+            start();
+        }
+    }
+
 
     public boolean isRunning() {
         return locationUpdateRunning;
@@ -84,20 +111,14 @@ public class LocationHelper extends ContextWrapper {
         if (isRunning()) {
             stop();
         }
-        switch (locationPermission) {
-            case FINE_LOCATION:
-                if (fusedLocationClient != null) {
-                    startFineLocationUpdates();
-                }
-                break;
-            case COARSE_LOCATION:
-                if (fusedLocationClient != null) {
-                    startCoarseLocationUpdates();
-                }
-                break;
+        if(fusedLocationClient != null){
+            if(locationPermission == LocationStates.FINE_LOCATION){
+                startFineLocationUpdates();
+            }else if(locationPermission == LocationStates.COARSE_LOCATION){
+                startCoarseLocationUpdates();
+            }
         }
     }
-
     public void stop() {
         if (fusedLocationClient == null) return;
 
@@ -125,12 +146,11 @@ public class LocationHelper extends ContextWrapper {
             onLocationUpdate.onActionResult(null);
         }
     }
-
     private void startFineLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationRequest locationRequest = LocationRequest.create()
-                    .setInterval(10000)
-                    .setFastestInterval(1000)
+                    .setInterval(interval)
+                    .setFastestInterval(fastInterval)
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
             mLocationThread = new HandlerThread("Location Thread", Process.THREAD_PRIORITY_MORE_FAVORABLE);
@@ -148,7 +168,7 @@ public class LocationHelper extends ContextWrapper {
     private void startCoarseLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationRequest locationRequest = LocationRequest.create()
-                    .setInterval(10000)
+                    .setInterval(interval)
                     .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
             mLocationThread = new HandlerThread("Location Thread", Process.THREAD_PRIORITY_MORE_FAVORABLE);

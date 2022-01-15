@@ -4,6 +4,7 @@ public enum LandActionStates {
     Disable,
     AddEnd,
     AddBetween,
+    AddLocation,
     Edit,
     Delete,
     ResetAll,

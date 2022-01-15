@@ -37,6 +37,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
@@ -78,13 +80,16 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private GoogleMap mMap;
     private AlertDialog dialog;
 
-    private LocationHelper locationHelper;
+    private LocationHelper locationHelperCamera, locationHelperPoint;
+    private Marker positionMarker;
 
     private List<LatLng> points,startPoints;
     private List<List<LatLng>> holes,startHoles;
     private List<List<LatLng>> undoList;
     private String address;
-    private boolean currLocation;
+    private LatLng startZoomLocation;
+    private float startZoomLevel;
+    private boolean currLocation, locationPointWasRunning;
     private Land currLand;
     private ColorData color, tempColor;
     private String displayTitle;
@@ -112,23 +117,27 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                     locationPermission = LocationStates.DISABLE;
                 }
 
-                if(locationHelper != null){
-                    locationHelper.setLocationPermission(locationPermission);
-                    locationHelper.getLastKnownLocation();
-                }else{
-                    moveCameraOnLocation(null);
+                if(currLocation && points.size() == 0){
+                    if(locationHelperCamera != null){
+                        locationHelperCamera.setLocationPermission(locationPermission);
+                        locationHelperCamera.getLastKnownLocation();
+                    }else{
+                        moveCameraOnLocation(null);
+                    }
+                }
+                if(locationHelperPoint != null){
+                    locationHelperPoint.setLocationPermission(locationPermission);
+                    if(mapStatus == LandActionStates.AddLocation){
+                        if(locationPermission != LocationStates.DISABLE){
+                            locationHelperPoint.getLastKnownLocation();
+                            locationHelperPoint.start();
+                        }else{
+                            setAction(LandActionStates.Disable);
+                        }
+                    }
                 }
             }
     );
-    private void moveCameraOnLocation(Location location) {
-        if(location != null){
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(location.getLatitude(), location.getLongitude()),
-                    AppValues.streetZoom
-            ));
-        }
-        binding.tvLoadingLabel.setVisibility(View.GONE);
-    }
 
     private void onFilePermissionResult(boolean permissionsResult) {
         toggleDrawer(false);
@@ -206,10 +215,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         holes = new ArrayList<>();
         startPoints = new ArrayList<>();
         startHoles = new ArrayList<>();
+        startZoomLocation = null;
+        startZoomLevel = AppValues.countryZoom;
         currLand = null;
         address = null;
         color = AppValues.defaultLandColor;
         currLocation = false;
+        locationPointWasRunning = false;
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLand)) {
                 currLand = getArguments().getParcelable(AppValues.argLand);
@@ -267,7 +279,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                     actionBar.show();
                 }
             }
-            locationHelper = new LocationHelper(getActivity(),this::moveCameraOnLocation);
+            locationHelperCamera = new LocationHelper(getActivity(),this::moveCameraOnLocation);
+            locationHelperPoint = new LocationHelper(getActivity(), this::onLocationUpdate);
         }
     }
     private void initDataToView() {
@@ -296,6 +309,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
 
         binding.mvLand.getMapAsync(this::initMap);
     }
+    @SuppressLint("PotentialBehaviorOverride")
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMinZoomPreference(AppValues.countryZoom-1);
@@ -303,19 +317,23 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.setOnMapClickListener(this::processClick);
+        mMap.setOnMarkerClickListener(marker -> {
+            processClick(marker.getPosition());
+            return true;
+        });
         initLocation();
         binding.mvLand.setVisibility(View.VISIBLE);
     }
     private void initLocation() {
         binding.tvLoadingLabel.setVisibility(View.VISIBLE);
+        locationPermissionRequest.launch(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
         if(points.size() == 0){
-            if(currLocation){
-                locationPermissionRequest.launch(new String[] {
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                });
-            }else{
+            if(!currLocation){
                 moveCameraOnLocation();
             }
         }else{
@@ -350,6 +368,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 return true;
             case (R.id.toolbar_action_add_between):
                 setAction(LandActionStates.AddBetween);
+                return true;
+            case (R.id.toolbar_action_add_location):
+                setAction(LandActionStates.AddLocation);
                 return true;
             case (R.id.toolbar_action_edit):
                 setAction(LandActionStates.Edit);
@@ -496,6 +517,10 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
 
     //map relative
     private void drawMap() {
+        LatLng currPosition = null;
+        if(positionMarker != null){
+            currPosition = positionMarker.getPosition();
+        }
         mMap.clear();
         LandData tempLandData = new LandData(color,points,holes);
         int strokeColor = Color.argb(
@@ -546,6 +571,42 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 }
             }
         }
+        if(currPosition != null){
+            positionMarker = mMap.addMarker(new MarkerOptions()
+                    .position(currPosition)
+            );
+        }
+    }
+    private void drawPositionMarker(LatLng currLocation) {
+        if(positionMarker == null){
+            positionMarker = mMap.addMarker(new MarkerOptions()
+                    .position(currLocation)
+                    .draggable(false)
+            );
+        }else{
+            positionMarker.setPosition(currLocation);
+        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                currLocation,
+                mMap.getCameraPosition().zoom
+        ));
+    }
+    private void cleanPositionMarker(){
+        if(points.size()>0){
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for(LatLng point : points){
+                builder.include(point);
+            }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                    builder.build(),
+                    AppValues.defaultPadding
+            ));
+        }else if(startZoomLocation != null){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startZoomLocation,startZoomLevel));
+        }
+        startZoomLocation = null;
+        positionMarker.remove();
+        positionMarker = null;
     }
     private void zoomOnPoints() {
         if(points.size() > 0){
@@ -605,19 +666,26 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         switch (mapStatus){
             case AddEnd:
                 addPointToEnd(latLng);
+                drawMap();
                 break;
             case AddBetween:
                 addBetweenPoint(latLng);
+                drawMap();
+                break;
+            case AddLocation:
+                if(positionMarker != null){
+                    addPointToEnd(positionMarker.getPosition());
+                    drawMap();
+                }
                 break;
             case Edit:
                 editPoint(latLng);
+                drawMap();
                 break;
             case Delete:
                 deletePoint(latLng);
+                drawMap();
                 break;
-        }
-        if(mapStatus != LandActionStates.Disable){
-            drawMap();
         }
     }
     private void addPointToEnd(LatLng latLng) {
@@ -718,11 +786,23 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         if(reset)
             clearFlags();
     }
+    private void onLocationUpdate(Location location){
+        if(getActivity() != null){
+            getActivity().runOnUiThread(()->drawPositionMarker(new LatLng(location.getLatitude(),location.getLongitude())));
+        }
+    }
 
     //action relative
     private void setAction(LandActionStates mapStatus){
         Log.d(TAG, "setAction: "+mapStatus.name());
         if(this.mapStatus != mapStatus){
+            if(this.mapStatus == LandActionStates.AddLocation){
+                cleanPositionMarker();
+            }else if(this.mapStatus == LandActionStates.EditImg){
+                if(beforeMoveWasLocked){
+                    toggleMapLock();
+                }
+            }
             this.mapStatus = mapStatus;
             if(mapStatus != LandActionStates.Disable){
                 toggleDrawer(false);
@@ -751,6 +831,25 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                         setTitle(getString(R.string.create_between_points));
                         changeTitleBasedOnState();
                         break;
+                    case AddLocation:
+                        if(mMap != null){
+                            startZoomLocation = mMap.getCameraPosition().target;
+                            startZoomLevel = mMap.getCameraPosition().zoom;
+                        } else {
+                            setAction(LandActionStates.Disable);
+                            return;
+                        }
+                        setTitle(getString(R.string.create_point_location));
+                        if(locationHelperPoint.getLocationPermission() == LocationStates.DISABLE){
+                            locationPermissionRequest.launch(new String[] {
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                            });
+                        }else{
+                            locationHelperPoint.getLastKnownLocation();
+                            locationHelperPoint.start();
+                        }
+                        break;
                     case Edit:
                         setTitle(getString(R.string.edit_point));
                         break;
@@ -766,16 +865,16 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         if(mapStatus == LandActionStates.Disable){
             clearTitle();
         }
+        drawMap();
     }
-
     private boolean isImgViewEnable() {
         return binding.ivLandOverlay.getVisibility() == View.VISIBLE;
     }
-
     private void clearFlags() {
         index1 = -1;
         index2 = -1;
         index3 = -1;
+        locationHelperPoint.stop();
     }
     private void saveAction(){
         if(mapStatus != LandActionStates.Disable){
@@ -798,12 +897,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void undo(){
         switch (mapStatus){
-            case AddEnd:
-            case AddBetween:
-            case Edit:
-            case Delete:
-                undoPoints();
-                break;
             case EditImg:
                 binding.ivLandOverlay.animate()
                         .translationX(0)
@@ -819,6 +912,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                         .setDuration(0).start();
                 binding.slAlphaSlider.setValue(50.0f);
                 break;
+            default:
+                undoPoints();
+                break;
         }
     }
     private void addPointsToUndo(){
@@ -830,7 +926,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         if(undoList.size() > 1){
             undoList.remove(undoList.size()-1);
         }
-        clearFlags();
+        if(mapStatus != LandActionStates.AddLocation){
+            clearFlags();
+        }
         changeTitleBasedOnState();
         drawMap();
     }
@@ -916,6 +1014,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 if(!mapIsLocked){
                     toggleMapLock();
                 }
+
                 binding.ivLandOverlay.setOnTouchListener(new MultiTouchListener());
                 Log.d(TAG, "ivLandOverlay: setOnTouchListener MultiTouchListener");
             }else{
@@ -1001,13 +1100,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                         final float zoom = tempZoom;
                         activity.runOnUiThread(()-> {
                             binding.tvLoadingLabel.setVisibility(View.GONE);
-                            if(mMap != null)
+                            if(mMap != null) {
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(
-                                                location.getLatitude(),
-                                                location.getLongitude()),
+                                        new LatLng(location.getLatitude(),location.getLongitude()),
                                         zoom
                                 ));
+                            }
+
                         });
                     }else{
                         activity.runOnUiThread(()-> binding.tvLoadingLabel.setVisibility(View.GONE));
@@ -1017,6 +1116,16 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 }
             });
         }
+    }
+    private void moveCameraOnLocation(Location location) {
+        currLocation = false;
+        if(location != null){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude())
+                    , AppValues.streetZoom
+            ));
+        }
+        binding.tvLoadingLabel.setVisibility(View.GONE);
     }
     private void showColorDialog(){
         if(getContext() != null){
@@ -1151,10 +1260,18 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     @Override public void onResume() {
         super.onResume();
+        if(locationPointWasRunning){
+            locationPointWasRunning = false;
+            locationHelperPoint.start();
+        }
         binding.mvLand.onResume();
     }
     @Override public void onPause() {
         super.onPause();
+        if(locationHelperPoint.isRunning()){
+            locationPointWasRunning = true;
+            locationHelperPoint.stop();
+        }
         binding.mvLand.onPause();
     }
     @Override public void onLowMemory() {
@@ -1176,8 +1293,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             binding.getRoot().closeDrawer(GravityCompat.END);
             return false;
         }
-        if(binding.clLandControls.getVisibility() != View.GONE){
-            clearTitle();
+        if(mapStatus != LandActionStates.Disable){
+            setAction(LandActionStates.Disable);
             return false;
         }
         return true;

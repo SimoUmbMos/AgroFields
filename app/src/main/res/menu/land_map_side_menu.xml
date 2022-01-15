@@ -68,17 +68,24 @@
                 android:title="@string/create_between_points"
                 app:showAsAction="ifRoom|withText" />
             <item
+                android:id="@+id/toolbar_action_add_location"
+                android:icon="@drawable/ic_drawer_menu_add"
+                app:iconTint="@color/textColor"
+                android:orderInCategory="3"
+                android:title="@string/create_point_location"
+                app:showAsAction="ifRoom|withText" />
+            <item
                 android:id="@+id/toolbar_action_edit"
                 android:icon="@drawable/ic_drawer_menu_edit"
                 app:iconTint="@color/textColor"
-                android:orderInCategory="3"
+                android:orderInCategory="4"
                 android:title="@string/edit_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_delete"
                 android:icon="@drawable/ic_drawer_menu_delete"
                 app:iconTint="@color/textColor"
-                android:orderInCategory="4"
+                android:orderInCategory="5"
                 android:title="@string/delete_point"
                 app:showAsAction="ifRoom|withText" />
             <item
