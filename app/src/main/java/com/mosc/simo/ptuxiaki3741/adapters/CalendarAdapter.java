@@ -94,7 +94,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             binding.llEventsContainer.removeAllViews();
             for(CalendarNotification event : e){
                 CalendarListEventView eventView = new CalendarListEventView(binding.getRoot().getContext());
-                eventView.setTitle(event.getTitle());
+                eventView.setTitle(event.toString());
                 eventView.setOnClick(v->ec.onActionResult(event));
                 binding.llEventsContainer.addView(eventView);
             }
