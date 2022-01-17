@@ -184,7 +184,8 @@
     <string name="file_map_fragment_add_action">Click Land To Add</string>
     <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
     <!-- Calendar Fragment -->
-    <string name="calendar_fragment_title">Calendar</string>
+    <string name="calendar_fragment_grid_title">Calendar</string>
+    <string name="calendar_fragment_list_title">Event\'s</string>
     <string name="menu_filter">Filter</string>
     <string name="menu_grid_view">Grid View</string>
     <string name="menu_list_view">List View</string>

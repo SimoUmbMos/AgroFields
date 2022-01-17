@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class AppRepositoryImpl implements AppRepository {
     private final RoomDatabase db;
@@ -64,7 +65,7 @@ public class AppRepositoryImpl implements AppRepository {
     }
     @Override
     public Map<LocalDate, List<CalendarNotification>> getNotifications() {
-        Map<LocalDate, List<CalendarNotification>> ans = new HashMap<>();
+        Map<LocalDate, List<CalendarNotification>> ans = new TreeMap<>();
         List<CalendarNotification> calendarNotifications =
                 db.calendarNotificationDao().getNotifications();
 

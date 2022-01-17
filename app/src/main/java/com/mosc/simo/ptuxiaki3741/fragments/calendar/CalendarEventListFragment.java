@@ -167,7 +167,7 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argNotification, notification);
                 if(nav != null)
-                    nav.navigate(R.id.toCalendarEditEvent, bundle);
+                    nav.navigate(R.id.toCalendarEvent, bundle);
             });
     }
     private void toNewEvent(@Nullable Activity activity) {
@@ -190,7 +190,7 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
                         )
                 );
                 if(nav != null)
-                    nav.navigate(R.id.toCalendarNewEvent, bundle);
+                    nav.navigate(R.id.toCalendarEvent, bundle);
             });
     }
 }

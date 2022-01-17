@@ -13,7 +13,7 @@ import java.util.List;
 
 @Dao
 public interface CalendarNotificationDao {
-    @Query("Select * From CalendarNotification")
+    @Query("Select * From CalendarNotification ORDER BY Date ASC")
     List<CalendarNotification> getNotifications();
 
     @Query("Select * From CalendarNotification Where id = :id")

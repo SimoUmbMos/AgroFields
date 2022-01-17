@@ -146,7 +146,7 @@
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar" >
         <action
-            android:id="@+id/toCalendarNewEvent"
+            android:id="@+id/toCalendarEvent"
             app:destination="@id/CalendarNewEventFragment" />
         <action
             android:id="@+id/toCalendarEventsList"
@@ -158,10 +158,7 @@
         android:label="fragment_calendar_event_list"
         tools:layout="@layout/fragment_calendar_event_list" >
         <action
-            android:id="@+id/toCalendarNewEvent"
-            app:destination="@id/CalendarNewEventFragment" />
-        <action
-            android:id="@+id/toCalendarEditEvent"
+            android:id="@+id/toCalendarEvent"
             app:destination="@id/CalendarNewEventFragment" />
     </fragment>
     <fragment

@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class AppViewModel extends AndroidViewModel {
     public static final String TAG = "LandViewModel";
@@ -124,7 +125,7 @@ public class AppViewModel extends AndroidViewModel {
             notificationsList.clear();
             notificationsList.putAll(appRepository.getNotifications());
         }else{
-            notificationsList = new HashMap<>(appRepository.getNotifications());
+            notificationsList = new TreeMap<>(appRepository.getNotifications());
         }
         notifications.postValue(notificationsList);
     }
