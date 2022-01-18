@@ -76,7 +76,7 @@ public final class OpenXmlDataBaseOutput {
             cell = row.createCell(colNum);
             border = new ArrayList<>(land.getData().getBorder());
             points = new ArrayList<>(land.getData().getHoles());
-            points.add(border);
+            points.add(0,border);
             cell.setCellValue(DataUtil.pointsPrettyPrint(points));
         }
     }
@@ -177,7 +177,7 @@ public final class OpenXmlDataBaseOutput {
             cell = row.createCell(colNum);
             border = new ArrayList<>(land.getData().getBorder());
             points = new ArrayList<>(land.getData().getHoles());
-            points.add(border);
+            points.add(0,border);
             cell.setCellValue(DataUtil.pointsPrettyPrint(points));
         }
     }
