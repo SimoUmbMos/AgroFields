@@ -5,10 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_map_item_height"
     android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
-    android:layout_marginEnd="?android:attr/listPreferredItemPaddingEnd"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="?android:attr/listPreferredItemPaddingEnd"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/cardBackgroundColor">
+    app:cardBackgroundColor="@color/cardBackgroundColor"
+    app:cardElevation="6dp"
+    app:strokeColor="@color/textColor"
+    app:strokeWidth="1dp">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,13 +21,13 @@
             android:id="@+id/mapView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:cameraZoom="0"
             app:layout_constraintBottom_toTopOf="@+id/titleLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:liteMode="true"
-            app:cameraZoom="0"
-            app:mapType="satellite"/>
+            app:mapType="satellite" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/titleLayout"
@@ -38,7 +42,7 @@
                 android:id="@+id/ctvLandName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceListItem"
