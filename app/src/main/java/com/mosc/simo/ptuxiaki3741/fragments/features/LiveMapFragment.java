@@ -379,28 +379,34 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         if(waitUserStop){
             hasUpdate = true;
             return;
+        }else{
+            hasUpdate = false;
         }
 
-        hasUpdate = false;
         mMap.stopAnimation();
+        CameraPosition position;
+        int animation;
         if (rotate) {
-            CameraPosition position = new CameraPosition.Builder()
+            position = new CameraPosition.Builder()
                     .target(currPosition.getCenter())
                     .bearing(currBearing)
                     .tilt(mMap.getCameraPosition().tilt)
                     .zoom(mMap.getCameraPosition().zoom)
                     .build();
-            mMap.animateCamera(
-                    CameraUpdateFactory.newCameraPosition(position),
-                    AppValues.AnimationRotate,
-                    null);
+            animation = AppValues.AnimationRotate;
         }else{
-            mMap.animateCamera(
-                    CameraUpdateFactory.newLatLng(currPosition.getCenter()),
-                    AppValues.AnimationMove,
-                    null
-            );
+            position = new CameraPosition.Builder()
+                    .target(currPosition.getCenter())
+                    .bearing(mMap.getCameraPosition().bearing)
+                    .tilt(mMap.getCameraPosition().tilt)
+                    .zoom(mMap.getCameraPosition().zoom)
+                    .build();
+            animation = AppValues.AnimationMove;
         }
+        mMap.animateCamera(
+                CameraUpdateFactory.newCameraPosition(position),
+                animation,
+                null);
     }
 
     private void CheckInsidePolygon(LatLng position) {
