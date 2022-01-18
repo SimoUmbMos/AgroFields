@@ -62,6 +62,8 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
 
     private LocationHelper locationHelper;
     private SensorOrientationHelper orientationHelper;
+    private double lastZoom;
+    private boolean waitUserStop, hasUpdate;
 
     private Circle currPosition;
     private float currBearing;
@@ -151,6 +153,10 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     private void initData() {
         lands = new ArrayList<>();
         zones = new HashMap<>();
+        lastZoom = -1.0;
+        currBearing = 0;
+        waitUserStop = false;
+        hasUpdate = false;
     }
     private void initActivity() {
         if (getActivity() != null) {
@@ -186,14 +192,46 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
 
         mMap = googleMap;
 
-        mMap.setMinZoomPreference(AppValues.personZoom);
-        mMap.setMaxZoomPreference(AppValues.personZoom);
+        mMap.setMinZoomPreference(AppValues.personZoom - 1.0f);
+        mMap.setMaxZoomPreference(AppValues.personZoom + 2.0f);
+
+        mMap.setOnCameraMoveListener(() -> {
+            if(currPosition != null){
+                double zoom = mMap.getCameraPosition().zoom - AppValues.personZoom + 2.0f;
+                if(lastZoom < 0 || lastZoom != zoom){
+                    lastZoom = zoom;
+                    currPosition.setRadius(AppValues.currPositionSize / lastZoom);
+                }
+            }
+        });
+        mMap.setOnCameraMoveStartedListener(id->{
+            if(id != GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION){
+                waitUserStop = true;
+            }
+        });
+        mMap.setOnCameraIdleListener(() -> {
+            if(currPosition != null){
+                if(waitUserStop){
+                    waitUserStop = false;
+                    if(hasUpdate){
+                        hasUpdate = false;
+                        moveCameraToCurrPosition(true);
+                    }
+                }else if(currPosition.getCenter() != mMap.getCameraPosition().target){
+                    moveCameraToCurrPosition(true);
+                }
+            }
+        });
 
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        mMap.getUiSettings().setAllGesturesEnabled(false);
+        mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
+        mMap.getUiSettings().setScrollGesturesEnabled(true);
+        mMap.getUiSettings().setTiltGesturesEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
+        mMap.getUiSettings().setRotateGesturesEnabled(true);
 
         onMapUpdate();
 
@@ -295,7 +333,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
 
                     currPosition = mMap.addCircle(new CircleOptions()
                             .center(position)
-                            .radius(AppValues.currPositionSize)
+                            .radius(AppValues.currPositionSize / 2.0)
                             .strokeWidth(AppValues.currPositionSizeStroke)
                             .fillColor(AppValues.defaultPersonColorFill)
                             .strokeColor(AppValues.defaultPersonColorStroke)
@@ -338,21 +376,31 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     private void moveCameraToCurrPosition(boolean rotate) {
         if(mMap == null) return;
         if(currPosition == null) return;
-
-        mMap.stopAnimation();
-        if (!rotate) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(currPosition.getCenter()));
+        if(waitUserStop){
+            hasUpdate = true;
+            return;
         }
-        CameraPosition position = new CameraPosition.Builder()
-                .target(currPosition.getCenter())
-                .bearing(currBearing)
-                .tilt(mMap.getCameraPosition().tilt)
-                .zoom(mMap.getCameraPosition().zoom)
-                .build();
-        mMap.animateCamera(
-                CameraUpdateFactory.newCameraPosition(position),
-                AppValues.AnimationRotate,
-                null);
+
+        hasUpdate = false;
+        mMap.stopAnimation();
+        if (rotate) {
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(currPosition.getCenter())
+                    .bearing(currBearing)
+                    .tilt(mMap.getCameraPosition().tilt)
+                    .zoom(mMap.getCameraPosition().zoom)
+                    .build();
+            mMap.animateCamera(
+                    CameraUpdateFactory.newCameraPosition(position),
+                    AppValues.AnimationRotate,
+                    null);
+        }else{
+            mMap.animateCamera(
+                    CameraUpdateFactory.newLatLng(currPosition.getCenter()),
+                    AppValues.AnimationMove,
+                    null
+            );
+        }
     }
 
     private void CheckInsidePolygon(LatLng position) {
