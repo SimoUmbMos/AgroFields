@@ -35,13 +35,17 @@
     <!-- Loading Fragment -->
     <string name="file_input_error">Error reading the file</string>
     <!-- Main Menu Fragment -->
-    <string name="main_menu_lands_button">Lands</string>
-    <string name="main_menu_zones_button">Zones</string>
-    <string name="main_menu_calendar_button">Calendar</string>
+    <string name="main_menu_lands_button">My Land\'s</string>
+    <string name="main_menu_zones_button">My Zone\'s</string>
     <string name="main_menu_live_map_button">Live Map</string>
-    <string name="iv_desc_land_button">Lands</string>
-    <string name="iv_desc_zone_button">Zones</string>
-    <string name="main_menu_no_lands">No Land to show.</string>
+    <string name="main_menu_calendar_button">My Event\'s</string>
+    <string name="dashboard_title">My Dashboard</string>
+    <string name="singular_land_count_title">Land</string>
+    <string name="plural_land_count_title">Land\'s</string>
+    <string name="singular_zone_count_title">Zone</string>
+    <string name="plural_zone_count_title">Zone\'s</string>
+    <string name="singular_event_count_title">Event</string>
+    <string name="plural_event_count_title">Event\'s</string>
     <!-- Land Menu Fragment -->
     <string name="contextual_menu_land_label">Select Land\'s</string>
     <string name="select_all">Select All</string>

@@ -21,6 +21,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/divider_transparent_vertical.xml" value="0.27760416666666665" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_account_place_holder.xml" value="0.3880208333333333" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_calendar.xml" value="0.3148148148148148" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_check.xml" value="0.27760416666666665" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_contacts.xml" value="0.382051282051282" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_history.xml" value="0.22552083333333334" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_button_lands.xml" value="0.22552083333333334" />
@@ -40,6 +41,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_edit.xml" value="0.3712962962962963" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_import.xml" value="0.382051282051282" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_map_locked.xml" value="0.382051282051282" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_move_img.xml" value="0.27760416666666665" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_remove_img.xml" value="0.382051282051282" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_icon.xml" value="0.382051282051282" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_item_check.xml" value="0.22552083333333334" />
@@ -57,6 +59,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add.xml" value="0.26666666666666666" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add_request.xml" value="0.3880208333333333" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add_request_notification.xml" value="0.3880208333333333" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_arrow.xml" value="0.3880208333333333" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_close.xml" value="0.3880208333333333" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_color_palette.xml" value="0.3148148148148148" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_contacts_list.xml" value="0.3880208333333333" />
@@ -265,5 +268,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.30601092896174864" />
+      </ProjectState>
+    </option>
   </component>
 </project>

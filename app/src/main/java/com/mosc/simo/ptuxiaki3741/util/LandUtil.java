@@ -1,11 +1,14 @@
 package com.mosc.simo.ptuxiaki3741.util;
 
+import android.graphics.Color;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,11 +171,48 @@ public final class LandUtil {
         options.clickable(isClickable);
         options.strokeColor(strokeColor);
         options.fillColor(fillColor);
+        options.zIndex(1);
         for(List<LatLng> hole : landData.getHoles()){
             if(hole.size()>0)
                 options.addHole(hole);
         }
         return options;
+    }
+    public static PolygonOptions getPolygonOptions(
+            LandData landData,
+            boolean isClickable
+    ){
+        int strokeColor = Color.argb(
+                AppValues.defaultStrokeAlpha,
+                landData.getColor().getRed(),
+                landData.getColor().getGreen(),
+                landData.getColor().getBlue()
+        );
+        int fillColor = Color.argb(
+                AppValues.defaultFillAlpha,
+                landData.getColor().getRed(),
+                landData.getColor().getGreen(),
+                landData.getColor().getBlue()
+        );
+        return getPolygonOptions(landData, strokeColor, fillColor, isClickable);
+    }
+    public static PolygonOptions getPolygonOptions(
+            LandZoneData zoneData,
+            boolean isClickable
+    ){
+        int strokeColor = Color.argb(
+                AppValues.defaultStrokeAlpha,
+                zoneData.getColor().getRed(),
+                zoneData.getColor().getGreen(),
+                zoneData.getColor().getBlue()
+        );
+        int fillColor = Color.argb(
+                AppValues.defaultFillAlpha,
+                zoneData.getColor().getRed(),
+                zoneData.getColor().getGreen(),
+                zoneData.getColor().getBlue()
+        );
+        return getPolygonOptions(zoneData,strokeColor,fillColor,isClickable);
     }
     public static PolygonOptions getPolygonOptions(
             LandZoneData zoneData,
@@ -189,6 +229,7 @@ public final class LandUtil {
         options.clickable(isClickable);
         options.strokeColor(strokeColor);
         options.fillColor(fillColor);
+        options.zIndex(2);
         return options;
     }
 }

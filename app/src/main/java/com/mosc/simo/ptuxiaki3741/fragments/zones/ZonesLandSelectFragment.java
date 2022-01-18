@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.MapView;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandListAdapter;
@@ -55,18 +56,15 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
         }
     }
     private void initFragment() {
+        binding.tvZoneLandListActionLabel.setText(getResources().getString(R.string.empty_list));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false
         );
-        adapter = new LandListAdapter(data,this::onLandClick);
-
-        binding.tvZoneLandListActionLabel.setText(getResources().getString(R.string.empty_list));
-
-        binding.rvZoneLandList.setHasFixedSize(true);
         binding.rvZoneLandList.setLayoutManager(layoutManager);
-        binding.rvZoneLandList.setAdapter(adapter);
+        binding.rvZoneLandList.setHasFixedSize(true);
+        adapter = new LandListAdapter(data,this::onLandClick);
     }
     private void initViewModel() {
         if(getActivity() != null){
@@ -133,5 +131,38 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
     }
     @Override public boolean onBackPressed() {
         return true;
+    }
+    @Override public void onLowMemory() {
+        super.onLowMemory();
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onLowMemory();
+            }
+        }
+    }
+    @Override public void onPause() {
+        super.onPause();
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onPause();
+            }
+        }
+    }
+    @Override public void onResume() {
+        super.onResume();
+        binding.rvZoneLandList.setAdapter(adapter);
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onResume();
+            }
+        }
+    }
+    @Override public void onDestroy() {
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onDestroy();
+            }
+        }
+        super.onDestroy();
     }
 }

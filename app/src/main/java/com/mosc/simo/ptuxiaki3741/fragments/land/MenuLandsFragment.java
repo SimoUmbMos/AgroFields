@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -97,6 +98,39 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
             return true;
         }
     }
+    @Override public void onLowMemory() {
+        super.onLowMemory();
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onLowMemory();
+            }
+        }
+    }
+    @Override public void onPause() {
+        super.onPause();
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onPause();
+            }
+        }
+    }
+    @Override public void onResume() {
+        super.onResume();
+        binding.rvLandList.setAdapter(adapter);
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onResume();
+            }
+        }
+    }
+    @Override public void onDestroy() {
+        if (adapter != null) {
+            for (MapView m : adapter.getMapViews()) {
+                m.onDestroy();
+            }
+        }
+        super.onDestroy();
+    }
 
     //init
     private void initActivity() {
@@ -124,7 +158,6 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                 this::onLandClick,
                 this::onLandLongClick
         );
-        binding.rvLandList.setAdapter(adapter);
     }
     private void initViewModel() {
         if(getActivity() != null){

@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,50 +13,30 @@ import androidx.navigation.NavController;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.util.LandUtil;
+import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
-import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MenuMainFragment extends Fragment implements FragmentBackPress {
-    private AppViewModel vmLands;
-    private List<Polygon> landPolygons,zonesPolygons;
-    private List<Land> data1;
-    private Map<Long,List<LandZone>> data2;
-    private GoogleMap mMap;
-    private boolean  firstLoad;
-
     private FragmentMenuMainBinding binding;
 
     //init
-    private void initData(){
-        landPolygons = new ArrayList<>();
-        zonesPolygons = new ArrayList<>();
-        data1 = new ArrayList<>();
-        data2 = new HashMap<>();
-        firstLoad = true;
-    }
     private void initActivity() {
         MainActivity mainActivity = (MainActivity) getActivity();
         ActionBar actionBar = null;
@@ -67,153 +46,92 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         }
         if(actionBar != null){
             actionBar.setTitle("");
-            actionBar.show();
+            actionBar.hide();
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setDisplayShowHomeEnabled(false);
         }
     }
     private void initViewModels() {
         if(getActivity() != null){
-            vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
+            vmLands.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
+            vmLands.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
         }
     }
     private void initFragment() {
-        binding.mainMenuAction.setVisibility(View.VISIBLE);
-        binding.mainMenuAction.setText(getString(R.string.loading_label));
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
         binding.btnZones.setOnClickListener(v -> toLandsZone(getActivity()));
-        binding.btnContacts.setOnClickListener(v -> toUserContacts(getActivity()));
-        binding.btnSettings.setOnClickListener(v -> toCalendar(getActivity()));
-        binding.mvLands.setClickable(false);
-        binding.mvLands.getMapAsync(this::initMap);
-    }
-    private void initMap(GoogleMap googleMap){
-        binding.mvLands.setVisibility(View.INVISIBLE);
-        mMap = googleMap;
-        mMap.getUiSettings().setAllGesturesEnabled(false);
-        mMap.setOnMapClickListener(P->toUserContacts(getActivity()));
-        initLandObservers();
-    }
-    private void initLandObservers() {
-        if(vmLands != null){
-            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
-            vmLands.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
-        }
+        binding.btnLiveMap.setOnClickListener(v -> toLiveMap(getActivity()));
+        binding.btnCalendar.setOnClickListener(v -> toCalendar(getActivity()));
+        binding.ibSettings.setOnClickListener(v-> toSettings(getActivity()));
+        LocalDate now = LocalDate.now();
+        String day =  now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()) +
+                " " +
+                now.getDayOfMonth();
+        String monthYear = new DateFormatSymbols().getShortMonths()[now.getMonth().getValue() - 1] +
+                        " " +
+                        now.getYear();
+        binding.tvCalendarTodayDay.setText(day);
+        binding.tvCalendarTodayMonthYear.setText(monthYear);
     }
 
 
     //observers
-    private void onLandUpdate(List<Land> newData) {
-        data1.clear();
-        if(newData != null){
-            data1.addAll(newData);
+    private void onLandUpdate(List<Land> lands) {
+        int landsNumber = 0;
+        if(lands != null){
+            landsNumber = lands.size();
         }
-        drawMapLands();
-        if(firstLoad){
-            firstLoad = false;
-            binding.mainMenuAction.setText(getString(R.string.main_menu_no_lands));
+        StringBuilder builder = new StringBuilder();
+        builder.append(landsNumber).append(" ");
+        if(landsNumber == 1){
+            builder.append(getString(R.string.singular_land_count_title));
+        }else{
+            builder.append(getString(R.string.plural_land_count_title));
         }
+        binding.tvLandCount.setText(builder.toString());
     }
-    private void onLandZoneUpdate(Map<Long,List<LandZone>> newData) {
-        data2.clear();
-        if(newData != null){
-            data2.putAll(newData);
+    private void onLandZoneUpdate(Map<Long,List<LandZone>> zones) {
+        int zonesNumber = 0;
+        if(zones != null){
+            for(Long key : zones.keySet()){
+                List<LandZone> temp = zones.getOrDefault(key,null);
+                if(temp != null){
+                    zonesNumber = zonesNumber + temp.size();
+                }
+            }
         }
-        drawMapZones();
+        StringBuilder builder = new StringBuilder();
+        builder.append(zonesNumber).append(" ");
+        if(zonesNumber == 1){
+            builder.append(getString(R.string.singular_zone_count_title));
+        }else{
+            builder.append(getString(R.string.plural_zone_count_title));
+        }
+        binding.tvZoneCount.setText(builder.toString());
     }
-
-    //map
-    private void drawMapLands(){
-        if(mMap != null){
-            if(landPolygons.size()>0){
-                for(Polygon polygon:landPolygons){
-                    polygon.remove();
-                }
-                landPolygons.clear();
-            }
-            if(data1.size()>0){
-                int size = 0;
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                for(Land land:data1){
-                    int strokeColor = Color.argb(
-                            AppValues.defaultStrokeAlpha,
-                            land.getData().getColor().getRed(),
-                            land.getData().getColor().getGreen(),
-                            land.getData().getColor().getBlue()
-                    );
-                    int fillColor = Color.argb(
-                            AppValues.defaultFillAlpha,
-                            land.getData().getColor().getRed(),
-                            land.getData().getColor().getGreen(),
-                            land.getData().getColor().getBlue()
-                    );
-                    PolygonOptions options = LandUtil.getPolygonOptions(
-                            land.getData(),
-                            strokeColor,
-                            fillColor,
-                            false
-                    );
-                    if(options != null){
-                        landPolygons.add(mMap.addPolygon(options.zIndex(1)));
-                    }
-                    for(LatLng point: land.getData().getBorder()){
-                        builder.include(point);
-                        size++;
-                    }
-                }
-                if(size > 0){
-                    binding.mvLands.setVisibility(View.VISIBLE);
-                    binding.mainMenuAction.setVisibility(View.GONE);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                            builder.build(),
-                            AppValues.defaultPadding
-                    ));
-                }else{
-                    binding.mvLands.setVisibility(View.INVISIBLE);
-                    binding.mainMenuAction.setVisibility(View.VISIBLE);
-                }
-            }else{
-                binding.mvLands.setVisibility(View.INVISIBLE);
-                binding.mainMenuAction.setVisibility(View.VISIBLE);
+    private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
+        int todayEventsNumber = 0;
+        if(notifications != null){
+            List<CalendarNotification> todayEvents = notifications.getOrDefault(LocalDate.now(),null);
+            if(todayEvents != null){
+                todayEventsNumber = todayEvents.size();
             }
         }
-    }
-    private void drawMapZones(){
-        if(mMap != null){
-            if(zonesPolygons.size()>0){
-                for(Polygon polygon:zonesPolygons){
-                    polygon.remove();
-                }
-                zonesPolygons.clear();
-            }
-            if(data2.size()>0){
-                data2.forEach((k,v)->{
-                    for(LandZone zone : v){
-                        int strokeColor = Color.argb(
-                                AppValues.defaultStrokeAlpha,
-                                zone.getData().getColor().getRed(),
-                                zone.getData().getColor().getGreen(),
-                                zone.getData().getColor().getBlue()
-                        );
-                        int fillColor = Color.argb(
-                                AppValues.defaultFillAlpha,
-                                zone.getData().getColor().getRed(),
-                                zone.getData().getColor().getGreen(),
-                                zone.getData().getColor().getBlue()
-                        );
-                        PolygonOptions options = LandUtil.getPolygonOptions(
-                                zone.getData(),
-                                strokeColor,
-                                fillColor,
-                                false
-                        );
-                        if(options != null){
-                            zonesPolygons.add(mMap.addPolygon(options.zIndex(2)));
-                        }
-                    }
-                });
-            }
+        StringBuilder builder = new StringBuilder();
+        if(todayEventsNumber > 999){
+            builder.append("999+");
+        }else{
+            builder.append(todayEventsNumber);
         }
+        builder.append(" ");
+        if(todayEventsNumber == 1){
+            builder.append(getString(R.string.singular_event_count_title));
+        }else{
+            builder.append(getString(R.string.plural_event_count_title));
+        }
+        binding.tvCalendarTodayEventCount.setText(builder.toString());
     }
 
     //navigation
@@ -241,7 +159,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                     nav.navigate(R.id.toAppSettings);
             });
     }
-    public void toUserContacts(@Nullable Activity activity) {
+    public void toLiveMap(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
@@ -262,47 +180,22 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                                        Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         binding = FragmentMenuMainBinding.inflate(inflater,container, false);
-        binding.mvLands.onCreate(savedInstanceState);
         return binding.getRoot();
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
         initActivity();
-        initViewModels();
         initFragment();
+        initViewModels();
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
-        binding.mvLands.onDestroy();
         binding = null;
     }
-    @Override public void onResume() {
-        super.onResume();
-        binding.mvLands.onResume();
-    }
-    @Override public void onPause() {
-        super.onPause();
-        binding.mvLands.onPause();
-    }
-    @Override public void onLowMemory() {
-        super.onLowMemory();
-        binding.mvLands.onLowMemory();
-    }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main_menu_menu, menu);
+        inflater.inflate(R.menu.empty_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_item_settings){
-            toSettings(getActivity());
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override public boolean onBackPressed() {
         return true;
     }

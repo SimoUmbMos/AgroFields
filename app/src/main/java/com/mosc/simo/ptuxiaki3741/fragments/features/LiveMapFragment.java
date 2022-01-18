@@ -63,7 +63,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     private LocationHelper locationHelper;
     private SensorOrientationHelper orientationHelper;
     private double lastZoom;
-    private boolean waitUserStop, hasUpdate;
+    private boolean waitUserStop;
 
     private Circle currPosition;
     private float currBearing;
@@ -156,7 +156,6 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         lastZoom = -1.0;
         currBearing = 0;
         waitUserStop = false;
-        hasUpdate = false;
     }
     private void initActivity() {
         if (getActivity() != null) {
@@ -213,10 +212,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
             if(currPosition != null){
                 if(waitUserStop){
                     waitUserStop = false;
-                    if(hasUpdate){
-                        hasUpdate = false;
-                        moveCameraToCurrPosition(true);
-                    }
+                    moveCameraToCurrPosition(true);
                 }else if(currPosition.getCenter() != mMap.getCameraPosition().target){
                     moveCameraToCurrPosition(true);
                 }
@@ -377,10 +373,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         if(mMap == null) return;
         if(currPosition == null) return;
         if(waitUserStop){
-            hasUpdate = true;
             return;
-        }else{
-            hasUpdate = false;
         }
 
         mMap.stopAnimation();
