@@ -39,6 +39,7 @@
     <string name="main_menu_zones_button">My Zone\'s</string>
     <string name="main_menu_live_map_button">Live Map</string>
     <string name="main_menu_calendar_button">My Event\'s</string>
+    <string name="main_menu_tag_button">Manage Tag\'s</string>
     <string name="dashboard_title">My Dashboard</string>
     <string name="singular_land_count_title">Land</string>
     <string name="plural_land_count_title">Land\'s</string>
@@ -154,8 +155,10 @@
     <string name="note_max_line_error">Note Max Line: 2</string>
     <string name="note_max_char_error">Note Max Characters: 100</string>
     <string name="zone_border_error">Zone must be 3 points minimum</string>
+    <string name="zone_saved">Zone saved</string>
+    <string name="zone_no_need_save">Zone don\'t need save</string>
+    <string name="zone_no_valid">Zone isn\'t valid to save</string>
     <string name="zone_null_error">Something has goes wrong, try recreate the zone</string>
-    <string name="zone_saved">Zone Saved</string>
     <string name="iv_desc_zone_editor_center_camera">center camera button</string>
     <string name="pick_color">Pick Color</string>
     <string name="edit_zone_color">Change Zone Color</string>

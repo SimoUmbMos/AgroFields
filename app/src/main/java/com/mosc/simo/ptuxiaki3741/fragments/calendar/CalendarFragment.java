@@ -2,6 +2,8 @@ package com.mosc.simo.ptuxiaki3741.fragments.calendar;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -61,6 +63,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     private LinkedHashMap<LocalDate, List<CalendarNotification>> listData;
     private CalendarAdapter adapter;
     private CalendarShowFilter showFilter;
+    private SharedPreferences sharedPref;
     private boolean listView;
 
     @Override
@@ -140,6 +143,8 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
                     actionBar.setTitle(getString(R.string.calendar_fragment_grid_title));
                     actionBar.show();
                 }
+                sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
+                listView = sharedPref.getBoolean(AppValues.argListView,false);
             }
         }
     }
@@ -238,6 +243,11 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     }
     private void onListViewUpdate(boolean isList){
         listView = isList;
+        if(sharedPref != null){
+            SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
+            sharedPrefEditor.putBoolean(AppValues.argListView,listView);
+            sharedPrefEditor.apply();
+        }
         if(getActivity() != null){
             getActivity().invalidateOptionsMenu();
         }

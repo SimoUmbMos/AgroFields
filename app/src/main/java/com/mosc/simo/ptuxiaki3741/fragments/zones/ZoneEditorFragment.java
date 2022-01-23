@@ -317,44 +317,74 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private void saveZone(){
         toggleDrawer(false);
-        if(isValidSave()){
-            AsyncTask.execute(()->{
-                List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
-                border.clear();
-                border.addAll(temp);
-                for(LandZone zone : otherZones){
-                    temp.clear();
-                    temp.addAll(MapUtil.getBiggerAreaZoneDifference(border,zone.getData().getBorder()));
+        if(needSave()){
+            if(isValidSave()){
+                AsyncTask.execute(()->{
+                    List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
                     border.clear();
                     border.addAll(temp);
-                }
-                for(List<LatLng> hole : land.getData().getHoles()){
-                    List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
-                    border.clear();
-                    border.addAll(tempBorder);
-                }
-                if(getActivity() != null){
-                    getActivity().runOnUiThread(this::updateMap);
-                }
-                if(isValidSave()){
-                    if(zone != null){
-                        zone.getData().setTitle(title);
-                        zone.getData().setNote(note);
-                        zone.getData().setColor(color);
-                        zone.getData().setBorder(border);
+                    for(LandZone zone : otherZones){
+                        temp.clear();
+                        temp.addAll(MapUtil.getBiggerAreaZoneDifference(border,zone.getData().getBorder()));
+                        border.clear();
+                        border.addAll(temp);
+                    }
+                    for(List<LatLng> hole : land.getData().getHoles()){
+                        List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
+                        border.clear();
+                        border.addAll(tempBorder);
+                    }
+                    if(getActivity() != null){
+                        getActivity().runOnUiThread(this::updateMap);
+                    }
+                    if(isValidSave()){
+                            if(zone != null){
+                                zone.getData().setTitle(title);
+                                zone.getData().setNote(note);
+                                zone.getData().setColor(color);
+                                zone.getData().setBorder(border);
+                            }else{
+                                zone = new LandZone(new LandZoneData(land.getData().getId(),title,note,color,border));
+                            }
+                            try{
+                                vmLands.saveZone(zone);
+                                Snackbar.make(binding.getRoot(), getString(R.string.zone_saved), Snackbar.LENGTH_LONG).show();
+                            }catch (Exception e){
+                                Log.e(TAG, "saveZone: ", e);
+                                Snackbar.make(binding.getRoot(), getString(R.string.zone_null_error), Snackbar.LENGTH_LONG).show();
+                            }
                     }else{
-                        zone = new LandZone(new LandZoneData(land.getData().getId(),title,note,color,border));
+                        Snackbar.make(binding.getRoot(), getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG).show();
                     }
-                    try{
-                        vmLands.saveZone(zone);
-                        Snackbar.make(binding.getRoot(), getString(R.string.zone_saved), Snackbar.LENGTH_LONG).show();
-                    }catch (Exception e){
-                        Log.e(TAG, "saveZone: ", e);
-                        Snackbar.make(binding.getRoot(), getString(R.string.zone_null_error), Snackbar.LENGTH_LONG).show();
+                });
+            }else{
+                Snackbar.make(binding.getRoot(), getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG).show();
+            }
+        }else{
+            Snackbar.make(binding.getRoot(), getString(R.string.zone_no_need_save), Snackbar.LENGTH_LONG).show();
+        }
+    }
+    private boolean needSave() {
+        if(zone != null){
+            if(!zone.getData().getTitle().equals(title)){
+                return true;
+            }
+            if(!zone.getData().getNote().equals(note)){
+                return true;
+            }
+            if(!zone.getData().getColor().toString().equals(color.toString())){
+                return true;
+            }
+            if(zone.getData().getBorder().size() == border.size()){
+                for(int i = 0; i < border.size(); i++){
+                    if(zone.getData().getBorder().get(i) != border.get(i)) {
+                        return true;
                     }
                 }
-            });
+            }
+            return false;
         }
+        return true;
     }
     private boolean isValidSave() {
         String error = null;
@@ -1032,7 +1062,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             onStateUpdate(ZoneEditorState.NormalState);
             return false;
         }
-        if(zone == null){
+        if(needSave()){
             if (doubleBackToExit) {
                 return true;
             }
