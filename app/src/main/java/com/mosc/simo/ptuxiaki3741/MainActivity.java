@@ -13,7 +13,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
@@ -70,9 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         overrideDoubleBack = false;
         fragmentBackPress = () -> true;
-        setSupportActionBar(binding.tbMainActivity);
+        setSupportActionBar(binding.toolbar);
+        binding.toolbarTitle.setText(binding.toolbar.getTitle());
         if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -130,11 +133,40 @@ public class MainActivity extends AppCompatActivity {
     }
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){
         if(getSupportActionBar() != null){
+            setToolbarElevation(4);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         overrideDoubleBack = false;
         this.fragmentBackPress = fragmentBackPress;
+    }
+    public void setToolbarElevation(int elevation){
+        binding.ablMainActivity.setElevation(elevation);
+    }
+    public void setToolbarTitle(String title){
+        binding.toolbarTitle.setText(title);
+        Toolbar.LayoutParams params = new Toolbar.LayoutParams(
+                Toolbar.LayoutParams.WRAP_CONTENT,
+                Toolbar.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER_VERTICAL;
+        binding.toolbarTitle.setLayoutParams(params);
+
+    }
+    public void setToolbarTitle(String title, int gravity){
+        binding.toolbarTitle.setText(title);
+        Toolbar.LayoutParams params = new Toolbar.LayoutParams(
+                Toolbar.LayoutParams.WRAP_CONTENT,
+                Toolbar.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = gravity;
+        binding.toolbarTitle.setLayoutParams(params);
+    }
+    public void setToolbarTitle(String title, String subTitle) {
+        setToolbarTitle(title);
+    }
+    public void setToolbarTitle(String title, String subTitle, int gravity) {
+        setToolbarTitle(title, gravity);
     }
 
     public void checkThemeSettings() {

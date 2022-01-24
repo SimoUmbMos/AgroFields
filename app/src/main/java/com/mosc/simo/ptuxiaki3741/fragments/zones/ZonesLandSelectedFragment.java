@@ -78,9 +78,9 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
+                activity.setToolbarTitle(getString(R.string.zones_list_bar_label));
                 ActionBar actionBar = activity.getSupportActionBar();
                 if(actionBar != null){
-                    actionBar.setTitle(getString(R.string.zones_list_bar_label));
                     actionBar.show();
                 }
             }

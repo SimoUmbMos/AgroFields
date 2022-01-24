@@ -134,14 +134,16 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initActivity() {
-        MainActivity activity = (MainActivity) getActivity();
-        if (activity != null) {
-            ActionBar actionBar = activity.getSupportActionBar();
-            if(actionBar != null){
-                actionBar.setTitle(getString(R.string.land_bar_label));
-                actionBar.show();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                activity.setOnBackPressed(this);
+                activity.setToolbarTitle(getString(R.string.land_bar_label));
+                ActionBar actionBar = activity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.show();
+                }
             }
-            activity.setOnBackPressed(this);
         }
     }
     private void initFragment() {

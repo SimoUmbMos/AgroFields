@@ -66,19 +66,19 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         }
     }
     private void initActivity(){
-        MainActivity activity = (MainActivity) getActivity();
-        if(activity != null){
-            activity.setOnBackPressed(this);
-            if(currLand == null){
-                activity.onBackPressed();
-                return;
-            }
-            ActionBar actionBar = activity.getSupportActionBar();
-            if(actionBar != null){
-                String display = currLand.getData().getTitle()+
-                                " #"+ currLand.getData().getId();
-                actionBar.setTitle(display);
-                actionBar.show();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                activity.setOnBackPressed(this);
+                if(currLand == null){
+                    activity.onBackPressed();
+                    return;
+                }
+                activity.setToolbarTitle(currLand.toString());
+                ActionBar actionBar = activity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.show();
+                }
             }
         }
     }

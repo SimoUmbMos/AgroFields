@@ -10,6 +10,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -71,30 +72,18 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
                 }
                 ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
-                    String display;
-                    switch (action){
-                        case IMPORT:
-                            display = getString(R.string.file_map_fragment_import_action);
-                            actionBar.show();
-                            actionBar.setTitle(display);
-                            break;
-                        case ADD:
-                            display = getString(R.string.file_map_fragment_add_action);
-                            actionBar.show();
-                            actionBar.setTitle(display);
-                            break;
-                        case SUBTRACT:
-                            display = getString(R.string.file_map_fragment_subtract_action);
-                            actionBar.show();
-                            actionBar.setTitle(display);
-                            break;
-                        case VIEW:
-                        case NONE:
-                        default:
-                            display = "";
-                            actionBar.hide();
-                            actionBar.setTitle(display);
-                            break;
+                    if(action == ImportAction.IMPORT){
+                        mainActivity.setToolbarTitle(getString(R.string.file_map_fragment_import_action), Gravity.CENTER);
+                        actionBar.show();
+                    }else if(action == ImportAction.ADD){
+                        mainActivity.setToolbarTitle(getString(R.string.file_map_fragment_add_action), Gravity.CENTER);
+                        actionBar.show();
+                    }else if(action == ImportAction.SUBTRACT){
+                        mainActivity.setToolbarTitle(getString(R.string.file_map_fragment_subtract_action), Gravity.CENTER);
+                        actionBar.show();
+                    }else{
+                        mainActivity.setToolbarTitle("", Gravity.CENTER);
+                        actionBar.hide();
                     }
                 }
             }

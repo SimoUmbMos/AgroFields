@@ -38,17 +38,18 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initActivity() {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(this);
-            actionBar = mainActivity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle("");
-            actionBar.hide();
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(false);
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                mainActivity.setToolbarTitle("");
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.hide();
+                    actionBar.setDisplayHomeAsUpEnabled(false);
+                    actionBar.setDisplayShowHomeEnabled(false);
+                }
+            }
         }
     }
     private void initViewModels() {

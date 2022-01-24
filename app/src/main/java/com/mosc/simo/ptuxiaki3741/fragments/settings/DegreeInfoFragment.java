@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,15 +53,16 @@ public class DegreeInfoFragment extends Fragment implements FragmentBackPress {
     }
 
     private void initActivity(){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(this);
-            actionBar = mainActivity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle(getString(R.string.degree_info_menu_title));
-            actionBar.show();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                mainActivity.setToolbarTitle(getString(R.string.degree_info_menu_title), Gravity.CENTER);
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.show();
+                }
+            }
         }
     }
 }

@@ -75,7 +75,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private LandFileState fileState;
     private ImportAction importAction;
 
-    private ActionBar actionBar;
     private FragmentLandMapBinding binding;
     private GoogleMap mMap;
     private AlertDialog dialog;
@@ -271,10 +270,10 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     private void initActivity() {
         if(getActivity() != null){
-            if(getActivity() instanceof MainActivity){
+            if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                actionBar = mainActivity.getSupportActionBar();
+                ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.show();
                 }
@@ -989,11 +988,22 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     //ui relative
     @SuppressLint("ClickableViewAccessibility")
     private void clearTitle() {
-        actionBar.setTitle(displayTitle);
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setToolbarTitle(displayTitle);
+            }
+        }
         binding.clLandControls.setVisibility(View.GONE);
         binding.fabLandActionSave.setVisibility(View.GONE);
         binding.fabLandActionReset.setVisibility(View.GONE);
         binding.slAlphaSlider.setVisibility(View.GONE);
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                activity.setToolbarElevation(4);
+            }
+        }
         if(isImgViewEnable()){
             binding.ivLandOverlay.setOnTouchListener(this);
             Log.d(TAG, "ivLandOverlay: setOnTouchListener this");
@@ -1003,11 +1013,22 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     @SuppressLint("ClickableViewAccessibility")
     private void setTitle(String s) {
-        actionBar.setTitle(s);
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setToolbarTitle(s);
+            }
+        }
         binding.clLandControls.setVisibility(View.VISIBLE);
         binding.fabLandActionSave.setVisibility(View.VISIBLE);
         binding.fabLandActionReset.setVisibility(View.VISIBLE);
 
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                activity.setToolbarElevation(0);
+            }
+        }
         if(isImgViewEnable() && isImgAction(mapStatus)){
             if(mapStatus != LandActionStates.Alpha){
                 beforeMoveWasLocked = !mapIsLocked;
@@ -1023,15 +1044,20 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
     }
     private void changeTitleBasedOnState() {
-        if(mapStatus == LandActionStates.AddBetween){
-            if(index1 < 0){
-                actionBar.setTitle(getString(R.string.selectFirstPoint));
-            }else if(index2 < 0){
-                actionBar.setTitle(getString(R.string.selectSecondPoint));
-            }else if(index3 < 0){
-                actionBar.setTitle(getString(R.string.placePoint));
-            }else{
-                actionBar.setTitle(getString(R.string.editPlacedPoint));
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                if(mapStatus == LandActionStates.AddBetween){
+                    if(index1 < 0){
+                        mainActivity.setToolbarTitle(getString(R.string.selectFirstPoint));
+                    }else if(index2 < 0){
+                        mainActivity.setToolbarTitle(getString(R.string.selectSecondPoint));
+                    }else if(index3 < 0){
+                        mainActivity.setToolbarTitle(getString(R.string.placePoint));
+                    }else{
+                        mainActivity.setToolbarTitle(getString(R.string.editPlacedPoint));
+                    }
+                }
             }
         }
     }
@@ -1268,9 +1294,11 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     @Override public void onPause() {
         super.onPause();
-        if(locationHelperPoint.isRunning()){
-            locationPointWasRunning = true;
-            locationHelperPoint.stop();
+        if(locationHelperPoint != null){
+            if(locationHelperPoint.isRunning()){
+                locationPointWasRunning = true;
+                locationHelperPoint.stop();
+            }
         }
         binding.mvLand.onPause();
     }

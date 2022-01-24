@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -82,15 +83,16 @@ public class LandHistorySelectedFragment extends Fragment implements FragmentBac
         }
     }
     private void initActivity() {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(this);
-            actionBar = mainActivity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle(getString(R.string.land_history));
-            actionBar.show();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                mainActivity.setToolbarTitle(getString(R.string.land_history), Gravity.CENTER);
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.show();
+                }
+            }
         }
     }
     private void initViewModel() {

@@ -143,17 +143,19 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
 
     }
     private void initActivity(){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(this);
-            ActionBar actionBar = mainActivity.getSupportActionBar();
-            if(actionBar != null){
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
                 if(calendarNotification.getId() == 0){
-                    actionBar.setTitle(getString(R.string.calendar_new_instance_fragment_title));
+                    mainActivity.setToolbarTitle(getString(R.string.calendar_new_instance_fragment_title));
                 }else{
-                    actionBar.setTitle(getString(R.string.calendar_edit_instance_fragment_title));
+                    mainActivity.setToolbarTitle(getString(R.string.calendar_edit_instance_fragment_title));
                 }
-                actionBar.show();
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.show();
+                }
             }
         }
     }

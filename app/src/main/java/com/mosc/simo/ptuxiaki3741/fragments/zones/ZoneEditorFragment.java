@@ -67,15 +67,12 @@ import java.util.Map;
 
 public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "ZoneEditorFragment";
-    //todo: make better ui
     //fixme: add tags
     private FragmentZoneEditorBinding binding;
     private GoogleMap mMap;
     private Polygon zonePolygon;
     private List<Circle> zonePoints;
     private AlertDialog dialog;
-
-    private ActionBar actionBar;
 
     private AppViewModel vmLands;
     private LandZone zone;
@@ -170,7 +167,8 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
-                actionBar = activity.getSupportActionBar();
+                activity.setToolbarTitle("");
+                ActionBar actionBar = activity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.show();
                 }
@@ -632,6 +630,16 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             showNote = true;
             binding.tvNote.setVisibility(View.VISIBLE);
         }
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                if(showNote){
+                    activity.setToolbarElevation(0);
+                }else{
+                    activity.setToolbarElevation(4);
+                }
+            }
+        }
     }
 
     private void onZonesUpdate(Map<Long,List<LandZone>> zones){
@@ -866,8 +874,20 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             binding.ibToggleNote.setVisibility(View.VISIBLE);
             if(showNote){
                 binding.tvNote.setVisibility(View.VISIBLE);
+                if(getActivity() != null){
+                    if(getActivity().getClass() == MainActivity.class){
+                        MainActivity activity = (MainActivity) getActivity();
+                        activity.setToolbarElevation(0);
+                    }
+                }
             }else{
                 binding.tvNote.setVisibility(View.GONE);
+                if(getActivity() != null){
+                    if(getActivity().getClass() == MainActivity.class){
+                        MainActivity activity = (MainActivity) getActivity();
+                        activity.setToolbarElevation(4);
+                    }
+                }
             }
         }
         if(mMap != null) {
@@ -883,49 +903,52 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void updateUIBasedOnState() {
-        if(actionBar != null){
-            switch (state){
-                case AddPoint:
-                    actionBar.setTitle(getString(R.string.zone_add_point));
-                    break;
-                case AddLocation:
-                    actionBar.setTitle(getString(R.string.zone_add_location));
-                    break;
-                case AddBetweenPoint:
-                    String display;
-                    if(index1 != -1){
-                        if(index2 != -1){
-                            if(index3 != -1){
-                                display = getString(R.string.zone_add_between_points_4);
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                switch (state){
+                    case AddPoint:
+                        activity.setToolbarTitle(getString(R.string.zone_add_point));
+                        break;
+                    case AddLocation:
+                        activity.setToolbarTitle(getString(R.string.zone_add_location));
+                        break;
+                    case AddBetweenPoint:
+                        String display;
+                        if(index1 != -1){
+                            if(index2 != -1){
+                                if(index3 != -1){
+                                    display = getString(R.string.zone_add_between_points_4);
+                                }else{
+                                    display = getString(R.string.zone_add_between_points_3);
+                                }
                             }else{
-                                display = getString(R.string.zone_add_between_points_3);
+                                display = getString(R.string.zone_add_between_points_2);
                             }
                         }else{
-                            display = getString(R.string.zone_add_between_points_2);
+                            display = getString(R.string.zone_add_between_points_1);
                         }
-                    }else{
-                        display = getString(R.string.zone_add_between_points_1);
-                    }
-                    actionBar.setTitle(display);
-                    break;
-                case EditPoint:
-                    actionBar.setTitle(getString(R.string.zone_edit_point));
-                    break;
-                case DeletePoint:
-                    actionBar.setTitle(getString(R.string.zone_delete_point));
-                    break;
-                case NormalState:
-                default:
-                    if(zone != null){
-                        actionBar.setTitle(title+" #"+ zone.getData().getId());
-                    }else{
-                        if(!title.trim().isEmpty()){
-                            actionBar.setTitle(title);
+                        activity.setToolbarTitle(display);
+                        break;
+                    case EditPoint:
+                        activity.setToolbarTitle(getString(R.string.zone_edit_point));
+                        break;
+                    case DeletePoint:
+                        activity.setToolbarTitle(getString(R.string.zone_delete_point));
+                        break;
+                    case NormalState:
+                    default:
+                        if(zone != null){
+                            activity.setToolbarTitle(title+" #"+ zone.getData().getId());
                         }else{
-                            actionBar.setTitle(getString(R.string.new_zone_bar_label));
+                            if(!title.trim().isEmpty()){
+                                activity.setToolbarTitle(title);
+                            }else{
+                                activity.setToolbarTitle(getString(R.string.new_zone_bar_label));
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
         }
     }
@@ -1036,9 +1059,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onPause() {
         super.onPause();
-        if(locationHelperPoint.isRunning()){
-            locationPointWasRunning = true;
-            locationHelperPoint.stop();
+        if(locationHelperPoint != null){
+            if(locationHelperPoint.isRunning()){
+                locationPointWasRunning = true;
+                locationHelperPoint.stop();
+            }
         }
         binding.mvZonePreview.onPause();
     }

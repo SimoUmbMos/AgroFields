@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,9 +48,9 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
+                activity.setToolbarTitle(getString(R.string.zones_land_list_bar_label), Gravity.CENTER);
                 ActionBar actionBar = activity.getSupportActionBar();
                 if(actionBar != null){
-                    actionBar.setTitle(getString(R.string.zones_land_list_bar_label));
                     actionBar.show();
                 }
             }

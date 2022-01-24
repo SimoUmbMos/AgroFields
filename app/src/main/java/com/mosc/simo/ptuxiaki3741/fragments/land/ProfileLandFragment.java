@@ -76,15 +76,16 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
             color = land.getData().getColor();
     }
     private void initActivity(){
-        MainActivity activity = (MainActivity) getActivity();
-        ActionBar actionBar = null;
-        if (activity != null) {
-            activity.setOnBackPressed(this);
-            actionBar = activity.getSupportActionBar();
-        }
-        if(actionBar != null){
-            actionBar.setTitle("");
-            actionBar.hide();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                activity.setOnBackPressed(this);
+                activity.setToolbarTitle("");
+                ActionBar actionBar = activity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.hide();
+                }
+            }
         }
     }
     private void initFragment() {

@@ -15,6 +15,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -162,11 +163,11 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
             if (getActivity().getClass() == MainActivity.class) {
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
+                activity.setToolbarTitle(getString(R.string.default_live_map_title), Gravity.CENTER);
                 notificationManager = activity.getNotificationManager();
                 ActionBar actionBar = activity.getSupportActionBar();
                 if (actionBar != null) {
-                    actionBar.setTitle("");
-                    actionBar.hide();
+                    actionBar.show();
                 }
             }
             locationHelper = new LocationHelper(getActivity(),this::onUpdateLocation);
@@ -181,9 +182,6 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initFragment() {
-        binding.tvLiveTitle.setText(getText(R.string.default_live_map_title));
-        binding.tvLiveTitle.setVisibility(View.GONE);
-        binding.tvLiveMsg.setVisibility(View.GONE);
         binding.mvLiveMap.getMapAsync(this::initMap);
     }
     private void initMap(GoogleMap googleMap) {
@@ -338,7 +336,6 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
                     initCameraToCurrPosition();
 
                     binding.mvLiveMap.setVisibility(View.VISIBLE);
-                    binding.tvLiveTitle.setVisibility(View.VISIBLE);
                 }else{
                     currPosition.setCenter(position);
                     moveCameraToCurrPosition(false);
@@ -464,18 +461,20 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         }
 
         if(getActivity() != null){
-            getActivity().runOnUiThread(()-> {
-                binding.tvLiveTitle.setText(title);
-                if(title.isEmpty()){
-                    binding.tvLiveTitle.setText(getText(R.string.default_live_map_title));
-                }
-                binding.tvLiveMsg.setText(msg);
-                if(msg.isEmpty()){
-                    binding.tvLiveMsg.setVisibility(View.GONE);
-                }else{
-                    binding.tvLiveMsg.setVisibility(View.VISIBLE);
-                }
-            });
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                getActivity().runOnUiThread(()-> {
+                    if(title.isEmpty()){
+                        activity.setToolbarTitle(getString(R.string.default_live_map_title), Gravity.CENTER);
+                    }else{
+                        if(msg.isEmpty()){
+                            activity.setToolbarTitle(title, Gravity.CENTER);
+                        }else{
+                            activity.setToolbarTitle(title, msg, Gravity.CENTER);
+                        }
+                    }
+                });
+            }
         }
 
         if(notificationManager != null && getContext() != null){

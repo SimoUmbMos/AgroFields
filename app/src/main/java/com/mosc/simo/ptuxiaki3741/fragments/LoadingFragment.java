@@ -78,9 +78,9 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
+                mainActivity.setToolbarTitle(getString(R.string.app_name));
                 ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
-                    actionBar.setTitle(getString(R.string.app_name));
                     actionBar.hide();
                 }
                 intent = mainActivity.getIntentIfCalledByFile();

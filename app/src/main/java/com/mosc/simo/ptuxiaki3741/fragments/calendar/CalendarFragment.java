@@ -54,7 +54,6 @@ import kotlin.Unit;
 
 public class CalendarFragment extends Fragment implements FragmentBackPress {
     private FragmentCalendarBinding binding;
-    private ActionBar actionBar;
     private YearMonth currentMonth;
     private DayOfWeek[] daysOfWeek;
     private TreeMap<LocalDate, List<CalendarNotification>> notifications;
@@ -138,9 +137,9 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                actionBar = mainActivity.getSupportActionBar();
+                mainActivity.setToolbarTitle("");
+                ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
-                    actionBar.setTitle(getString(R.string.calendar_fragment_grid_title));
                     actionBar.show();
                 }
                 sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
@@ -295,18 +294,22 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         );
     }
     private void updateView() {
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity activity = (MainActivity) getActivity();
+                if(listView){
+                    activity.setToolbarTitle(getString(R.string.calendar_fragment_list_title));
+                }else{
+                    activity.setToolbarTitle(getString(R.string.calendar_fragment_grid_title));
+                }
+            }
+        }
         if(listView){
             binding.clListView.setVisibility(View.VISIBLE);
             binding.clGridView.setVisibility(View.GONE);
-            if(actionBar != null){
-                actionBar.setTitle(getString(R.string.calendar_fragment_list_title));
-            }
         }else{
             binding.clListView.setVisibility(View.GONE);
             binding.clGridView.setVisibility(View.VISIBLE);
-            if(actionBar != null){
-                actionBar.setTitle(getString(R.string.calendar_fragment_grid_title));
-            }
         }
     }
     private void toggleShowFilter(){

@@ -26,28 +26,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:mapType="satellite" />
 
-    <TextView
-        android:id="@+id/tvLiveTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/backgroundColor"
-        android:padding="8dp"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvLiveMsg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/backgroundColor"
-        android:padding="8dp"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLiveTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

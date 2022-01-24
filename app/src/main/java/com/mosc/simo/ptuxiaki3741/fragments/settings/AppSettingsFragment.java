@@ -132,13 +132,15 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
     }
     private void initActivity(){
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if( mainActivity != null){
-            mainActivity.setOnBackPressed(this);
-            ActionBar actionBar = mainActivity.getSupportActionBar();
-            if(actionBar != null){
-                actionBar.setTitle(getString(R.string.app_settings_title));
-                actionBar.show();
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.setOnBackPressed(this);
+                mainActivity.setToolbarTitle(getString(R.string.app_settings_title));
+                ActionBar actionBar = mainActivity.getSupportActionBar();
+                if(actionBar != null){
+                    actionBar.show();
+                }
             }
         }
     }
