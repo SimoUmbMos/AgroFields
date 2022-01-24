@@ -233,11 +233,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
 
         if(currLand == null){
-            toMenu(getActivity());
             return false;
         }
         if(currLand.getData() == null){
-            toMenu(getActivity());
             return false;
         }
 
@@ -273,6 +271,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
+                mainActivity.setToolbarTitle("");
                 ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.show();
@@ -1266,12 +1265,12 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initActivity();
         LandData data = handleImport();
         if(data != null){
             saveLand(data);
         }else{
             if(initData()){
-                initActivity();
                 initDataToView();
                 initViews();
             }else{

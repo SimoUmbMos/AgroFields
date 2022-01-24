@@ -13,9 +13,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
+import android.view.View;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentBackPress = () -> true;
         setSupportActionBar(binding.toolbar);
         binding.toolbarTitle.setText(binding.toolbar.getTitle());
+        binding.toolbarSubTitle.setText(binding.toolbar.getSubtitle());
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -144,29 +144,37 @@ public class MainActivity extends AppCompatActivity {
         binding.ablMainActivity.setElevation(elevation);
     }
     public void setToolbarTitle(String title){
-        binding.toolbarTitle.setText(title);
-        Toolbar.LayoutParams params = new Toolbar.LayoutParams(
-                Toolbar.LayoutParams.WRAP_CONTENT,
-                Toolbar.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_VERTICAL;
-        binding.toolbarTitle.setLayoutParams(params);
-
-    }
-    public void setToolbarTitle(String title, int gravity){
-        binding.toolbarTitle.setText(title);
-        Toolbar.LayoutParams params = new Toolbar.LayoutParams(
-                Toolbar.LayoutParams.WRAP_CONTENT,
-                Toolbar.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = gravity;
-        binding.toolbarTitle.setLayoutParams(params);
+        if(title != null){
+            binding.toolbarTitle.setText(title);
+            binding.toolbarTitle.setVisibility(View.VISIBLE);
+        }else{
+            binding.toolbarTitle.setText("");
+            binding.toolbarTitle.setVisibility(View.GONE);
+        }
+        binding.toolbarSubTitle.setText("");
+        binding.toolbarSubTitle.setVisibility(View.GONE);
     }
     public void setToolbarTitle(String title, String subTitle) {
-        setToolbarTitle(title);
+        if(title != null){
+            binding.toolbarTitle.setText(title);
+            binding.toolbarTitle.setVisibility(View.VISIBLE);
+        }else{
+            binding.toolbarTitle.setText("");
+            binding.toolbarTitle.setVisibility(View.GONE);
+        }
+        if(subTitle != null){
+            binding.toolbarSubTitle.setText(subTitle);
+            binding.toolbarSubTitle.setVisibility(View.VISIBLE);
+        }else{
+            binding.toolbarSubTitle.setText("");
+            binding.toolbarSubTitle.setVisibility(View.GONE);
+        }
     }
-    public void setToolbarTitle(String title, String subTitle, int gravity) {
-        setToolbarTitle(title, gravity);
+    public String getToolbarTitle(){
+        if(binding.toolbarTitle.getText() != null){
+            return binding.toolbarTitle.getText().toString();
+        }
+        return "";
     }
 
     public void checkThemeSettings() {

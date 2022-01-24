@@ -623,20 +623,14 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void toggleNote() {
-        if(showNote){
-            showNote = false;
-            binding.tvNote.setVisibility(View.GONE);
-        }else{
-            showNote = true;
-            binding.tvNote.setVisibility(View.VISIBLE);
-        }
+        showNote = !showNote;
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 if(showNote){
-                    activity.setToolbarElevation(0);
+                    activity.setToolbarTitle(activity.getToolbarTitle(), note);
                 }else{
-                    activity.setToolbarElevation(4);
+                    activity.setToolbarTitle(activity.getToolbarTitle());
                 }
             }
         }
@@ -866,26 +860,17 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
     private void updateUI() {
         updateUIBasedOnState();
-        binding.tvNote.setText(note);
         if(note.isEmpty()){
-            binding.tvNote.setVisibility(View.GONE);
             binding.ibToggleNote.setVisibility(View.GONE);
         }else{
             binding.ibToggleNote.setVisibility(View.VISIBLE);
-            if(showNote){
-                binding.tvNote.setVisibility(View.VISIBLE);
-                if(getActivity() != null){
-                    if(getActivity().getClass() == MainActivity.class){
-                        MainActivity activity = (MainActivity) getActivity();
-                        activity.setToolbarElevation(0);
-                    }
-                }
-            }else{
-                binding.tvNote.setVisibility(View.GONE);
-                if(getActivity() != null){
-                    if(getActivity().getClass() == MainActivity.class){
-                        MainActivity activity = (MainActivity) getActivity();
-                        activity.setToolbarElevation(4);
+            if(getActivity() != null){
+                if(getActivity().getClass() == MainActivity.class){
+                    MainActivity activity = (MainActivity) getActivity();
+                    if(showNote){
+                        activity.setToolbarTitle(activity.getToolbarTitle(), note);
+                    }else{
+                        activity.setToolbarTitle(activity.getToolbarTitle());
                     }
                 }
             }

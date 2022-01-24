@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,7 +56,7 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle(getString(R.string.land_history), Gravity.CENTER);
+                mainActivity.setToolbarTitle(getString(R.string.land_history));
                 ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.show();

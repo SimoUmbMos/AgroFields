@@ -15,7 +15,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -163,7 +162,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
             if (getActivity().getClass() == MainActivity.class) {
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
-                activity.setToolbarTitle(getString(R.string.default_live_map_title), Gravity.CENTER);
+                activity.setToolbarTitle(getString(R.string.default_live_map_title));
                 notificationManager = activity.getNotificationManager();
                 ActionBar actionBar = activity.getSupportActionBar();
                 if (actionBar != null) {
@@ -465,12 +464,12 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
                 MainActivity activity = (MainActivity) getActivity();
                 getActivity().runOnUiThread(()-> {
                     if(title.isEmpty()){
-                        activity.setToolbarTitle(getString(R.string.default_live_map_title), Gravity.CENTER);
+                        activity.setToolbarTitle(getString(R.string.default_live_map_title));
                     }else{
                         if(msg.isEmpty()){
-                            activity.setToolbarTitle(title, Gravity.CENTER);
+                            activity.setToolbarTitle(title);
                         }else{
-                            activity.setToolbarTitle(title, msg, Gravity.CENTER);
+                            activity.setToolbarTitle(title, msg);
                         }
                     }
                 });
