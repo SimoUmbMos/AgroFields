@@ -574,9 +574,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private boolean onMenuClick(MenuItem item) {
         if( !mapLoaded ) return false;
-        onStateUpdate(ZoneEditorState.NormalState);
         switch (item.getItemId()){
             case (R.id.menu_item_edit_zone):
+                onStateUpdate(ZoneEditorState.NormalState);
                 toggleDrawer(true);
                 return true;
             case (R.id.toolbar_action_save_zone):
@@ -1066,8 +1066,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
-        if(forceBack)
+        if(forceBack) {
             return true;
+        }
         if (state != ZoneEditorState.NormalState) {
             onStateUpdate(ZoneEditorState.NormalState);
             return false;
