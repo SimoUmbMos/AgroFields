@@ -379,8 +379,10 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                         return true;
                     }
                 }
+                return false;
+            }else{
+                return true;
             }
-            return false;
         }
         return true;
     }
@@ -683,7 +685,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void onLocationUpdate(Location location){
-        if(getActivity() != null){
+        if(getActivity() != null && location != null){
             getActivity().runOnUiThread(()->
                     drawPositionMarker(new LatLng(location.getLatitude(),location.getLongitude()))
             );
@@ -1079,7 +1081,14 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
             doubleBackToExit = true;
             new Handler().postDelayed(() -> doubleBackToExit=false, AppValues.doubleTapBack);
-            Snackbar.make(binding.getRoot(),getText(R.string.double_tap_exit),Snackbar.LENGTH_SHORT)
+
+            CharSequence display;
+            if(zone != null){
+                display = getText(R.string.zone_need_save_edit);
+            }else{
+                display = getText(R.string.zone_need_save_new);
+            }
+            Snackbar.make(binding.getRoot(), display, Snackbar.LENGTH_SHORT)
                     .show();
             return false;
         }

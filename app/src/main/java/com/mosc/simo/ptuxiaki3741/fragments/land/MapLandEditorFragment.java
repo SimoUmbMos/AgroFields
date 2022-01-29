@@ -785,7 +785,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             clearFlags();
     }
     private void onLocationUpdate(Location location){
-        if(getActivity() != null){
+        if(getActivity() != null && location != null){
             getActivity().runOnUiThread(()->drawPositionMarker(new LatLng(location.getLatitude(),location.getLongitude())));
         }
     }

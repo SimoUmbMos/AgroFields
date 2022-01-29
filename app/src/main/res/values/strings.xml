@@ -31,7 +31,7 @@
     <!-- View Elements -->
     <string name="tag_input_view_label">Tags:</string>
     <!-- Main Activity -->
-    <string name="double_tap_exit">Tap again to exit</string>
+    <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->
     <string name="file_input_error">Error reading the file</string>
     <!-- Main Menu Fragment -->
@@ -156,6 +156,8 @@
     <string name="note_max_char_error">Note Max Characters: 100</string>
     <string name="zone_border_error">Zone must be 3 points minimum</string>
     <string name="zone_saved">Zone saved</string>
+    <string name="zone_need_save_new">The new zone is not saved. \nDouble Tap to exit.</string>
+    <string name="zone_need_save_edit">The zone changes are not saved. \nDouble Tap to exit.</string>
     <string name="zone_no_need_save">Zone don\'t need save</string>
     <string name="zone_no_valid">Zone isn\'t valid to save</string>
     <string name="zone_null_error">Something has goes wrong, try recreate the zone</string>
