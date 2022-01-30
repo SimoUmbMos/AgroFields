@@ -138,7 +138,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
-                activity.setToolbarTitle(getString(R.string.land_bar_label));
+                activity.setToolbarTitle(getString(R.string.my_lands_label));
                 ActionBar actionBar = activity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.show();

@@ -56,7 +56,7 @@ public class DegreeInfoFragment extends Fragment implements FragmentBackPress {
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle(getString(R.string.degree_info_menu_title));
+                mainActivity.setToolbarTitle(getString(R.string.degree_info));
                 ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.show();

@@ -298,7 +298,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 if(listView){
-                    activity.setToolbarTitle(getString(R.string.calendar_fragment_list_title));
+                    activity.setToolbarTitle(getString(R.string.plural_event_label));
                 }else{
                     activity.setToolbarTitle(getString(R.string.calendar_fragment_grid_title));
                 }

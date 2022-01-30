@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- not translatable -->
-    <!-- Degree Info Fragment-->
     <string name="arrow_left" translatable="false">←</string>
     <string name="arrow_right" translatable="false">→</string>
     <string name="degree_info_title" translatable="false">Χαρτογράφηση αγροκτήματος με συμμετοχή θέσης, ορίων και παρεμβολής με χάρτες</string>
@@ -14,68 +13,81 @@
     <!-- translatable -->
     <!-- Common -->
     <string name="app_name">Land Declaration</string>
+    <string name="degree_info">Degree Info</string>
+    <string name="land_history">Lands History</string>
     <string name="loading_list">List is loading</string>
     <string name="empty_list">List is empty</string>
+    <string name="submit">Submit</string>
     <string name="accept">Accept</string>
+    <string name="done">Done</string>
     <string name="cancel">Cancel</string>
+    <string name="undo">Undo</string>
     <string name="file_type_select_title">Select File Type</string>
-    <string name="clipboard_message">Text Copied</string>
-    <string name="title_error">Title is incorrect</string>
+    <string name="title_empty_error">Title is empty</string>
     <string name="notification_channel_name">In App Notifications</string>
     <string name="notification_channel_description">Notifications inside the Application</string>
     <string name="calendar_notification_channel_name">Calendar Notifications</string>
     <string name="calendar_notification_channel_description">Background Calendar Notifications</string>
-
+    <string name="my_lands_label">My Land\'s</string>
+    <string name="my_zones_label">My Zone\'s</string>
+    <string name="select_all">Select All</string>
+    <string name="file_created">File created</string>
+    <string name="file_not_created">File not created</string>
     <string name="saving_label">Saving…</string>
     <string name="loading_label">Loading…</string>
-    <!-- View Elements -->
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
+    <string name="export">Export</string>
+    <string name="history">History</string>
+    <string name="singular_land_label">Land</string>
+    <string name="plural_land_label">Land\'s</string>
+    <string name="singular_zone_label">Zone</string>
+    <string name="plural_zone_label">Zone\'s</string>
+    <string name="singular_event_label">Event</string>
+    <string name="plural_event_label">Event\'s</string>
+    <string name="pick_color">Pick Color</string>
+    <string name="color_dialog_red_label">Red:</string>
+    <string name="color_dialog_green_label">Green:</string>
+    <string name="color_dialog_blue_label">Blue:</string>
+    <string name="add_point">Add Point</string>
+    <string name="add_by_location">Add Point By Location</string>
+    <string name="add_between_points">Add Point Between Points</string>
+    <string name="add_between_points_select_point_1">Select First Point</string>
+    <string name="add_between_points_select_point_2">Select Second Point</string>
+    <string name="add_between_points_place_new_point">Place New Point</string>
+    <string name="add_between_points_edit_new_point">Edit New Point</string>
+    <string name="edit_point">Edit Point</string>
+    <string name="delete_point">Delete Point</string>
+    <string name="clear_points">Delete All Points</string>
+    <string name="reset_points">Reset All Points</string>
+    <string name="edit_color">Change Color</string>
     <string name="tag_input_view_label">Tags:</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->
     <string name="file_input_error">Error reading the file</string>
     <!-- Main Menu Fragment -->
-    <string name="main_menu_lands_button">My Land\'s</string>
-    <string name="main_menu_zones_button">My Zone\'s</string>
     <string name="main_menu_live_map_button">Live Map</string>
     <string name="main_menu_calendar_button">My Event\'s</string>
     <string name="main_menu_tag_button">Manage Tag\'s</string>
-    <string name="dashboard_title">My Dashboard</string>
-    <string name="singular_land_count_title">Land</string>
-    <string name="plural_land_count_title">Land\'s</string>
-    <string name="singular_zone_count_title">Zone</string>
-    <string name="plural_zone_count_title">Zone\'s</string>
-    <string name="singular_event_count_title">Event</string>
-    <string name="plural_event_count_title">Event\'s</string>
+    <string name="dashboard_title">Dashboard</string>
     <!-- Land Menu Fragment -->
     <string name="contextual_menu_land_label">Select Land\'s</string>
-    <string name="select_all">Select All</string>
-    <string name="land_bar_label">My Land\'s</string>
-    <string name="file_created">File created</string>
-    <string name="file_not_created">File not created</string>
     <string name="delete_lands_title">Delete Lands</string>
     <string name="delete_lands_text">Are you sure you want to delete the selected lands?</string>
-    <string name="add">Add</string>
-    <string name="delete">Delete</string>
-    <string name="export">Export</string>
-    <string name="history">History</string>
     <!-- Land Info Fragment -->
     <string name="land_info_title">Land Info</string>
     <string name="land_name">Land Name</string>
-    <string name="address_hint">Address</string>
+    <string name="address_hint">Land Address</string>
     <string name="create_land_label">Set Land Name</string>
     <string name="edit_land_label">Edit Land Name</string>
-    <string name="submit_info">Submit</string>
-    <string name="cancel_info">Cancel</string>
     <!-- Land Map Preview Fragment -->
     <string name="edit_land">Edit Land</string>
-    <string name="history_land">Land History</string>
     <string name="restore_land">Restore Land</string>
     <!-- Land Map Fragment -->
-    <string name="change_terrain_type">change terrain type</string>
-    <string name="fabSave">save edits</string>
-    <string name="fabReset">reset edits</string>
-    <string name="land_imageView">show img above map</string>
+    <string name="fabSave">Save edits</string>
+    <string name="fabReset">Reset edits</string>
+    <string name="land_imageView">Show image above map</string>
     <string name="open_menu">Open Menu</string>
     <string name="save_land">Save Land</string>
     <string name="map_view_actions_group_title">Map Actions</string>
@@ -83,17 +95,6 @@
     <string name="show_road_name">Show Road Names</string>
     <string name="hide_road_name">Hide Road Names</string>
     <string name="points_actions_group_title">Points Actions</string>
-    <string name="create_point">Add Point</string>
-    <string name="create_between_points">Add Between Points</string>
-    <string name="create_point_location">Add Point By Location</string>
-    <string name="selectFirstPoint">select first point</string>
-    <string name="selectSecondPoint">select second point</string>
-    <string name="placePoint">place point</string>
-    <string name="editPlacedPoint">edit placed point</string>
-    <string name="edit_point">Edit Point</string>
-    <string name="delete_point">Delete Points</string>
-    <string name="clear_points">Delete All Points</string>
-    <string name="reset_points">Reset All Points</string>
     <string name="img_actions_group_title">Overlay Image</string>
     <string name="add_img">Add overlay image</string>
     <string name="remove_img">Remove overlay image</string>
@@ -109,9 +110,7 @@
     <string name="edit_land_name">Edit Land Name</string>
     <string name="delete_land_title">Delete Land</string>
     <string name="delete_land_text">Are you sure you want to delete this land?</string>
-    <string name="edit_land_color">Change Land Color</string>
     <!-- History Menu Fragment -->
-    <string name="land_history">Lands History</string>
     <string name="land_action_created">Created</string>
     <string name="land_action_updated">Updated</string>
     <string name="land_action_restored">Restored</string>
@@ -121,12 +120,9 @@
     <!-- Zone Land Select Fragment -->
     <string name="zones_land_list_bar_label">Select Land</string>
     <!-- Zone Land Selected Fragment -->
-    <string name="zones_list_bar_label">Zones</string>
-    <string name="contextual_menu_zone_label_multi_select">multi_select</string>
-    <string name="contextual_menu_zone_label_multi_delete">multi_delete</string>
-    <string name="contextual_menu_zone_label_multi_export">multi_export</string>
-    <string name="zone_delete">"Zones Deleted"</string>
-    <string name="zone_export">"Zones Exported"</string>
+    <string name="contextual_menu_zone_label">Select Zone\'s</string>
+    <string name="zone_delete">Zones Deleted Successfully</string>
+    <string name="zone_export">Zones Exported Successfully</string>
     <!-- Zone Preview Fragment -->
     <string name="new_zone_bar_label">New Zone</string>
     <string name="edit_zone">Edit Zone</string>
@@ -134,21 +130,8 @@
     <string name="zone_actions_group_title">Zone Actions</string>
     <string name="edit_zone_title">Change Zone Title</string>
     <string name="zone_border_actions_group_title">Zone Border Actions</string>
-    <string name="zone_add_point">Add Point</string>
-    <string name="zone_add_location">Add Point By Location</string>
-    <string name="zone_add_between_points">Add Point Between Points</string>
-    <string name="zone_add_between_points_1">Select First Point</string>
-    <string name="zone_add_between_points_2">Select Second Point</string>
-    <string name="zone_add_between_points_3">Place New Point</string>
-    <string name="zone_add_between_points_4">Edit New Point</string>
-    <string name="zone_edit_point">Edit Point</string>
-    <string name="zone_delete_point">Delete Point</string>
     <string name="zone_title_label">Enter Zone Title</string>
-    <string name="zone_action_undo">Undo</string>
-    <string name="zone_action_done">Done</string>
     <string name="zone_title">Zone Title</string>
-    <string name="zone_title_positive">Submit</string>
-    <string name="zone_title_negative">Cancel</string>
     <string name="zone_note_label">Edit Zone Note</string>
     <string name="zone_note_hint">Note</string>
     <string name="edit_zone_note">Change Zone Note</string>
@@ -162,14 +145,8 @@
     <string name="zone_no_valid">Zone isn\'t valid to save</string>
     <string name="zone_null_error">Something has goes wrong, try recreate the zone</string>
     <string name="iv_desc_zone_editor_center_camera">center camera button</string>
-    <string name="pick_color">Pick Color</string>
-    <string name="edit_zone_color">Change Zone Color</string>
-    <string name="color_dialog_red_label">Red:</string>
-    <string name="color_dialog_green_label">Green:</string>
-    <string name="color_dialog_blue_label">Blue:</string>
     <!-- App Settings Fragment-->
     <string name="app_settings_title">Settings</string>
-    <string name="degree_info">Degree Info</string>
     <string name="factory_reset">Factory Reset</string>
     <string name="select_theme_title">Select App Style</string>
     <string-array name="theme_styles">
@@ -184,23 +161,19 @@
     <string name="import_db_failed">Failed Data Update</string>
     <string name="export_db_fail">Failed Data Export</string>
     <string name="open_xml_action_not_ended_error">Please Wait…</string>
-    <!-- Degree Info Fragment-->
-    <string name="degree_info_menu_title">Degree Info</string>
     <!-- File Map Fragment -->
-    <string name="file_map_fragment_import_action">Click Land To Import</string>
+    <string name="file_map_fragment_import_action">Click Shape To Import</string>
     <string name="file_map_fragment_loading">Loading File…</string>
     <string name="file_map_fragment_error">File Error</string>
-    <string name="file_map_fragment_add_action">Click Land To Add</string>
-    <string name="file_map_fragment_subtract_action">Click Land To Subtract</string>
+    <string name="file_map_fragment_add_action">Click Shape To Add</string>
+    <string name="file_map_fragment_subtract_action">Click Shape To Subtract</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_grid_title">Calendar</string>
-    <string name="calendar_fragment_list_title">Event\'s</string>
     <string name="menu_filter">Filter</string>
     <string name="menu_grid_view">Grid View</string>
     <string name="menu_list_view">List View</string>
     <!-- Calendar Event List Fragment -->
-    <string name="calendar_event_list_fragment_title_1">Calendar:</string>
-    <string name="calendar_event_list_fragment_title_2">Event\'s</string>
+    <string name="calendar_event_list_fragment_title">Events:</string>
     <!-- Calendar Event Fragment -->
     <string name="calendar_new_instance_fragment_title">Calendar: New Event</string>
     <string name="calendar_edit_instance_fragment_title">Calendar: Edit Event</string>
@@ -208,8 +181,6 @@
     <string name="default_zone_spinner_value">All Zones</string>
     <string name="calendar_pop_up_date_title">Select date</string>
     <string name="calendar_pop_up_time_title">Select time</string>
-    <string name="select_land_label">Land</string>
-    <string name="select_zone_label">Zone</string>
     <string name="select_date_label">Date</string>
     <string name="select_time_label">Time</string>
     <string name="select_title_label">Title</string>
@@ -217,6 +188,6 @@
     <string name="notification_title_error">Enter Title</string>
     <string name="notification_message_error">Enter a message</string>
     <!-- Live Map Fragment -->
-    <string name="live_map_permission_error">Live Map Needs Location Permission</string>
-    <string name="default_live_map_title">Not Inside Land</string>
+    <string name="live_map_permission_error">Location permission is needed</string>
+    <string name="default_live_map_title">Not Inside an Land</string>
 </resources>

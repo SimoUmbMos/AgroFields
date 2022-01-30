@@ -119,16 +119,16 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_app_settings.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_blank.xml" value="0.178125" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar.xml" value="0.3671875" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_event_list.xml" value="0.2546875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_event_list.xml" value="0.19272727272727272" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_new_event.xml" value="0.3051948051948052" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_contact_profile.xml" value="0.36737884314747266" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_contacts_container.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_degree_info.xml" value="0.3578125" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_file_map.xml" value="0.2520833333333333" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_collection.xml" value="0.3578125" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_deleted.xml" value="0.3578125" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_deleted.xml" value="0.13730569948186527" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_menu.xml" value="0.18645833333333334" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_selected.xml" value="0.371875" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_selected.xml" value="0.13216957605985039" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_info.xml" value="0.14767932489451477" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_list.xml" value="0.18645833333333334" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map.xml" value="0.3131578947368421" />
@@ -141,7 +141,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu.xml" value="0.18645833333333334" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_history.xml" value="0.25833333333333336" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.1" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.3131578947368421" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.30601092896174864" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_search_contact.xml" value="0.23802083333333332" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_selected_share_land.xml" value="0.30833333333333335" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_selected_shared_land.xml" value="0.21041666666666667" />
@@ -152,7 +152,7 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_user_profile.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_user_request.xml" value="0.371875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_zone_editor.xml" value="0.2348684210526316" />
-        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_select.xml" value="0.2348684210526316" />
+        <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_select.xml" value="0.20948616600790515" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_selected.xml" value="0.1" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_add.xml" value="0.25052083333333336" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/layout/menu_view_change_owner.xml" value="0.2109375" />

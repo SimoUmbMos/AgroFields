@@ -823,10 +823,10 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             }else{
                 switch (mapStatus){
                     case AddEnd:
-                        setTitle(getString(R.string.create_point));
+                        setTitle(getString(R.string.add_point));
                         break;
                     case AddBetween:
-                        setTitle(getString(R.string.create_between_points));
+                        setTitle(getString(R.string.add_between_points));
                         changeTitleBasedOnState();
                         break;
                     case AddLocation:
@@ -837,7 +837,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                             setAction(LandActionStates.Disable);
                             return;
                         }
-                        setTitle(getString(R.string.create_point_location));
+                        setTitle(getString(R.string.add_by_location));
                         if(locationHelperPoint.getLocationPermission() == LocationStates.DISABLE){
                             locationPermissionRequest.launch(new String[] {
                                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -1048,13 +1048,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 MainActivity mainActivity = (MainActivity) getActivity();
                 if(mapStatus == LandActionStates.AddBetween){
                     if(index1 < 0){
-                        mainActivity.setToolbarTitle(getString(R.string.selectFirstPoint));
+                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_select_point_1));
                     }else if(index2 < 0){
-                        mainActivity.setToolbarTitle(getString(R.string.selectSecondPoint));
+                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_select_point_2));
                     }else if(index3 < 0){
-                        mainActivity.setToolbarTitle(getString(R.string.placePoint));
+                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_place_new_point));
                     }else{
-                        mainActivity.setToolbarTitle(getString(R.string.editPlacedPoint));
+                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_edit_new_point));
                     }
                 }
             }
@@ -1161,7 +1161,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             }
             tempColor = new ColorData( color.getRed(), color.getGreen(), color.getBlue() );
             dialog = DialogUtil.getColorPickerDialog(getContext())
-                    .setPositiveButton(getString(R.string.zone_title_positive),(d, w) -> {
+                    .setPositiveButton(getString(R.string.submit),(d, w) -> {
                         color = new ColorData(
                                 tempColor.getRed(),
                                 tempColor.getGreen(),
@@ -1170,7 +1170,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                         drawMap();
                         d.dismiss();
                     })
-                    .setNegativeButton(getString(R.string.zone_title_negative),(d, w) -> d.cancel())
+                    .setNegativeButton(getString(R.string.cancel),(d, w) -> d.cancel())
                     .show();
 
             Slider redSlider = dialog.findViewById(R.id.slRedSlider);

@@ -13,6 +13,7 @@ import androidx.navigation.NavController;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,17 +36,23 @@ import java.util.Map;
 
 public class MenuMainFragment extends Fragment implements FragmentBackPress {
     private FragmentMenuMainBinding binding;
+    private int landsNumber;
+    private int zonesNumber;
 
     //init
+    private void initData(){
+        landsNumber = 0;
+        zonesNumber = 0;
+    }
     private void initActivity() {
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle("");
+                mainActivity.setToolbarTitle(getString(R.string.dashboard_title));
                 ActionBar actionBar = mainActivity.getSupportActionBar();
                 if(actionBar != null){
-                    actionBar.hide();
+                    actionBar.show();
                     actionBar.setDisplayHomeAsUpEnabled(false);
                     actionBar.setDisplayShowHomeEnabled(false);
                 }
@@ -65,7 +72,6 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.btnZones.setOnClickListener(v -> toLandsZone(getActivity()));
         binding.btnLiveMap.setOnClickListener(v -> toLiveMap(getActivity()));
         binding.btnCalendar.setOnClickListener(v -> toCalendar(getActivity()));
-        binding.ibSettings.setOnClickListener(v-> toSettings(getActivity()));
         LocalDate now = LocalDate.now();
         String day =  now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()) +
                 " " +
@@ -80,21 +86,14 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
 
     //observers
     private void onLandUpdate(List<Land> lands) {
-        int landsNumber = 0;
+        landsNumber = 0;
         if(lands != null){
             landsNumber = lands.size();
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append(landsNumber).append(" ");
-        if(landsNumber == 1){
-            builder.append(getString(R.string.singular_land_count_title));
-        }else{
-            builder.append(getString(R.string.plural_land_count_title));
-        }
-        binding.tvLandCount.setText(builder.toString());
+        updateToolbar();
     }
     private void onLandZoneUpdate(Map<Long,List<LandZone>> zones) {
-        int zonesNumber = 0;
+        zonesNumber = 0;
         if(zones != null){
             for(Long key : zones.keySet()){
                 List<LandZone> temp = zones.getOrDefault(key,null);
@@ -103,14 +102,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 }
             }
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append(zonesNumber).append(" ");
-        if(zonesNumber == 1){
-            builder.append(getString(R.string.singular_zone_count_title));
-        }else{
-            builder.append(getString(R.string.plural_zone_count_title));
-        }
-        binding.tvZoneCount.setText(builder.toString());
+        updateToolbar();
     }
     private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
         int todayEventsNumber = 0;
@@ -128,11 +120,46 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         }
         builder.append(" ");
         if(todayEventsNumber == 1){
-            builder.append(getString(R.string.singular_event_count_title));
+            builder.append(getString(R.string.singular_event_label));
         }else{
-            builder.append(getString(R.string.plural_event_count_title));
+            builder.append(getString(R.string.plural_event_label));
         }
         binding.tvCalendarTodayEventCount.setText(builder.toString());
+    }
+    private void updateToolbar(){
+        String desc = "";
+        if(landsNumber != 0){
+            StringBuilder builder = new StringBuilder();
+            builder.append(landsNumber).append(" ");
+            if(landsNumber == 1){
+                builder.append(getString(R.string.singular_land_label));
+            }else{
+                builder.append(getString(R.string.plural_land_label));
+            }
+            if(zonesNumber != 0){
+                builder.append("\n").append(zonesNumber).append(" ");
+                if(zonesNumber == 1){
+                    builder.append(getString(R.string.singular_zone_label));
+                }else{
+                    builder.append(getString(R.string.plural_zone_label));
+                }
+            }
+            desc = builder.toString();
+        }
+
+        if(getActivity() != null){
+            if(getActivity().getClass() == MainActivity.class){
+                MainActivity mainActivity = (MainActivity) getActivity();
+                if(desc.isEmpty()){
+                    mainActivity.setToolbarTitle(getString(R.string.dashboard_title));
+                }else{
+                    mainActivity.setToolbarTitle(
+                            getString(R.string.dashboard_title),
+                            desc
+                    );
+                }
+            }
+        }
     }
 
     //navigation
@@ -185,6 +212,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
         initFragment();
         initViewModels();
@@ -194,8 +222,16 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding = null;
     }
     @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
+        inflater.inflate(R.menu.main_menu_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_item_app_settings){
+            toSettings(getActivity());
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     @Override public boolean onBackPressed() {
         return true;

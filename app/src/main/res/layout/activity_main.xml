@@ -39,6 +39,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     tools:text="Title" />
 
                 <TextView
@@ -46,7 +48,9 @@
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:layout_marginBottom="8dp"
+                    android:textSize="14sp"
                     tools:text="SubTitle" />
 
             </LinearLayout>

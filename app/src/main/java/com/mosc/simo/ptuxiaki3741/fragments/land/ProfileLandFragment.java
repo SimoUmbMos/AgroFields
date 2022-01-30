@@ -133,7 +133,7 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
             binding.etLandInfoNameLayout.setError(null);
             submit(landName, address);
         }else{
-            binding.etLandInfoNameLayout.setError(getString(R.string.title_error));
+            binding.etLandInfoNameLayout.setError(getString(R.string.title_empty_error));
         }
     }
     private void submit(String landName, String address) {

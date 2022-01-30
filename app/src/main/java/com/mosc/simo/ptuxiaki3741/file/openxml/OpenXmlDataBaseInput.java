@@ -252,12 +252,9 @@ public final class OpenXmlDataBaseInput {
 
                     @Override
                     public void endRow(int rowNum) {
-                        boolean doAction = true;
-                        if(title.isEmpty() && border.size() == 0){
-                            doAction = false;
+                        if(!title.isEmpty() && border.size() != 0) {
+                            lands.add(new Land(new LandData(id, title, new ColorData(color), border, holes)));
                         }
-                        if(doAction)
-                            lands.add(new Land(new LandData(id,title,new ColorData(color),border,holes)));
                     }
 
                     @Override
@@ -323,12 +320,9 @@ public final class OpenXmlDataBaseInput {
 
                     @Override
                     public void endRow(int rowNum) {
-                        boolean doAction = true;
-                        if(lid == -1 && title.isEmpty() && border.size() == 0){
-                            doAction = false;
-                        }
-                        if(doAction)
+                        if(lid != -1 && !title.isEmpty() && border.size() != 0){
                             zones.add(new LandZone(new LandZoneData(id,lid,title,note,new ColorData(color),border)));
+                        }
                     }
 
                     @Override

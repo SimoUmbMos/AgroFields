@@ -96,11 +96,9 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.YEAR, date.getYear());
                 calendar.set(Calendar.DAY_OF_YEAR, date.getDayOfYear());
-                builder.append(getString(R.string.calendar_event_list_fragment_title_1));
+                builder.append(getString(R.string.calendar_event_list_fragment_title));
                 builder.append(" ");
                 builder.append(DateTimeFormatter.ofPattern("dd/MM/yyyy").format(date));
-                builder.append(" ");
-                builder.append(getString(R.string.calendar_event_list_fragment_title_2));
                 mainActivity.setToolbarTitle(builder.toString());
 
                 ActionBar actionBar = mainActivity.getSupportActionBar();

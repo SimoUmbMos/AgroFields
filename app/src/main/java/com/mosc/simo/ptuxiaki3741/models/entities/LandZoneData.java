@@ -12,7 +12,6 @@ import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
-import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.List;
 

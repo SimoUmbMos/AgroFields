@@ -37,7 +37,7 @@
                 android:title="@string/edit_land_name"
                 app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_edit_land_color"
-                android:title="@string/edit_land_color"
+                android:title="@string/edit_color"
                 android:orderInCategory="3"
                 android:icon="@drawable/ic_menu_color_palette"
                 app:iconTint="@color/textColor"
@@ -58,21 +58,21 @@
                 android:icon="@drawable/ic_drawer_menu_add"
                 app:iconTint="@color/textColor"
                 android:orderInCategory="1"
-                android:title="@string/create_point"
+                android:title="@string/add_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_add_between"
                 android:icon="@drawable/ic_drawer_menu_add_between"
                 app:iconTint="@color/textColor"
                 android:orderInCategory="2"
-                android:title="@string/create_between_points"
+                android:title="@string/add_between_points"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_add_location"
                 android:icon="@drawable/ic_drawer_menu_add"
                 app:iconTint="@color/textColor"
                 android:orderInCategory="3"
-                android:title="@string/create_point_location"
+                android:title="@string/add_by_location"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_edit"

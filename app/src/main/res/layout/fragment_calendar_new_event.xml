@@ -114,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="@string/select_land_label"
+            android:hint="@string/singular_land_label"
             android:labelFor="@id/tvSelectLand">
 
             <AutoCompleteTextView
@@ -132,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="@string/select_zone_label"
+            android:hint="@string/singular_zone_label"
             android:labelFor="@id/tvSelectZone">
 
             <AutoCompleteTextView
@@ -173,7 +173,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="@string/submit_info"
+            android:text="@string/submit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </LinearLayout>

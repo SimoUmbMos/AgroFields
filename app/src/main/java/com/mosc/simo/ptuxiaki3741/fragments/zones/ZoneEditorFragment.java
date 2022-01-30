@@ -390,7 +390,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         String error = null;
         if(title.trim().isEmpty()){
             showTitleDialog();
-            error = getString(R.string.title_error);
+            error = getString(R.string.title_empty_error);
         }else if(land == null){
             error = getString(R.string.zone_null_error);
         }else if(border.size()<=2){
@@ -420,8 +420,8 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setTitle(getString(R.string.zone_title_label))
                     .setView(R.layout.view_edit_text)
-                    .setPositiveButton(getString(R.string.zone_title_positive),null)
-                    .setNegativeButton(getString(R.string.zone_title_negative),(d, w)-> {
+                    .setPositiveButton(getString(R.string.submit),null)
+                    .setNegativeButton(getString(R.string.cancel),(d, w)-> {
                         d.cancel();
                         if(zone == null && title.isEmpty()){
                             forceBack = true;
@@ -445,11 +445,15 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             updateUI();
                             dialog.dismiss();
                         }else{
-                            Toast.makeText(
-                                    getContext(),
-                                    getString(R.string.title_error),
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            if(getContext() != null){
+                                Toast.makeText(
+                                        getContext(),
+                                        getString(R.string.title_empty_error),
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                            }else{
+                                dialog.dismiss();
+                            }
                         }
                     }
                 }else{
@@ -469,8 +473,8 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setTitle(getString(R.string.zone_note_label))
                     .setView(R.layout.view_text_area)
-                    .setPositiveButton(getString(R.string.zone_title_positive),null)
-                    .setNegativeButton(getString(R.string.zone_title_negative), (d, w)-> d.cancel())
+                    .setPositiveButton(getString(R.string.submit),null)
+                    .setNegativeButton(getString(R.string.cancel), (d, w)-> d.cancel())
                     .create();
             dialog.show();
             EditText noteV = dialog.findViewById(R.id.etZoneNote);
@@ -520,7 +524,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
             tempColor = new ColorData( color.getRed(), color.getGreen(), color.getBlue() );
             dialog = DialogUtil.getColorPickerDialog(getContext())
-                    .setPositiveButton(getString(R.string.zone_title_positive),(d, w) -> {
+                    .setPositiveButton(getString(R.string.submit),(d, w) -> {
                         color = new ColorData(
                                 tempColor.getRed(),
                                 tempColor.getGreen(),
@@ -529,7 +533,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                         updateMap();
                         d.dismiss();
                     })
-                    .setNegativeButton(getString(R.string.zone_title_negative),(d, w) -> d.cancel())
+                    .setNegativeButton(getString(R.string.cancel),(d, w) -> d.cancel())
                     .show();
 
             Slider redSlider = dialog.findViewById(R.id.slRedSlider);
@@ -895,33 +899,33 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 MainActivity activity = (MainActivity) getActivity();
                 switch (state){
                     case AddPoint:
-                        activity.setToolbarTitle(getString(R.string.zone_add_point));
+                        activity.setToolbarTitle(getString(R.string.add_point));
                         break;
                     case AddLocation:
-                        activity.setToolbarTitle(getString(R.string.zone_add_location));
+                        activity.setToolbarTitle(getString(R.string.add_by_location));
                         break;
                     case AddBetweenPoint:
                         String display;
                         if(index1 != -1){
                             if(index2 != -1){
                                 if(index3 != -1){
-                                    display = getString(R.string.zone_add_between_points_4);
+                                    display = getString(R.string.add_between_points_edit_new_point);
                                 }else{
-                                    display = getString(R.string.zone_add_between_points_3);
+                                    display = getString(R.string.add_between_points_place_new_point);
                                 }
                             }else{
-                                display = getString(R.string.zone_add_between_points_2);
+                                display = getString(R.string.add_between_points_select_point_2);
                             }
                         }else{
-                            display = getString(R.string.zone_add_between_points_1);
+                            display = getString(R.string.add_between_points_select_point_1);
                         }
                         activity.setToolbarTitle(display);
                         break;
                     case EditPoint:
-                        activity.setToolbarTitle(getString(R.string.zone_edit_point));
+                        activity.setToolbarTitle(getString(R.string.edit_point));
                         break;
                     case DeletePoint:
-                        activity.setToolbarTitle(getString(R.string.zone_delete_point));
+                        activity.setToolbarTitle(getString(R.string.delete_point));
                         break;
                     case NormalState:
                     default:
@@ -1077,6 +1081,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
         if(needSave()){
             if (doubleBackToExit) {
+                if(dialog != null){
+                    dialog.dismiss();
+                }
                 return true;
             }
             doubleBackToExit = true;
@@ -1091,6 +1098,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             Snackbar.make(binding.getRoot(), display, Snackbar.LENGTH_SHORT)
                     .show();
             return false;
+        }
+        if(dialog != null){
+            dialog.dismiss();
         }
         return true;
     }

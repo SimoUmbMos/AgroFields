@@ -78,7 +78,11 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
-                activity.setToolbarTitle(getString(R.string.zones_list_bar_label));
+                if(selectedLand != null){
+                    activity.setToolbarTitle(selectedLand.toString());
+                }else{
+                    activity.setToolbarTitle(getString(R.string.my_zones_label));
+                }
                 ActionBar actionBar = activity.getSupportActionBar();
                 if(actionBar != null){
                     actionBar.show();
@@ -195,6 +199,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             updateMenu(LandListMenuState.NormalState);
         }
     }
+    @SuppressLint("NotifyDataSetChanged")
     private void toggleAllZone() {
         if(areAllZoneSelected()){
             if(state == LandListMenuState.MultiSelectState){
@@ -205,6 +210,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         }else{
             selectAllZones();
         }
+        adapter.notifyDataSetChanged();
     }
     private void selectAllZones() {
         for(LandZone zone:data){
@@ -363,52 +369,12 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         ActionMode.Callback callback = null;
         switch (state){
             case MultiDeleteState:
-                callback = new ActionMode.Callback() {
-                    @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                        mode.getMenuInflater().inflate(R.menu.zone_list_contextual_menu,menu);
-                        mode.setTitle(R.string.contextual_menu_zone_label_multi_delete);
-                        return data.size()>0;
-                    }
-                    @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                        initContextualMenu(menu,state);
-                        updateCheckBoxes(true);
-                        return true;
-                    }
-                    @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item){
-                        return onMenuItemClick(item);
-                    }
-                    @Override public void onDestroyActionMode(ActionMode mode) {
-                        updateCheckBoxes(false);
-                        updateMenu(LandListMenuState.NormalState);
-                    }
-                };
-                break;
             case MultiExportState:
-                callback = new ActionMode.Callback() {
-                    @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                        mode.getMenuInflater().inflate(R.menu.zone_list_contextual_menu,menu);
-                        mode.setTitle(R.string.contextual_menu_zone_label_multi_export);
-                        return data.size()>0;
-                    }
-                    @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                        initContextualMenu(menu,state);
-                        updateCheckBoxes(true);
-                        return true;
-                    }
-                    @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item){
-                        return onMenuItemClick(item);
-                    }
-                    @Override public void onDestroyActionMode(ActionMode mode) {
-                        updateCheckBoxes(false);
-                        updateMenu(LandListMenuState.NormalState);
-                    }
-                };
-                break;
             case MultiSelectState:
                 callback = new ActionMode.Callback() {
                     @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                         mode.getMenuInflater().inflate(R.menu.zone_list_contextual_menu,menu);
-                        mode.setTitle(R.string.contextual_menu_zone_label_multi_select);
+                        mode.setTitle(R.string.contextual_menu_zone_label);
                         return data.size()>0;
                     }
                     @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) {

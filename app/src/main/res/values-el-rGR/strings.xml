@@ -1,3 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- translatable -->
+    <!-- Common -->
+    <string name="app_name">Land Declaration</string>
+    <string name="degree_info">Πληροφορίες Πτυχιακής</string>
+    <string name="land_history">Ιστορικό χωραφιού</string>
+    <string name="loading_list">Η λίστα φορτώνεται</string>
+    <string name="empty_list">Η λίστα είναι κενή</string>
+    <string name="submit">Υποβολή</string>
+    <string name="accept">Αποδοχή</string>
+    <string name="done">Ολοκλήρωση</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="undo">Aναίρεση</string>
+    <string name="file_type_select_title">Επιλέξτε Τύπος αρχείου</string>
+    <string name="title_empty_error">Ο τίτλος είναι κενός</string>
+    <string name="notification_channel_name">Ειδοποιήσεις εντός εφαρμογής</string>
+    <string name="notification_channel_description">Ειδοποιήσεις μέσα στην Εφαρμογή</string>
+    <string name="calendar_notification_channel_name">Ειδοποιήσεις Ημερολογίου</string>
+    <string name="calendar_notification_channel_description">Ειδοποιήσεις παρασκηνίου ημερολογίου</string>
+    <string name="my_lands_label">Τα Χωράφια μου</string>
+    <string name="my_zones_label">Οι Περιοχές μου</string>
+    <string name="select_all">Επιλογή όλων</string>
+    <string name="file_created">Το αρχείο δημιουργήθηκε</string>
+    <string name="file_not_created">Το αρχείο δεν δημιουργήθηκε</string>
+    <string name="saving_label">Αποθήκευση…</string>
+    <string name="loading_label">Φόρτωση…</string>
+    <string name="add">Προσθήκη</string>
+    <string name="delete">Διαγράφή</string>
+    <string name="export">Εξαγωγή</string>
+    <string name="history">Ιστορικό</string>
+    <string name="singular_land_label">Χωράφι</string>
+    <string name="plural_land_label">Χωράφια</string>
+    <string name="singular_zone_label">Περιοχή</string>
+    <string name="plural_zone_label">Περιοχές</string>
+    <string name="singular_event_label">Συμβάν</string>
+    <string name="plural_event_label">Συμβάντα</string>
+    <string name="pick_color">Επιλέξτε Χρώμα</string>
+    <string name="color_dialog_red_label">Κόκκινο:</string>
+    <string name="color_dialog_green_label">Πράσινο:</string>
+    <string name="color_dialog_blue_label">Μπλε:</string>
+    <string name="add_point">Προσθήκη σημείου</string>
+    <string name="add_by_location">Προσθήκη σημείου από τοποθεσία</string>
+    <string name="add_between_points">Προσθήκη σημείου μεταξύ σημείων</string>
+    <string name="add_between_points_select_point_1">Επιλέξτε το πρώτο σημείο</string>
+    <string name="add_between_points_select_point_2">Επιλέξτε το δεύτερο σημείο</string>
+    <string name="add_between_points_place_new_point">Τοποθετήστε το νέο σημείο</string>
+    <string name="add_between_points_edit_new_point">Επεξεργασία νέου σημείου</string>
+    <string name="edit_point">Επεξεργασία σημείου</string>
+    <string name="delete_point">Διαγραφή σημείου</string>
+    <string name="clear_points">Διαγραφή σημείων</string>
+    <string name="reset_points">Επαναφορά σημείων</string>
+    <string name="edit_color">Αλλαγή χρώματος</string>
+    <string name="tag_input_view_label">Ετικέτες:</string>
+    <!-- Main Activity -->
+    <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
+    <!-- Loading Fragment -->
+    <string name="file_input_error">Σφάλμα κατά την ανάγνωση του αρχείου.</string>
+    <!-- Main Menu Fragment -->
+    <string name="main_menu_live_map_button">Ζωντανός Χάρτης</string>
+    <string name="main_menu_calendar_button">Τα Συμβάν μου</string>
+    <string name="main_menu_tag_button">Διαχείριση Ετικετών</string>
+    <string name="dashboard_title">Πίνακας Ελέγχου</string>
+    <!-- Land Menu Fragment -->
+    <string name="contextual_menu_land_label">Επιλέξτε χωράφια</string>
+    <string name="delete_lands_title">Διαγραφή χωράφιων</string>
+    <string name="delete_lands_text">Επιθυμείτε να διαγράψετε τα επιλεγμένα χωράφια;</string>
+    <!-- Land Info Fragment -->
+    <string name="land_info_title">Πληροφορίες χωραφιού</string>
+    <string name="land_name">Τίτλος χωραφιού</string>
+    <string name="address_hint">Διεύθυνση χωραφιού</string>
+    <string name="create_land_label">Ορισμός τίτλου χωραφιού</string>
+    <string name="edit_land_label">Επεξεργασία τίτλου χωραφιού</string>
+    <!-- Land Map Preview Fragment -->
+    <string name="edit_land">Επεξεργασία χωραφιού</string>
+    <string name="restore_land">Επαναφορά χωραφιού</string>
+    <!-- Land Map Fragment -->
+    <string name="fabSave">Αποθήκευση αλλαγών</string>
+    <string name="fabReset">Επαναφορά αλλαγών</string>
+    <string name="land_imageView">Εμφάνιση εικόνας πάνω από τον χάρτη</string>
+    <string name="open_menu">Άνοιγμα Μενού</string>
+    <string name="save_land">Αποθήκευση χωραφιού</string>
+    <string name="map_view_actions_group_title">Ενέργειες του Χάρτη</string>
+    <string name="lock_map">Κλείδωμα χάρτη</string>
+    <string name="show_road_name">Εμφάνιση τοποθεσιών</string>
+    <string name="hide_road_name">Απόκρυψη τοποθεσιών</string>
+    <string name="points_actions_group_title">Ενέργειες σημείων</string>
+    <string name="img_actions_group_title">Εικόνα επικάλυψης</string>
+    <string name="add_img">Προσθήκη εικόνας</string>
+    <string name="remove_img">Αφαίρεση εικόνας</string>
+    <string name="edit_img">Επεξεργασία εικόνας</string>
+    <string name="opacity_img">Αλλαγή αδιαφάνειας</string>
+    <string name="file_actions_group_title">Ενέργειες αρχείου</string>
+    <string name="import_label">Εισαγωγή</string>
+    <string name="add_to_land_label">Προσθήκη από αρχείο</string>
+    <string name="remove_from_land_label">Αφαίρεση από αρχείο</string>
+    <string name="land_actions_group_title">Ενέργειες χωραφιού</string>
+    <string name="delete_land">Διαγραφή χωραφιού</string>
+    <string name="make_land_editable">Κάντε το χωράφι Επεξεργάσιμο</string>
+    <string name="edit_land_name">Αλλαγή τίτλου χωραφιού</string>
+    <string name="delete_land_title">Διαγραφή χωραφιού</string>
+    <string name="delete_land_text">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το χωράφι;</string>
+    <!-- History Menu Fragment -->
+    <string name="land_action_created">Δημιουργήθηκε</string>
+    <string name="land_action_updated">Ενημερώθηκε</string>
+    <string name="land_action_restored">Επαναφέρθηκε</string>
+    <string name="land_action_imported">Έγινε εισαγωγή</string>
+    <string name="land_action_deleted">Διαγράφηκε</string>
+    <string name="toggle_history_list">Εναλλαγή λίστας</string>
+    <!-- Zone Land Select Fragment -->
+    <string name="zones_land_list_bar_label">Επιλέξτε Χωράφι</string>
+    <!-- Zone Land Selected Fragment -->
+    <string name="contextual_menu_zone_label">Επιλέξτε περιοχές</string>
+    <string name="zone_delete">Οι περιοχές διαγράφηκαν με επιτυχία</string>
+    <string name="zone_export">Οι περιοχές εξήχθησαν με επιτυχία</string>
+    <!-- Zone Preview Fragment -->
+    <string name="new_zone_bar_label">Νέα περιοχή</string>
+    <string name="edit_zone">Επεξεργασία περιοχής</string>
+    <string name="save_zone">Αποθήκευση περιοχής</string>
+    <string name="zone_actions_group_title">Ενέργειες περιοχής</string>
+    <string name="edit_zone_title">Αλλαγή τίτλου περιοχής</string>
+    <string name="zone_border_actions_group_title">Ενέργειες σχήματος</string>
+    <string name="zone_title_label">Εισαγάγετε τον τίτλο περιοχής</string>
+    <string name="zone_title">Τίτλος περιοχής</string>
+    <string name="zone_note_hint">Σημείωση</string>
+    <string name="zone_note_label">Επεξεργασία σημείωσης περιοχής</string>
+    <string name="edit_zone_note">Αλλαγή σημείωσης περιοχής</string>
+    <string name="note_max_line_error">Μέγιστος αριθμός γραμμών σημείωσης: 2</string>
+    <string name="note_max_char_error">Μέγιστος αριθμός χαρακτήρων σημείωσης: 100</string>
+    <string name="zone_border_error">Η περιοχή πρέπει να έχει τουλάχιστον 3 σημεία</string>
+    <string name="zone_saved">Η περιοχή αποθηκεύτηκε</string>
+    <string name="zone_need_save_new">Η νέα περιοχή δεν αποθηκεύτηκε.\nΠατήστε δύο φορές για έξοδο.</string>
+    <string name="zone_need_save_edit">Οι αλλαγές της περιοχής δεν αποθηκεύτηκαν.\nΠατήστε δύο φορές για έξοδο.</string>
+    <string name="zone_no_need_save">Η περιοχή δεν χρειάζεται αποθήκευση</string>
+    <string name="zone_no_valid">Η περιοχή δεν είναι έγκυρη για αποθήκευση</string>
+    <string name="zone_null_error">Κάτι πήγε στραβά, δοκιμάστε να δημιουργήσετε ξανά την περιοχή</string>
+    <string name="iv_desc_zone_editor_center_camera">Κεντρικό κουμπί κάμερας</string>
+    <!-- App Settings Fragment-->
+    <string name="app_settings_title">Ρυθμίσεις</string>
+    <string name="factory_reset">Εργοστασιακή επανεκκίνηση</string>
+    <string name="select_theme_title">Επιλέξτε στυλ εφαρμογής</string>
+    <string-array name="theme_styles">
+        <item>Προεπιλογή συστήματος</item>
+        <item>Φωτεινό θέμα</item>
+        <item>Σκοτεινό θέμα</item>
+    </string-array>
+    <string name="import_database_button_label">Εισαγωγή δεδομένων</string>
+    <string name="export_database_button_label">Εξαγωγή δεδομένων</string>
+    <string name="import_db_success">Τα δεδομένα ενημερώθηκαν</string>
+    <string name="export_db_success">Η εξαγωγή δεδομένων ολοκληρώθηκε</string>
+    <string name="import_db_failed">Αποτυχία ενημέρωσης δεδομένων</string>
+    <string name="export_db_fail">Αποτυχία εξαγωγής δεδομένων</string>
+    <string name="open_xml_action_not_ended_error">Παρακαλώ περιμένετε…</string>
+    <!-- File Map Fragment -->
+    <string name="file_map_fragment_import_action">Κάντε κλικ σε σχήμα για εισαγωγή</string>
+    <string name="file_map_fragment_loading">Φόρτωση αρχείου…</string>
+    <string name="file_map_fragment_error">Σφάλμα αρχείου</string>
+    <string name="file_map_fragment_add_action">Κάντε κλικ σε σχήμα για προσθήκη</string>
+    <string name="file_map_fragment_subtract_action">Κάντε κλικ σε σχήμα για αφαίρεση</string>
+    <!-- Calendar Fragment -->
+    <string name="calendar_fragment_grid_title">Ημερολόγιο</string>
+    <string name="menu_filter">Φίλτρα</string>
+    <string name="menu_grid_view">Προβολή πλέγματος</string>
+    <string name="menu_list_view">Προβολή λίστας</string>
+    <!-- Calendar Event List Fragment -->
+    <string name="calendar_event_list_fragment_title">Συμβάντα:</string>
+    <!-- Calendar Event Fragment -->
+    <string name="calendar_new_instance_fragment_title">Ημερολόγιο: νέο συμβάν</string>
+    <string name="calendar_edit_instance_fragment_title">Ημερολόγιο: επεξεργασία συμβάντος</string>
+    <string name="default_land_spinner_value">Όλες τα χωράφια</string>
+    <string name="default_zone_spinner_value">Όλες οι περιοχές</string>
+    <string name="calendar_pop_up_date_title">Επιλέξτε ημερομηνία</string>
+    <string name="calendar_pop_up_time_title">Επιλέξτε ώρα</string>
+    <string name="select_date_label">Ημερομηνία</string>
+    <string name="select_time_label">Ώρα</string>
+    <string name="select_title_label">Τίτλος</string>
+    <string name="select_message_label">Μήνυμα</string>
+    <string name="notification_title_error">Εισαγάγετε τον τίτλο</string>
+    <string name="notification_message_error">Εισαγάγετε ένα μήνυμα</string>
+    <!-- Live Map Fragment -->
+    <string name="live_map_permission_error">Απαιτείται άδεια τοποθεσίας</string>
+    <string name="default_live_map_title">Όχι μέσα σε χωράφι</string>
 </resources>
