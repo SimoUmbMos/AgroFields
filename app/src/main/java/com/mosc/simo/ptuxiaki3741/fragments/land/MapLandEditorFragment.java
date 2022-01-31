@@ -142,7 +142,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private void onFilePermissionResult(boolean permissionsResult) {
         toggleDrawer(false);
         if (permissionsResult) {
-            Intent intent = FileUtil.getFilePickerIntent(fileState);
+            String title;
+            if(fileState == LandFileState.Img){
+                title = getString(R.string.file_img_picker_label);
+            }else{
+                title = getString(R.string.file_picker_label);
+            }
+            Intent intent = FileUtil.getFilePickerIntent(fileState, title);
             switch (fileState) {
                 case Img:
                     imgFileLauncher.launch(intent);

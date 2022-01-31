@@ -106,7 +106,7 @@ public final class FileUtil {
         }
         return landsToGmlString(lands);
     }
-    public static Intent getFilePickerIntent(LandFileState state) {
+    public static Intent getFilePickerIntent(LandFileState state, String title) {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         if(state == LandFileState.Img){
@@ -114,12 +114,14 @@ public final class FileUtil {
         }else{
             chooseFile.setType("*/*");
         }
+        chooseFile = Intent.createChooser(chooseFile, title);
         return chooseFile;
     }
-    public static Intent getFilePickerIntent() {
+    public static Intent getFilePickerIntent(String title) {
         Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
         chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
         chooseFile.setType("*/*");
+        chooseFile = Intent.createChooser(chooseFile, title);
         return chooseFile;
     }
     public static boolean fileIsValidImg(Context ctx, Intent response){

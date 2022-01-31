@@ -13,6 +13,9 @@
     <string name="cancel">Ακύρωση</string>
     <string name="undo">Aναίρεση</string>
     <string name="file_type_select_title">Επιλέξτε Τύπος αρχείου</string>
+    <string name="file_picker_label">Επιλέξτε ένα αρχείο σχήματος</string>
+    <string name="file_backup_picker_label">Επιλέξτε ένα αντίγραφο ασφαλείας</string>
+    <string name="file_img_picker_label">Επιλέξτε μια εικόνα</string>
     <string name="title_empty_error">Ο τίτλος είναι κενός</string>
     <string name="notification_channel_name">Ειδοποιήσεις εντός εφαρμογής</string>
     <string name="notification_channel_description">Ειδοποιήσεις μέσα στην Εφαρμογή</string>

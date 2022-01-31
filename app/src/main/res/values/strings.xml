@@ -23,6 +23,9 @@
     <string name="cancel">Cancel</string>
     <string name="undo">Undo</string>
     <string name="file_type_select_title">Select File Type</string>
+    <string name="file_picker_label">Select a shape file</string>
+    <string name="file_backup_picker_label">Select a backup file</string>
+    <string name="file_img_picker_label">Select a image</string>
     <string name="title_empty_error">Title is empty</string>
     <string name="notification_channel_name">In App Notifications</string>
     <string name="notification_channel_description">Notifications inside the Application</string>

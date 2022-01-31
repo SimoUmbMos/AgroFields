@@ -346,7 +346,8 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
     private void onImportDBAction(boolean permission){
         if(permission){
-            Intent intent = FileUtil.getFilePickerIntent();
+            String title = getString(R.string.file_backup_picker_label);
+            Intent intent = FileUtil.getFilePickerIntent(title);
             fileLauncher.launch(intent);
         }
     }
