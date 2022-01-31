@@ -8,21 +8,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.databinding.ViewNotificationItemBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.views.CalendarEventView;
 
 import java.util.List;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.ViewHolder> {
     private final List<CalendarNotification> notifications;
+    private final String[] typesString;
+    private final int[] typesColor;
     private final ActionResult<CalendarNotification> onClick;
 
     public NotificationsAdapter(
             List<CalendarNotification> notifications,
+            String[] typesString,
+            int[] typesColor,
             ActionResult<CalendarNotification> onClick
     ) {
         this.notifications = notifications;
+        this.typesString = typesString;
+        this.typesColor = typesColor;
         this.onClick = onClick;
     }
 
@@ -30,7 +36,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_notification_item, parent,false);
+                .inflate(R.layout.view_calendar_list_event, parent,false);
         return new ViewHolder(view);
     }
 
@@ -38,10 +44,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(position < getItemCount()){
             CalendarNotification notification = notifications.get(position);
-            holder.binding.getRoot().setText(notification.toString());
-            holder.binding.getRoot().setOnClickListener(v->onClick.onActionResult(notification));
+            int color = typesColor[notification.getType().ordinal()];
+            String type = typesString[notification.getType().ordinal()];
+            holder.calendarEventView.setEvent(type, color, notification.toString());
+            holder.calendarEventView.setOnClick(v->onClick.onActionResult(notification));
         }else{
-            holder.binding.getRoot().setVisibility(View.GONE);
+            holder.calendarEventView.setVisibility(View.GONE);
         }
     }
 
@@ -52,10 +60,10 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public final ViewNotificationItemBinding binding;
+        public final CalendarEventView calendarEventView;
         public ViewHolder(@NonNull View view) {
             super(view);
-            binding = ViewNotificationItemBinding.bind(view);
+            calendarEventView = new CalendarEventView(view);
         }
     }
 }

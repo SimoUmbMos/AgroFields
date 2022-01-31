@@ -1,5 +1,11 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
+  <color name="badge1">#CFD8D7</color>
+  <color name="badge2">#CCCFD8D7</color>
+  <color name="badge3">#99CFD8D7</color>
+  <color name="badge4">#66CFD8D7</color>
+  <color name="badgeMore">#33CFD8D7</color>
+
   <color name="colorError">#F99AAB</color>
   <color name="backgroundColor">#212C2C</color>
   <color name="cardBackgroundColor">#314444</color>
@@ -11,4 +17,13 @@
   <color name="cardBackgroundCalendarEnable">#314444</color>
   <color name="cardBackgroundCalendarToday">#4E5F5F</color>
   <color name="cardBackgroundCalendarDisable">#212C2C</color>
+
+  <array name="notification_event_color_types">
+    <item>#2A3755</item><!-- SCHEDULE -->
+    <item>#415935</item><!-- PLANT -->
+    <item>#174C48</item><!-- CULTIVATE -->
+    <item>#636531</item><!-- FERTILIZE -->
+    <item>#17575F</item><!-- SPRAY -->
+    <item>#633929</item><!-- HARVEST -->
+  </array>
 </resources>

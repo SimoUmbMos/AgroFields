@@ -22,6 +22,7 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.NotificationsAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarEventListBinding;
+import com.mosc.simo.ptuxiaki3741.enums.CalendarEventType;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
@@ -41,6 +42,8 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
     private List<CalendarNotification> notifications;
     private LocalDate date;
     private boolean firstStart;
+    private String[] typesString;
+    private int[] typesColor;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -84,6 +87,10 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
                 date = (LocalDate) getArguments().getSerializable(AppValues.argDate);
             }
         }
+
+        typesString = getResources().getStringArray(R.array.notification_event_types);
+        typesColor = getResources().getIntArray(R.array.notification_event_color_types);
+
         return date != null;
     }
     private void initActivity(){
@@ -110,7 +117,12 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
     }
     private void initFragment(){
         binding.tvNotificationsDisplay.setText(getString(R.string.loading_list));
-        adapter = new NotificationsAdapter(notifications, this::onNotificationClick);
+        adapter = new NotificationsAdapter(
+                notifications,
+                typesString,
+                typesColor,
+                this::onNotificationClick
+        );
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -186,6 +198,7 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
                                 null,
                                 "",
                                 "",
+                                CalendarEventType.SCHEDULE,
                                 calendar.getTime()
                         )
                 );

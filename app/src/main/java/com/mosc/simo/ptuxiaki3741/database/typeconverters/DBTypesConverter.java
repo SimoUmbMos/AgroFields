@@ -5,6 +5,7 @@ import androidx.room.TypeConverter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mosc.simo.ptuxiaki3741.enums.CalendarEventType;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 
@@ -20,6 +21,15 @@ public class DBTypesConverter {
     @TypeConverter
     public static int landActionToLandActionValue(LandDBAction action) {
         return action.ordinal();
+    }
+
+    @TypeConverter
+    public static CalendarEventType calendarEventTypeValueToCalendarEventType(int ordinal) {
+        return CalendarEventType.values()[ordinal];
+    }
+    @TypeConverter
+    public static int calendarEventTypeToCalendarEventTypeValue(CalendarEventType type) {
+        return type.ordinal();
     }
 
     @TypeConverter

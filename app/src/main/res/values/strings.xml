@@ -185,8 +185,17 @@
     <string name="select_time_label">Time</string>
     <string name="select_title_label">Title</string>
     <string name="select_message_label">Message</string>
+    <string name="select_type_label">Job Type</string>
     <string name="notification_title_error">Enter Title</string>
     <string name="notification_message_error">Enter a message</string>
+    <string-array name="notification_event_types">
+        <item>Schedule Job</item>
+        <item>Planting Job</item>
+        <item>Cultivating Job</item>
+        <item>Fertilizing Job</item>
+        <item>Spray Job</item>
+        <item>Harvesting Job</item>
+    </string-array>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Location permission is needed</string>
     <string name="default_live_map_title">Not Inside an Land</string>

@@ -11,7 +11,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderCalendarDateBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
-import com.mosc.simo.ptuxiaki3741.views.CalendarListEventView;
+import com.mosc.simo.ptuxiaki3741.views.CalendarEventView;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -21,15 +21,21 @@ import java.util.Locale;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
     private final LinkedHashMap<LocalDate, List<CalendarNotification>> data;
+    private final String[] typesString;
+    private final int[] typesColor;
     private final ActionResult<LocalDate> onDateClick;
     private final ActionResult<CalendarNotification> onEventClick;
 
     public CalendarAdapter(
             LinkedHashMap<LocalDate, List<CalendarNotification>> data,
+            String[] typesString,
+            int[] typesColor,
             ActionResult<LocalDate> onDateClick,
             ActionResult<CalendarNotification> onEventClick
     ){
         this.data = data;
+        this.typesString = typesString;
+        this.typesColor = typesColor;
         this.onDateClick = onDateClick;
         this.onEventClick = onEventClick;
     }
@@ -52,7 +58,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             LocalDate date = (LocalDate) data.keySet().toArray()[position];
             List<CalendarNotification> events = data.getOrDefault(date,null);
             if(events != null){
-                holder.show(date, events, onDateClick, onEventClick);
+                holder.show(date, typesString, typesColor, events, onDateClick, onEventClick);
             }else{
                 holder.hide();
             }
@@ -82,6 +88,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         }
         public void show(
                 LocalDate d,
+                String[] typesString,
+                int[] typesColor,
                 List<CalendarNotification> e,
                 ActionResult<LocalDate> dc,
                 ActionResult<CalendarNotification> ec
@@ -92,9 +100,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             String dateString = d.getDayOfMonth()+"/"+d.getMonthValue();
             binding.tvDayNumber.setText(dateString);
             binding.llEventsContainer.removeAllViews();
+            String type;
+            int color;
             for(CalendarNotification event : e){
-                CalendarListEventView eventView = new CalendarListEventView(binding.getRoot().getContext());
-                eventView.setTitle(event.toString());
+                CalendarEventView eventView = new CalendarEventView(binding.getRoot().getContext());
+                type = typesString[event.getType().ordinal()];
+                color = typesColor[event.getType().ordinal()];
+                eventView.setEvent(type, color, event.toString());
                 eventView.setOnClick(v->ec.onActionResult(event));
                 binding.llEventsContainer.addView(eventView);
             }

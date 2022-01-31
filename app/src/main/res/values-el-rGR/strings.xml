@@ -40,8 +40,8 @@
     <string name="color_dialog_green_label">Πράσινο:</string>
     <string name="color_dialog_blue_label">Μπλε:</string>
     <string name="add_point">Προσθήκη σημείου</string>
-    <string name="add_by_location">Προσθήκη σημείου από τοποθεσία</string>
-    <string name="add_between_points">Προσθήκη σημείου μεταξύ σημείων</string>
+    <string name="add_by_location">Προσθήκη τοποθεσία</string>
+    <string name="add_between_points">Προσθήκη μεταξύ σημείων</string>
     <string name="add_between_points_select_point_1">Επιλέξτε το πρώτο σημείο</string>
     <string name="add_between_points_select_point_2">Επιλέξτε το δεύτερο σημείο</string>
     <string name="add_between_points_place_new_point">Τοποθετήστε το νέο σημείο</string>
@@ -175,8 +175,17 @@
     <string name="select_time_label">Ώρα</string>
     <string name="select_title_label">Τίτλος</string>
     <string name="select_message_label">Μήνυμα</string>
+    <string name="select_type_label">Τύπος εργασίας</string>
     <string name="notification_title_error">Εισαγάγετε τον τίτλο</string>
     <string name="notification_message_error">Εισαγάγετε ένα μήνυμα</string>
+    <string-array name="notification_event_types">
+        <item>Προγραμματισμένη εργασία</item>
+        <item>Εργασία φύτευσης</item>
+        <item>Εργασία καλλιέργειας</item>
+        <item>Εργασία γονιμοποίησης</item>
+        <item>Εργασία ψεκασμού</item>
+        <item>Εργασία συγκομιδής</item>
+    </string-array>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Απαιτείται άδεια τοποθεσίας</string>
     <string name="default_live_map_title">Όχι μέσα σε χωράφι</string>

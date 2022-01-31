@@ -88,7 +88,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private String address;
     private LatLng startZoomLocation;
     private float startZoomLevel;
-    private boolean currLocation, locationPointWasRunning;
+    private boolean currLocation, locationPointWasRunning, cameraInit;
     private Land currLand;
     private ColorData color, tempColor;
     private String displayTitle;
@@ -116,12 +116,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                     locationPermission = LocationStates.DISABLE;
                 }
 
-                if(currLocation && points.size() == 0){
+                if(currLocation && points.size() == 0 && cameraInit){
+                    cameraInit = false;
                     if(locationHelperCamera != null){
                         locationHelperCamera.setLocationPermission(locationPermission);
                         locationHelperCamera.getLastKnownLocation();
                     }else{
-                        moveCameraOnLocation(null);
+                        moveCameraOnDefault();
                     }
                 }
                 if(locationHelperPoint != null){
@@ -220,6 +221,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         address = null;
         color = AppValues.defaultLandColor;
         currLocation = false;
+        cameraInit = true;
         locationPointWasRunning = false;
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLand)) {
@@ -331,10 +333,13 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
         if(points.size() == 0){
-            if(!currLocation){
+            if(currLocation){
+                moveCameraOnDefault();
+            }else{
                 moveCameraOnLocation();
             }
         }else{
+            cameraInit = false;
             zoomOnPoints();
         }
         drawMap();
@@ -603,8 +608,10 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startZoomLocation,startZoomLevel));
         }
         startZoomLocation = null;
-        positionMarker.remove();
-        positionMarker = null;
+        if(positionMarker != null){
+            positionMarker.remove();
+            positionMarker = null;
+        }
     }
     private void zoomOnPoints() {
         if(points.size() > 0){
@@ -1104,6 +1111,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         tempMenu.findItem(R.id.toolbar_action_opacity_img).setEnabled(isImgViewEnable());
     }
     private void moveCameraOnLocation() {
+        cameraInit = false;
         Activity activity = getActivity();
         if(activity != null && address != null){
             AsyncTask.execute(()->{
@@ -1134,13 +1142,19 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
 
                         });
                     }else{
-                        activity.runOnUiThread(()-> binding.tvLoadingLabel.setVisibility(View.GONE));
+                        activity.runOnUiThread(this::moveCameraOnDefault);
                     }
                 }else{
-                    activity.runOnUiThread(()-> binding.tvLoadingLabel.setVisibility(View.GONE));
+                    activity.runOnUiThread(this::moveCameraOnDefault);
                 }
             });
         }
+    }
+    private void moveCameraOnDefault() {
+        if(mMap != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
+        }
+        binding.tvLoadingLabel.setVisibility(View.GONE);
     }
     private void moveCameraOnLocation(Location location) {
         currLocation = false;

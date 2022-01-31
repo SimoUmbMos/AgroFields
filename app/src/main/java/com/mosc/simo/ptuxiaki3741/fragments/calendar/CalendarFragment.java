@@ -64,6 +64,8 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     private CalendarShowFilter showFilter;
     private SharedPreferences sharedPref;
     private boolean listView;
+    private String[] typesString;
+    private int[] typesColor;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -131,6 +133,9 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         currentMonth = YearMonth.now();
         daysOfWeek = daysOfWeekFromLocale();
         listView = false;
+
+        typesString = getResources().getStringArray(R.array.notification_event_types);
+        typesColor = getResources().getIntArray(R.array.notification_event_color_types);
     }
     private void initActivity(){
         if(getActivity() != null){
@@ -199,6 +204,8 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
 
         adapter = new CalendarAdapter(
                 listData,
+                typesString,
+                typesColor,
                 this::onDayClick,
                 this::onEventClick
         );

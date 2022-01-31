@@ -38,8 +38,8 @@ public class Land implements Parcelable {
         tag = in.readString();
     }
     @Ignore
-    public Land(LandData data, String tag){
-        this.data = data;
+    public Land(String tag){
+        this.data = null;
         this.selected=false;
         this.tag = tag;
     }
@@ -102,7 +102,7 @@ public class Land implements Parcelable {
     @NonNull
     public String toString() {
         if(data != null)
-            return data.getTitle() + " #"+ data.getId();
+            return "#"+ data.getId() + " " + data.getTitle();
         if(!tag.isEmpty())
             return tag;
         return "";

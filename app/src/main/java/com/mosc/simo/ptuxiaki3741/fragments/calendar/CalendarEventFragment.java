@@ -23,6 +23,7 @@ import com.google.android.material.timepicker.MaterialTimePicker;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarNewEventBinding;
+import com.mosc.simo.ptuxiaki3741.enums.CalendarEventType;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.models.Land;
@@ -51,6 +52,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
 
     private CalendarNotification calendarNotification;
     private boolean landsInit, zonesInit;
+    private String[] calendarNotificationTypes;
 
     private Calendar notificationDate;
     private Land selectedLand;
@@ -112,8 +114,8 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         landsInit = false;
         zonesInit = false;
 
-        selectedLand = new Land(null, getString(R.string.default_land_spinner_value));
-        selectedZone = new LandZone(null, getString(R.string.default_zone_spinner_value));
+        selectedLand = new Land(getString(R.string.default_land_spinner_value));
+        selectedZone = new LandZone(getString(R.string.default_zone_spinner_value));
         notificationDate = Calendar.getInstance();
         notificationDate.add(Calendar.HOUR_OF_DAY, 1);
 
@@ -137,10 +139,12 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
                     null,
                     "",
                     "",
+                    CalendarEventType.SCHEDULE,
                     notificationDate.getTime()
             );
         }
 
+        calendarNotificationTypes = getResources().getStringArray(R.array.notification_event_types);
     }
     private void initActivity(){
         if(getActivity() != null){
@@ -162,6 +166,15 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
     private void initFragment(){
         binding.tvSelectTitle.setText(calendarNotification.getTitle());
         binding.tvSelectMessage.setText(calendarNotification.getMessage());
+
+        int type = calendarNotification.getType().ordinal();
+        String selectedType = calendarNotificationTypes[type];
+        binding.tvSelectType.setText(selectedType);
+        ArrayAdapter<String> adapterTypes = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_list_item_1,
+                calendarNotificationTypes);
+        binding.tvSelectType.setAdapter(adapterTypes);
 
         binding.tvSelectLand.setOnItemClickListener((parent, v, pos, id) -> onSelectLand(pos));
         binding.tvSelectZone.setOnItemClickListener((parent, v, pos, id) -> onSelectZone(pos));
@@ -185,7 +198,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
     private void initLandSelect(List<Land> lands) {
         landsInit = true;
         this.lands.clear();
-        this.lands.add(new Land(null, getString(R.string.default_land_spinner_value)));
+        this.lands.add(new Land(getString(R.string.default_land_spinner_value)));
         if(lands != null){
             this.lands.addAll(lands);
         }
@@ -317,7 +330,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         if(selectedLand.getData() != null){
             temp = zones.getOrDefault(selectedLand.getData().getId(),null);
         }
-        displayZones.add(new LandZone(null, getString(R.string.default_zone_spinner_value)));
+        displayZones.add(new LandZone(getString(R.string.default_zone_spinner_value)));
         if(temp != null){
             displayZones.addAll(temp);
         }
@@ -359,6 +372,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         Long zid = null;
         String title = "";
         String message = "";
+        CalendarEventType type = CalendarEventType.SCHEDULE;
         Date date = notificationDate.getTime();
 
         if(binding.tvSelectTitle.getText() != null){
@@ -368,6 +382,15 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         if(binding.tvSelectMessage.getText() != null){
             message = binding.tvSelectMessage.getText().toString()
                     .trim().replaceAll("\\s+"," ");
+        }
+        if(binding.tvSelectType.getText() != null){
+            String typeToSearch = binding.tvSelectType.getText().toString();
+            for( int i = 0; i < calendarNotificationTypes.length; i++ ){
+                if(calendarNotificationTypes[i].equals(typeToSearch)){
+                    type = CalendarEventType.values()[i];
+                    break;
+                }
+            }
         }
 
         if(selectedLand.getData() != null){
@@ -390,7 +413,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         }
         if(viewModel == null || hasError) return;
 
-        calendarNotification = new CalendarNotification(id, lid, zid, title, message, date);
+        calendarNotification = new CalendarNotification(id, lid, zid, title, message, type, date);
         viewModel.saveNotification(calendarNotification);
         goBack();
     }

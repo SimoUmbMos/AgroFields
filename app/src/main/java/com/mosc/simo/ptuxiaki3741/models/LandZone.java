@@ -29,7 +29,7 @@ public class LandZone implements Parcelable {
         selected = in.readByte() != 0;
         tag = in.readString();
     }
-    public LandZone(LandZoneData data, String tag) {
+    public LandZone(String tag) {
         this.data = null;
         this.selected = false;
         this.tag = tag;
@@ -76,7 +76,7 @@ public class LandZone implements Parcelable {
     @NonNull
     public String toString() {
         if(data != null)
-            return data.getTitle() + " #"+ data.getId();
+            return "#" + data.getId() + " " + data.getTitle();
         if(!tag.isEmpty())
             return tag;
         return "";

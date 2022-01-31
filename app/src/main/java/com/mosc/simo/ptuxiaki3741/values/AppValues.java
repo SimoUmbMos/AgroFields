@@ -7,7 +7,7 @@ import com.mosc.simo.ptuxiaki3741.models.ColorData;
 public final class AppValues {
     private AppValues(){}
     /* DB VALUES */
-    public static final int DATABASE_VERSION = 39;
+    public static final int DATABASE_VERSION = 41;
     /* Open XML SDK */
     public static final String sheetLandName = "Lands";
     public static final String sheetLandNameLowerCase = "lands";

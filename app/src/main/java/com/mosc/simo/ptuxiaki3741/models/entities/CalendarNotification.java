@@ -11,6 +11,8 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.mosc.simo.ptuxiaki3741.enums.CalendarEventType;
+
 import java.util.Date;
 
 @Entity(tableName = "CalendarNotification",
@@ -45,6 +47,8 @@ public class CalendarNotification implements Parcelable {
     private String title;
     @ColumnInfo(name = "Message")
     private String message;
+    @ColumnInfo(name = "Type")
+    private CalendarEventType type;
     @ColumnInfo(name = "Date")
     private Date date;
 
@@ -55,17 +59,19 @@ public class CalendarNotification implements Parcelable {
         zid = in.readLong();
         title = in.readString();
         message = in.readString();
+        type = CalendarEventType.values()[in.readInt()];
         date = (Date) in.readSerializable();
 
         if(lid == 0) lid = null;
         if(zid == 0) zid = null;
     }
-    public CalendarNotification(long id, Long lid, Long zid, String title, String message, Date date) {
+    public CalendarNotification(long id, Long lid, Long zid, String title, String message, CalendarEventType type, Date date) {
         setId(id);
         setLid(lid);
         setZid(zid);
         setTitle(title);
         setMessage(message);
+        setType(type);
         setDate(date);
     }
 
@@ -83,6 +89,9 @@ public class CalendarNotification implements Parcelable {
     }
     public String getMessage() {
         return message;
+    }
+    public CalendarEventType getType() {
+        return type;
     }
     public Date getDate() {
         return date;
@@ -103,6 +112,9 @@ public class CalendarNotification implements Parcelable {
     public void setMessage(String message) {
         this.message = message;
     }
+    public void setType(CalendarEventType type) {
+        this.type = type;
+    }
     public void setDate(Date date) {
         this.date = date;
     }
@@ -111,11 +123,12 @@ public class CalendarNotification implements Parcelable {
     @NonNull
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(title);
         if(id != 0) {
-            builder.append(" #");
+            builder.append("#");
             builder.append(id);
+            builder.append(" ");
         }
+        builder.append(title);
         return builder.toString();
     }
     public static final Creator<CalendarNotification> CREATOR = new Creator<CalendarNotification>() {
@@ -148,6 +161,7 @@ public class CalendarNotification implements Parcelable {
         }
         out.writeString(title);
         out.writeString(message);
+        out.writeInt(type.ordinal());
         out.writeSerializable(date);
     }
 }
