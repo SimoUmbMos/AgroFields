@@ -58,7 +58,7 @@
     <string name="file_input_error">Σφάλμα κατά την ανάγνωση του αρχείου.</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_live_map_button">Ζωντανός Χάρτης</string>
-    <string name="main_menu_calendar_button">Τα Συμβάν μου</string>
+    <string name="main_menu_calendar_button">Το Ημερολόγιο μου</string>
     <string name="main_menu_tag_button">Διαχείριση Ετικετών</string>
     <string name="dashboard_title">Πίνακας Ελέγχου</string>
     <!-- Land Menu Fragment -->

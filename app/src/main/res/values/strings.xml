@@ -68,7 +68,7 @@
     <string name="file_input_error">Error reading the file</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_live_map_button">Live Map</string>
-    <string name="main_menu_calendar_button">My Event\'s</string>
+    <string name="main_menu_calendar_button">My Calendar</string>
     <string name="main_menu_tag_button">Manage Tag\'s</string>
     <string name="dashboard_title">Dashboard</string>
     <!-- Land Menu Fragment -->
