@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,7 +40,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.slider.Slider;
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -536,44 +534,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     .setNegativeButton(getString(R.string.cancel),(d, w) -> d.cancel())
                     .show();
 
-            Slider redSlider = dialog.findViewById(R.id.slRedSlider);
-            Slider greenSlider = dialog.findViewById(R.id.slGreenSlider);
-            Slider blueSlider = dialog.findViewById(R.id.slBlueSlider);
-            FrameLayout colorBg = dialog.findViewById(R.id.flColorShower);
-
-            if(colorBg != null){
-                colorBg.setBackgroundColor(tempColor.getColor());
-            }
-
-            if(redSlider != null){
-                redSlider.setValue(tempColor.getRed());
-                redSlider.addOnChangeListener((range,value,user) -> {
-                    tempColor.setRed(Math.round(value));
-                    if(colorBg != null){
-                        colorBg.setBackgroundColor(tempColor.getColor());
-                    }
-                });
-            }
-
-            if(greenSlider != null){
-                greenSlider.setValue(tempColor.getGreen());
-                greenSlider.addOnChangeListener((range,value,user) -> {
-                    tempColor.setGreen(Math.round(value));
-                    if(colorBg != null){
-                        colorBg.setBackgroundColor(tempColor.getColor());
-                    }
-                });
-            }
-
-            if(blueSlider != null){
-                blueSlider.setValue(tempColor.getBlue());
-                blueSlider.addOnChangeListener((range,value,user) -> {
-                    tempColor.setBlue(Math.round(value));
-                    if(colorBg != null){
-                        colorBg.setBackgroundColor(tempColor.getColor());
-                    }
-                });
-            }
+            DialogUtil.setupColorDialog(dialog, tempColor);
 
         }
     }

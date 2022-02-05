@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
@@ -72,6 +73,7 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
         binding.btnZones.setOnClickListener(v -> toLandsZone(getActivity()));
         binding.btnLiveMap.setOnClickListener(v -> toLiveMap(getActivity()));
         binding.btnCalendar.setOnClickListener(v -> toCalendar(getActivity()));
+        binding.btnTags.setOnClickListener(v-> toTags(getActivity()));
         LocalDate now = LocalDate.now();
         String day =  now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()) +
                 " " +
@@ -202,6 +204,13 @@ public class MenuMainFragment extends Fragment implements FragmentBackPress {
                 if(nav != null)
                     nav.navigate(R.id.toCalendar);
             });
+    }
+    public void toTags(@Nullable Activity activity){
+        Snackbar.make(
+                binding.getRoot(),
+                "coming soon",
+                Snackbar.LENGTH_LONG
+        ).show();
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

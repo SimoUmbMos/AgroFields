@@ -56,11 +56,34 @@
     <style name="BorderlessButtonStyle" parent="AppTheme">
         <item name="colorPrimary">@color/textColor</item>
     </style>
+
+    <!-- sliders styles -->
     <style name="CustomSlider" parent="Widget.MaterialComponents.Slider">
         <item name="materialThemeOverlay">@style/SliderStyle</item>
     </style>
+    <style name="CustomRedSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderRedStyle</item>
+    </style>
+    <style name="CustomGreenSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderGreenStyle</item>
+    </style>
+    <style name="CustomBlueSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderBlueStyle</item>
+    </style>
     <style name="SliderStyle" parent="">
         <item name="colorPrimary">@color/accentColor</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
+    </style>
+    <style name="SliderRedStyle" parent="">
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
+    </style>
+    <style name="SliderGreenStyle" parent="">
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
+    </style>
+    <style name="SliderBlueStyle" parent="">
+        <item name="colorPrimary">@color/blue</item>
         <item name="colorOnPrimary">@android:color/transparent</item>
     </style>
 

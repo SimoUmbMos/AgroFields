@@ -18,8 +18,8 @@ public final class AppValues {
     public static final int defaultPaddingLite = 16;
     public static final int defaultStrokeAlpha = 160;
     public static final int defaultFillAlpha = 80;
-    public static final ColorData defaultLandColor = new ColorData(20, 249, 80);
-    public static final ColorData defaultZoneColor = new ColorData(80, 20, 249);
+    public static final ColorData defaultLandColor = new ColorData("#FF9100");
+    public static final ColorData defaultZoneColor = new ColorData("#76FF03");
     public static final int defaultPersonColorFill = Color.parseColor("#3777f1");
     public static final int defaultPersonColorStroke = Color.parseColor("#ffffff");
     /* Args Values */

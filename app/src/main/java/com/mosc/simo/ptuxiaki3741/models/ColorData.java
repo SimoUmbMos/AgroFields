@@ -54,6 +54,12 @@ public class ColorData implements Parcelable {
         return blue;
     }
 
+    public void setColor(int color) {
+        setRed(Color.red(color));
+        setGreen(Color.green(color));
+        setBlue(Color.blue(color));
+    }
+
     public void setRed(int red) {
         if(red<0)
             this.red = 0;
