@@ -104,6 +104,8 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
     }
     private void handleFileAction(boolean permissionResult) {
         if(permissionResult){
+            if(intent == null) return;
+
             Activity activity = getActivity();
             new Thread(()->{
                 ArrayList<LandData> data = FileUtil.handleFile(activity,intent);

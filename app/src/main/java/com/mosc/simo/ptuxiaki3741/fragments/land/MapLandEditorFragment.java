@@ -4,11 +4,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,7 +63,9 @@ import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,7 +151,7 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             }else{
                 title = getString(R.string.file_picker_label);
             }
-            Intent intent = FileUtil.getFilePickerIntent(fileState, title);
+            Intent intent = FileUtil.getFilePickerIntent(this, fileState, title);
             switch (fileState) {
                 case Img:
                     imgFileLauncher.launch(intent);
@@ -163,9 +168,19 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private final ActivityResultLauncher<Intent> imgFileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result ->{
-                if (result.getResultCode() == Activity.RESULT_OK &&result.getData() != null) {
-                    if (FileUtil.fileIsValidImg(getContext(), result.getData())) {
-                        addOverlayImg(result.getData().getData());
+                Log.d(TAG, "imgFileLauncher: called");
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
+                        String filePath = result.getData().getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+                        Log.d(TAG, "imgFileLauncher: file = " + filePath);
+                        if (FileUtil.fileIsValidImg(filePath)) {
+                            Log.d(TAG, "imgFileLauncher: Img Is Valid ");
+                            addOverlayImg(new File(filePath));
+                        }
+                    }else{
+                        if (FileUtil.fileIsValidImg(getContext(), result.getData())) {
+                            addOverlayImg(result.getData().getData());
+                        }
                     }
                 }
             }
@@ -173,29 +188,57 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result ->{
+                Log.d(TAG, "fileLauncher: called");
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    new Thread(() -> {
-                        ArrayList<LandData> data = FileUtil.handleFile(
-                                getContext(),
-                                result.getData()
-                        );
-                        if (data.size() > 0) {
-                            Bundle args = new Bundle();
-                            args.putParcelableArrayList(
-                                    AppValues.argLands,
-                                    data
+                    if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
+                        String filePath = result.getData().getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+                        Log.d(TAG, "fileLauncher: file = " + filePath);
+                        new Thread(() -> {
+                            ArrayList<LandData> data = FileUtil.handleFile(
+                                    filePath
                             );
-                            args.putParcelable(
-                                    AppValues.argLand,
-                                    currLand.getData()
+                            Log.d(TAG, "fileLauncher: data read = "+data.size());
+                            if (data.size() > 0) {
+                                Bundle args = new Bundle();
+                                args.putParcelableArrayList(
+                                        AppValues.argLands,
+                                        data
+                                );
+                                args.putParcelable(
+                                        AppValues.argLand,
+                                        currLand.getData()
+                                );
+                                args.putSerializable(
+                                        AppValues.argAction,
+                                        importAction
+                                );
+                                toImport(getActivity(), args);
+                            }
+                        }).start();
+                    }else{
+                        new Thread(() -> {
+                            ArrayList<LandData> data = FileUtil.handleFile(
+                                    getContext(),
+                                    result.getData()
                             );
-                            args.putSerializable(
-                                    AppValues.argAction,
-                                    importAction
-                            );
-                            toImport(getActivity(), args);
-                        }
-                    }).start();
+                            if (data.size() > 0) {
+                                Bundle args = new Bundle();
+                                args.putParcelableArrayList(
+                                        AppValues.argLands,
+                                        data
+                                );
+                                args.putParcelable(
+                                        AppValues.argLand,
+                                        currLand.getData()
+                                );
+                                args.putSerializable(
+                                        AppValues.argAction,
+                                        importAction
+                                );
+                                toImport(getActivity(), args);
+                            }
+                        }).start();
+                    }
                 }
             }
     );
@@ -962,21 +1005,38 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         return s == LandActionStates.EditImg || s == LandActionStates.Alpha;
     }
     private void addOverlayImg(Uri data) {
-        if(data != null){
-            binding.slAlphaSlider.setValue(50.0f);
-            binding.ivLandOverlay.setVisibility(View.VISIBLE);
-            Log.d(TAG, "ivLandOverlay: VISIBLE");
-            binding.ivLandOverlay.setImageURI(data);
-            binding.ivLandOverlay.animate()
-                    .alpha(0.5f)
-                    .rotation(0)
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .translationX(0)
-                    .translationY(0)
-                    .setDuration(0).start();
-            setupSideMenu();
-        }
+        if(data == null) return;
+        binding.slAlphaSlider.setValue(50.0f);
+        binding.ivLandOverlay.setVisibility(View.VISIBLE);
+        Log.d(TAG, "ivLandOverlay: VISIBLE");
+        binding.ivLandOverlay.setImageURI(data);
+        binding.ivLandOverlay.animate()
+                .alpha(0.5f)
+                .rotation(0)
+                .scaleX(1f)
+                .scaleY(1f)
+                .translationX(0)
+                .translationY(0)
+                .setDuration(0).start();
+        setupSideMenu();
+    }
+    private void addOverlayImg(File data) {
+        if(data == null) return;
+        if(!data.exists()) return;
+        Bitmap bitmap = BitmapFactory.decodeFile(data.getAbsolutePath());
+        binding.slAlphaSlider.setValue(50.0f);
+        binding.ivLandOverlay.setVisibility(View.VISIBLE);
+        Log.d(TAG, "ivLandOverlay: VISIBLE");
+        binding.ivLandOverlay.setImageBitmap(bitmap);
+        binding.ivLandOverlay.animate()
+                .alpha(0.5f)
+                .rotation(0)
+                .scaleX(1f)
+                .scaleY(1f)
+                .translationX(0)
+                .translationY(0)
+                .setDuration(0).start();
+        setupSideMenu();
     }
     private void removeOverlayImg() {
         if(isImgViewEnable()){

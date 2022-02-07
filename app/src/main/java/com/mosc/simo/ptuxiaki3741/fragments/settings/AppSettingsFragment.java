@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -43,7 +44,10 @@ import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -347,7 +351,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void onImportDBAction(boolean permission){
         if(permission){
             String title = getString(R.string.file_backup_picker_label);
-            Intent intent = FileUtil.getFilePickerIntent(title);
+            Intent intent = FileUtil.getFilePickerIntent(this, title);
             fileLauncher.launch(intent);
         }
     }
@@ -355,11 +359,17 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         Intent intent = result.getData();
         int resultCode = result.getResultCode();
         if (resultCode == Activity.RESULT_OK && intent != null) {
-            if(getActivity() == null)
-                return;
+            if(getActivity() == null) return;
             InputStream is;
             try {
-                is = getActivity().getContentResolver().openInputStream(intent.getData());
+                if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
+                    String filePath = result.getData().getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+                    File file = new File(filePath);
+                    if(!file.exists()) return;
+                    is = new FileInputStream(file);
+                }else{
+                    is = getActivity().getContentResolver().openInputStream(intent.getData());
+                }
             }catch (Exception e){
                 Log.e(TAG, "onFileResult: ", e);
                 is = null;

@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.util.Log;
+
+import androidx.fragment.app.Fragment;
 
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonExporter;
 import com.mosc.simo.ptuxiaki3741.file.geojson.GeoJsonReader;
@@ -23,6 +26,7 @@ import com.mosc.simo.ptuxiaki3741.file.wkt.WellKnownTextReader;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
 
 import org.jdom2.Document;
 import org.jdom2.output.Format;
@@ -33,12 +37,15 @@ import org.jdom2.output.support.XMLOutputProcessor;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public final class FileUtil {
     public static final String TAG = "FileUtil";
@@ -106,36 +113,83 @@ public final class FileUtil {
         }
         return landsToGmlString(lands);
     }
-    public static Intent getFilePickerIntent(LandFileState state, String title) {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-        if(state == LandFileState.Img){
-            chooseFile.setType("image/*");
+    public static Intent getFilePickerIntent(Fragment fragment, LandFileState state, String title) {
+        if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
+            if(state == LandFileState.Img){
+                return new MaterialFilePicker()
+                        .withSupportFragment(fragment)
+                        .withCloseMenu(true)
+                        .withFilter(Pattern.compile(".*\\.(jpg|jpeg|png)$"))
+                        .withFilterDirectories(false)
+                        .withHiddenFiles(false)
+                        .withTitle(title)
+                        .getIntent();
+            }else{
+                return new MaterialFilePicker()
+                        .withSupportFragment(fragment)
+                        .withCloseMenu(true)
+                        .withFilter(Pattern.compile(".*\\.(geojson|json|kml|shp|xml|gml)$"))
+                        .withFilterDirectories(false)
+                        .withHiddenFiles(false)
+                        .withTitle(title)
+                        .getIntent();
+            }
         }else{
-            chooseFile.setType("*/*");
+            Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+            chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+            if(state == LandFileState.Img){
+                chooseFile.setType("image/*");
+            }else{
+                chooseFile.setType("*/*");
+            }
+            chooseFile = Intent.createChooser(chooseFile, title);
+            return chooseFile;
         }
-        chooseFile = Intent.createChooser(chooseFile, title);
-        return chooseFile;
+
     }
-    public static Intent getFilePickerIntent(String title) {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
-        chooseFile.setType("*/*");
-        chooseFile = Intent.createChooser(chooseFile, title);
-        return chooseFile;
+    public static Intent getFilePickerIntent(Fragment fragment, String title) {
+        if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
+            return new MaterialFilePicker()
+                    .withSupportFragment(fragment)
+                    .withCloseMenu(true)
+                    .withFilter(Pattern.compile(".*\\.(xls|xlsx)$"))
+                    .withFilterDirectories(false)
+                    .withHiddenFiles(false)
+                    .withTitle(title)
+                    .getIntent();
+        }else{
+            Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+            chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+            chooseFile.setType("*/*");
+            chooseFile = Intent.createChooser(chooseFile, title);
+            return chooseFile;
+        }
+    }
+    public static boolean fileIsValidImg(String filePath){
+        String extension = getExtension(filePath);
+        return extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg");
     }
     public static boolean fileIsValidImg(Context ctx, Intent response){
-        String extension = getExtension(getFileName(ctx, response));
-        return extension.equals("png") || extension.equals("jpg");
+        String extension = getExtension(getFileName(ctx,response));
+        return extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg");
     }
     public static boolean fileIsValid(Context ctx, Intent response){
         return
                 isJSON(ctx, response) ||
-                isKML(ctx, response) ||
-                isGML(ctx, response) ||
-                isXML(ctx, response) ||
-                isText(ctx, response) ||
-                isShapeFile(ctx, response);
+                        isKML(ctx, response) ||
+                        isGML(ctx, response) ||
+                        isXML(ctx, response) ||
+                        isText(ctx, response) ||
+                        isShapeFile(ctx, response);
+    }
+    public static boolean fileIsValid(String filePath){
+        return
+                isJSON(filePath) ||
+                        isKML(filePath) ||
+                        isGML(filePath) ||
+                        isXML(filePath) ||
+                        isText(filePath) ||
+                        isShapeFile(filePath);
     }
     public static ArrayList<LandData> handleFile(Context ctx, Intent result){
         if(result != null){
@@ -207,6 +261,82 @@ public final class FileUtil {
         }
         return new ArrayList<>();
     }
+    public static ArrayList<LandData> handleFile(String filePath){
+        if(fileIsValid(filePath)){
+            File file = new File(filePath);
+            ArrayList<LandData> data = new ArrayList<>();
+            switch (getFileType(filePath)){
+                case KML:
+                    Log.d(TAG, "handleFile: KML");
+                    try{
+                        data.addAll(handleKml(new FileInputStream(file)));
+                        return data;
+                    }catch (Exception e){
+                        Log.e(TAG, "handleKml: ", e);
+                    }
+                    break;
+                case SHAPEFILE:
+                    Log.d(TAG, "handleFile: SHAPEFILE");
+                    try{
+                        data.addAll(handleShapeFile(new FileInputStream(file)));
+                        return data;
+                    }catch (Exception e){
+                        Log.e(TAG, "handleShapeFile: ", e);
+                    }
+                    break;
+                case GEOJSON:
+                    Log.d(TAG, "handleFile: GEOJSON");
+                    try{
+                        data.addAll(handleJson(new FileInputStream(file)));
+                        return data;
+                    }catch (Exception e){
+                        Log.e(TAG, "handleJson: ", e);
+                    }
+                    break;
+                case GML:
+                    Log.d(TAG, "handleFile: GML");
+                    try{
+                        data.addAll(handleGML(new FileInputStream(file)));
+                        return data;
+                    }catch (Exception e){
+                        Log.e(TAG, "handleGML: ", e);
+                    }
+                    break;
+                case XML:
+                    Log.d(TAG, "handleFile: XML");
+                    try{
+                        data.addAll(handleGML(new FileInputStream(file)));
+                        if(data.size()>0){
+                            return data;
+                        }
+                    }catch (Exception e){
+                        Log.e(TAG, "handleGML: ", e);
+                    }
+                    data.clear();
+                    try{
+                        data.addAll(handleKml(new FileInputStream(file)));
+                        if(data.size()>0){
+                            return data;
+                        }
+                    }catch (Exception e){
+                        Log.e(TAG, "handleKml: ", e);
+                    }
+                    break;
+                case TEXT:
+                    Log.d(TAG, "handleFile: TEXT");
+                    try{
+                        data.addAll(handleWKT(new FileInputStream(file)));
+                        return data;
+                    }catch (Exception e){
+                        Log.e(TAG, "handleWKT: ", e);
+                    }
+                    break;
+                default:
+                    Log.d(TAG, "handleFile: non supported item");
+            }
+        }
+        return new ArrayList<>();
+    }
 
     private static FileType getFileType(Context ctx, Intent result) {
         if(isKML(ctx, result))
@@ -223,28 +353,67 @@ public final class FileUtil {
             return FileType.XML;
         return FileType.NONE;
     }
+    private static FileType getFileType(String filePath) {
+        if(isKML(filePath))
+            return FileType.KML;
+        else if(isJSON(filePath))
+            return FileType.GEOJSON;
+        else if(isShapeFile(filePath))
+            return FileType.SHAPEFILE;
+        else if(isGML(filePath))
+            return FileType.GML;
+        else if(isText(filePath))
+            return FileType.TEXT;
+        else if(isXML(filePath))
+            return FileType.XML;
+        return FileType.NONE;
+    }
     private static boolean isKML(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
+        return extension.equals("kml");
+    }
+    private static boolean isKML(String filePath){
+        String extension = getExtension(filePath);
         return extension.equals("kml");
     }
     private static boolean isJSON(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
         return extension.equals("json") || extension.equals("geojson") ;
     }
+    private static boolean isJSON(String filePath){
+        String extension = getExtension(filePath);
+        return extension.equals("json") || extension.equals("geojson") ;
+    }
     private static boolean isShapeFile(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
+        return extension.equals("shp");
+    }
+    private static boolean isShapeFile(String filePath){
+        String extension = getExtension(filePath);
         return extension.equals("shp");
     }
     private static boolean isText(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
         return extension.equals("txt");
     }
+    private static boolean isText(String filePath){
+        String extension = getExtension(filePath);
+        return extension.equals("txt");
+    }
     private static boolean isXML(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
         return extension.equals("xml");
     }
+    private static boolean isXML(String filePath){
+        String extension = getExtension(filePath);
+        return extension.equals("xml");
+    }
     private static boolean isGML(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
+        return extension.equals("gml");
+    }
+    private static boolean isGML(String filePath){
+        String extension = getExtension(filePath);
         return extension.equals("gml");
     }
     private static String getFileName(Context ctx, Intent response) {
@@ -283,6 +452,21 @@ public final class FileUtil {
     }
     private static ArrayList<LandData> handleShapeFile(Context ctx, Uri uri) throws Exception{
         return MyShapeFileReader.exec(ctx.getContentResolver().openInputStream(uri));
+    }
+    private static ArrayList<LandData> handleKml(InputStream in) throws Exception{
+        return KmlReader.exec(in);
+    }
+    private static ArrayList<LandData> handleJson(InputStream in) throws Exception{
+        return GeoJsonReader.exec(in);
+    }
+    private static ArrayList<LandData> handleGML(InputStream in) throws Exception{
+        return GMLReader.exec(in);
+    }
+    private static ArrayList<LandData> handleWKT(InputStream in){
+        return WellKnownTextReader.exec(in);
+    }
+    private static ArrayList<LandData> handleShapeFile(InputStream in) throws Exception{
+        return MyShapeFileReader.exec(in);
     }
     private static String getExtension(String s){
         String[] segments = s.split("\\.");
