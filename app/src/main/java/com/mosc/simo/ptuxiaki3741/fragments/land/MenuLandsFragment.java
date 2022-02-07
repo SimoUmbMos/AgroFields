@@ -16,6 +16,8 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,8 +51,8 @@ import java.util.List;
 public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     public static final String TAG ="LandListFragment";
     //fixme: tags search
-    private final List<Land> data = new ArrayList<>();
-    private final List<Land> exportLands = new ArrayList<>();
+    private List<Land> data = new ArrayList<>();
+    private List<Land> exportLands;
     private FileType exportAction;
     private LandListAdapter adapter;
     private int dialogChecked;
@@ -69,6 +71,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
         initFragment();
         initViewModel();
@@ -99,33 +102,33 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
         }
     }
     @Override public void onLowMemory() {
-        super.onLowMemory();
-        if (adapter != null) {
-            for (MapView m : adapter.getMapViews()) {
+        for (MapView m : adapter.getMapViews()) {
+            if(m.getTag() != null) {
                 m.onLowMemory();
             }
         }
+        super.onLowMemory();
     }
     @Override public void onPause() {
-        super.onPause();
-        if (adapter != null) {
-            for (MapView m : adapter.getMapViews()) {
+        for (MapView m : adapter.getMapViews()) {
+            if(m.getTag() != null) {
                 m.onPause();
             }
         }
+        super.onPause();
     }
+
     @Override public void onResume() {
         super.onResume();
-        binding.rvLandList.setAdapter(adapter);
-        if (adapter != null) {
-            for (MapView m : adapter.getMapViews()) {
+        for (MapView m : adapter.getMapViews()) {
+            if(m.getTag() != null) {
                 m.onResume();
             }
         }
     }
     @Override public void onDestroy() {
-        if (adapter != null) {
-            for (MapView m : adapter.getMapViews()) {
+        for (MapView m : adapter.getMapViews()) {
+            if(m.getTag() != null) {
                 m.onDestroy();
             }
         }
@@ -133,6 +136,10 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
     }
 
     //init
+    private void initData(){
+        data = new ArrayList<>();
+        exportLands = new ArrayList<>();
+    }
     private void initActivity() {
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
@@ -147,7 +154,7 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initFragment() {
-        binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
+        binding.tvLandListActionLabel.setText(getResources().getString(R.string.loading_label));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -160,11 +167,16 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                 this::onLandClick,
                 this::onLandLongClick
         );
+        binding.rvLandList.setAdapter(adapter);
     }
     private void initViewModel() {
         if(getActivity() != null){
             vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandsChange);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> vmLands.getLands().observe(
+                    getViewLifecycleOwner(),
+                    this::onLandsChange
+            ));
         }
     }
     private void initMenu(Menu menu){
@@ -254,8 +266,8 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
                             return menuItemClick(item);
                         }
                         @Override public void onDestroyActionMode(ActionMode mode) {
-                            setCheckableRecycleView(false);
                             setState(LandListMenuState.NormalState);
+                            setCheckableRecycleView(false);
                         }
                     };
                     actionMenu = activity.startSupportActionMode(callback);
@@ -277,11 +289,9 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
         if(lands != null){
             data.addAll(lands);
         }
-        if(getActivity() != null)
-            getActivity().runOnUiThread(()->{
-                adapter.notifyDataSetChanged();
-                updateUi();
-            });
+        updateUi();
+        adapter.notifyDataSetChanged();
+        binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
     }
     private void onLandClick(Land land) {
         if(state != LandListMenuState.NormalState) {

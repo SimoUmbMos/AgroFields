@@ -4,9 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,42 +53,37 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         this.onLandLongClick = null;
         this.showCheckMark = false;
     }
-    public void setShowCheckMark(boolean showCheckMark){
-        this.showCheckMark = showCheckMark;
-    }
 
     @NonNull @Override public LandItem onCreateViewHolder(
             @NonNull ViewGroup parent,
             int viewType
     ) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_land, parent, false);
-        LandItem holder = new LandItem(parent.getContext(),view);
-        mMapViews.add(holder.mapView);
+        LandItem holder = new LandItem(view, parent.getContext());
+        mMapViews.add(holder.binding.mapView);
         return holder;
     }
 
     @Override public void onBindViewHolder(@NonNull LandItem holder, int position) {
         Land land = data.get(position);
-        holder.itemView.setTag(land);
-
         String display = land.toString();
-        holder.tvLandName.setText(display);
-        holder.ctvLandName.setText(display);
-        holder.ctvLandName.setChecked(land.isSelected());
+        holder.binding.tvLandName.setText(display);
+        holder.binding.ctvLandName.setText(display);
+        holder.binding.ctvLandName.setChecked(land.isSelected());
         if(showCheckMark){
-            holder.tvLandName.setVisibility(View.INVISIBLE);
-            holder.ctvLandName.setVisibility(View.VISIBLE);
+            holder.binding.tvLandName.setVisibility(View.GONE);
+            holder.binding.ctvLandName.setVisibility(View.VISIBLE);
         }else{
-            holder.ctvLandName.setVisibility(View.INVISIBLE);
-            holder.tvLandName.setVisibility(View.VISIBLE);
+            holder.binding.ctvLandName.setVisibility(View.GONE);
+            holder.binding.tvLandName.setVisibility(View.VISIBLE);
         }
         if(onLandClick != null){
-            holder.item.setOnClickListener(v ->
+            holder.binding.item.setOnClickListener(v ->
                     onLandClick.onActionResult(land)
             );
         }
         if(onLandLongClick != null){
-            holder.item.setOnLongClickListener(v -> {
+            holder.binding.item.setOnLongClickListener(v -> {
                 onLandLongClick.onActionResult(land);
                 return true;
             });
@@ -104,71 +96,70 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         return data == null ? 0 : data.size();
     }
 
+    public void setShowCheckMark(boolean showCheckMark){
+        this.showCheckMark = showCheckMark;
+    }
     public HashSet<MapView> getMapViews() {
         return mMapViews;
     }
 
     protected static class LandItem extends RecyclerView.ViewHolder implements OnMapReadyCallback {
-        public TextView tvLandName;
-        public CheckedTextView ctvLandName;
-        public FrameLayout item;
-        public MapView mapView;
+        public final  ViewHolderLandBinding binding;
+        private final Context parentContext;
 
-        protected GoogleMap mMap;
-        protected LandData mData;
-
-        private Context mContext;
-
-        public LandItem(Context context, View view) {
+        public LandItem(View view, Context parentContext) {
             super(view);
-            mContext = context;
+            binding = ViewHolderLandBinding.bind(itemView);
+            this.parentContext = parentContext;
 
-            ViewHolderLandBinding binding = ViewHolderLandBinding.bind(itemView);
-            item = binding.item;
-            ctvLandName = binding.ctvLandName;
-            tvLandName = binding.tvLandName;
-            mapView = binding.mapView;
+            binding.mapView.setTag(null);
+            binding.getRoot().setTag(null);
 
-            mapView.setClickable(false);
-            mapView.onCreate(null);
-            mapView.getMapAsync(this);
+            binding.mapView.setClickable(false);
+            binding.mapView.onCreate(null);
+            binding.mapView.getMapAsync(this);
+        }
+
+        public void setLand(Land land){
+            if(land == null) return;
+            if(land.getData() == null) return;
+            binding.getRoot().setTag(land.getData());
+            initMap();
+        }
+
+        private void initMap(){
+            if(binding.mapView.getTag() == null) return;
+            if(binding.getRoot().getTag() == null) return;
+
+            GoogleMap googleMap = (GoogleMap) binding.mapView.getTag();
+
+            googleMap.clear();
+            if(googleMap.getMapType() != GoogleMap.MAP_TYPE_NONE){
+                googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+            }
+
+            LandData data = (LandData) binding.getRoot().getTag();
+            if(data.getBorder().size() > 0){
+                googleMap.addPolygon(LandUtil.getPolygonOptions(data,false));
+
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for(LatLng point : data.getBorder()){
+                    builder.include(point);
+                }
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                        builder.build(),
+                        AppValues.defaultPaddingLite
+                ));
+                googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            }
         }
 
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
-            mMap = googleMap;
-            MapsInitializer.initialize(mContext);
-            mMap.getUiSettings().setMapToolbarEnabled(false);
-
-            if(mData != null){
-                initMap();
-            }
-        }
-
-        public void setLand(Land land){
-            mData = null;
-
-            if(land == null) return;
-            if(land.getData() == null) return;
-            mData = land.getData();
-
-            if(mMap != null){
-                initMap();
-            }
-        }
-
-        private void initMap(){
-            mMap.clear();
-            mMap.addPolygon(LandUtil.getPolygonOptions(mData,false));
-
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(LatLng point : mData.getBorder()){
-                builder.include(point);
-            }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                    builder.build(),
-                    AppValues.defaultPaddingLite
-            ));
+            MapsInitializer.initialize(parentContext);
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+            binding.mapView.setTag(googleMap);
+            initMap();
         }
     }
 }

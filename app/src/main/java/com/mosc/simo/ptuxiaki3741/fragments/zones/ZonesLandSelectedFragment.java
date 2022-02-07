@@ -15,6 +15,8 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -91,7 +93,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         }
     }
     private void initFragment() {
-        binding.tvZonesListActionLabel.setText(getResources().getString(R.string.empty_list));
+        binding.tvZonesListActionLabel.setText(getResources().getString(R.string.loading_label));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
@@ -106,13 +108,18 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
                 this::onZoneClick,
                 this::onZoneLongClick
         );
+        binding.rvZoneList.setAdapter(adapter);
 
         updateMenu(LandListMenuState.NormalState);
     }
     private void initViewModel() {
         if(getActivity() != null){
             vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            vmLands.getLandZones().observe(getViewLifecycleOwner(),this::onDataUpdate);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> vmLands.getLandZones().observe(
+                    getViewLifecycleOwner(),
+                    this::onDataUpdate
+            ));
         }
     }
     private void initContextualMenu(Menu menu, LandListMenuState state) {
@@ -172,8 +179,9 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             if(temp != null)
                 data.addAll(temp);
         }
-        adapter.notifyDataSetChanged();
         updateUI();
+        adapter.notifyDataSetChanged();
+        binding.tvZonesListActionLabel.setText(getResources().getString(R.string.empty_list));
     }
     private void onZoneClick(LandZone zone) {
         if(actionMenu != null){
@@ -503,7 +511,6 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
     }
     @Override public void onResume() {
         super.onResume();
-        binding.rvZoneList.setAdapter(adapter);
         if (adapter != null) {
             for (MapView m : adapter.getMapViews()) {
                 m.onResume();

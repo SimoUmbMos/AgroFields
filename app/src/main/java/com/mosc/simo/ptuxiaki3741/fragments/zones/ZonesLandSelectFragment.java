@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ZonesLandSelectFragment extends Fragment implements FragmentBackPress {
-    //fixme: tags search
     private FragmentZonesLandSelectBinding binding;
     private LandListAdapter adapter;
 
@@ -56,7 +57,7 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
         }
     }
     private void initFragment() {
-        binding.tvZoneLandListActionLabel.setText(getResources().getString(R.string.empty_list));
+        binding.tvZoneLandListActionLabel.setText(getResources().getString(R.string.loading_label));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -64,12 +65,17 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
         );
         binding.rvZoneLandList.setLayoutManager(layoutManager);
         binding.rvZoneLandList.setHasFixedSize(true);
-        adapter = new LandListAdapter(data,this::onLandClick);
+        adapter = new LandListAdapter(data, this::onLandClick);
+        binding.rvZoneLandList.setAdapter(adapter);
     }
     private void initViewModel() {
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            vmLands.getLands().observe(getViewLifecycleOwner(),this::onDataUpdate);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> vmLands.getLands().observe(
+                    getViewLifecycleOwner(),
+                    this::onDataUpdate
+            ));
         }
     }
 
@@ -79,8 +85,9 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
         if(lands != null){
             data.addAll(lands);
         }
-        adapter.notifyDataSetChanged();
         updateUI();
+        adapter.notifyDataSetChanged();
+        binding.tvZoneLandListActionLabel.setText(getResources().getString(R.string.empty_list));
     }
     private void onLandClick(Land land) {
         toZoneLandSelected(getActivity(),land);
@@ -150,7 +157,6 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
     }
     @Override public void onResume() {
         super.onResume();
-        binding.rvZoneLandList.setAdapter(adapter);
         if (adapter != null) {
             for (MapView m : adapter.getMapViews()) {
                 m.onResume();

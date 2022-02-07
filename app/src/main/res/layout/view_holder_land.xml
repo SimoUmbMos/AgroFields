@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_map_item_height"
+    android:layout_height="wrap_content"
     android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="?android:attr/listPreferredItemPaddingEnd"
@@ -15,54 +15,42 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/list_map_item_height"
             app:cameraZoom="0"
-            app:layout_constraintBottom_toTopOf="@+id/titleLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:liteMode="true"
-            app:mapType="satellite" />
+            app:mapType="none" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/titleLayout"
-            android:layout_width="0dp"
+        <CheckedTextView
+            android:id="@+id/ctvLandName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceListItem"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mapView"/>
 
-            <CheckedTextView
-                android:id="@+id/ctvLandName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceListItem"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvLandName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceListItem"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvLandName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:paddingBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mapView"/>
 
         <FrameLayout
             android:id="@+id/item"
@@ -72,8 +60,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="UselessLeaf">
-
-        </FrameLayout>
+            tools:ignore="UselessLeaf"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

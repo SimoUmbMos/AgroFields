@@ -4,9 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,14 +49,10 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
         this.showCheckMark = false;
     }
 
-    public void setShowCheckMark(boolean showCheckMark){
-        this.showCheckMark = showCheckMark;
-    }
-
     @NonNull @Override public LandZoneItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_land,parent,false);
-        LandZoneItem holder = new LandZoneItem(parent.getContext(), view);
-        mMapViews.add(holder.mapView);
+        LandZoneItem holder = new LandZoneItem(view, parent.getContext());
+        mMapViews.add(holder.binding.mapView);
         return holder;
     }
 
@@ -68,23 +61,23 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
         holder.itemView.setTag(zone);
 
         String display = zone.toString();
-        holder.ctvLandName.setText(display);
-        holder.tvLandName.setText(display);
-        holder.ctvLandName.setChecked(zone.isSelected());
+        holder.binding.tvLandName.setText(display);
+        holder.binding.ctvLandName.setText(display);
+        holder.binding.ctvLandName.setChecked(zone.isSelected());
         if(showCheckMark){
-            holder.tvLandName.setVisibility(View.INVISIBLE);
-            holder.ctvLandName.setVisibility(View.VISIBLE);
+            holder.binding.tvLandName.setVisibility(View.GONE);
+            holder.binding.ctvLandName.setVisibility(View.VISIBLE);
         }else{
-            holder.ctvLandName.setVisibility(View.INVISIBLE);
-            holder.tvLandName.setVisibility(View.VISIBLE);
+            holder.binding.ctvLandName.setVisibility(View.GONE);
+            holder.binding.tvLandName.setVisibility(View.VISIBLE);
         }
         if(onClick != null){
-            holder.item.setOnClickListener(v ->
+            holder.binding.item.setOnClickListener(v ->
                     onClick.onActionResult(zone)
             );
         }
         if(onLongClick != null){
-            holder.item.setOnLongClickListener(v -> {
+            holder.binding.item.setOnLongClickListener(v -> {
                 onLongClick.onActionResult(zone);
                 return true;
             });
@@ -96,78 +89,80 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
         return data == null ? 0 : data.size();
     }
 
+    public void setShowCheckMark(boolean showCheckMark){
+        this.showCheckMark = showCheckMark;
+    }
+
     public HashSet<MapView> getMapViews() {
         return mMapViews;
     }
 
     protected static class LandZoneItem extends RecyclerView.ViewHolder implements OnMapReadyCallback {
-        public TextView tvLandName;
-        public CheckedTextView ctvLandName;
-        public FrameLayout item;
-        public MapView mapView;
+        public final  ViewHolderLandBinding binding;
+        private final Context parentContext;
 
-        public GoogleMap mMap;
+        private LandData land;
+        private LandZoneData zone;
 
-        protected LandData mLandData;
-        protected LandZoneData mZoneData;
-
-        private Context mContext;
-
-        public LandZoneItem(Context context, View view)  {
+        public LandZoneItem(View view, Context parentContext)  {
             super(view);
-            mContext = context;
+            this.parentContext = parentContext;
 
-            ViewHolderLandBinding binding = ViewHolderLandBinding.bind(itemView);
-            item = binding.item;
-            ctvLandName = binding.ctvLandName;
-            tvLandName = binding.tvLandName;
-            mapView = binding.mapView;
+            land = null;
+            zone = null;
 
-            mapView.setClickable(false);
-            mapView.onCreate(null);
-            mapView.getMapAsync(this);
+            binding = ViewHolderLandBinding.bind(itemView);
+            binding.mapView.setTag(null);
+
+            binding.mapView.setClickable(false);
+            binding.mapView.onCreate(null);
+            binding.mapView.getMapAsync(this);
         }
         @Override
         public void onMapReady(@NonNull GoogleMap googleMap) {
-            mMap = googleMap;
-            MapsInitializer.initialize(mContext);
-            mMap.getUiSettings().setMapToolbarEnabled(false);
-
-            if(mLandData != null && mZoneData != null){
-                initMap();
-            }
+            MapsInitializer.initialize(parentContext);
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+            binding.mapView.setTag(googleMap);
+            initMap();
         }
 
         public void setData(Land land, LandZone zone){
-            mLandData = null;
-            mZoneData = null;
-
             if(land == null) return;
-            if(land.getData() == null) return;
-            mLandData = land.getData();
-
             if(zone == null) return;
+            if(land.getData() == null) return;
             if(zone.getData() == null) return;
-            mZoneData = zone.getData();
 
-            if(mMap != null){
-                initMap();
-            }
+            this.land = land.getData();
+            this.zone = zone.getData();
+            initMap();
         }
 
         private void initMap(){
-            mMap.clear();
-            mMap.addPolygon(LandUtil.getPolygonOptions(mLandData,false));
-            mMap.addPolygon(LandUtil.getPolygonOptions(mZoneData,false));
+            if(binding.mapView.getTag() == null) return;
+            if(land == null || zone == null) return;
 
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(LatLng point : mLandData.getBorder()){
-                builder.include(point);
+            GoogleMap googleMap = (GoogleMap) binding.mapView.getTag();
+
+            googleMap.clear();
+            if(googleMap.getMapType() != GoogleMap.MAP_TYPE_NONE){
+                googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
             }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                    builder.build(),
-                    AppValues.defaultPaddingLite
-            ));
+
+            if(land.getBorder().size() > 0){
+                googleMap.addPolygon(LandUtil.getPolygonOptions(land,false).zIndex(1));
+                if(zone.getBorder().size() > 0){
+                    googleMap.addPolygon(LandUtil.getPolygonOptions(zone,false).zIndex(2));
+                }
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for(LatLng point : land.getBorder()){
+                    builder.include(point);
+                }
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                        builder.build(),
+                        AppValues.defaultPaddingLite
+                ));
+                googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            }
         }
     }
 }
