@@ -165,6 +165,17 @@
     <string name="menu_filter">Φίλτρα</string>
     <string name="menu_grid_view">Προβολή πλέγματος</string>
     <string name="menu_list_view">Προβολή λίστας</string>
+    <string name="date_filter_side_label">Φίλτρο ημερομηνίας</string>
+    <string name="older_events_side_label">Παλαιότερα συμβάντα</string>
+    <string name="new_events_side_label">Μελλοντικά συμβάντα</string>
+    <string name="event_filter_side_label">Φιλτράρισμα συμβάντων</string>
+    <string name="all_filter_side_label">Προβολή Όλων</string>
+    <string name="schedule_filter_side_label">Προγραμμ. εργασίες</string>
+    <string name="plant_filter_side_label">Εργασίες φύτευσης</string>
+    <string name="cultivate_filter_side_label">Εργασίες καλλιέργ.</string>
+    <string name="fertilize_filter_side_label">Εργασίες γονιμ.</string>
+    <string name="spray_filter_side_label">Εργασίες ψεκασμού</string>
+    <string name="harvest_filter_side_label">Εργασίες συγκομ.</string>
     <!-- Calendar Event List Fragment -->
     <string name="calendar_event_list_fragment_title">Συμβάντα:</string>
     <!-- Calendar Event Fragment -->

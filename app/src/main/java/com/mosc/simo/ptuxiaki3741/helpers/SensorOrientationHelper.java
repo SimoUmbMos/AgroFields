@@ -12,14 +12,13 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class SensorOrientationHelper extends ContextWrapper implements SensorEventListener{
     private final SensorManager sensorManager;
-    private final float[] accelerometerReading = new float[3];
-    private final float[] magnetometerReading = new float[3];
-    private final float[] rotationMatrix = new float[9];
-    private final float[] orientationAngles = new float[3];
+    private float[] mGravity;
+    private float[] mGeomagnetic;
     private final ActionResult<Float> onBearingUpdate;
+    private float Alpha;
+    private int accelAccuracy, magAccuracy;
 
-    private boolean isRunning, autoGesture, isAccelInit, isMagnetInit;
-    private float lastBearing;
+    private boolean isRunning, autoGesture;
 
     public SensorOrientationHelper(Context base, ActionResult<Float> onBearingUpdate) {
         super(base);
@@ -27,44 +26,76 @@ public class SensorOrientationHelper extends ContextWrapper implements SensorEve
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         isRunning = false;
         autoGesture = false;
-        isAccelInit = false;
-        isMagnetInit = false;
-        lastBearing = -1;
+        mGravity = null;
+        mGeomagnetic = null;
+        accelAccuracy = 0;
+        magAccuracy = 0;
+        Alpha = AppValues.bearingAlphaLow;
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            System.arraycopy(event.values, 0, accelerometerReading,
-                    0, accelerometerReading.length);
-            isAccelInit = true;
-        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            System.arraycopy(event.values, 0, magnetometerReading,
-                    0, magnetometerReading.length);
-            isMagnetInit = true;
-        }
-
-        if(autoGesture){
-            updateOrientationAngles();
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+            mGravity = applyLowPassFilter(event.values.clone(), mGravity);
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            mGeomagnetic = applyLowPassFilter(event.values.clone(), mGeomagnetic);
+        if(mGravity != null && mGeomagnetic != null && autoGesture){
+            float[] R = new float[9];
+            float[] I = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+            if(success){
+                float[] orientation = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                double azimuth = Math.toDegrees(orientation[0]);
+                azimuth = Math.ceil(azimuth);
+                if(azimuth > 360) azimuth = azimuth - 360;
+                if(azimuth < 0) azimuth = azimuth + 360;
+                onBearingUpdate.onActionResult((float)azimuth);
+            }
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+            accelAccuracy = accuracy;
+        if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            magAccuracy = accuracy;
 
+        switch (Math.min(accelAccuracy, magAccuracy)){
+            case (SensorManager.SENSOR_STATUS_NO_CONTACT):
+            case (SensorManager.SENSOR_STATUS_UNRELIABLE):
+                Alpha = AppValues.bearingAlphaNone;
+                break;
+            case (SensorManager.SENSOR_STATUS_ACCURACY_LOW):
+                Alpha = AppValues.bearingAlphaLow;
+                break;
+            case (SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM):
+                Alpha = AppValues.bearingAlphaMedium;
+                break;
+            case (SensorManager.SENSOR_STATUS_ACCURACY_HIGH):
+                Alpha = AppValues.bearingAlphaHigh;
+                break;
+        }
     }
 
     public void onResume(){
         if(!isRunning){
             Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             if (accelerometer != null) {
-                sensorManager.registerListener(this, accelerometer,
-                        SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+                sensorManager.registerListener(
+                        this,
+                        accelerometer,
+                        SensorManager.SENSOR_DELAY_GAME
+                );
             }
             Sensor magneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
             if (magneticField != null) {
-                sensorManager.registerListener(this, magneticField,
-                        SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+                sensorManager.registerListener(
+                        this,
+                        magneticField,
+                        SensorManager.SENSOR_DELAY_GAME
+                );
             }
             isRunning = true;
         }
@@ -72,10 +103,9 @@ public class SensorOrientationHelper extends ContextWrapper implements SensorEve
     public void onPause(){
         if(isRunning){
             sensorManager.unregisterListener(this);
-            isAccelInit = false;
-            isMagnetInit = false;
-            lastBearing = -1;
             isRunning = false;
+            mGravity = null;
+            mGeomagnetic = null;
         }
     }
 
@@ -86,19 +116,11 @@ public class SensorOrientationHelper extends ContextWrapper implements SensorEve
         return autoGesture;
     }
 
-    private void updateOrientationAngles() {
-        if(isAccelInit && isMagnetInit){
-            boolean success = SensorManager.getRotationMatrix(rotationMatrix, null,
-                    accelerometerReading, magnetometerReading);
-            if(success){
-                SensorManager.getOrientation(rotationMatrix, orientationAngles);
-                float bearing = orientationAngles[0];
-                bearing = (float) Math.floor( Math.toDegrees( bearing ) );
-                if(lastBearing == -1 || Math.abs(lastBearing - bearing) >= AppValues.bearingSensitivity){
-                    lastBearing = bearing;
-                    onBearingUpdate.onActionResult(bearing);
-                }
-            }
+    private float[] applyLowPassFilter(float[] input, float[] output) {
+        if ( output == null ) return input;
+        for ( int i=0; i<input.length; i++ ) {
+            output[i] = output[i] + Alpha * (input[i] - output[i]);
         }
+        return output;
     }
 }

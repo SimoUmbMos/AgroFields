@@ -39,11 +39,14 @@ public final class AppValues {
     public static final float cityZoom = 13.0f;
     public static final float streetZoom = 16.0f;
     /* Live Map Fragment Values */
-    public static final int AnimationRotate = 140;
-    public static final int AnimationMove = 60;
+    public static final int LoopDelay = 120;
+    public static final int AnimationMove = 240;
     public static final float defaultTilt = 60f;
     public static final float locationSensitivity = 1.0f;
-    public static final float bearingSensitivity = 1.0f;
+    public static final float bearingAlphaHigh = 0.15f;
+    public static final float bearingAlphaMedium = 0.075f;
+    public static final float bearingAlphaLow = 0.0375f;
+    public static final float bearingAlphaNone = 0.01875f;
     public static final double currPositionSize = 18.0;
     public static final float currPositionSizeStroke = 5.0f;
     public static final float personZoom = 16.0f;

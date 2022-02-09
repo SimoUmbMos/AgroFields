@@ -15,6 +15,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,6 +68,9 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
 
     private Circle currPosition;
     private float currBearing;
+
+    private final Handler handler = new Handler();
+    private Runnable runnable;
 
     private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
@@ -123,17 +127,22 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     }
     @Override
     public void onResume() {
-        super.onResume();
-        binding.mvLiveMap.onResume();
+        handler.postDelayed( runnable = () -> {
+            onLoop();
+            handler.postDelayed(runnable, AppValues.LoopDelay);
+        }, AppValues.LoopDelay);
         if(locationHelper != null) locationHelper.start();
         if(orientationHelper != null) orientationHelper.onResume();
+        binding.mvLiveMap.onResume();
+        super.onResume();
     }
     @Override
     public void onPause() {
-        super.onPause();
+        handler.removeCallbacks(runnable);
         if(orientationHelper != null) orientationHelper.onPause();
         if(locationHelper != null) locationHelper.stop();
         binding.mvLiveMap.onPause();
+        super.onPause();
     }
     @Override
     public void onLowMemory() {
@@ -208,10 +217,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         mMap.setOnCameraIdleListener(() -> {
             if(currPosition != null){
                 if(waitUserStop){
-                    waitUserStop = false;
-                    moveCameraToCurrPosition(true);
-                }else if(currPosition.getCenter() != mMap.getCameraPosition().target){
-                    moveCameraToCurrPosition(true);
+                    moveCameraToCurrPosition();
                 }
             }
         });
@@ -321,7 +327,9 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         LatLng position = new LatLng(location.getLatitude(),location.getLongitude());
         if(getActivity() != null){
             getActivity().runOnUiThread(()->{
-                if(currPosition == null){
+                if(currPosition != null){
+                    currPosition.setCenter(position);
+                }else{
                     currBearing = location.getBearing();
 
                     currPosition = mMap.addCircle(new CircleOptions()
@@ -335,22 +343,14 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
                     initCameraToCurrPosition();
 
                     binding.mvLiveMap.setVisibility(View.VISIBLE);
-                }else{
-                    currPosition.setCenter(position);
-                    moveCameraToCurrPosition(false);
                 }
             });
         }
-
-        CheckInsidePolygon(position);
     }
     private void onUpdateBearing(float bearing) {
         if(currPosition == null) return;
 
         currBearing = bearing;
-        if(getActivity() != null){
-            getActivity().runOnUiThread(() -> moveCameraToCurrPosition(true));
-        }
     }
 
     private void initCameraToCurrPosition() {
@@ -365,37 +365,54 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
                 .build()
         ));
     }
-    private void moveCameraToCurrPosition(boolean rotate) {
+    private void moveCameraToCurrPosition() {
+        if(getActivity() == null) return;
         if(mMap == null) return;
         if(currPosition == null) return;
-        if(waitUserStop){
-            return;
-        }
+        if(!waitUserStop) waitUserStop = true;
 
-        mMap.stopAnimation();
-        CameraPosition position;
-        int animation;
-        if (rotate) {
-            position = new CameraPosition.Builder()
-                    .target(currPosition.getCenter())
-                    .bearing(currBearing)
-                    .tilt(mMap.getCameraPosition().tilt)
-                    .zoom(mMap.getCameraPosition().zoom)
-                    .build();
-            animation = AppValues.AnimationRotate;
-        }else{
-            position = new CameraPosition.Builder()
-                    .target(currPosition.getCenter())
-                    .bearing(mMap.getCameraPosition().bearing)
-                    .tilt(mMap.getCameraPosition().tilt)
-                    .zoom(mMap.getCameraPosition().zoom)
-                    .build();
-            animation = AppValues.AnimationMove;
-        }
-        mMap.animateCamera(
-                CameraUpdateFactory.newCameraPosition(position),
-                animation,
-                null);
+        CameraPosition position = new CameraPosition.Builder()
+                .target(currPosition.getCenter())
+                .bearing(mMap.getCameraPosition().bearing)
+                .tilt(mMap.getCameraPosition().tilt)
+                .zoom(mMap.getCameraPosition().zoom)
+                .build();
+        int animation = AppValues.AnimationMove;
+        getActivity().runOnUiThread(()->{
+            mMap.stopAnimation();
+            mMap.animateCamera(
+                    CameraUpdateFactory.newCameraPosition(position),
+                    animation,
+                    null
+            );
+            new Handler().postDelayed(()-> waitUserStop = false, animation);
+        });
+    }
+
+    private void onLoop(){
+        if(getActivity() == null) return;
+        if(mMap == null) return;
+        if(currPosition == null) return;
+        if(waitUserStop) return;
+
+        CameraPosition position = new CameraPosition.Builder()
+                .target(currPosition.getCenter())
+                .bearing(currBearing)
+                .tilt(mMap.getCameraPosition().tilt)
+                .zoom(mMap.getCameraPosition().zoom)
+                .build();
+        int animation = AppValues.LoopDelay;
+
+        getActivity().runOnUiThread(()->{
+            mMap.stopAnimation();
+            mMap.animateCamera(
+                    CameraUpdateFactory.newCameraPosition(position),
+                    animation,
+                    null
+            );
+        });
+
+        CheckInsidePolygon(currPosition.getCenter());
     }
 
     private void CheckInsidePolygon(LatLng position) {
