@@ -3,14 +3,14 @@ package com.mosc.simo.ptuxiaki3741.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHistoryItemBinding;
 
-public class HistoryItemView extends ConstraintLayout {
+public class HistoryItemView extends LinearLayout {
     private final ViewHistoryItemBinding binding;
     private String mAction,mDate;
 

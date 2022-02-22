@@ -8,14 +8,12 @@
                 android:id="@+id/toolbar_action_toggle_map_lock"
                 android:orderInCategory="1"
                 android:icon="@drawable/ic_drawer_menu_unlocked"
-                app:iconTint="@color/textColor"
                 android:title="@string/lock_map"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_toggle_map_road_label"
                 android:orderInCategory="2"
                 android:icon="@drawable/ic_button_toggle_route_name"
-                app:iconTint="@color/textColor"
                 android:title="@string/show_road_name"
                 app:showAsAction="ifRoom|withText" />
         </menu>
@@ -25,14 +23,12 @@
             <item
                 android:id="@+id/toolbar_action_make_land_editable"
                 android:icon="@drawable/ic_drawer_menu_edit"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="1"
                 android:title="@string/make_land_editable"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_edit_land_info"
                 android:icon="@drawable/ic_drawer_menu_edit"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="2"
                 android:title="@string/edit_land_name"
                 app:showAsAction="ifRoom|withText" />
@@ -40,12 +36,10 @@
                 android:title="@string/edit_color"
                 android:orderInCategory="3"
                 android:icon="@drawable/ic_menu_color_palette"
-                app:iconTint="@color/textColor"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_delete_land"
                 android:icon="@drawable/ic_menu_delete"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="4"
                 android:title="@string/delete_land"
                 app:showAsAction="ifRoom|withText" />
@@ -56,42 +50,36 @@
             <item
                 android:id="@+id/toolbar_action_add_on_end"
                 android:icon="@drawable/ic_drawer_menu_add"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="1"
                 android:title="@string/add_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_add_between"
                 android:icon="@drawable/ic_drawer_menu_add_between"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="2"
                 android:title="@string/add_between_points"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_add_location"
                 android:icon="@drawable/ic_drawer_menu_add"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="3"
                 android:title="@string/add_by_location"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_edit"
                 android:icon="@drawable/ic_drawer_menu_edit"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="4"
                 android:title="@string/edit_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_delete"
                 android:icon="@drawable/ic_drawer_menu_delete"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="5"
                 android:title="@string/delete_point"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_clean"
                 android:icon="@drawable/ic_drawer_menu_layer_clear"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="6"
                 android:title="@string/reset_points"
                 app:showAsAction="ifRoom|withText" />
@@ -102,28 +90,24 @@
             <item
                 android:id="@+id/toolbar_action_add_img"
                 android:icon="@drawable/ic_drawer_menu_add_img"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="1"
                 android:title="@string/add_img"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_remove_img"
                 android:icon="@drawable/ic_drawer_menu_remove_img"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="2"
                 android:title="@string/remove_img"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_edit_img"
                 android:icon="@drawable/ic_drawer_menu_move_img"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="3"
                 android:title="@string/edit_img"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_opacity_img"
                 android:icon="@drawable/ic_drawer_menu_alpha_img"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="4"
                 android:title="@string/opacity_img"
                 app:showAsAction="ifRoom|withText" />
@@ -134,21 +118,18 @@
             <item
                 android:id="@+id/toolbar_action_import"
                 android:icon="@drawable/ic_drawer_menu_import"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="1"
                 android:title="@string/import_label"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_add_to_land"
                 android:icon="@drawable/ic_drawer_menu_add_remove_to_land"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="2"
                 android:title="@string/add_to_land_label"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_remove_from_land"
                 android:icon="@drawable/ic_drawer_menu_add_remove_to_land"
-                app:iconTint="@color/textColor"
                 android:orderInCategory="3"
                 android:title="@string/remove_from_land_label"
                 app:showAsAction="ifRoom|withText" />

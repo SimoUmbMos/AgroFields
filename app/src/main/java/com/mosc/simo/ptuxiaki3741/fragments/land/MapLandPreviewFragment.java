@@ -7,16 +7,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,11 +19,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandMapPreviewBinding;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
@@ -40,12 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MapLandPreviewFragment extends Fragment implements FragmentBackPress {
-    private static final String TAG = "MapLandPreviewFragment";
+public class MapLandPreviewFragment extends Fragment {
+    //FIXME: SAVE ZONES ON LAND HISTORY
+
+    private final List<Polygon> mapZones = new ArrayList<>();
+    private Polygon mapLand;
     private FragmentLandMapPreviewBinding binding;
 
     private GoogleMap mMap;
-
     private List<LandZone> currLandZones;
     private Land currLand;
     private boolean isHistory;
@@ -58,135 +55,164 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argIsHistory)){
                 isHistory = getArguments().getBoolean(AppValues.argIsHistory);
-                //FIXME: SAVE ZONES ON LAND HISTORY
             }
             if(getArguments().containsKey(AppValues.argLand)){
                 currLand = getArguments().getParcelable(AppValues.argLand);
             }
         }
     }
+
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
-                activity.setOnBackPressed(this);
-                if(currLand == null){
-                    activity.onBackPressed();
-                    return;
-                }
-                activity.setToolbarTitle(currLand.toString());
-                ActionBar actionBar = activity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
+                activity.setOnBackPressed(()->true);
             }
         }
     }
-    private void initViewModel(){
-        if(getActivity() != null){
-            AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            appVM.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
-            if(!isHistory){
-                appVM.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
-            }
+
+    private void initMenu(){
+        binding.tvTitle.setText(currLand.toString());
+        binding.ibEdit.setEnabled(!isHistory);
+        binding.ibHistory.setEnabled(!isHistory);
+        binding.ibRestore.setEnabled(isHistory);
+        if(isHistory){
+            binding.ibEdit.setVisibility(View.GONE);
+            binding.ibHistory.setVisibility(View.GONE);
+            binding.ibRestore.setVisibility(View.VISIBLE);
+        }else{
+            binding.ibEdit.setVisibility(View.VISIBLE);
+            binding.ibHistory.setVisibility(View.VISIBLE);
+            binding.ibRestore.setVisibility(View.GONE);
         }
     }
+
     private void initFragment(){
+        binding.ibEdit.setOnClickListener( v -> toLandEdit(getActivity()) );
+        binding.ibHistory.setOnClickListener( v -> toLandHistory(getActivity()) );
+        binding.ibRestore.setOnClickListener( v -> restoreLand() );
         binding.mvLand.getMapAsync(this::initMap);
     }
+
     private void initMap(GoogleMap googleMap) {
-        binding.mvLand.setVisibility(View.INVISIBLE);
         mMap = googleMap;
         mMap.setMinZoomPreference(AppValues.countryZoom-1);
         mMap.setMaxZoomPreference(AppValues.streetZoom+1);
         mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
-        drawLandOnMap();
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        if(isHistory){
+            drawLandOnMap();
+            drawZonesOnMap();
+        }else{
+            initViewModel();
+        }
     }
 
-    //map relative
-    private void drawLandOnMap() {
-        if (mMap != null) {
-            mMap.clear();
-            int strokeColor, fillColor;
-            if(currLand != null){
-                strokeColor = Color.argb(
-                    AppValues.defaultStrokeAlpha,
-                    currLand.getData().getColor().getRed(),
-                    currLand.getData().getColor().getGreen(),
-                    currLand.getData().getColor().getBlue()
-                );
-                fillColor = Color.argb(
-                        AppValues.defaultFillAlpha,
-                        currLand.getData().getColor().getRed(),
-                        currLand.getData().getColor().getGreen(),
-                        currLand.getData().getColor().getBlue()
-                );
+    private void initViewModel(){
+        if(getActivity() != null){
+            AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            appVM.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
+            appVM.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
+        }
+    }
 
-                PolygonOptions options = LandUtil.getPolygonOptions(
-                        currLand.getData(),
-                        strokeColor,
-                        fillColor,
-                        false
-                );
-                if(options != null)
-                    mMap.addPolygon(options.zIndex(1));
-                for(LandZone zone:currLandZones){
-                    strokeColor = Color.argb(
-                            AppValues.defaultStrokeAlpha,
-                            zone.getData().getColor().getRed(),
-                            zone.getData().getColor().getGreen(),
-                            zone.getData().getColor().getBlue()
-                    );
-                    fillColor = Color.argb(
-                            AppValues.defaultFillAlpha,
-                            zone.getData().getColor().getRed(),
-                            zone.getData().getColor().getGreen(),
-                            zone.getData().getColor().getBlue()
-                    );
-                    options = LandUtil.getPolygonOptions(
-                            zone.getData(),
-                            strokeColor,
-                            fillColor,
-                            false
-                    );
-                    if(options != null)
-                        mMap.addPolygon(options.zIndex(2));
-                }
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                for(LatLng point : currLand.getData().getBorder()){
-                    builder.include(point);
-                }
-                binding.mvLand.setVisibility(View.VISIBLE);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                        builder.build(),
-                        AppValues.defaultPadding
-                ));
+    //map draw relative
+    private void drawLandOnMap() {
+        if(mMap == null) return;
+
+        if(mapLand != null) {
+            mapLand.remove();
+            mapLand = null;
+        }
+
+        int strokeColor = Color.argb(
+                AppValues.defaultStrokeAlpha,
+                currLand.getData().getColor().getRed(),
+                currLand.getData().getColor().getGreen(),
+                currLand.getData().getColor().getBlue()
+        );
+        int fillColor = Color.argb(
+                AppValues.defaultFillAlpha,
+                currLand.getData().getColor().getRed(),
+                currLand.getData().getColor().getGreen(),
+                currLand.getData().getColor().getBlue()
+        );
+
+        PolygonOptions options = LandUtil.getPolygonOptions(
+                currLand.getData(),
+                strokeColor,
+                fillColor,
+                false
+        );
+        if(options == null) return;
+
+        mapLand = mMap.addPolygon(options.zIndex(1));
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for(LatLng point : mapLand.getPoints()){
+            builder.include(point);
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                builder.build(),
+                AppValues.defaultPadding
+        ));
+
+    }
+
+    private void drawZonesOnMap() {
+        if(mMap == null) return;
+
+        for(Polygon zone : mapZones){
+            zone.remove();
+        }
+        mapZones.clear();
+
+        for(LandZone zone:currLandZones){
+            int strokeColor = Color.argb(
+                    AppValues.defaultStrokeAlpha,
+                    zone.getData().getColor().getRed(),
+                    zone.getData().getColor().getGreen(),
+                    zone.getData().getColor().getBlue()
+            );
+            int fillColor = Color.argb(
+                    AppValues.defaultFillAlpha,
+                    zone.getData().getColor().getRed(),
+                    zone.getData().getColor().getGreen(),
+                    zone.getData().getColor().getBlue()
+            );
+            PolygonOptions options = LandUtil.getPolygonOptions(
+                    zone.getData(),
+                    strokeColor,
+                    fillColor,
+                    false
+            );
+            if(options != null) {
+                mapZones.add(mMap.addPolygon(options.zIndex(2)));
             }
         }
     }
 
     //observers
     private void onLandUpdate(List<Land> lands) {
-        if(currLand != null){
-            for(Land temp:lands){
-                if(temp.getData().getId() == currLand.getData().getId() && !isHistory){
-                    currLand.setData(temp.getData());
-                }
+        for(Land temp:lands){
+            if(temp.getData() == null) continue;
+            if(temp.getData().getId() == currLand.getData().getId()){
+                currLand.setData(temp.getData());
+                break;
             }
         }
         drawLandOnMap();
     }
+
     private void onLandZoneUpdate(Map<Long,List<LandZone>> zones) {
         currLandZones.clear();
-        if(currLand != null){
-            List<LandZone> temp = zones.getOrDefault(currLand.getData().getId(),null);
-            if(temp != null){
-                currLandZones.addAll(temp);
-            }
+        List<LandZone> temp = zones.getOrDefault(currLand.getData().getId(),null);
+        if(temp != null){
+            currLandZones.addAll(temp);
         }
-        drawLandOnMap();
+        drawZonesOnMap();
     }
 
     //restore relative
@@ -194,9 +220,10 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
         AsyncTask.execute(()->{
             //FIXME: Restore ZONES ON LAND HISTORY
             restoreToVM();
-            finish(getActivity());
+            goBack(getActivity());
         });
     }
+
     private void restoreToVM() {
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
@@ -205,6 +232,10 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
     }
 
     //navigation
+    public void goBack(@Nullable Activity activity) {
+        if(activity != null) activity.runOnUiThread(activity::onBackPressed);
+    }
+
     public void toLandEdit(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
@@ -215,6 +246,7 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });
     }
+
     public void toLandHistory(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
@@ -225,85 +257,63 @@ public class MapLandPreviewFragment extends Fragment implements FragmentBackPres
                     nav.navigate(R.id.toLandHistory,bundle);
             });
     }
-    public void finish(Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(activity::onBackPressed);
-    }
 
-    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    //overrides
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentLandMapPreviewBinding.inflate(inflater,container,false);
         binding.mvLand.onCreate(savedInstanceState);
         return binding.getRoot();
     }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
         initActivity();
-        initViewModel();
-        initFragment();
-        Log.d(TAG, "onViewCreated");
+        if(currLand != null){
+            initMenu();
+            initFragment();
+        }else{
+            goBack(getActivity());
+        }
     }
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        binding.mvLand.onDestroy();
-        binding = null;
-        Log.d(TAG, "onDestroyView");
-    }
-    @Override public void onResume() {
+
+    @Override
+    public void onResume() {
         super.onResume();
         binding.mvLand.onResume();
-        Log.d(TAG, "onResume");
     }
-    @Override public void onPause() {
-        super.onPause();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        binding.mvLand.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        binding.mvLand.onStop();
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
         binding.mvLand.onPause();
-        Log.d(TAG, "onPause");
+        super.onPause();
     }
-    @Override public void onLowMemory() {
-        super.onLowMemory();
+
+    @Override
+    public void onDestroyView() {
+        binding.mvLand.onDestroy();
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
+    public void onLowMemory() {
         binding.mvLand.onLowMemory();
-        Log.d(TAG, "onLowMemory");
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.land_map_preview_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        MenuItem editItem = menu.findItem(R.id.menu_item_edit_land);
-        MenuItem historyItem = menu.findItem(R.id.menu_item_history_land);
-        MenuItem restoreItem = menu.findItem(R.id.menu_item_restore_land);
-        if(editItem != null){
-            editItem.setVisible(!isHistory);
-            editItem.setEnabled(!isHistory);
-        }
-        if(historyItem != null){
-            historyItem.setVisible(!isHistory);
-            historyItem.setEnabled(!isHistory);
-        }
-        if(restoreItem != null){
-            restoreItem.setVisible(isHistory);
-            restoreItem.setEnabled(isHistory);
-        }
-        super.onPrepareOptionsMenu(menu);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case(R.id.menu_item_edit_land):
-                toLandEdit(getActivity());
-                return true;
-            case(R.id.menu_item_history_land):
-                toLandHistory(getActivity());
-                return true;
-            case(R.id.menu_item_restore_land):
-                restoreLand();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    @Override public boolean onBackPressed() {
-        return true;
+        super.onLowMemory();
     }
 }

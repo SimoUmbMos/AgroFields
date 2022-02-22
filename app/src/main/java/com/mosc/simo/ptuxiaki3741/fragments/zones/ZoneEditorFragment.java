@@ -11,7 +11,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,8 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +62,6 @@ import java.util.Map;
 
 public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "ZoneEditorFragment";
-    //fixme: add tags
     private FragmentZoneEditorBinding binding;
     private GoogleMap mMap;
     private Polygon zonePolygon;
@@ -160,21 +156,22 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             border.addAll(zone.getData().getBorder());
         }
     }
+
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
-                activity.setToolbarTitle("");
-                ActionBar actionBar = activity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
             }
             locationHelperPoint = new LocationHelper(getActivity(),this::onLocationUpdate);
         }
     }
+
     private void initFragment(){
+        binding.ibEditMenu.setOnClickListener(v->{
+            onStateUpdate(ZoneEditorState.NormalState);
+            toggleDrawer(true);
+        });
         binding.navZoneMenu.setNavigationItemSelectedListener(this::onMenuClick);
         binding.ibUndo.setOnClickListener(v->undo());
         binding.btnClearState.setOnClickListener(v-> onStateUpdate(ZoneEditorState.NormalState));
@@ -183,11 +180,13 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         updateUI();
         binding.mvZonePreview.getMapAsync(this::initMap);
     }
+
     private void initViewModel(){
         if(getActivity() != null){
             vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
         }
     }
+
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMinZoomPreference(AppValues.countryZoom-1);
@@ -212,6 +211,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         drawLand();
         mMap.setOnMapLoadedCallback(this::MapLoaded);
     }
+
     @SuppressLint("PotentialBehaviorOverride")
     private void MapLoaded() {
         mapLoaded = true;
@@ -222,11 +222,13 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         });
         initObservers();
     }
+
     private void initObservers(){
         if(vmLands != null){
             vmLands.getLandZones().observe(getViewLifecycleOwner(),this::onZonesUpdate);
         }
     }
+
     private void initDrawMap(){
         if(mMap != null) mMap.clear();
         drawLand();
@@ -237,6 +239,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
     }
+
     private void drawLand(){
         if(mMap == null) return;
         if(land == null) return;
@@ -267,6 +270,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             mMap.addPolygon(options.zIndex(1));
         }
     }
+
     private void drawOtherZones(){
         if(mMap == null) return;
         int strokeColor;
@@ -296,6 +300,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+
     private void zoomOnLand(){
         if(mMap != null && land != null){
             if(land.getData().getBorder().size()>0){
@@ -360,6 +365,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             Snackbar.make(binding.getRoot(), getString(R.string.zone_no_need_save), Snackbar.LENGTH_LONG).show();
         }
     }
+
     private boolean needSave() {
         if(zone != null){
             if(!zone.getData().getTitle().equals(title)){
@@ -384,6 +390,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
         return true;
     }
+
     private boolean isValidSave() {
         String error = null;
         if(title.trim().isEmpty()){
@@ -404,9 +411,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             return true;
         }
     }
+
     private boolean isValidTitle(String title) {
         return !title.isEmpty();
     }
+
     @SuppressLint("CutPasteId")
     private void showTitleDialog(){
         if(getContext() != null){
@@ -460,6 +469,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             });
         }
     }
+
     @SuppressLint("CutPasteId")
     private void showNoteDialog(){
         if(getContext() != null){
@@ -513,6 +523,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             });
         }
     }
+
     private void showColorDialog(){
         if(getContext() != null){
             if(dialog != null){
@@ -542,10 +553,6 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private boolean onMenuClick(MenuItem item) {
         if( !mapLoaded ) return false;
         switch (item.getItemId()){
-            case (R.id.menu_item_edit_zone):
-                onStateUpdate(ZoneEditorState.NormalState);
-                toggleDrawer(true);
-                return true;
             case (R.id.toolbar_action_save_zone):
                 saveZone();
                 return true;
@@ -589,17 +596,13 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+
     private void toggleNote() {
         showNote = !showNote;
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity activity = (MainActivity) getActivity();
-                if(showNote){
-                    activity.setToolbarTitle(activity.getToolbarTitle(), note);
-                }else{
-                    activity.setToolbarTitle(activity.getToolbarTitle());
-                }
-            }
+        if(showNote){
+            setToolbarTitle(binding.tvTitle.getText().toString(), note);
+        }else{
+            setToolbarTitle(binding.tvTitle.getText().toString());
         }
     }
 
@@ -625,6 +628,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         initDrawMap();
         updateUI();
     }
+
     private void onStateUpdate(ZoneEditorState state){
         if(this.state != state){
             if(this.state == ZoneEditorState.AddLocation){
@@ -649,6 +653,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+
     private void onLocationUpdate(Location location){
         if(getActivity() != null && location != null){
             getActivity().runOnUiThread(()->
@@ -656,6 +661,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             );
         }
     }
+
     private void onMapClick(LatLng point) {
         if(land == null)
             return;
@@ -691,10 +697,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         if(doMapUpdate)
             updateMap();
     }
+
     private void onAddPoint(LatLng point) {
         addPointsToUndo();
         border.add(point);
     }
+
     private void onAddBetweenPoint(LatLng point) {
         if(index1 < 0)
             selectFirstPointForBetween(point);
@@ -706,6 +714,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             editPointBetween(point);
         updateUIBasedOnState();
     }
+
     private void onEditPoint(LatLng point) {
         int index = MapUtil.closestPoint(border,point);
         if(index > -1 && index < border.size()){
@@ -715,6 +724,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+
     private void onDeletePoint(LatLng point) {
         int index = MapUtil.closestPoint(border,point);
         if(index > -1 && index < border.size()){
@@ -724,6 +734,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+
     private void selectFirstPointForBetween(LatLng point) {
         index1 = MapUtil.closestPoint(border,point);
         if(index1 > -1 && index1 < border.size()){
@@ -734,6 +745,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             index1 = -1;
         }
     }
+
     private void selectSecondPointForBetween(LatLng point) {
         index2 = MapUtil.closestPoint(border,point);
         if(index2 > -1 && index2 < border.size()){
@@ -746,6 +758,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             index2 = -1;
         }
     }
+
     private void placePointBetween(LatLng point) {
         addPointsToUndo();
         if(index2 == (border.size() - 1)){
@@ -763,10 +776,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             border.add(index3,point);
         }
     }
+
     private void editPointBetween(LatLng point) {
         addPointsToUndo();
         border.set(index3,point);
     }
+
     private void checkIndexBetween() {
         boolean reset = true;
         if(index1 > -1 && index2 > -1){
@@ -789,6 +804,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         if(reset)
             clearIndexBetweenPoint();
     }
+
     private void drawPositionMarker(LatLng currLocation) {
         if(positionMarker == null){
             positionMarker = mMap.addMarker(new MarkerOptions()
@@ -803,6 +819,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 mMap.getCameraPosition().zoom
         ));
     }
+
     private void cleanPositionMarker(){
         positionMarker.remove();
         positionMarker = null;
@@ -825,21 +842,17 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             ));
         }
     }
+
     private void updateUI() {
         updateUIBasedOnState();
         if(note.isEmpty()){
             binding.ibToggleNote.setVisibility(View.GONE);
         }else{
             binding.ibToggleNote.setVisibility(View.VISIBLE);
-            if(getActivity() != null){
-                if(getActivity().getClass() == MainActivity.class){
-                    MainActivity activity = (MainActivity) getActivity();
-                    if(showNote){
-                        activity.setToolbarTitle(activity.getToolbarTitle(), note);
-                    }else{
-                        activity.setToolbarTitle(activity.getToolbarTitle());
-                    }
-                }
+            if(showNote){
+                setToolbarTitle(binding.tvTitle.getText().toString(), note);
+            }else{
+                setToolbarTitle(binding.tvTitle.getText().toString());
             }
         }
         if(mMap != null) {
@@ -849,61 +862,60 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             showTitleDialog();
         }
         if( state == ZoneEditorState.NormalState){
-            binding.llControlLayout.setVisibility(View.GONE);
+            binding.btnClearState.setVisibility(View.GONE);
+            binding.ibUndo.setVisibility(View.GONE);
         }else{
-            binding.llControlLayout.setVisibility(View.VISIBLE);
+            binding.btnClearState.setVisibility(View.VISIBLE);
+            binding.ibUndo.setVisibility(View.VISIBLE);
         }
     }
+
     private void updateUIBasedOnState() {
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity activity = (MainActivity) getActivity();
-                switch (state){
-                    case AddPoint:
-                        activity.setToolbarTitle(getString(R.string.add_point));
-                        break;
-                    case AddLocation:
-                        activity.setToolbarTitle(getString(R.string.add_by_location));
-                        break;
-                    case AddBetweenPoint:
-                        String display;
-                        if(index1 != -1){
-                            if(index2 != -1){
-                                if(index3 != -1){
-                                    display = getString(R.string.add_between_points_edit_new_point);
-                                }else{
-                                    display = getString(R.string.add_between_points_place_new_point);
-                                }
-                            }else{
-                                display = getString(R.string.add_between_points_select_point_2);
-                            }
+        switch (state){
+            case AddPoint:
+                setToolbarTitle(getString(R.string.add_point));
+                break;
+            case AddLocation:
+                setToolbarTitle(getString(R.string.add_by_location));
+                break;
+            case AddBetweenPoint:
+                String display;
+                if(index1 != -1){
+                    if(index2 != -1){
+                        if(index3 != -1){
+                            display = getString(R.string.add_between_points_edit_new_point);
                         }else{
-                            display = getString(R.string.add_between_points_select_point_1);
+                            display = getString(R.string.add_between_points_place_new_point);
                         }
-                        activity.setToolbarTitle(display);
-                        break;
-                    case EditPoint:
-                        activity.setToolbarTitle(getString(R.string.edit_point));
-                        break;
-                    case DeletePoint:
-                        activity.setToolbarTitle(getString(R.string.delete_point));
-                        break;
-                    case NormalState:
-                    default:
-                        if(zone != null){
-                            activity.setToolbarTitle(title+" #"+ zone.getData().getId());
-                        }else{
-                            if(!title.trim().isEmpty()){
-                                activity.setToolbarTitle(title);
-                            }else{
-                                activity.setToolbarTitle(getString(R.string.new_zone_bar_label));
-                            }
-                        }
-                        break;
+                    }else{
+                        display = getString(R.string.add_between_points_select_point_2);
+                    }
+                }else{
+                    display = getString(R.string.add_between_points_select_point_1);
                 }
-            }
+                setToolbarTitle(display);
+                break;
+            case EditPoint:
+                setToolbarTitle(getString(R.string.edit_point));
+                break;
+            case DeletePoint:
+                setToolbarTitle(getString(R.string.delete_point));
+                break;
+            case NormalState:
+            default:
+                if(zone != null){
+                    setToolbarTitle(title+" #"+ zone.getData().getId());
+                }else{
+                    if(!title.trim().isEmpty()){
+                        setToolbarTitle(title);
+                    }else{
+                        setToolbarTitle(getString(R.string.new_zone_bar_label));
+                    }
+                }
+                break;
         }
     }
+
     private void updateMap(){
         if(mMap != null){
             if(zonePolygon != null){
@@ -959,9 +971,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
         updateUI();
     }
+
     private void addPointsToUndo(){
         undoList.add(new ArrayList<>(border));
     }
+
     private void clearUndo(){
         if(undoList == null){
             undoList = new ArrayList<>();
@@ -970,10 +984,23 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
         undoList.add(new ArrayList<>(border));
     }
+
     private void clearIndexBetweenPoint(){
         index1 = -1;
         index2 = -1;
         index3 = -1;
+    }
+
+    private void setToolbarTitle(String title){
+        binding.tvTitle.setText(title);
+        binding.tvNote.setVisibility(View.GONE);
+        binding.tvNote.setText("");
+    }
+
+    private void setToolbarTitle(String title, String subTitle){
+        binding.tvTitle.setText(title);
+        binding.tvNote.setVisibility(View.VISIBLE);
+        binding.tvNote.setText(subTitle);
     }
 
     private void goBack(){
@@ -984,11 +1011,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentZoneEditorBinding.inflate(inflater,container,false);
         binding.mvZonePreview.onCreate(savedInstanceState);
         return binding.getRoot();
     }
+
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
@@ -996,21 +1023,23 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         initFragment();
         initViewModel();
     }
+
     @Override public void onDestroyView() {
-        super.onDestroyView();
         binding.mvZonePreview.onDestroy();
+        super.onDestroyView();
         binding = null;
     }
+
     @Override public void onResume() {
         super.onResume();
+        binding.mvZonePreview.onResume();
         if(locationPointWasRunning){
             locationPointWasRunning = false;
             locationHelperPoint.start();
         }
-        binding.mvZonePreview.onResume();
     }
+
     @Override public void onPause() {
-        super.onPause();
         if(locationHelperPoint != null){
             if(locationHelperPoint.isRunning()){
                 locationPointWasRunning = true;
@@ -1018,20 +1047,14 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
         binding.mvZonePreview.onPause();
+        super.onPause();
     }
+
     @Override public void onLowMemory() {
-        super.onLowMemory();
         binding.mvZonePreview.onLowMemory();
+        super.onLowMemory();
     }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.zone_editor_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(onMenuClick(item))
-            return true;
-        return super.onOptionsItemSelected(item);
-    }
+
     @Override public boolean onBackPressed() {
         if(forceBack) {
             return true;

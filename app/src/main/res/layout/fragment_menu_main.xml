@@ -7,19 +7,50 @@
     android:orientation="vertical"
     android:overScrollMode="never"
     tools:context=".fragments.MenuMainFragment">
-    <!-- todo: contentDesc -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ibMenuButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_menu_settings"
+            android:background="@color/transparent"/>
+    </LinearLayout>
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnLands"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:strokeColor="@color/textColor"
-        app:strokeWidth="4dp">
+        app:cardElevation="@dimen/cardElevation"
+        app:strokeWidth="@dimen/cardStrokeWidth">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -44,14 +75,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/my_lands_label"
-                android:textSize="24sp"
+                android:text="@string/main_menu_land_button"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivLandsArrow"
                 app:layout_constraintStart_toEndOf="@+id/ivLands"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvLandsNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/textView5"
+                app:layout_constraintStart_toStartOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                tools:text="1 Χωράφι" />
 
             <ImageView
                 android:id="@+id/ivLandsArrow"
@@ -59,6 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_menu_arrow_right"
+                app:tint="?attr/colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -69,14 +113,13 @@
         android:id="@+id/btnZones"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:strokeColor="@color/textColor"
-        app:strokeWidth="4dp">
+        app:cardElevation="@dimen/cardElevation"
+        app:strokeWidth="@dimen/cardStrokeWidth">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -102,13 +145,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/my_zones_label"
-                android:textSize="24sp"
+                android:text="@string/main_menu_zone_button"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivZonesArrow"
                 app:layout_constraintStart_toEndOf="@+id/ivZones"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvZonesNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/textView4"
+                app:layout_constraintStart_toStartOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                tools:text="4 Περιοχές" />
 
             <ImageView
                 android:id="@+id/ivZonesArrow"
@@ -116,6 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_menu_arrow_right"
+                app:tint="?attr/colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -126,14 +183,13 @@
         android:id="@+id/btnCalendar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:strokeColor="@color/textColor"
-        app:strokeWidth="4dp">
+        app:cardElevation="@dimen/cardElevation"
+        app:strokeWidth="@dimen/cardStrokeWidth">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -159,20 +215,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:textSize="34sp"
+                    android:textAppearance="@style/TextAppearance.AppTheme.Headline"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Δευ 18 " />
+                    tools:text="Δευ 18" />
 
                 <TextView
                     android:id="@+id/tvCalendarTodayMonthYear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.AppTheme.Body"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/tvCalendarTodayDay"
                     app:layout_constraintStart_toStartOf="@+id/tvCalendarTodayDay"
@@ -185,11 +240,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/ivCalendar"
                     app:layout_constraintStart_toStartOf="@+id/ivCalendar"
                     app:layout_constraintTop_toBottomOf="@+id/ivCalendar"
-                    tools:text="18 Event's" />
+                    tools:text="999+ Συμβάντα" />
 
             </LinearLayout>
 
@@ -200,7 +257,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/main_menu_calendar_button"
-                android:textSize="24sp"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivCalendarArrow"
@@ -213,6 +270,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_menu_arrow_right"
+                app:tint="?attr/colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -223,12 +281,11 @@
         android:id="@+id/btnLiveMap"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
         android:layout_weight="1"
-        android:layout_margin="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:strokeColor="@color/textColor"
-        app:strokeWidth="4dp">
+        app:cardElevation="@dimen/cardElevation"
+        app:strokeWidth="@dimen/cardStrokeWidth">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -255,7 +312,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/main_menu_live_map_button"
-                android:textSize="24sp"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivLiveMapArrow"
@@ -268,6 +325,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_menu_arrow_right"
+                app:tint="?attr/colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

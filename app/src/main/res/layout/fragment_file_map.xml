@@ -6,35 +6,52 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MapFileFragment">
 
+    <ImageButton
+        android:id="@+id/ibClose"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_close"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ibClose"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Title" />
+
     <com.google.android.gms.maps.MapView
         android:id="@+id/mvFileMap"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         app:mapType="satellite" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clLoadingLayer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/backgroundColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tvLoadingLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/file_map_fragment_loading"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tvLoadingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/file_map_fragment_loading"
+        app:layout_constraintBottom_toBottomOf="@+id/mvFileMap"
+        app:layout_constraintEnd_toEndOf="@+id/mvFileMap"
+        app:layout_constraintStart_toStartOf="@+id/mvFileMap"
+        app:layout_constraintTop_toTopOf="@+id/mvFileMap" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

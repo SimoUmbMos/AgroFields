@@ -1,149 +1,76 @@
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <!-- Primary -->
-        <item name="colorPrimary">@color/backgroundColor</item>
-        <item name="colorOnPrimary">@color/textColor</item>
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
 
-        <!-- Secondary -->
-        <item name="colorSecondary">@color/backgroundColor</item>
-        <item name="colorOnSecondary">@color/textColor</item>
-
-        <!-- Error -->
-        <item name="colorError">@color/colorError</item>
-        <item name="colorOnError">@color/errorTextColor</item>
-
-        <!-- Menu -->
+        <!-- Common Colors -->
+        <item name="colorMapSurface">@color/common_MapSurface</item>
+        <item name="colorOnMapSurface">@color/common_colorOnMapSurface</item>
+        <item name="colorSliderRed">@color/common_red</item>
+        <item name="colorSliderGreen">@color/common_green</item>
+        <item name="colorSliderBlue">@color/common_blue</item>
+        <item name="colorPicker1">@color/common_colorPicker1</item>
+        <item name="colorPicker2">@color/common_colorPicker2</item>
+        <item name="colorPicker3">@color/common_colorPicker3</item>
+        <item name="colorPicker4">@color/common_colorPicker4</item>
+        <item name="colorPicker5">@color/common_colorPicker5</item>
+        <item name="colorPicker6">@color/common_colorPicker6</item>
+        <item name="colorPicker7">@color/common_colorPicker7</item>
+        <item name="colorPicker8">@color/common_colorPicker8</item>
+        <!-- Theme Colors -->
+        <item name="colorPrimary">@color/light_primary</item>
+        <item name="colorOnPrimary">@color/light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/light_secondary</item>
+        <item name="colorOnSecondary">@color/light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/light_tertiary</item>
+        <item name="colorOnTertiary">@color/light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/light_onTertiaryContainer</item>
+        <item name="colorError">@color/light_error</item>
+        <item name="colorErrorContainer">@color/light_errorContainer</item>
+        <item name="colorOnError">@color/light_onError</item>
+        <item name="colorOnErrorContainer">@color/light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="colorOnBackground">@color/light_onBackground</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorOnSurface">@color/light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/light_onSurfaceVariant</item>
+        <item name="colorSurfaceSecondary">@color/light_surfaceVariant</item>
+        <item name="colorOnSurfaceSecondary">@color/light_onSurfaceVariant</item>
+        <item name="colorSurfaceOutline">@color/light_outline</item>
+        <item name="colorOutline">@color/light_outline</item>
+        <!-- Calendar Colors -->
+        <item name="colorCalendarSurface">@color/light_surface</item>
+        <item name="colorOnCalendarSurface">@color/light_onSurface</item>
+        <item name="colorCalendarSurfaceToday">@color/light_secondaryContainer</item>
+        <item name="colorOnCalendarSurfaceToday">@color/light_onSecondaryContainer</item>
+        <item name="colorCalendarSurfaceDisable">@color/light_onSurfaceVariant</item>
+        <!-- Fab Colors -->
+        <item name="colorFabVariant">@color/light_secondaryContainer</item>
+        <item name="colorOnFabVariant">@color/light_onSecondaryContainer</item>
+        <item name="colorFabVariantAccent">@color/light_tertiaryContainer</item>
+        <item name="colorOnFabVariantAccent">@color/light_onTertiaryContainer</item>
+        <item name="colorFabVariantError">@color/light_errorContainer</item>
+        <item name="colorOnFabVariantError">@color/light_onErrorContainer</item>
+        <!-- Events Colors -->
+        <item name="colorEventSchedule">@color/light_colorEventSchedule</item>
+        <item name="colorEventPlant">@color/light_colorEventPlant</item>
+        <item name="colorEventCultivate">@color/light_colorEventCultivate</item>
+        <item name="colorEventFertilize">@color/light_colorEventFertilize</item>
+        <item name="colorEventSpray">@color/light_colorEventSpray</item>
+        <item name="colorEventHarvest">@color/light_colorEventHarvest</item>
+        <!-- Typography -->
+        <item name="textAppearanceHeadline6">@style/TextAppearance.AppTheme.Headline</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.AppTheme.Body</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.AppTheme.Caption</item>
+        <item name="textAppearanceButton">@style/TextAppearance.AppTheme.Button</item>
+        <!-- Theme Options -->
+        <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="colorPrimaryDark">@color/backgroundColor</item>
-        <item name="actionModeBackground">@color/backgroundColor</item>
-        <item name="android:textColorPrimary">@color/textColor</item>
-        <item name="android:textColorSecondary">@color/textColor</item>
-        <item name="colorControlNormal">@color/textColor</item>
-
-        <!-- Background -->
-        <item name="colorSurface">@color/backgroundColor</item>
-        <item name="android:colorBackground">@color/backgroundColor</item>
-        <item name="colorOnSurface">@color/textColor</item>
-        <item name="colorOnBackground">@color/textColor</item>
-        <item name="android:textColor">@color/textColor</item>
-
-        <!-- Accent -->
-        <item name="colorAccent">@color/accentColor</item>
-
-        <item name="fontFamily">@font/main_font</item>
-        <item name="android:fontFamily">@font/main_font</item>
-        <item name="windowActionModeOverlay">true</item>
-
-        <item name="materialCalendarTheme">@style/AppTheme.DatePicker</item>
-        <item name="materialTimePickerTheme">@style/AppTheme.TimePicker</item>
-    </style>
-
-    <!-- menu styles -->
-    <style name="AppTheme.NoActionBar" parent="AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionModeOverlay">true</item>
-    </style>
-    <style name="DrawerNavigationStyle" parent="AppTheme">
-        <item name="colorSurface">@color/backgroundColor</item>
-        <item name="android:colorBackground">@color/backgroundColor</item>
-    </style>
-
-    <!-- fields styles -->
-    <style name="TextInputFields" parent="AppTheme">
-        <item name="colorPrimary">@color/textColor</item>
-    </style>
-    <style name="BorderlessButtonStyle" parent="AppTheme">
-        <item name="colorPrimary">@color/textColor</item>
-    </style>
-
-    <!-- sliders styles -->
-    <style name="CustomSlider" parent="Widget.MaterialComponents.Slider">
-        <item name="materialThemeOverlay">@style/SliderStyle</item>
-    </style>
-    <style name="CustomRedSlider" parent="Widget.MaterialComponents.Slider">
-        <item name="materialThemeOverlay">@style/SliderRedStyle</item>
-    </style>
-    <style name="CustomGreenSlider" parent="Widget.MaterialComponents.Slider">
-        <item name="materialThemeOverlay">@style/SliderGreenStyle</item>
-    </style>
-    <style name="CustomBlueSlider" parent="Widget.MaterialComponents.Slider">
-        <item name="materialThemeOverlay">@style/SliderBlueStyle</item>
-    </style>
-    <style name="SliderStyle" parent="">
-        <item name="colorPrimary">@color/accentColor</item>
-        <item name="colorOnPrimary">@android:color/transparent</item>
-    </style>
-    <style name="SliderRedStyle" parent="">
-        <item name="colorPrimary">@color/red</item>
-        <item name="colorOnPrimary">@android:color/transparent</item>
-    </style>
-    <style name="SliderGreenStyle" parent="">
-        <item name="colorPrimary">@color/green</item>
-        <item name="colorOnPrimary">@android:color/transparent</item>
-    </style>
-    <style name="SliderBlueStyle" parent="">
-        <item name="colorPrimary">@color/blue</item>
-        <item name="colorOnPrimary">@android:color/transparent</item>
-    </style>
-
-    <!-- dialog -->
-    <style name="AppTheme.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
-        <item name="colorPrimary">@color/textColor</item>
-        <item name="android:textColorPrimary">@color/textColor</item>
-        <item name="colorOnPrimary">@color/backgroundColor</item>
-
-        <item name="colorSurface">@color/backgroundColor</item>
-        <item name="colorOnSurface">@color/textColor</item>
-    </style>
-    <style name="AppTheme.TimePicker" parent="@style/ThemeOverlay.MaterialComponents.TimePicker">
-        <item name="colorPrimary">@color/textColor</item>
-        <item name="android:textColorPrimary">@color/textColor</item>
-        <item name="colorOnPrimary">@color/backgroundColor</item>
-
-        <item name="colorSurface">@color/backgroundColor</item>
-        <item name="colorOnSurface">@color/textColor</item>
-    </style>
-    <style name="MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <!-- text -->
-        <item name="materialAlertDialogTitleTextStyle">@style/NormalAlertDialogTitleTextStyle</item>
-        <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
-        <item name="android:checkedTextViewStyle">@style/AlertDialogCheckedTextView</item>
-        <!-- buttons -->
-        <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
-        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
-        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButtonStyle</item>
-        <!-- background -->
-        <item name="android:background">@color/backgroundColor</item>
-    </style>
-    <style name="NormalAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textColor">@color/accentColor</item>
-    </style>
-    <style name="AlertDialogTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Body.Text">
-        <item name="android:textColor">@color/textColor</item>
-    </style>
-    <style name="AlertDialogCheckedTextView" parent="@style/Widget.MaterialComponents.CheckedTextView">
-        <item name="android:textColor">@color/textColor</item>
-    </style>
-    <style name="AlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/textColor</item>
-    </style>
-    <style name="ErrorMaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <!-- text -->
-        <item name="materialAlertDialogTitleTextStyle">@style/ErrorAlertDialogTitleTextStyle</item>
-        <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
-        <item name="android:checkedTextViewStyle">@style/AlertDialogCheckedTextView</item>
-        <!-- buttons -->
-        <item name="buttonBarPositiveButtonStyle">@style/ErrorAlertDialogButtonStyle</item>
-        <item name="buttonBarNegativeButtonStyle">@style/ErrorAlertDialogButtonStyle</item>
-        <item name="buttonBarNeutralButtonStyle">@style/ErrorAlertDialogButtonStyle</item>
-        <!-- background -->
-        <item name="android:background">@color/backgroundColor</item>
-    </style>
-    <style name="ErrorAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textColor">@color/colorError</item>
-    </style>
-    <style name="ErrorAlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/colorError</item>
+        <item name="strokeWidth">@dimen/cardStrokeWidth</item>
+        <item name="cardElevation">@dimen/cardElevation</item>
     </style>
 </resources>

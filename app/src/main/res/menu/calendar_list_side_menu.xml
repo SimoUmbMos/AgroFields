@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_item_filter_all"
+        android:orderInCategory="1"
+        android:title="@string/all_filter_side_label" />
+    <item android:id="@+id/menu_item_filter_schedule"
+        android:orderInCategory="2"
+        android:title="@string/schedule_filter_side_label" />
+    <item android:id="@+id/menu_item_filter_plant"
+        android:orderInCategory="3"
+        android:title="@string/plant_filter_side_label" />
+    <item android:id="@+id/menu_item_filter_cultivate"
+        android:orderInCategory="4"
+        android:title="@string/cultivate_filter_side_label" />
+    <item android:id="@+id/menu_item_filter_fertilize"
+        android:orderInCategory="5"
+        android:title="@string/fertilize_filter_side_label" />
+    <item android:id="@+id/menu_item_filter_spray"
+        android:orderInCategory="6"
+        android:title="@string/spray_filter_side_label" />
+    <item android:id="@+id/menu_item_filter_harvest"
+        android:orderInCategory="7"
+        android:title="@string/harvest_filter_side_label" />
+</menu>

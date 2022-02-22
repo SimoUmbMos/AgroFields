@@ -7,16 +7,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,7 +20,6 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandHistoryDeletedBinding;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
@@ -36,7 +31,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LandHistoryDeletedFragment extends Fragment implements FragmentBackPress {
+public class LandHistoryDeletedFragment extends Fragment {
     public static final String TAG = "LandHistoryDeletedFragment";
     private LandHistoryAdapter adapter;
     private FragmentLandHistoryDeletedBinding binding;
@@ -51,19 +46,16 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
         openIndex = -1;
         data = new ArrayList<>();
     }
+
     private void initActivity() {
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle(getString(R.string.land_history));
-                ActionBar actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
+                mainActivity.setOnBackPressed(()->true);
             }
         }
     }
+
     private void initFragment() {
         String[] values = new String[]{
                 getString(R.string.land_action_created),
@@ -78,6 +70,7 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
                 this::onLandHistoryClick,
                 this::onRecordClick
         );
+        binding.ibCollapse.setOnClickListener( v -> closeAllTabs() );
         binding.tvDeletedHistoryActionLabel.setText(getString(R.string.loading_list));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
@@ -88,12 +81,14 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
         binding.rvDeletedHistoryList.setHasFixedSize(true);
         binding.rvDeletedHistoryList.setAdapter(adapter);
     }
+
     private void initViewModels() {
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.getLandsHistory().observe(getViewLifecycleOwner(),this::onHistoryChange);
         }
     }
+
     //data
     private void populateData(List<LandDataRecord> r) {
         data.clear();
@@ -106,6 +101,8 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
             }
         }
     }
+
+    //observers
     private void onHistoryChange(List<LandDataRecord> r) {
         AsyncTask.execute(()->{
             if(getActivity() != null) {
@@ -118,6 +115,7 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
             notInit = false;
         }
     }
+
     private void onLandHistoryClick(LandHistory landHistory){
         int tempIndex = data.indexOf(landHistory);
         if(openIndex != -1){
@@ -134,6 +132,7 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
         openIndex = tempIndex;
         updateUI();
     }
+
     public void onRecordClick(LandDataRecord record){
         Land land = new Land(LandUtil.getLandDataFromLandRecord(record));
         if(land.getData() != null){
@@ -145,17 +144,20 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
     @SuppressLint("NotifyDataSetChanged")
     private void updateUI() {
         if(data.size()>0){
-            binding.rvDeletedHistoryList.setVisibility(View.VISIBLE);
             binding.tvDeletedHistoryActionLabel.setVisibility(View.GONE);
         }else{
-            binding.rvDeletedHistoryList.setVisibility(View.GONE);
             binding.tvDeletedHistoryActionLabel.setVisibility(View.VISIBLE);
         }
         adapter.notifyDataSetChanged();
-        if(getActivity() != null){
-            getActivity().invalidateOptionsMenu();
+
+        binding.ibCollapse.setEnabled(openIndex!=-1);
+        if(openIndex!=-1){
+            binding.ibCollapse.setVisibility(View.VISIBLE);
+        }else{
+            binding.ibCollapse.setVisibility(View.GONE);
         }
     }
+
     private void closeAllTabs() {
         if(openIndex != -1){
             data.get(openIndex).setVisible(false);
@@ -177,42 +179,25 @@ public class LandHistoryDeletedFragment extends Fragment implements FragmentBack
             });
     }
 
-    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentLandHistoryDeletedBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
         initActivity();
         initFragment();
         initViewModels();
     }
-    @Override public void onDestroyView() {
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.land_history_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        MenuItem item = menu.findItem(R.id.menu_item_toggle_land_history_lists);
-        if(item != null){
-            item.setVisible(openIndex!=-1);
-        }
-        super.onPrepareOptionsMenu(menu);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_item_toggle_land_history_lists){
-            closeAllTabs();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    @Override public boolean onBackPressed() {
-        return true;
     }
 }

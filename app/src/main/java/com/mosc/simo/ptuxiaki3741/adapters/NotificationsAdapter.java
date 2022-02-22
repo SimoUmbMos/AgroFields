@@ -17,13 +17,13 @@ import java.util.List;
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.ViewHolder> {
     private final List<CalendarNotification> notifications;
     private final String[] typesString;
-    private final int[] typesColor;
+    private final Integer[] typesColor;
     private final ActionResult<CalendarNotification> onClick;
 
     public NotificationsAdapter(
             List<CalendarNotification> notifications,
             String[] typesString,
-            int[] typesColor,
+            Integer[] typesColor,
             ActionResult<CalendarNotification> onClick
     ) {
         this.notifications = notifications;
@@ -44,7 +44,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(position < getItemCount()){
             CalendarNotification notification = notifications.get(position);
-            int color = typesColor[notification.getType().ordinal()];
+            Integer color = typesColor[notification.getType().ordinal()];
             String type = typesString[notification.getType().ordinal()];
             holder.calendarEventView.setEvent(type, color, notification.toString());
             holder.calendarEventView.setOnClick(v->onClick.onActionResult(notification));

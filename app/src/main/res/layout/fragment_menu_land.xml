@@ -1,32 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layoutDescription="@xml/fragment_menu_land_scene"
     tools:context=".fragments.land.MenuLandsFragment">
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <TextView android:id="@+id/tvLandListActionLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/loading_list"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvLandList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/view_holder_land"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:overScrollMode="never"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glBegin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="8dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="8dp" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="@string/my_lands_label"
+        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+        app:layout_constraintEnd_toStartOf="@id/ibSelectAll"
+        app:layout_constraintStart_toEndOf="@+id/ibClose"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/ibClose"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_close"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/glBegin"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/ibHistory"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_history"
+        app:layout_constraintEnd_toStartOf="@id/glEnd"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/ibSelectAll"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_select_all"
+        app:layout_constraintEnd_toStartOf="@id/ibHistory"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLandList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        tools:listitem="@layout/view_holder_land" />
+
+    <TextView
+        android:id="@+id/tvLandListActionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_list"
+        app:layout_constraintBottom_toBottomOf="@id/rvLandList"
+        app:layout_constraintEnd_toEndOf="@id/rvLandList"
+        app:layout_constraintStart_toStartOf="@id/rvLandList"
+        app:layout_constraintTop_toTopOf="@id/rvLandList" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:clickable="true"
+        android:src="@drawable/ic_menu_add"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/fabToggleMenu"
+        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+        app:theme="@style/FabVariant" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:clickable="true"
+        android:src="@drawable/ic_drawer_menu_delete"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/fabAdd"
+        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+        app:theme="@style/FabVariantError" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabExport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:clickable="true"
+        android:src="@drawable/ic_menu_export"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/fabDelete"
+        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+        app:theme="@style/FabVariantAccent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabToggleMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_menu_menu"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAddLabel"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@drawable/bg_round"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:text="@string/add"
+        android:textColor="?attr/colorOnSurfaceSecondary"
+        app:layout_constraintBottom_toBottomOf="@id/fabAdd"
+        app:layout_constraintEnd_toStartOf="@id/fabAdd"
+        app:layout_constraintTop_toTopOf="@id/fabAdd" />
+
+    <TextView
+        android:id="@+id/tvDeleteLabel"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@drawable/bg_round"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:text="@string/delete"
+        android:textColor="?attr/colorOnSurfaceSecondary"
+        app:layout_constraintBottom_toBottomOf="@id/fabDelete"
+        app:layout_constraintEnd_toStartOf="@id/fabDelete"
+        app:layout_constraintTop_toTopOf="@id/fabDelete" />
+
+    <TextView
+        android:id="@+id/tvExportLabel"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@drawable/bg_round"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:text="@string/export"
+        android:textColor="?attr/colorOnSurfaceSecondary"
+        app:layout_constraintBottom_toBottomOf="@id/fabExport"
+        app:layout_constraintEnd_toStartOf="@id/fabExport"
+        app:layout_constraintTop_toTopOf="@id/fabExport" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

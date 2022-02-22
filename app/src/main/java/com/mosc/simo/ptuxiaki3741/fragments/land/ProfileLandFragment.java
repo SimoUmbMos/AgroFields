@@ -6,14 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -24,14 +20,12 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandInfoBinding;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
-public class ProfileLandFragment extends Fragment implements FragmentBackPress {
+public class ProfileLandFragment extends Fragment {
     public static final String TAG = "LandInfoFragment";
-    //fixme: add tags
     private Land land;
     private ColorData color;
     private FragmentLandInfoBinding binding;
@@ -39,29 +33,20 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
     @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
                                                  @Nullable ViewGroup container,
                                                  @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentLandInfoBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
+
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
         initActivity();
         initFragment();
     }
+
     @Override public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-    @Override public boolean onBackPressed() {
-        return true;
     }
 
     private void initData() {
@@ -75,19 +60,16 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
         if(land != null)
             color = land.getData().getColor();
     }
+
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
-                activity.setOnBackPressed(this);
-                activity.setToolbarTitle("");
-                ActionBar actionBar = activity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.hide();
-                }
+                activity.setOnBackPressed(()->true);
             }
         }
     }
+
     private void initFragment() {
         String landLabel;
         if(land == null){
@@ -136,6 +118,7 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
             binding.etLandInfoNameLayout.setError(getString(R.string.title_empty_error));
         }
     }
+
     private void submit(String landName, String address) {
         if(land == null){
             LandData landData = new LandData(landName,color);
@@ -155,6 +138,7 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
         closeKeyboard();
         finish();
     }
+
     private void finish() {
         if(getActivity() != null)
             getActivity().onBackPressed();
@@ -171,6 +155,7 @@ public class ProfileLandFragment extends Fragment implements FragmentBackPress {
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });
     }
+
     public void toLandMap(@Nullable Activity activity, Land land, String address) {
         if(activity != null)
             activity.runOnUiThread(()-> {

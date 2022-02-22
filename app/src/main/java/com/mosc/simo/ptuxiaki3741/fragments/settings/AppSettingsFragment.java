@@ -14,7 +14,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,9 +21,6 @@ import androidx.navigation.NavController;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -70,6 +66,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             new ActivityResultContracts.RequestPermission(),
             this::onImportDBAction
     );
+
     private final ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             this::onFileResult
@@ -77,10 +74,10 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentAppSettingsBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
+
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
@@ -88,26 +85,12 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         initViewModel();
         initFragment();
     }
+
     @Override public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.app_settings_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case (R.id.menu_item_factory_reset):
-                factoryReset();
-                return true;
-            case (R.id.menu_item_degree_info):
-                toDegreeInfo(getActivity());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+
     @Override public boolean onBackPressed() {
         if(dataIsSaving){
             Toast.makeText(
@@ -128,26 +111,15 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         return true;
     }
 
-    private void initViewModel(){
-        if(getActivity() != null){
-            viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-        }else{
-            viewModel = null;
-        }
-    }
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle(getString(R.string.app_settings_title));
-                ActionBar actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
             }
         }
     }
+
     private void initData(){
         if(getActivity() != null){
             sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -159,7 +131,21 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         lands = new ArrayList<>();
         zones = new ArrayList<>();
     }
+
+    private void initViewModel(){
+        if(getActivity() != null){
+            viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+        }else{
+            viewModel = null;
+        }
+    }
+
     private void initFragment(){
+        binding.ibInfo.setOnClickListener(v->toDegreeInfo(getActivity()));
+        binding.ibReset.setOnClickListener(v->factoryReset());
+        binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
+        binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.theme_styles, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -181,8 +167,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             }
             @Override public void onNothingSelected(AdapterView<?> adapterView) {}
         });
-        binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
-        binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
     }
 
     private void onThemeSpinnerItemSelect(int pos){
@@ -234,6 +218,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             dialog.show();
         }
     }
+
     private void onExportDBActionXLSX() {
         if(backThread == null){
             backThread = new Thread(()->{
@@ -270,6 +255,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             ).show();
         }
     }
+
     private void onExportDBActionXLS() {
         if(backThread == null){
             backThread = new Thread(()->{
@@ -306,6 +292,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             ).show();
         }
     }
+
     private void onExportDBResult(boolean result) {
         if(getActivity() != null){
             getActivity().runOnUiThread(()->{
@@ -336,6 +323,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         if(activity != null)
             activity.checkThemeSettings();
     }
+
     public void toDegreeInfo(@Nullable Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()-> {
@@ -348,6 +336,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void onImportDBPressed(){
         permissionReadChecker.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
+
     private void onImportDBAction(boolean permission){
         if(permission){
             String title = getString(R.string.file_backup_picker_label);
@@ -355,6 +344,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             fileLauncher.launch(intent);
         }
     }
+
     private void onFileResult(ActivityResult result) {
         Intent intent = result.getData();
         int resultCode = result.getResultCode();

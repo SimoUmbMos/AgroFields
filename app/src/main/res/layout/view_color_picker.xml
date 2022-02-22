@@ -9,14 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:background="#808080"
+        android:background="?attr/colorPicker1"
         app:layout_constraintDimensionRatio="w,1:6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <LinearLayout
         android:id="@+id/llColorGrid"
@@ -38,7 +35,9 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_1" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker1" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvColor2"
@@ -46,7 +45,9 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_2" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker2" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvColor3"
@@ -54,7 +55,9 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_3" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker3" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvColor4"
@@ -62,7 +65,9 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_4" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker4" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvColor5"
@@ -70,7 +75,9 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_5" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker5" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvColor6"
@@ -78,7 +85,9 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_6" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker6" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvColor7"
@@ -86,7 +95,9 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_7" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker7" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvColor8"
@@ -94,119 +105,52 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/color_picker_8" />
+            app:strokeWidth="@dimen/cardStrokeWidth"
+            app:cardElevation="@dimen/cardElevation"
+            app:cardBackgroundColor="?attr/colorPicker8" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llRedSlider"
-        android:layout_width="match_parent"
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slRedSlider"
+        style="@style/CustomRedSlider"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="horizontal"
-        android:weightSum="5"
-        app:layout_constraintEnd_toEndOf="@id/llColorGrid"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llColorGrid">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/color_dialog_red_label" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/slRedSlider"
-            style="@style/CustomRedSlider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="4"
-            android:stepSize="1.0"
-            android:value="128.0"
-            android:valueFrom="0.0"
-            android:valueTo="255.0"
-            app:labelBehavior="floating" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llGreenSlider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="horizontal"
-        android:weightSum="5"
-        app:layout_constraintEnd_toEndOf="@id/llRedSlider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llRedSlider">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/color_dialog_green_label" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/slGreenSlider"
-            style="@style/CustomGreenSlider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="4"
-            android:stepSize="1.0"
-            android:value="128.0"
-            android:valueFrom="0.0"
-            android:valueTo="255.0"
-            app:labelBehavior="floating" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llBlueSlider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:stepSize="1.0"
+        android:value="128.0"
+        android:valueFrom="0.0"
+        android:valueTo="255.0"
         android:layout_margin="8dp"
-        android:orientation="horizontal"
-        android:weightSum="5"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llColorGrid"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llGreenSlider">
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/color_dialog_blue_label" />
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slGreenSlider"
+        style="@style/CustomGreenSlider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:stepSize="1.0"
+        android:value="128.0"
+        android:valueFrom="0.0"
+        android:valueTo="255.0"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/slRedSlider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/slBlueSlider"
-            style="@style/CustomBlueSlider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="4"
-            android:stepSize="1.0"
-            android:value="128.0"
-            android:valueFrom="0.0"
-            android:valueTo="255.0"
-            app:labelBehavior="floating" />
-
-    </LinearLayout>
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slBlueSlider"
+        style="@style/CustomBlueSlider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:stepSize="1.0"
+        android:value="128.0"
+        android:valueFrom="0.0"
+        android:valueTo="255.0"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/slGreenSlider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

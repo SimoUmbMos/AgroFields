@@ -8,7 +8,8 @@
     android:layout_marginBottom="@dimen/list_history_item_margin"
     android:layout_marginStart="@dimen/list_history_item_side_margin"
     android:layout_marginEnd="@dimen/list_history_item_side_margin"
-    app:cardBackgroundColor="@color/cardBackgroundColor">
+    app:strokeWidth="@dimen/cardStrokeWidth"
+    app:cardElevation="@dimen/cardElevation">
 
     <com.mosc.simo.ptuxiaki3741.views.HistoryItemView
         android:id="@+id/hiData"

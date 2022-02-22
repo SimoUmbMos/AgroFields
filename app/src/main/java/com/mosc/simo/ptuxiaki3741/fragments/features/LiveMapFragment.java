@@ -11,14 +11,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -36,7 +34,6 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.helpers.SensorOrientationHelper;
 import com.mosc.simo.ptuxiaki3741.enums.LocationStates;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
@@ -49,7 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LiveMapFragment extends Fragment implements FragmentBackPress {
+public class LiveMapFragment extends Fragment{
     public static final String TAG = "ContactsContainerFragment";
     public static final int NotificationID = 3741;
 
@@ -106,11 +103,11 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentLiveMapBinding.inflate(inflater, container, false);
         binding.mvLiveMap.onCreate(savedInstanceState);
         return binding.getRoot();
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -119,14 +116,17 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         initViewHolder();
         initFragment();
     }
+
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         binding.mvLiveMap.onDestroy();
+        super.onDestroyView();
         binding = null;
     }
+
     @Override
     public void onResume() {
+        super.onResume();
         handler.postDelayed( runnable = () -> {
             onLoop();
             handler.postDelayed(runnable, AppValues.LoopDelay);
@@ -134,8 +134,8 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         if(locationHelper != null) locationHelper.start();
         if(orientationHelper != null) orientationHelper.onResume();
         binding.mvLiveMap.onResume();
-        super.onResume();
     }
+
     @Override
     public void onPause() {
         handler.removeCallbacks(runnable);
@@ -144,19 +144,11 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         binding.mvLiveMap.onPause();
         super.onPause();
     }
+
     @Override
     public void onLowMemory() {
-        super.onLowMemory();
         binding.mvLiveMap.onLowMemory();
-    }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override
-    public boolean onBackPressed() {
-        return true;
+        super.onLowMemory();
     }
 
     private void initData() {
@@ -166,22 +158,19 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         currBearing = 0;
         waitUserStop = false;
     }
+
     private void initActivity() {
         if (getActivity() != null) {
             if (getActivity().getClass() == MainActivity.class) {
                 MainActivity activity = (MainActivity) getActivity();
-                activity.setOnBackPressed(this);
-                activity.setToolbarTitle(getString(R.string.default_live_map_title));
+                activity.setOnBackPressed(()->true);
                 notificationManager = activity.getNotificationManager();
-                ActionBar actionBar = activity.getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.show();
-                }
             }
             locationHelper = new LocationHelper(getActivity(),this::onUpdateLocation);
             orientationHelper = new SensorOrientationHelper(getActivity(),this::onUpdateBearing);
         }
     }
+
     private void initViewHolder() {
         if (getActivity() != null) {
             AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
@@ -189,9 +178,15 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
             appVM.getLandZones().observe(getViewLifecycleOwner(), this::onZonesUpdate);
         }
     }
+
     private void initFragment() {
+        binding.tvTitle.setText(getString(R.string.default_live_map_title));
+        binding.tvSubTitle.setMovementMethod(new ScrollingMovementMethod());
+        binding.tvSubTitle.setText("");
+
         binding.mvLiveMap.getMapAsync(this::initMap);
     }
+
     private void initMap(GoogleMap googleMap) {
         binding.mvLiveMap.setVisibility(View.INVISIBLE);
 
@@ -247,12 +242,14 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         }
         onMapUpdate();
     }
+
     private void onZonesUpdate(Map<Long, List<LandZone>> zones) {
         this.zones.clear();
         if (zones != null)
             this.zones.putAll(zones);
         onMapUpdate();
     }
+
     private void onMapUpdate() {
         if (mMap == null) return;
 
@@ -347,6 +344,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
             });
         }
     }
+
     private void onUpdateBearing(float bearing) {
         if(currPosition == null) return;
 
@@ -365,6 +363,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
                 .build()
         ));
     }
+
     private void moveCameraToCurrPosition() {
         if(getActivity() == null) return;
         if(mMap == null) return;
@@ -454,6 +453,7 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
             displayNotification(null);
         }
     }
+
     private void displayNotification(Object object) {
         final String title;
         final String msg;
@@ -477,20 +477,15 @@ public class LiveMapFragment extends Fragment implements FragmentBackPress {
         }
 
         if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity activity = (MainActivity) getActivity();
-                getActivity().runOnUiThread(()-> {
-                    if(title.isEmpty()){
-                        activity.setToolbarTitle(getString(R.string.default_live_map_title));
-                    }else{
-                        if(msg.isEmpty()){
-                            activity.setToolbarTitle(title);
-                        }else{
-                            activity.setToolbarTitle(title, msg);
-                        }
-                    }
-                });
-            }
+            getActivity().runOnUiThread(()-> {
+                if(title.isEmpty()){
+                    binding.tvTitle.setText(getString(R.string.default_live_map_title));
+                    binding.tvSubTitle.setText("");
+                }else{
+                    binding.tvTitle.setText(title);
+                    binding.tvSubTitle.setText(msg);
+                }
+            });
         }
 
         if(notificationManager != null && getContext() != null){

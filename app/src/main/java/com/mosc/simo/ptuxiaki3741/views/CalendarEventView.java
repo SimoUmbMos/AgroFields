@@ -20,10 +20,12 @@ public class CalendarEventView extends ConstraintLayout {
         super(view.getContext());
         binding = ViewCalendarListEventBinding.bind(view);
     }
-    public void setEvent(String type, int color, String title){
+    public void setEvent(String type, Integer color, String title){
         binding.tvEventType.setText(type);
         binding.tvEventTitle.setText(title);
-        binding.mcvRoot.setCardBackgroundColor(color);
+        if(color != null){
+            binding.mcvRoot.setCardBackgroundColor(color);
+        }
     }
     public void setOnClick(OnClickListener l){
         binding.mcvRoot.setOnClickListener(l);

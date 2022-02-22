@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,7 +25,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -320,21 +318,18 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle("");
-                ActionBar actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
             }
             locationHelperCamera = new LocationHelper(getActivity(),this::moveCameraOnLocation);
             locationHelperPoint = new LocationHelper(getActivity(), this::onLocationUpdate);
         }
     }
-    private void initDataToView() {
+    private void initViews() {
         clearFlags();
         clearUndo();
-    }
-    private void initViews() {
+
+        binding.ibSave.setOnClickListener(v -> saveLand() );
+        binding.ibToggleMenu.setOnClickListener(v -> toggleDrawer(true) );
+
         binding.tvLoadingLabel.setVisibility(View.GONE);
         binding.clLandControls.setVisibility(View.GONE);
         binding.ivLandOverlay.setVisibility(View.GONE);
@@ -350,8 +345,8 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
 
         binding.navLandMenu.setNavigationItemSelectedListener(this::menuItemClick);
         binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        binding.fabLandActionSave.setOnClickListener(v->saveAction());
-        binding.fabLandActionReset.setOnClickListener(v->undo());
+        binding.ibActionSave.setOnClickListener(v->saveAction());
+        binding.ibActionReset.setOnClickListener(v->undo());
         binding.slAlphaSlider.addOnChangeListener((range,value,user) -> onSliderUpdate(value));
 
         binding.mvLand.getMapAsync(this::initMap);
@@ -395,12 +390,6 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     //menu relative
     private boolean menuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
-            case (R.id.menu_item_toggle_drawer):
-                toggleDrawer(true);
-                return true;
-            case (R.id.menu_item_save_land):
-                saveLand();
-                return true;
             case (R.id.toolbar_action_toggle_map_lock):
                 toggleMapLock();
                 return true;
@@ -1058,22 +1047,12 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     //ui relative
     @SuppressLint("ClickableViewAccessibility")
     private void clearTitle() {
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setToolbarTitle(displayTitle);
-            }
-        }
+        binding.tvTitle.setText(displayTitle);
         binding.clLandControls.setVisibility(View.GONE);
-        binding.fabLandActionSave.setVisibility(View.GONE);
-        binding.fabLandActionReset.setVisibility(View.GONE);
+        binding.ibActionSave.setVisibility(View.GONE);
+        binding.ibActionReset.setVisibility(View.GONE);
         binding.slAlphaSlider.setVisibility(View.GONE);
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity activity = (MainActivity) getActivity();
-                activity.setToolbarElevation(4);
-            }
-        }
+
         if(isImgViewEnable()){
             binding.ivLandOverlay.setOnTouchListener(this);
             Log.d(TAG, "ivLandOverlay: setOnTouchListener this");
@@ -1083,22 +1062,12 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
     }
     @SuppressLint("ClickableViewAccessibility")
     private void setTitle(String s) {
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setToolbarTitle(s);
-            }
-        }
-        binding.clLandControls.setVisibility(View.VISIBLE);
-        binding.fabLandActionSave.setVisibility(View.VISIBLE);
-        binding.fabLandActionReset.setVisibility(View.VISIBLE);
+        binding.tvTitle.setText(s);
 
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity activity = (MainActivity) getActivity();
-                activity.setToolbarElevation(0);
-            }
-        }
+        binding.clLandControls.setVisibility(View.VISIBLE);
+        binding.ibActionSave.setVisibility(View.VISIBLE);
+        binding.ibActionReset.setVisibility(View.VISIBLE);
+
         if(isImgViewEnable() && isImgAction(mapStatus)){
             if(mapStatus != LandActionStates.Alpha){
                 beforeMoveWasLocked = !mapIsLocked;
@@ -1114,20 +1083,15 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
     }
     private void changeTitleBasedOnState() {
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                if(mapStatus == LandActionStates.AddBetween){
-                    if(index1 < 0){
-                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_select_point_1));
-                    }else if(index2 < 0){
-                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_select_point_2));
-                    }else if(index3 < 0){
-                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_place_new_point));
-                    }else{
-                        mainActivity.setToolbarTitle(getString(R.string.add_between_points_edit_new_point));
-                    }
-                }
+        if(mapStatus == LandActionStates.AddBetween){
+            if(index1 < 0){
+                binding.tvTitle.setText(getString(R.string.add_between_points_select_point_1));
+            }else if(index2 < 0){
+                binding.tvTitle.setText(getString(R.string.add_between_points_select_point_2));
+            }else if(index3 < 0){
+                binding.tvTitle.setText(getString(R.string.add_between_points_place_new_point));
+            }else{
+                binding.tvTitle.setText(getString(R.string.add_between_points_edit_new_point));
             }
         }
     }
@@ -1296,44 +1260,54 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         importFile(LandFileState.Img);
     }
 
-    @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater,
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
                                                  @Nullable ViewGroup container,
                                                  @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentLandMapBinding.inflate(inflater,container,false);
         binding.mvLand.onCreate(savedInstanceState);
         return binding.getRoot();
     }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
         LandData data = handleImport();
         if(data != null){
             saveLand(data);
+        }else if(initData()){
+            initViews();
         }else{
-            if(initData()){
-                initDataToView();
-                initViews();
-            }else{
-                toMenu(getActivity());
-            }
+            toMenu(getActivity());
         }
     }
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        binding.mvLand.onDestroy();
-        binding = null;
-    }
-    @Override public void onResume() {
+
+    @Override
+    public void onResume() {
         super.onResume();
+        binding.mvLand.onResume();
         if(locationPointWasRunning){
             locationPointWasRunning = false;
             locationHelperPoint.start();
         }
-        binding.mvLand.onResume();
     }
-    @Override public void onPause() {
-        super.onPause();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        binding.mvLand.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        binding.mvLand.onStop();
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
         if(locationHelperPoint != null){
             if(locationHelperPoint.isRunning()){
                 locationPointWasRunning = true;
@@ -1341,22 +1315,24 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
             }
         }
         binding.mvLand.onPause();
+        super.onPause();
     }
-    @Override public void onLowMemory() {
-        super.onLowMemory();
+
+    @Override
+    public void onDestroyView() {
+        binding.mvLand.onDestroy();
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
+    public void onLowMemory() {
         binding.mvLand.onLowMemory();
+        super.onLowMemory();
     }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.land_map_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(menuItemClick(item)){
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    @Override public boolean onBackPressed() {
+
+    @Override
+    public boolean onBackPressed() {
         if(binding.getRoot().isDrawerOpen(GravityCompat.END)){
             binding.getRoot().closeDrawer(GravityCompat.END);
             return false;
@@ -1367,7 +1343,9 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
         return true;
     }
-    @Override public boolean onTouch(View view, MotionEvent motionEvent) {
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             view.performClick();
         }

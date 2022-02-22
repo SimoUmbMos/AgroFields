@@ -4,16 +4,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,7 +20,6 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarNewEventBinding;
 import com.mosc.simo.ptuxiaki3741.enums.CalendarEventType;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
@@ -41,9 +36,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class CalendarEventFragment extends Fragment implements FragmentBackPress {
-    private static final String TAG = "CalendarNewEventFragment";
+public class CalendarEventFragment extends Fragment{
     private FragmentCalendarNewEventBinding binding;
+
+    private static final String TAG = "CalendarNewEventFragment";
     private AppViewModel viewModel;
 
     private List<Land> lands;
@@ -61,10 +57,10 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentCalendarNewEventBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -73,38 +69,11 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         initFragment();
         initViewModel();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding=null;
-    }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.notification_entry_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.menu_item_delete_notification);
-        if(item != null){
-            item.setVisible(calendarNotification.getId() != 0);
-            item.setEnabled(calendarNotification.getId() != 0);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.menu_item_delete_notification){
-            delete();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return true;
     }
 
     private void initData(){
@@ -146,24 +115,27 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
 
         calendarNotificationTypes = getResources().getStringArray(R.array.notification_event_types);
     }
+
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
-                if(calendarNotification.getId() == 0){
-                    mainActivity.setToolbarTitle(getString(R.string.calendar_new_instance_fragment_title));
-                }else{
-                    mainActivity.setToolbarTitle(getString(R.string.calendar_edit_instance_fragment_title));
-                }
-                ActionBar actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
+                mainActivity.setOnBackPressed(()->true);
             }
         }
     }
+
     private void initFragment(){
+        binding.ibDelete.setOnClickListener(V->delete());
+
+        if(calendarNotification.getId() == 0){
+            binding.ibDelete.setVisibility(View.GONE);
+            binding.tvTitle.setText(getString(R.string.calendar_new_instance_fragment_title));
+        }else{
+            binding.ibDelete.setVisibility(View.VISIBLE);
+            binding.tvTitle.setText(getString(R.string.calendar_edit_instance_fragment_title));
+        }
+
         binding.tvSelectTitle.setText(calendarNotification.getTitle());
         binding.tvSelectMessage.setText(calendarNotification.getMessage());
 
@@ -182,12 +154,13 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         binding.tvSelectDate.setOnClickListener(v->onOpenDatePicker());
         binding.tvSelectTime.setOnClickListener(v->onOpenTimePicker());
 
-        binding.btnSaveNotification.setOnClickListener(v->save());
-        binding.btnCancelNotification.setOnClickListener(v->goBack());
+        binding.btnSave.setOnClickListener(v->save());
+        binding.btnCancel.setOnClickListener(v->goBack());
 
         updateDateLabel();
         updateTimeLabel();
     }
+
     private void initViewModel(){
         if(getActivity() != null){
             viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
@@ -195,6 +168,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
             viewModel.getLandZones().observe(getViewLifecycleOwner(),this::initZonesSelect);
         }
     }
+
     private void initLandSelect(List<Land> lands) {
         landsInit = true;
         this.lands.clear();
@@ -210,6 +184,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
             initFragmentFromNotification();
         }
     }
+
     private void initZonesSelect(Map<Long, List<LandZone>> zones) {
         zonesInit = true;
         this.zones.clear();
@@ -224,6 +199,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
             initFragmentFromNotification();
         }
     }
+
     private void initFragmentFromNotification(){
         if(calendarNotification.getLid() != null){
             for(Land land : lands){
@@ -257,6 +233,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         notificationDate.set(Calendar.MINUTE,minute);
         updateDateLabel();
     }
+
     private void onTimeUpdate(MaterialTimePicker picker) {
         notificationDate.set(Calendar.HOUR_OF_DAY,picker.getHour());
         notificationDate.set(Calendar.MINUTE,picker.getMinute());
@@ -277,6 +254,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         updateZoneSelect();
         printSelectedData();
     }
+
     private void onSelectZone(int position) {
         if(position < displayZones.size()){
             selectedZone = displayZones.get(position);
@@ -286,6 +264,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         updateZoneSelect();
         printSelectedData();
     }
+
     private void onOpenDatePicker(){
         MaterialDatePicker<Long> picker = DialogUtil.getDatePickerDialog(
                 getString(R.string.calendar_pop_up_date_title),
@@ -296,6 +275,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
             picker.show(getActivity().getSupportFragmentManager(), picker.toString());
         }
     }
+
     private void onOpenTimePicker(){
         MaterialTimePicker picker = DialogUtil.getTimePickerDialog(
                 getString(R.string.calendar_pop_up_time_title),
@@ -322,6 +302,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         );
         binding.tvSelectLand.setAdapter(adapterLands);
     }
+
     private void updateZoneSelect(){
         binding.tvSelectZone.setText(selectedZone.toString(), false);
 
@@ -352,11 +333,13 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
             binding.tilSelectZone.setVisibility(View.VISIBLE);
         }
     }
+
     private void updateDateLabel() {
         String myFormat = "EEE, d MMM yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         binding.tvSelectDate.setText(sdf.format(notificationDate.getTime()));
     }
+
     private void updateTimeLabel() {
         String myFormat = "h:mm a";
         if(DateFormat.is24HourFormat(getContext())){
@@ -392,7 +375,6 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
                 }
             }
         }
-
         if(selectedLand.getData() != null){
             lid = selectedLand.getData().getId();
             if(selectedZone.getData() != null){
@@ -417,6 +399,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         viewModel.saveNotification(calendarNotification);
         goBack();
     }
+
     private void delete(){
         if(calendarNotification.getId() == 0) return;
         viewModel.removeNotification(calendarNotification);
@@ -427,6 +410,7 @@ public class CalendarEventFragment extends Fragment implements FragmentBackPress
         Log.d(TAG, "printSelectedData: selectedLand = " + selectedLand.toString());
         Log.d(TAG, "printSelectedData: selectedZone = " + selectedZone.toString());
     }
+
     private void goBack(){
         if(getActivity() != null) {
             getActivity().onBackPressed();

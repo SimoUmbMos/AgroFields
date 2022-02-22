@@ -5,4 +5,43 @@
         <attr name="setDate" format="string" />
         <attr name="setAction" format="string" />
     </declare-styleable>
+
+    <attr name="colorSurfaceOutline" format="color" />
+    <attr name="colorSurfaceSecondary" format="color" />
+    <attr name="colorOnSurfaceSecondary" format="color" />
+
+    <attr name="colorSliderRed" format="color" />
+    <attr name="colorSliderGreen" format="color" />
+    <attr name="colorSliderBlue" format="color" />
+    <attr name="colorPicker1" format="color" />
+    <attr name="colorPicker2" format="color" />
+    <attr name="colorPicker3" format="color" />
+    <attr name="colorPicker4" format="color" />
+    <attr name="colorPicker5" format="color" />
+    <attr name="colorPicker6" format="color" />
+    <attr name="colorPicker7" format="color" />
+    <attr name="colorPicker8" format="color" />
+
+    <attr name="colorMapSurface" format="color" />
+    <attr name="colorOnMapSurface" format="color" />
+
+    <attr name="colorCalendarSurface" format="color"/>
+    <attr name="colorOnCalendarSurface" format="color"/>
+    <attr name="colorCalendarSurfaceToday" format="color"/>
+    <attr name="colorOnCalendarSurfaceToday" format="color"/>
+    <attr name="colorCalendarSurfaceDisable" format="color"/>
+
+    <attr name="colorEventSchedule" format="color"/>
+    <attr name="colorEventPlant" format="color"/>
+    <attr name="colorEventCultivate" format="color"/>
+    <attr name="colorEventFertilize" format="color"/>
+    <attr name="colorEventSpray" format="color"/>
+    <attr name="colorEventHarvest" format="color"/>
+
+    <attr name="colorFabVariant" format="color" />
+    <attr name="colorOnFabVariant" format="color" />
+    <attr name="colorFabVariantAccent" format="color" />
+    <attr name="colorOnFabVariantAccent" format="color" />
+    <attr name="colorFabVariantError" format="color" />
+    <attr name="colorOnFabVariantError" format="color" />
 </resources>

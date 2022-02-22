@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- not translatable -->
+    <string name="app_name" translatable="false">Land Holder</string>
+
     <string name="arrow_left" translatable="false">←</string>
     <string name="arrow_right" translatable="false">→</string>
     <string name="degree_info_title" translatable="false">Χαρτογράφηση αγροκτήματος με συμμετοχή θέσης, ορίων και παρεμβολής με χάρτες</string>
@@ -12,8 +14,6 @@
     <string name="degree_info_sign" translatable="false">Δρ. Θεόδωρος Λάντζος</string>
     <!-- translatable -->
     <!-- Common -->
-    <string name="app_name">Land Declaration</string>
-    <string name="degree_info">Degree Info</string>
     <string name="land_history">Lands History</string>
     <string name="loading_list">List is loading</string>
     <string name="empty_list">List is empty</string>
@@ -70,8 +70,10 @@
     <!-- Loading Fragment -->
     <string name="file_input_error">Error reading the file</string>
     <!-- Main Menu Fragment -->
-    <string name="main_menu_live_map_button">Live Map</string>
-    <string name="main_menu_calendar_button">My Calendar</string>
+    <string name="main_menu_live_map_button">Map</string>
+    <string name="main_menu_calendar_button">Calendar</string>
+    <string name="main_menu_land_button">Land\'s</string>
+    <string name="main_menu_zone_button">Zone\'s</string>
     <string name="main_menu_tag_button">Manage Tag\'s</string>
     <string name="dashboard_title">Dashboard</string>
     <!-- Land Menu Fragment -->
@@ -186,8 +188,6 @@
     <string name="fertilize_filter_side_label">Fertilizing Jobs</string>
     <string name="spray_filter_side_label">Spray Jobs</string>
     <string name="harvest_filter_side_label">Harvesting Jobs</string>
-    <!-- Calendar Event List Fragment -->
-    <string name="calendar_event_list_fragment_title">Events:</string>
     <!-- Calendar Event Fragment -->
     <string name="calendar_new_instance_fragment_title">Calendar: New Event</string>
     <string name="calendar_edit_instance_fragment_title">Calendar: Edit Event</string>

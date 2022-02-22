@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="FabVariant" parent="AppTheme">
+        <item name="colorPrimary">?attr/colorFabVariant</item>
+        <item name="colorOnPrimary">?attr/colorOnFabVariant</item>
+        <item name="colorPrimaryContainer">?attr/colorFabVariant</item>
+        <item name="colorOnPrimaryContainer">?attr/colorOnFabVariant</item>
+    </style>
+    <style name="FabVariantAccent" parent="AppTheme">
+        <item name="colorPrimary">?attr/colorFabVariantAccent</item>
+        <item name="colorOnPrimary">?attr/colorOnFabVariantAccent</item>
+        <item name="colorPrimaryContainer">?attr/colorFabVariantAccent</item>
+        <item name="colorOnPrimaryContainer">?attr/colorOnFabVariantAccent</item>
+    </style>
+    <style name="FabVariantError" parent="AppTheme">
+        <item name="colorPrimary">?attr/colorFabVariantError</item>
+        <item name="colorOnPrimary">?attr/colorOnFabVariantError</item>
+        <item name="colorPrimaryContainer">?attr/colorFabVariantError</item>
+        <item name="colorOnPrimaryContainer">?attr/colorOnFabVariantError</item>
+    </style>
+    <style name="CustomRedSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderRedStyle</item>
+    </style>
+    <style name="CustomGreenSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderGreenStyle</item>
+    </style>
+    <style name="CustomBlueSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="materialThemeOverlay">@style/SliderBlueStyle</item>
+    </style>
+    <style name="SliderRedStyle" parent="">
+        <item name="colorPrimary">?attr/colorSliderRed</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
+    </style>
+    <style name="SliderGreenStyle" parent="">
+        <item name="colorPrimary">?attr/colorSliderGreen</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
+    </style>
+    <style name="SliderBlueStyle" parent="">
+        <item name="colorPrimary">?attr/colorSliderBlue</item>
+        <item name="colorOnPrimary">@android:color/transparent</item>
+    </style>
+    <style name="MaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- text -->
+        <item name="materialAlertDialogTitleTextStyle">@style/NormalAlertDialogTitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
+        <item name="android:checkedTextViewStyle">@style/AlertDialogCheckedTextView</item>
+        <!-- buttons -->
+        <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButtonStyle</item>
+        <!-- background -->
+        <item name="android:background">?attr/colorSurface</item>
+    </style>
+    <style name="ErrorMaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- text -->
+        <item name="materialAlertDialogTitleTextStyle">@style/ErrorAlertDialogTitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
+        <item name="android:checkedTextViewStyle">@style/AlertDialogCheckedTextView</item>
+        <!-- buttons -->
+        <item name="buttonBarPositiveButtonStyle">@style/ErrorAlertDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButtonStyle</item>
+        <!-- background -->
+        <item name="android:background">?attr/colorSurface</item>
+    </style>
+    <style name="NormalAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+    <style name="ErrorAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">?attr/colorError</item>
+    </style>
+    <style name="AlertDialogTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+    <style name="AlertDialogCheckedTextView" parent="@style/Widget.MaterialComponents.CheckedTextView">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+    <style name="AlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+    <style name="ErrorAlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorError</item>
+    </style>
+</resources>

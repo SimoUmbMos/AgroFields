@@ -6,13 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,7 +23,6 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentFileMapBinding;
 import com.mosc.simo.ptuxiaki3741.enums.ImportAction;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
@@ -35,17 +31,57 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFileFragment extends Fragment implements FragmentBackPress {
-    private FragmentFileMapBinding binding;
-
+public class MapFileFragment extends Fragment {
     private final List<LandData> landDataList = new ArrayList<>();
+    private FragmentFileMapBinding binding;
     private LandData landData;
     private ImportAction action;
 
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentFileMapBinding.inflate(inflater,container,false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initData();
+        initActivity();
+        initFragment(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        binding.mvFileMap.onDestroy();
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.mvFileMap.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        binding.mvFileMap.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onLowMemory() {
+        binding.mvFileMap.onLowMemory();
+        super.onLowMemory();
+    }
+
     private void initData(){
+        if(landDataList.size() != 0) {
+            landDataList.clear();
+        }
         landData = null;
         action = ImportAction.NONE;
-        landDataList.clear();
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLands)){
                 landDataList.addAll(
@@ -61,56 +97,56 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
+                mainActivity.setOnBackPressed(()->true);
                 if(action == ImportAction.NONE){
                     mainActivity.setOverrideDoubleBack(true);
-                }
-                ActionBar actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    if(action == ImportAction.IMPORT){
-                        mainActivity.setToolbarTitle(getString(R.string.file_map_fragment_import_action));
-                        actionBar.show();
-                    }else if(action == ImportAction.ADD){
-                        mainActivity.setToolbarTitle(getString(R.string.file_map_fragment_add_action));
-                        actionBar.show();
-                    }else if(action == ImportAction.SUBTRACT){
-                        mainActivity.setToolbarTitle(getString(R.string.file_map_fragment_subtract_action));
-                        actionBar.show();
-                    }else{
-                        mainActivity.setToolbarTitle("");
-                        actionBar.hide();
-                    }
                 }
             }
         }
     }
+
     private void initFragment(Bundle savedInstanceState){
+        switch (action){
+            case IMPORT:
+                binding.tvTitle.setText(getString(R.string.file_map_fragment_import_action));
+                break;
+            case ADD:
+                binding.tvTitle.setText(getString(R.string.file_map_fragment_add_action));
+                break;
+            case SUBTRACT:
+                binding.tvTitle.setText(getString(R.string.file_map_fragment_subtract_action));
+                break;
+            default:
+                binding.tvTitle.setText("");
+                break;
+        }
+        binding.ibClose.setOnClickListener(v->onButtonClosePress());
         binding.mvFileMap.onCreate(savedInstanceState);
-        binding.clLoadingLayer.setVisibility(View.VISIBLE);
+        binding.tvLoadingLabel.setVisibility(View.VISIBLE);
         binding.tvLoadingLabel.setText(getString(R.string.file_map_fragment_loading));
         binding.mvFileMap.getMapAsync(this::initMap);
     }
+
     private void initMap(GoogleMap googleMap){
-        initMapUI(googleMap,landData == null);
+        boolean isPreview = landData == null;
+        googleMap.getUiSettings().setRotateGesturesEnabled(isPreview);
+        googleMap.getUiSettings().setScrollGesturesEnabled(isPreview);
+        googleMap.getUiSettings().setZoomGesturesEnabled(isPreview);
+        googleMap.getUiSettings().setZoomControlsEnabled(isPreview);
+        googleMap.getUiSettings().setCompassEnabled(isPreview);
+        if(!isPreview) {
+            googleMap.setOnPolygonClickListener(this::onPolygonClick);
+        }
         googleMap.setOnMapLoadedCallback(()->drawMap(googleMap));
     }
-    private void initMapUI(GoogleMap googleMap, boolean isFilePreview) {
-        googleMap.getUiSettings().setRotateGesturesEnabled(isFilePreview);
-        googleMap.getUiSettings().setScrollGesturesEnabled(isFilePreview);
-        googleMap.getUiSettings().setZoomGesturesEnabled(isFilePreview);
-        googleMap.getUiSettings().setZoomControlsEnabled(isFilePreview);
-        googleMap.getUiSettings().setCompassEnabled(isFilePreview);
-        if(!isFilePreview)
-            googleMap.setOnPolygonClickListener(this::onPolygonClick);
-    }
+
     private void drawMap(GoogleMap googleMap) {
         PolygonOptions options;
-
-
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         int builderSize = 0;
         boolean isClickable = false;
@@ -158,11 +194,19 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
                     AppValues.defaultPadding
             ));
         if(landDataList.size()>0){
-            binding.clLoadingLayer.setVisibility(View.GONE);
+            binding.tvLoadingLabel.setVisibility(View.GONE);
         }else{
             binding.tvLoadingLabel.setText(getString(R.string.file_map_fragment_error));
         }
     }
+
+    private void onButtonClosePress() {
+        Activity activity = getActivity();
+        if(activity != null) {
+            activity.onBackPressed();
+        }
+    }
+
     private void onPolygonClick(Polygon polygon) {
         if(landData != null){
             LandData result = null;
@@ -196,47 +240,9 @@ public class MapFileFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()->{
                 NavController nav = UIUtil.getNavController(this,R.id.MapFileFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argImportLand,landData);
+                bundle.putParcelable(AppValues.argImportLand, landData);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });
-    }
-
-    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                                       Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        binding = FragmentFileMapBinding.inflate(inflater,container,false);
-        return binding.getRoot();
-    }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initData();
-        initActivity();
-        initFragment(savedInstanceState);
-    }
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        binding.mvFileMap.onDestroy();
-        binding = null;
-    }
-    @Override public void onResume() {
-        super.onResume();
-        binding.mvFileMap.onResume();
-    }
-    @Override public void onPause() {
-        super.onPause();
-        binding.mvFileMap.onPause();
-    }
-    @Override public void onLowMemory() {
-        super.onLowMemory();
-        binding.mvFileMap.onLowMemory();
-    }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onBackPressed() {
-        return true;
     }
 }

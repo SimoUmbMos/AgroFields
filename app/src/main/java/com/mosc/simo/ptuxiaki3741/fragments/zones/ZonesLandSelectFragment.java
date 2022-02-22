@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -15,8 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,7 +22,6 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandListAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentZonesLandSelectBinding;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -34,7 +30,7 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZonesLandSelectFragment extends Fragment implements FragmentBackPress {
+public class ZonesLandSelectFragment extends Fragment {
     private FragmentZonesLandSelectBinding binding;
     private LandListAdapter adapter;
 
@@ -43,19 +39,16 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
     private void initData() {
         data = new ArrayList<>();
     }
+
     private void initActivity() {
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity activity = (MainActivity) getActivity();
-                activity.setOnBackPressed(this);
-                activity.setToolbarTitle(getString(R.string.zones_land_list_bar_label));
-                ActionBar actionBar = activity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
+                activity.setOnBackPressed(()->true);
             }
         }
     }
+
     private void initFragment() {
         binding.tvZoneLandListActionLabel.setText(getResources().getString(R.string.loading_label));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -68,6 +61,7 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
         adapter = new LandListAdapter(data, this::onLandClick);
         binding.rvZoneLandList.setAdapter(adapter);
     }
+
     private void initViewModel() {
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
@@ -89,6 +83,7 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
         adapter.notifyDataSetChanged();
         binding.tvZoneLandListActionLabel.setText(getResources().getString(R.string.empty_list));
     }
+
     private void onLandClick(Land land) {
         toZoneLandSelected(getActivity(),land);
     }
@@ -117,44 +112,42 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentZonesLandSelectBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
-    @Override public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
         initActivity();
         initFragment();
         initViewModel();
     }
+
+
     @Override public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onBackPressed() {
-        return true;
-    }
+
     @Override public void onLowMemory() {
-        super.onLowMemory();
         if (adapter != null) {
             for (MapView m : adapter.getMapViews()) {
                 m.onLowMemory();
             }
         }
+        super.onLowMemory();
     }
+
     @Override public void onPause() {
-        super.onPause();
         if (adapter != null) {
             for (MapView m : adapter.getMapViews()) {
                 m.onPause();
             }
         }
+        super.onPause();
     }
+
     @Override public void onResume() {
         super.onResume();
         if (adapter != null) {
@@ -163,6 +156,7 @@ public class ZonesLandSelectFragment extends Fragment implements FragmentBackPre
             }
         }
     }
+
     @Override public void onDestroy() {
         if (adapter != null) {
             for (MapView m : adapter.getMapViews()) {

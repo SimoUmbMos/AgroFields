@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
@@ -23,65 +22,55 @@ import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
-    private ActivityMainBinding binding;
     private NavHostFragment navHostFragment;
     private NotificationManager notificationManager;
     private FragmentBackPress fragmentBackPress;
-    private boolean overrideDoubleBack = false,
-            doubleBackToExit = false;
-
-    @Override protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        init();
-        navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nhfMainNav);
-    }
-    @Override public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-    @Override public void onBackPressed() {
-        if(overrideDoubleBack){
-            super.onBackPressed();
-            return;
-        }
-        if(fragmentBackPress.onBackPressed()){
-            FragmentManager fm = navHostFragment.getChildFragmentManager();
-            if(fm.getBackStackEntryCount() > 0){
-                navHostFragment.getNavController().popBackStack();
-            }else{
-                if (doubleBackToExit) {
-                    super.onBackPressed();
-                    return;
-                }
-                doubleBackToExit = true;
-                new Handler().postDelayed(() -> doubleBackToExit=false, AppValues.doubleTapBack);
-                showToast(getResources().getText(R.string.double_tap_exit));
-            }
-        }
-    }
+    private boolean overrideDoubleBack = false, doubleBackToExit = false;
 
     public static RoomDatabase getRoomDb(Context context){
         return Room.databaseBuilder(context, RoomDatabase.class, "Main_db")
                 .fallbackToDestructiveMigration().build();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        init();
+        navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nhfMainNav);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(fragmentBackPress != null){
+            if(!fragmentBackPress.onBackPressed()){
+                return;
+            }
+        }
+        if(overrideDoubleBack || doubleBackToExit){
+            super.onBackPressed();
+            return;
+        }
+        FragmentManager fm = navHostFragment.getChildFragmentManager();
+        if(fm.getBackStackEntryCount() > 0){
+            navHostFragment.getNavController().popBackStack();
+        }else{
+            doubleBackToExit = true;
+            new Handler().postDelayed(() -> doubleBackToExit=false, AppValues.doubleTapBack);
+            showToast(getResources().getText(R.string.double_tap_exit));
+        }
+    }
+
     private void init() {
         overrideDoubleBack = false;
+        doubleBackToExit = false;
         fragmentBackPress = () -> true;
-        setSupportActionBar(binding.toolbar);
-        binding.toolbarTitle.setText(binding.toolbar.getTitle());
-        binding.toolbarSubTitle.setText(binding.toolbar.getSubtitle());
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
         checkThemeSettings();
         initNotificationChannel();
     }
+
     public void initNotificationChannel() {
         CharSequence name1 = getString(R.string.notification_channel_name);
         String description1 = getString(R.string.notification_channel_description);
@@ -116,65 +105,23 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
+
     public NotificationManager getNotificationManager(){
         if(notificationManager == null) initNotificationChannel();
         return notificationManager;
     }
 
     public void showToast(CharSequence text) {
-        showToast(text.toString());
-    }
-    public void showToast(String text) {
-        Toast.makeText(this,text,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,text.toString(),Toast.LENGTH_SHORT).show();
     }
 
     public void setOverrideDoubleBack(boolean overrideDoubleBack){
         this.overrideDoubleBack = overrideDoubleBack;
     }
+
     public void setOnBackPressed(FragmentBackPress fragmentBackPress){
-        if(getSupportActionBar() != null){
-            setToolbarElevation(4);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
         overrideDoubleBack = false;
         this.fragmentBackPress = fragmentBackPress;
-    }
-    public void setToolbarElevation(int elevation){
-        binding.ablMainActivity.setElevation(elevation);
-    }
-    public void setToolbarTitle(String title){
-        if(title != null){
-            binding.toolbarTitle.setText(title);
-            binding.toolbarTitle.setVisibility(View.VISIBLE);
-        }else{
-            binding.toolbarTitle.setText("");
-            binding.toolbarTitle.setVisibility(View.GONE);
-        }
-        binding.toolbarSubTitle.setText("");
-        binding.toolbarSubTitle.setVisibility(View.GONE);
-    }
-    public void setToolbarTitle(String title, String subTitle) {
-        if(title != null){
-            binding.toolbarTitle.setText(title);
-            binding.toolbarTitle.setVisibility(View.VISIBLE);
-        }else{
-            binding.toolbarTitle.setText("");
-            binding.toolbarTitle.setVisibility(View.GONE);
-        }
-        if(subTitle != null){
-            binding.toolbarSubTitle.setText(subTitle);
-            binding.toolbarSubTitle.setVisibility(View.VISIBLE);
-        }else{
-            binding.toolbarSubTitle.setText("");
-            binding.toolbarSubTitle.setVisibility(View.GONE);
-        }
-    }
-    public String getToolbarTitle(){
-        if(binding.toolbarTitle.getText() != null){
-            return binding.toolbarTitle.getText().toString();
-        }
-        return "";
     }
 
     public void checkThemeSettings() {

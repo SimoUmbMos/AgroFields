@@ -22,14 +22,14 @@ import java.util.Locale;
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
     private final LinkedHashMap<LocalDate, List<CalendarNotification>> data;
     private final String[] typesString;
-    private final int[] typesColor;
+    private final Integer[] typesColor;
     private final ActionResult<LocalDate> onDateClick;
     private final ActionResult<CalendarNotification> onEventClick;
 
     public CalendarAdapter(
             LinkedHashMap<LocalDate, List<CalendarNotification>> data,
             String[] typesString,
-            int[] typesColor,
+            Integer[] typesColor,
             ActionResult<LocalDate> onDateClick,
             ActionResult<CalendarNotification> onEventClick
     ){
@@ -89,7 +89,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         public void show(
                 LocalDate d,
                 String[] typesString,
-                int[] typesColor,
+                Integer[] typesColor,
                 List<CalendarNotification> e,
                 ActionResult<LocalDate> dc,
                 ActionResult<CalendarNotification> ec

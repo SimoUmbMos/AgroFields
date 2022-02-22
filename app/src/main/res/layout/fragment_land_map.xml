@@ -5,19 +5,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.land.MapLandEditorFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+            app:layout_constraintEnd_toStartOf="@+id/ibSave"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
+
+        <ImageButton
+            android:id="@+id/ibSave"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_menu_save"
+            app:layout_constraintEnd_toStartOf="@+id/ibToggleMenu"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/ibToggleMenu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_menu_menu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mvLand"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
             app:mapType="satellite" />
 
         <ImageView
@@ -30,107 +71,84 @@
             android:contentDescription="@string/land_imageView"
             android:focusable="false"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_gallery"
-            tools:visibility="gone" />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/mvLand"
+            app:layout_constraintEnd_toEndOf="@id/mvLand"
+            app:layout_constraintStart_toStartOf="@id/mvLand"
+            app:layout_constraintTop_toTopOf="@id/mvLand"
+            app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+        <TextView
+            android:id="@+id/tvLoadingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_label"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/mvLand"
+            app:layout_constraintEnd_toEndOf="@id/mvLand"
+            app:layout_constraintStart_toStartOf="@id/mvLand"
+            app:layout_constraintTop_toTopOf="@id/mvLand" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clLandControls"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/backgroundColor"
-            android:elevation="4dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/colorSurface"
             android:visibility="gone"
-            app:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabLandActionSave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/backgroundColor"
-                android:clickable="true"
-                android:contentDescription="@string/fabSave"
-                android:elevation="0dp"
-                android:focusable="true"
-                android:foregroundTint="@color/backgroundColor"
+            <ImageButton
+                android:id="@+id/ibActionSave"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_button_check"
-                android:tint="@color/textColor"
-                app:backgroundTint="@color/backgroundColor"
-                app:elevation="0dp"
-                app:fabSize="mini"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/textColor" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabLandActionReset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/ibActionReset"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/backgroundColor"
-                android:clickable="true"
-                android:contentDescription="@string/fabReset"
-                android:elevation="0dp"
-                android:focusable="true"
-                android:foregroundTint="@color/backgroundColor"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_button_reset"
-                android:tint="@color/textColor"
-                app:backgroundTint="@color/backgroundColor"
-                app:elevation="0dp"
-                app:fabSize="mini"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/fabLandActionSave"
-                app:layout_constraintTop_toTopOf="@+id/fabLandActionSave"
-                app:layout_constraintVertical_bias="0.0"
-                app:tint="@color/textColor" />
+                app:layout_constraintEnd_toStartOf="@+id/ibActionSave"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/slAlphaSlider"
-                style="@style/CustomSlider"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
                 android:stepSize="5.0"
                 android:value="50.0"
                 android:valueFrom="15.0"
                 android:valueTo="85.0"
                 app:labelBehavior="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/fabLandActionReset"
-                app:layout_constraintEnd_toStartOf="@+id/fabLandActionReset"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ibActionReset"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/fabLandActionReset" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/tvLoadingLabel"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/backgroundColor"
-            android:gravity="center"
-            android:text="@string/loading_label"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clLandControls"
-            tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.navigation.NavigationView android:id="@+id/navLandMenu"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
-        app:theme="@style/DrawerNavigationStyle"
         app:menu="@menu/land_map_side_menu" />
+
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -16,9 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +48,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -71,15 +71,15 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
     private SharedPreferences sharedPref;
     private boolean listView;
     private String[] typesString;
-    private int[] typesColor;
+    private Integer[] typesColor;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         binding = FragmentCalendarBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -88,84 +88,13 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         initFragment();
         initViewModel();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.calendar_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
 
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem grid = menu.findItem(R.id.menu_item_grid_view);
-        MenuItem list = menu.findItem(R.id.menu_item_list_view);
-        MenuItem filter = menu.findItem(R.id.menu_item_filter);
-        grid.setVisible(listView);
-        list.setVisible(!listView);
-        filter.setVisible(listView);
-        grid.setEnabled(listView);
-        list.setEnabled(!listView);
-        filter.setEnabled(listView);
-    }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case (R.id.menu_item_grid_view):
-                toggleDrawer(false);
-                onListViewUpdate(false);
-                return true;
-            case (R.id.menu_item_list_view):
-                toggleDrawer(false);
-                onListViewUpdate(true);
-                return true;
-            case (R.id.menu_item_filter):
-                toggleShowFilter();
-                return true;
-            case (R.id.menu_item_old_event):
-                toggleDrawer(false);
-                showOldEvents();
-                return true;
-            case (R.id.menu_item_new_event):
-                toggleDrawer(false);
-                showNewEvents();
-                return true;
-            case (R.id.menu_item_filter_all):
-                toggleDrawer(false);
-                showAllEvents();
-                return true;
-            case (R.id.menu_item_filter_schedule):
-                toggleDrawer(false);
-                showScheduleEvents();
-                return true;
-            case (R.id.menu_item_filter_plant):
-                toggleDrawer(false);
-                showPlantEvents();
-                return true;
-            case (R.id.menu_item_filter_cultivate):
-                toggleDrawer(false);
-                showCultivateEvents();
-                return true;
-            case (R.id.menu_item_filter_fertilize):
-                toggleDrawer(false);
-                showFertilizeEvents();
-                return true;
-            case (R.id.menu_item_filter_spray):
-                toggleDrawer(false);
-                showSprayEvents();
-                return true;
-            case (R.id.menu_item_filter_harvest):
-                toggleDrawer(false);
-                showHarvestEvents();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
     @Override
     public boolean onBackPressed() {
         if(binding.getRoot().isDrawerOpen(GravityCompat.END)){
@@ -187,25 +116,52 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         listView = true;
 
         typesString = getResources().getStringArray(R.array.notification_event_types);
-        typesColor = getResources().getIntArray(R.array.notification_event_color_types);
+        typesColor = new Integer[6];
+        if(getContext() != null){
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = getContext().getTheme();
+            theme.resolveAttribute(R.attr.colorEventSchedule, typedValue, true);
+            typesColor[0] = typedValue.data;
+            theme.resolveAttribute(R.attr.colorEventPlant, typedValue, true);
+            typesColor[1] = typedValue.data;
+            theme.resolveAttribute(R.attr.colorEventCultivate, typedValue, true);
+            typesColor[2] = typedValue.data;
+            theme.resolveAttribute(R.attr.colorEventFertilize, typedValue, true);
+            typesColor[3] = typedValue.data;
+            theme.resolveAttribute(R.attr.colorEventSpray, typedValue, true);
+            typesColor[4] = typedValue.data;
+            theme.resolveAttribute(R.attr.colorEventHarvest, typedValue, true);
+            typesColor[5] = typedValue.data;
+        }else{
+            Arrays.fill(typesColor, null);
+        }
     }
+
     private void initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle("");
-                ActionBar actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.show();
-                }
                 sharedPref = mainActivity.getPreferences(Context.MODE_PRIVATE);
                 listView = sharedPref.getBoolean(AppValues.argListView,true);
             }
         }
     }
+
     private void initFragment(){
-        binding.navCalendarMenu.setNavigationItemSelectedListener(this::onOptionsItemSelected);
+
+        binding.ibGridView.setOnClickListener(v->{
+            toggleDrawer(false);
+            onListViewUpdate(false);
+        });
+        binding.ibListView.setOnClickListener(v->{
+            toggleDrawer(false);
+            onListViewUpdate(true);
+            setupSideMenu();
+        });
+        binding.ibFilters.setOnClickListener(v-> toggleShowFilter());
+
+        binding.navCalendarMenu.setNavigationItemSelectedListener(this::onSideMenuItemSelected);
         setupSideMenu();
         binding.fabNewEvent.setOnClickListener(v->toNewEvent(getActivity()));
         binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -274,6 +230,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         binding.rcCalendarList.setAdapter(adapter);
         updateView();
     }
+
     private void setupSideMenu(){
         if(binding == null) return;
         MenuItem oldEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_old_event);
@@ -341,10 +298,54 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
                 break;
         }
     }
+
     private void initViewModel(){
         if(getActivity() != null){
             AppViewModel viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             viewModel.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
+        }
+    }
+
+    public boolean onSideMenuItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case (R.id.menu_item_old_event):
+                toggleDrawer(false);
+                showOldEvents();
+                return true;
+            case (R.id.menu_item_new_event):
+                toggleDrawer(false);
+                showNewEvents();
+                return true;
+            case (R.id.menu_item_filter_all):
+                toggleDrawer(false);
+                showAllEvents();
+                return true;
+            case (R.id.menu_item_filter_schedule):
+                toggleDrawer(false);
+                showScheduleEvents();
+                return true;
+            case (R.id.menu_item_filter_plant):
+                toggleDrawer(false);
+                showPlantEvents();
+                return true;
+            case (R.id.menu_item_filter_cultivate):
+                toggleDrawer(false);
+                showCultivateEvents();
+                return true;
+            case (R.id.menu_item_filter_fertilize):
+                toggleDrawer(false);
+                showFertilizeEvents();
+                return true;
+            case (R.id.menu_item_filter_spray):
+                toggleDrawer(false);
+                showSprayEvents();
+                return true;
+            case (R.id.menu_item_filter_harvest):
+                toggleDrawer(false);
+                showHarvestEvents();
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -370,6 +371,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         updateCalendarList();
         updateCalendarGrid();
     }
+
     private void onListViewUpdate(boolean isList){
         listView = isList;
         if(sharedPref != null){
@@ -387,9 +389,11 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         }
         updateView();
     }
+
     private void onDayClick(LocalDate date){
         toEventList(getActivity(), date);
     }
+
     private void onEventClick(CalendarNotification event){
         toEvent(getActivity(), event);
     }
@@ -455,30 +459,22 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             binding.tvCalendarListLabel.setVisibility(View.GONE);
         }
     }
+
     private void updateCalendarGrid() {
-        binding.loadingView.setVisibility(View.VISIBLE);
+        binding.tvCalendarGridLabel.setVisibility(View.VISIBLE);
         binding.headerTextView.setText(getCurrentMonthYearTitle());
         binding.calendarView.setupAsync(
                 currentMonth,
                 currentMonth,
                 daysOfWeek[0],
                 ()->{
-                    binding.loadingView.setVisibility(View.GONE);
+                    binding.tvCalendarGridLabel.setVisibility(View.GONE);
                     return Unit.INSTANCE;
                 }
         );
     }
+
     private void updateView() {
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity activity = (MainActivity) getActivity();
-                if(listView){
-                    activity.setToolbarTitle(getString(R.string.plural_event_label));
-                }else{
-                    activity.setToolbarTitle(getString(R.string.calendar_fragment_grid_title));
-                }
-            }
-        }
         if(listView){
             binding.clListView.setVisibility(View.VISIBLE);
             binding.clGridView.setVisibility(View.GONE);
@@ -487,6 +483,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             binding.clGridView.setVisibility(View.VISIBLE);
         }
     }
+
     private void toggleShowFilter(){
         if(listView){
             toggleDrawer(true);
@@ -515,6 +512,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
         }
         return daysOfWeek;
     }
+
     private String getCurrentMonthYearTitle() {
         String month = new DateFormatSymbols().getShortMonths()[currentMonth.getMonth().getValue()-1];
         return String.format(Locale.getDefault(), "%s %d", month, currentMonth.getYear());
@@ -528,6 +526,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
                     nav.navigate(R.id.toCalendarEvent);
             });
     }
+
     private void toEvent(@Nullable Activity activity, CalendarNotification event) {
         if(activity != null)
             activity.runOnUiThread(()-> {
@@ -538,6 +537,7 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
                     nav.navigate(R.id.toCalendarEvent, bundle);
             });
     }
+
     private void toEventList(@Nullable Activity activity, LocalDate localDate) {
         if(localDate == null) return;
         if(activity != null)
@@ -559,54 +559,63 @@ public class CalendarFragment extends Fragment implements FragmentBackPress {
             }
         }
     }
+
     private void showOldEvents(){
         if(showFilter == CalendarShowFilter.BEFORE) return;
         showFilter = CalendarShowFilter.BEFORE;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showNewEvents(){
         if(showFilter == CalendarShowFilter.AFTER) return;
         showFilter = CalendarShowFilter.AFTER;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showAllEvents(){
         if(subFilter == CalendarSubFilter.ALL) return;
         subFilter = CalendarSubFilter.ALL;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showScheduleEvents(){
         if(subFilter == CalendarSubFilter.SCHEDULE) return;
         subFilter = CalendarSubFilter.SCHEDULE;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showPlantEvents(){
         if(subFilter == CalendarSubFilter.PLANT) return;
         subFilter = CalendarSubFilter.PLANT;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showCultivateEvents(){
         if(subFilter == CalendarSubFilter.CULTIVATE) return;
         subFilter = CalendarSubFilter.CULTIVATE;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showFertilizeEvents(){
         if(subFilter == CalendarSubFilter.FERTILIZE) return;
         subFilter = CalendarSubFilter.FERTILIZE;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showSprayEvents(){
         if(subFilter == CalendarSubFilter.SPRAY) return;
         subFilter = CalendarSubFilter.SPRAY;
         updateCalendarList();
         setupSideMenu();
     }
+
     private void showHarvestEvents(){
         if(subFilter == CalendarSubFilter.HARVEST) return;
         subFilter = CalendarSubFilter.HARVEST;

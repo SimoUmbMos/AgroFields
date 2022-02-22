@@ -2,8 +2,6 @@
 <resources>
     <!-- translatable -->
     <!-- Common -->
-    <string name="app_name">Land Declaration</string>
-    <string name="degree_info">Πληροφορίες Πτυχιακής</string>
     <string name="land_history">Ιστορικό χωραφιού</string>
     <string name="loading_list">Η λίστα φορτώνεται</string>
     <string name="empty_list">Η λίστα είναι κενή</string>
@@ -60,8 +58,10 @@
     <!-- Loading Fragment -->
     <string name="file_input_error">Σφάλμα κατά την ανάγνωση του αρχείου.</string>
     <!-- Main Menu Fragment -->
-    <string name="main_menu_live_map_button">Ζωντανός Χάρτης</string>
-    <string name="main_menu_calendar_button">Το Ημερολόγιο μου</string>
+    <string name="main_menu_live_map_button">Χάρτης</string>
+    <string name="main_menu_calendar_button">Ημερολόγιο</string>
+    <string name="main_menu_land_button">Χωράφια</string>
+    <string name="main_menu_zone_button">Περιοχές</string>
     <string name="main_menu_tag_button">Διαχείριση Ετικετών</string>
     <string name="dashboard_title">Πίνακας Ελέγχου</string>
     <!-- Land Menu Fragment -->
@@ -176,13 +176,11 @@
     <string name="fertilize_filter_side_label">Εργασίες γονιμ.</string>
     <string name="spray_filter_side_label">Εργασίες ψεκασμού</string>
     <string name="harvest_filter_side_label">Εργασίες συγκομ.</string>
-    <!-- Calendar Event List Fragment -->
-    <string name="calendar_event_list_fragment_title">Συμβάντα:</string>
     <!-- Calendar Event Fragment -->
     <string name="calendar_new_instance_fragment_title">Ημερολόγιο: νέο συμβάν</string>
     <string name="calendar_edit_instance_fragment_title">Ημερολόγιο: επεξεργασία συμβάντος</string>
-    <string name="default_land_spinner_value">Όλες τα χωράφια</string>
-    <string name="default_zone_spinner_value">Όλες οι περιοχές</string>
+    <string name="default_land_spinner_value">Όλα τα χωράφια</string>
+    <string name="default_zone_spinner_value">Όλο το χωράφι</string>
     <string name="calendar_pop_up_date_title">Επιλέξτε ημερομηνία</string>
     <string name="calendar_pop_up_time_title">Επιλέξτε ώρα</string>
     <string name="select_date_label">Ημερομηνία</string>

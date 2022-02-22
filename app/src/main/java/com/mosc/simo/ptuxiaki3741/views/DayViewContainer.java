@@ -1,7 +1,10 @@
 package com.mosc.simo.ptuxiaki3741.views;
 
+import android.content.res.Resources;
+import android.util.TypedValue;
 import android.view.View;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
 import com.kizitonwose.calendarview.ui.ViewContainer;
@@ -84,25 +87,34 @@ public class DayViewContainer extends ViewContainer {
         binding.getRoot().setOnClickListener(l);
     }
     public void setEnable(boolean enable) {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = binding.getRoot().getContext().getTheme();
+
         binding.getRoot().setClickable(enable);
         if(enable){
             binding.calendarDayText.setVisibility(View.VISIBLE);
             binding.badgeContainer.setVisibility(View.VISIBLE);
+
             if (today) {
-                binding.getRoot().setCardBackgroundColor(
-                        binding.getRoot().getContext().getColor(R.color.cardBackgroundCalendarToday)
-                );
+                theme.resolveAttribute(R.attr.colorOnCalendarSurfaceToday, typedValue, true);
             }else{
-                binding.getRoot().setCardBackgroundColor(
-                        binding.getRoot().getContext().getColor(R.color.cardBackgroundCalendarEnable)
-                );
+                theme.resolveAttribute(R.attr.colorOnCalendarSurface, typedValue, true);
             }
+            binding.calendarDayText.setTextColor(typedValue.data);
+
+            if (today) {
+                theme.resolveAttribute(R.attr.colorCalendarSurfaceToday, typedValue, true);
+            }else{
+                theme.resolveAttribute(R.attr.colorCalendarSurface, typedValue, true);
+            }
+            binding.getRoot().setBackgroundColor(typedValue.data);
+
         }else{
             binding.calendarDayText.setVisibility(View.GONE);
             binding.badgeContainer.setVisibility(View.GONE);
-            binding.getRoot().setCardBackgroundColor(
-                    binding.getRoot().getContext().getColor(R.color.cardBackgroundCalendarDisable)
-            );
+
+            theme.resolveAttribute(R.attr.colorCalendarSurfaceDisable, typedValue, true);
+            binding.getRoot().setBackgroundColor(typedValue.data);
         }
     }
 }

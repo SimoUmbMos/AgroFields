@@ -1,75 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardCornerRadius="0dp"
-    app:strokeColor="@color/textColor"
-    app:strokeWidth="1dp">
+    android:background="?attr/colorCalendarSurface">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/calendarDayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        android:textColor="?attr/colorOnCalendarSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="22" />
 
-        <TextView
-            android:id="@+id/calendarDayText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="22">
+    <LinearLayout
+        android:id="@+id/badgeContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarDayText">
 
-        </TextView>
+        <View
+            android:id="@+id/calendarBadge1"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:alpha="1.0"
+            android:background="@drawable/bg_badge_background" />
 
-        <LinearLayout
-            android:id="@+id/badgeContainer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/calendarDayText">
+        <View
+            android:id="@+id/calendarBadge2"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="1dp"
+            android:alpha="0.8"
+            android:background="@drawable/bg_badge_background" />
 
-            <View
-                android:id="@+id/calendarBadge1"
-                android:layout_width="4dp"
-                android:layout_height="4dp"
-                android:background="@drawable/background_badge_1" />
+        <View
+            android:id="@+id/calendarBadge3"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="1dp"
+            android:alpha="0.6"
+            android:background="@drawable/bg_badge_background" />
 
-            <View
-                android:id="@+id/calendarBadge2"
-                android:layout_width="4dp"
-                android:layout_height="4dp"
-                android:layout_marginStart="1dp"
-                android:background="@drawable/background_badge_2" />
+        <View
+            android:id="@+id/calendarBadge4"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="1dp"
+            android:alpha="0.4"
+            android:background="@drawable/bg_badge_background" />
 
-            <View
-                android:id="@+id/calendarBadge3"
-                android:layout_width="4dp"
-                android:layout_height="4dp"
-                android:layout_marginStart="1dp"
-                android:background="@drawable/background_badge_3" />
+        <View
+            android:id="@+id/calendarBadgeMore"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="1dp"
+            android:alpha="0.2"
+            android:background="@drawable/bg_badge_background" />
+    </LinearLayout>
 
-            <View
-                android:id="@+id/calendarBadge4"
-                android:layout_width="4dp"
-                android:layout_height="4dp"
-                android:layout_marginStart="1dp"
-                android:background="@drawable/background_badge_4" />
-
-            <View
-                android:id="@+id/calendarBadgeMore"
-                android:layout_width="4dp"
-                android:layout_height="4dp"
-                android:layout_marginStart="1dp"
-                android:background="@drawable/background_badge_more" />
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.calendar.CalendarFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,25 +21,71 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/plural_event_label"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+                app:layout_constraintEnd_toStartOf="@+id/ibGridView"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/ibGridView"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_grid_view"
+                app:layout_constraintBottom_toBottomOf="@+id/textView9"
+                app:layout_constraintEnd_toStartOf="@+id/ibFilters"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView9"
+                app:layout_constraintTop_toTopOf="@+id/textView9"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageButton
+                android:id="@+id/ibFilters"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_filter"
+                app:layout_constraintBottom_toBottomOf="@+id/textView9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ibGridView"
+                app:layout_constraintTop_toTopOf="@+id/textView9" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcCalendarList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                android:overScrollMode="never"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:overScrollMode="never"/>
+                app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
             <TextView
                 android:id="@+id/tvCalendarListLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/empty_list"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="@+id/rcCalendarList"
+                app:layout_constraintEnd_toEndOf="@+id/rcCalendarList"
+                app:layout_constraintStart_toStartOf="@+id/rcCalendarList"
+                app:layout_constraintTop_toTopOf="@+id/rcCalendarList" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -46,100 +93,110 @@
             android:id="@+id/clGridView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/linearLayout4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="7"
-                app:layout_constraintEnd_toEndOf="parent"
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/calendar_fragment_grid_title"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+                app:layout_constraintEnd_toStartOf="@+id/ibListView"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/headerPreviousMonth"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/arrow_left" />
-
-                <TextView
-                    android:id="@+id/headerTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:padding="16dp"
-                    android:textAlignment="center"
-                    android:textSize="26sp"
-                    tools:text="October 2019" />
-
-                <Button
-                    android:id="@+id/headerNextMonth"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/arrow_right" />
-            </LinearLayout>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/ibListView"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:cardCornerRadius="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_list_view"
+                app:layout_constraintBottom_toBottomOf="@+id/textView10"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/linearLayout4"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-                app:strokeColor="@color/textColor"
-                app:strokeWidth="1dp">
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView10"
+                app:layout_constraintTop_toTopOf="@+id/textView10" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:minHeight="30dp">
+            <ImageButton
+                android:id="@+id/headerPreviousMonth"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_arrow_left"
+                app:layout_constraintBottom_toBottomOf="@+id/headerTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/headerTextView" />
 
-                    <com.kizitonwose.calendarview.CalendarView
-                        android:id="@+id/calendarView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cv_dayViewResource="@layout/calendar_day_layout"
-                        app:cv_inDateStyle="firstMonth"
-                        app:cv_monthHeaderResource="@layout/calendar_month_header_layout"
-                        app:cv_orientation="horizontal"
-                        app:cv_outDateStyle="endOfRow"
-                        app:cv_scrollMode="continuous"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:overScrollMode="never"
-                        tools:ignore="SpeakableTextPresentCheck" />
+            <TextView
+                android:id="@+id/headerTextView"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+                app:layout_constraintEnd_toStartOf="@+id/headerNextMonth"
+                app:layout_constraintStart_toEndOf="@+id/headerPreviousMonth"
+                app:layout_constraintTop_toBottomOf="@+id/textView10"
+                tools:text="October 2019" />
 
-                    <TextView
-                        android:id="@+id/loadingView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:background="@color/backgroundColor"
-                        android:gravity="center"
-                        android:text="@string/loading_label"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+            <ImageButton
+                android:id="@+id/headerNextMonth"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_arrow_right"
+                app:layout_constraintBottom_toBottomOf="@+id/headerTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/headerTextView" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.kizitonwose.calendarview.CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="16dp"
+                android:overScrollMode="never"
+                app:cv_dayViewResource="@layout/calendar_day_layout"
+                app:cv_inDateStyle="firstMonth"
+                app:cv_monthHeaderResource="@layout/calendar_month_header_layout"
+                app:cv_orientation="horizontal"
+                app:cv_outDateStyle="endOfRow"
+                app:cv_scrollMode="continuous"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_max="300dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/headerTextView"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="SpeakableTextPresentCheck" />
 
-            </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/tvCalendarGridLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                android:text="@string/loading_label"
+                app:layout_constraintBottom_toBottomOf="@+id/calendarView"
+                app:layout_constraintEnd_toEndOf="@+id/calendarView"
+                app:layout_constraintStart_toStartOf="@+id/calendarView"
+                app:layout_constraintTop_toTopOf="@+id/calendarView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -152,11 +209,8 @@
             android:clickable="true"
             android:contentDescription="@string/calendar_new_instance_fragment_title"
             android:src="@drawable/ic_drawer_menu_add"
-            app:backgroundTint="@color/textColor"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:rippleColor="@color/rippleColor"
-            app:tint="@color/backgroundColor" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -166,6 +220,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
-        app:menu="@menu/calendar_side_menu"
-        app:theme="@style/DrawerNavigationStyle" />
+        app:menu="@menu/calendar_side_menu"/>
 </androidx.drawerlayout.widget.DrawerLayout>

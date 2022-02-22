@@ -101,10 +101,16 @@ public class Land implements Parcelable {
     @Override
     @NonNull
     public String toString() {
-        if(data != null)
-            return "#"+ data.getId() + " " + data.getTitle();
-        if(!tag.isEmpty())
-            return tag;
-        return "";
+        String ans = "";
+        if(data != null) {
+            if(data.getId() != 0){
+                ans = "#" + data.getId() + " " + data.getTitle();
+            }else{
+                ans = data.getTitle();
+            }
+        }else if(!tag.isEmpty()) {
+            ans = tag;
+        }
+        return ans;
     }
 }

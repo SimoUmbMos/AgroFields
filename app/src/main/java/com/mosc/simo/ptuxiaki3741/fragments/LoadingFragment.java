@@ -9,22 +9,17 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoadingBinding;
-import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
@@ -35,9 +30,8 @@ import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadingFragment extends Fragment implements FragmentBackPress {
+public class LoadingFragment extends Fragment {
     public static final String TAG = "LoadingFragment";
-    private FragmentLoadingBinding binding;
     private Intent intent;
 
     private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
@@ -45,47 +39,33 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             this::handleFileAction
     );
 
-    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        binding = FragmentLoadingBinding.inflate(inflater,container,false);
-        return binding.getRoot();
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_loading,container,false);
     }
-    @Override public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initActivity();
+        Intent intent = initActivity();
         if(intent != null){
-            handleFile();
+            handleFile(intent);
         }else{
             initViewModel();
         }
     }
-    @Override public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-    @Override public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.empty_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override public boolean onBackPressed() {
-        return true;
-    }
 
-    private void initActivity(){
+    private Intent initActivity(){
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
-                mainActivity.setToolbarTitle(getString(R.string.app_name));
-                ActionBar actionBar = mainActivity.getSupportActionBar();
-                if(actionBar != null){
-                    actionBar.hide();
-                }
-                intent = mainActivity.getIntentIfCalledByFile();
+                mainActivity.setOnBackPressed(()->true);
+                return mainActivity.getIntentIfCalledByFile();
             }
         }
+        return null;
     }
+
     private void initViewModel(){
         if(getActivity() != null){
             AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
@@ -99,13 +79,13 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             toMenu(getActivity());
     }
 
-    private void handleFile() {
+    private void handleFile(Intent intent) {
+        this.intent = intent;
         permissionReadChecker.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
+
     private void handleFileAction(boolean permissionResult) {
         if(permissionResult){
-            if(intent == null) return;
-
             Activity activity = getActivity();
             new Thread(()->{
                 ArrayList<LandData> data = FileUtil.handleFile(activity,intent);
@@ -138,6 +118,7 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
                     nav.navigate(R.id.toMenuMain);
             });
     }
+
     private void toMapPreview(Activity activity, ArrayList<LandData> data) {
         if(activity != null){
             Bundle args = new Bundle();
@@ -149,4 +130,5 @@ public class LoadingFragment extends Fragment implements FragmentBackPress {
             });
         }
     }
+
 }

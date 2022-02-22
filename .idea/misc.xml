@@ -220,6 +220,114 @@
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap/app_icon.xml" value="0.24166666666666667" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Ptuxiaki3741/app/src/main/res/mipmap/app_icon_round.xml" value="0.2296875" />
         <entry key="..\:/UserDocs/Other/AndroidStudioFiles/Sdk/platforms/android-31/data/res/layout/simple_list_item_1.xml" value="0.1" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/background_badge_1.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/background_badge_2.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/background_badge_3.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/background_badge_4.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_badge_background.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_round.xml" value="0.26" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_round_background.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/divider_linear_layout_list.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/divider_transparent_horizontal.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/divider_transparent_vertical.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/divider_vertical.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_button_check.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_button_history.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_button_lands.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_button_live_map.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_button_reset.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_button_toggle_route_name.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_button_zones.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_add.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_add_between.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_add_img.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_add_remove_to_land.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_alpha_img.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_delete.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_edit.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_import.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_layer_clear.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_map_locked.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_move_img.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_remove_img.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_drawer_menu_unlocked.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_item_close.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_item_open.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_arrow_left.xml" value="0.26" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_arrow_right.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_close.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_color_palette.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_degree_info.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_delete.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_edit.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_export.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_factory_reset.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_filter.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_grid_view.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_history.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_info.xml" value="0.3395" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_list_view.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_location.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_menu.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_minimize.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_restore.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_save.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_select_all.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_settings.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/activity_main.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_day_layout.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_month_header_layout.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_app_settings.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_event_list.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_new_event.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_degree_info.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_file_map.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_deleted.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_selected.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_info.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map_preview.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_live_map.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_loading.xml" value="0.16247379454926625" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.16247379454926625" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zone_editor.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_select.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_selected.xml" value="0.27247451343836887" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/menu_view_add.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/menu_view_delete.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/menu_view_export.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/menu_view_history.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_calendar_list_event.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_color_picker.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_edit_text.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_history_item.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_calendar_date.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_history.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_history_selected.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_land.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_tag_input.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_text_area.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/app_settings_menu.xml" value="0.15220179563916203" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/calendar_list_side_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/calendar_side_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/empty_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/land_history_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/land_list_menu.xml" value="0.15220179563916203" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/land_map_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/land_map_preview_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/land_map_side_menu.xml" value="0.15220179563916203" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/notification_entry_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/zone_editor_menu.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/zone_editor_side_menu.xml" value="0.15220179563916203" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/zone_list_contextual_menu.xml" value="0.15220179563916203" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/zone_list_menu.xml" value="0.15220179563916203" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/mipmap-anydpi/application_icon.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/mipmap-anydpi/application_icon_round.xml" value="0.2985" />
       </map>
     </option>
   </component>
@@ -276,7 +384,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.30601092896174864" />
+        <option name="scale" value="0.16247379454926625" />
       </ProjectState>
     </option>
   </component>
