@@ -1,6 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
@@ -49,6 +52,19 @@ public class MenuMainFragment extends Fragment{
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getActivity() == null) return;
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        binding.tvTitle.setText(
+                sharedPref.getString(
+                        AppValues.ownerName,
+                        getResources().getString(R.string.app_name)
+                )
+        );
     }
 
     //init

@@ -96,8 +96,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         if(sharedPref != null){
             SharedPreferences.Editor editor = sharedPref.edit();
 
-            if (binding.etOwnerName.getText() != null && binding.etOwnerName.getText().toString().trim().length() > 0) {
-                editor.putString(AppValues.ownerName, binding.etOwnerName.getText().toString().trim());
+            if (binding.etOwnerName.getText() != null) {
+                String name = binding.etOwnerName.getText().toString()
+                        .trim()
+                        .replaceAll("[\\t\\n\\r]+"," ")
+                        .replaceAll(" +", " ");
+                if(!name.isEmpty()){
+                    editor.putString(AppValues.ownerName, name);
+                }else{
+                    editor.remove(AppValues.ownerName);
+                }
             }else{
                 editor.remove(AppValues.ownerName);
             }
