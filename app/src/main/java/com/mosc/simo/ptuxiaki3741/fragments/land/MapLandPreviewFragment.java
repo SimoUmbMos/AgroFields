@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MapLandPreviewFragment extends Fragment {
-    //FIXME: SAVE ZONES ON LAND HISTORY
-
     private final List<Polygon> mapZones = new ArrayList<>();
     private Polygon mapLand;
     private FragmentLandMapPreviewBinding binding;
@@ -49,7 +47,6 @@ public class MapLandPreviewFragment extends Fragment {
 
     //init relative
     private void initData(){
-        currLandZones = new ArrayList<>();
         isHistory = false;
         currLand = null;
         if(getArguments() != null){
@@ -59,7 +56,11 @@ public class MapLandPreviewFragment extends Fragment {
             if(getArguments().containsKey(AppValues.argLand)){
                 currLand = getArguments().getParcelable(AppValues.argLand);
             }
+            if(getArguments().containsKey(AppValues.argZones)){
+                currLandZones = getArguments().getParcelableArrayList(AppValues.argZones);
+            }
         }
+        if(currLandZones == null) currLandZones = new ArrayList<>();
     }
 
     private void initActivity(){
@@ -74,14 +75,17 @@ public class MapLandPreviewFragment extends Fragment {
     private void initMenu(){
         binding.tvTitle.setText(currLand.toString());
         binding.ibEdit.setEnabled(!isHistory);
+        binding.fabZonesMenu.setEnabled(!isHistory);
         binding.ibHistory.setEnabled(!isHistory);
         binding.ibRestore.setEnabled(isHistory);
         if(isHistory){
             binding.ibEdit.setVisibility(View.GONE);
+            binding.fabZonesMenu.setVisibility(View.GONE);
             binding.ibHistory.setVisibility(View.GONE);
             binding.ibRestore.setVisibility(View.VISIBLE);
         }else{
             binding.ibEdit.setVisibility(View.VISIBLE);
+            binding.fabZonesMenu.setVisibility(View.VISIBLE);
             binding.ibHistory.setVisibility(View.VISIBLE);
             binding.ibRestore.setVisibility(View.GONE);
         }
@@ -91,6 +95,7 @@ public class MapLandPreviewFragment extends Fragment {
         binding.ibEdit.setOnClickListener( v -> toLandEdit(getActivity()) );
         binding.ibHistory.setOnClickListener( v -> toLandHistory(getActivity()) );
         binding.ibRestore.setOnClickListener( v -> restoreLand() );
+        binding.fabZonesMenu.setOnClickListener( v -> toZonesMenu(getActivity()) );
         binding.mvLand.getMapAsync(this::initMap);
     }
 
@@ -218,7 +223,6 @@ public class MapLandPreviewFragment extends Fragment {
     //restore relative
     private void restoreLand() {
         AsyncTask.execute(()->{
-            //FIXME: Restore ZONES ON LAND HISTORY
             restoreToVM();
             goBack(getActivity());
         });
@@ -227,7 +231,7 @@ public class MapLandPreviewFragment extends Fragment {
     private void restoreToVM() {
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            vmLands.restoreLand(currLand);
+            vmLands.restoreLand(currLand, currLandZones);
         }
     }
 
@@ -244,6 +248,19 @@ public class MapLandPreviewFragment extends Fragment {
                 bundle.putParcelable(AppValues.argLand,currLand);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
+            });
+    }
+
+    public void toZonesMenu(@Nullable Activity activity) {
+        if(currLand == null) return;
+        if(activity != null)
+            activity.runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this, R.id.MapLandPreviewFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppValues.argLand, currLand);
+                if(nav != null){
+                    nav.navigate(R.id.toZonesLandSelected,bundle);
+                }
             });
     }
 

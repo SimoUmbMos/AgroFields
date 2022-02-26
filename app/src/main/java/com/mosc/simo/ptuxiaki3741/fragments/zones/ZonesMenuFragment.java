@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.fragments.zones;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandZonesListAdapter;
-import com.mosc.simo.ptuxiaki3741.databinding.FragmentZonesLandSelectedBinding;
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentZonesMenuBinding;
 import com.mosc.simo.ptuxiaki3741.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.enums.ListMenuState;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
@@ -44,9 +45,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ZonesLandSelectedFragment extends Fragment implements FragmentBackPress {
+public class ZonesMenuFragment extends Fragment implements FragmentBackPress {
     private static final String TAG = "ZonesLandSelectedFragment";
-    private FragmentZonesLandSelectedBinding binding;
+    private FragmentZonesMenuBinding binding;
 
     private ListMenuState state;
     private LandZonesListAdapter adapter;
@@ -143,9 +144,7 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         toggleZone(zone);
     }
     private void onCloseClick() {
-        if(state != ListMenuState.NormalState){
-            setState(ListMenuState.NormalState);
-        }
+        goBack(getActivity());
     }
     private void onSelectAllClick() {
         if(state != ListMenuState.NormalState){
@@ -252,14 +251,26 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         }
     }
     private void deleteAction(){
-        List<LandZone> selectedZones = getSelectedZones();
-        if(selectedZones.size()>0){
-            if(vmLands != null){
-                vmLands.removeZones(selectedZones);
-                Snackbar.make(binding.getRoot(), R.string.zone_delete, Snackbar.LENGTH_SHORT).show();
+        AsyncTask.execute(()->{
+            List<LandZone> selectedZones = getSelectedZones();
+            if(selectedZones.size()>0){
+                if(vmLands != null){
+                    vmLands.removeZones(selectedZones);
+                    if(getActivity() != null)
+                        getActivity().runOnUiThread(()->
+                                Snackbar.make(
+                                        binding.getRoot(),
+                                        R.string.zone_delete,
+                                        Snackbar.LENGTH_SHORT
+                                ).show()
+                        );
+                }
             }
-        }
-        setState(ListMenuState.NormalState);
+            if(getActivity() != null)
+                getActivity().runOnUiThread(()->
+                        setState(ListMenuState.NormalState)
+                );
+        });
     }
     private void showExportDialog(){
         if(getSelectedZones().size() == 0 ){
@@ -379,9 +390,6 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
         if(state == ListMenuState.NormalState){
             deselectAllZones();
             binding.getRoot().transitionToStart();
-            binding.ibClose.setVisibility(View.GONE);
-        }else{
-            binding.ibClose.setVisibility(View.VISIBLE);
         }
         updateUi();
     }
@@ -446,11 +454,15 @@ public class ZonesLandSelectedFragment extends Fragment implements FragmentBackP
             });
         }
     }
+    private void goBack(Activity activity){
+        if(activity == null) return;
+        activity.runOnUiThread(activity::onBackPressed);
+    }
 
     //Override relative
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentZonesLandSelectedBinding.inflate(inflater,container,false);
+        binding = FragmentZonesMenuBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
 

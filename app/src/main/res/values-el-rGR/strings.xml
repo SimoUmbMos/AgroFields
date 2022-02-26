@@ -53,6 +53,7 @@
     <string name="reset_points">Επαναφορά σημείων</string>
     <string name="edit_color">Αλλαγή χρώματος</string>
     <string name="tag_input_view_label">Ετικέτες:</string>
+    <string name="some_lands_have_zones_error">Some Lands Have Zones</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
     <!-- Loading Fragment -->
@@ -109,6 +110,10 @@
     <string name="land_action_restored">Επαναφέρθηκε</string>
     <string name="land_action_imported">Έγινε εισαγωγή</string>
     <string name="land_action_deleted">Διαγράφηκε</string>
+    <string name="land_action_zone_created">Zone Created</string>
+    <string name="land_action_zone_updated">Zone Updated</string>
+    <string name="land_action_zone_imported">Zone Imported</string>
+    <string name="land_action_zone_deleted">Zone Deleted</string>
     <string name="toggle_history_list">Εναλλαγή λίστας</string>
     <!-- Zone Land Select Fragment -->
     <string name="zones_land_list_bar_label">Επιλέξτε Χωράφι</string>
@@ -139,16 +144,20 @@
     <string name="zone_null_error">Κάτι πήγε στραβά, δοκιμάστε να δημιουργήσετε ξανά την περιοχή</string>
     <string name="iv_desc_zone_editor_center_camera">Κεντρικό κουμπί κάμερας</string>
     <!-- App Settings Fragment-->
+    <string name="settings_section_ui">Ui Settings</string>
+    <string name="settings_section_feedback">Feedback Settings</string>
+    <string name="settings_section_data">Data Settings</string>
     <string name="app_settings_title">Ρυθμίσεις</string>
     <string name="factory_reset">Εργοστασιακή επανεκκίνηση</string>
-    <string name="select_theme_title">Επιλέξτε στυλ εφαρμογής</string>
+    <string name="select_snapshot_title">Snapshot</string>
+    <string name="select_theme_title">Στυλ εφαρμογής</string>
     <string-array name="theme_styles">
         <item>Προεπιλογή συστήματος</item>
         <item>Φωτεινό θέμα</item>
         <item>Σκοτεινό θέμα</item>
     </string-array>
-    <string name="import_database_button_label">Εισαγωγή δεδομένων</string>
-    <string name="export_database_button_label">Εξαγωγή δεδομένων</string>
+    <string name="import_database_button_label">Εισαγωγή</string>
+    <string name="export_database_button_label">Εξαγωγή</string>
     <string name="import_db_success">Τα δεδομένα ενημερώθηκαν</string>
     <string name="export_db_success">Η εξαγωγή δεδομένων ολοκληρώθηκε</string>
     <string name="import_db_failed">Αποτυχία ενημέρωσης δεδομένων</string>

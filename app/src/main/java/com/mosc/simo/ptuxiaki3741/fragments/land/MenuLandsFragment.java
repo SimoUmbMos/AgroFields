@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
@@ -313,7 +314,21 @@ public class MenuLandsFragment extends Fragment implements FragmentBackPress {
             }
         }
         if(deleteLands.size()>0){
-            AsyncTask.execute(()->vmLands.removeLands(deleteLands));
+            AsyncTask.execute(()-> {
+                if(!vmLands.removeLands(deleteLands)){
+                    if(getActivity() != null){
+                        getActivity().runOnUiThread(()-> {
+                            Snackbar snackbar = Snackbar.make(
+                                    binding.getRoot(),
+                                    getString(R.string.some_lands_have_zones_error),
+                                    Snackbar.LENGTH_SHORT
+                            );
+                            snackbar.setAnchorView(binding.rvLandList);
+                            snackbar.show();
+                        });
+                    }
+                }
+            });
         }
     }
 

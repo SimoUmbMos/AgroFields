@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutDescription="@xml/fragment_zones_land_selected_scene"
-    tools:context=".fragments.zones.ZonesLandSelectedFragment">
+    tools:context=".fragments.zones.ZonesMenuFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/glBegin"
@@ -45,7 +45,6 @@
         android:background="@color/transparent"
         android:scaleType="centerInside"
         android:src="@drawable/ic_menu_close"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/glBegin"
         app:layout_constraintTop_toTopOf="parent" />
 

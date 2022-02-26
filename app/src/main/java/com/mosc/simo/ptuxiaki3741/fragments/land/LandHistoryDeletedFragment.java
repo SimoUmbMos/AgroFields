@@ -22,7 +22,8 @@ import com.mosc.simo.ptuxiaki3741.adapters.LandHistoryAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandHistoryDeletedBinding;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandHistoryRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -62,7 +63,11 @@ public class LandHistoryDeletedFragment extends Fragment {
                 getString(R.string.land_action_updated),
                 getString(R.string.land_action_restored),
                 getString(R.string.land_action_imported),
-                getString(R.string.land_action_deleted)
+                getString(R.string.land_action_deleted),
+                getString(R.string.land_action_zone_created),
+                getString(R.string.land_action_zone_updated),
+                getString(R.string.land_action_zone_imported),
+                getString(R.string.land_action_zone_deleted)
         };
         adapter = new LandHistoryAdapter(
                 data,
@@ -90,7 +95,7 @@ public class LandHistoryDeletedFragment extends Fragment {
     }
 
     //data
-    private void populateData(List<LandDataRecord> r) {
+    private void populateData(List<LandHistoryRecord> r) {
         data.clear();
         openIndex = -1;
 
@@ -103,7 +108,7 @@ public class LandHistoryDeletedFragment extends Fragment {
     }
 
     //observers
-    private void onHistoryChange(List<LandDataRecord> r) {
+    private void onHistoryChange(List<LandHistoryRecord> r) {
         AsyncTask.execute(()->{
             if(getActivity() != null) {
                 populateData(r);
@@ -133,10 +138,11 @@ public class LandHistoryDeletedFragment extends Fragment {
         updateUI();
     }
 
-    public void onRecordClick(LandDataRecord record){
+    public void onRecordClick(LandHistoryRecord record){
         Land land = new Land(LandUtil.getLandDataFromLandRecord(record));
+        ArrayList<LandZone> zones = LandUtil.getLandZonesFromLandRecord(record);
         if(land.getData() != null){
-            toLandMap(getActivity(),land);
+            toLandMap(getActivity(), land, zones);
         }
     }
 
@@ -167,13 +173,14 @@ public class LandHistoryDeletedFragment extends Fragment {
     }
 
     //nav
-    public void toLandMap(@Nullable Activity activity, Land land) {
+    public void toLandMap(@Nullable Activity activity, Land land, ArrayList<LandZone> zones) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandHistoryDeletedFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,land);
                 bundle.putBoolean(AppValues.argIsHistory,true);
+                bundle.putParcelable(AppValues.argLand, land);
+                if(zones != null) bundle.putParcelableArrayList(AppValues.argZones, zones);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);
             });

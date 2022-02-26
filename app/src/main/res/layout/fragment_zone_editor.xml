@@ -38,43 +38,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
-        <TextView
-            android:id="@+id/tvNote"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.AppTheme.Body"
-            app:layout_constraintEnd_toEndOf="@+id/ibEditMenu"
-            app:layout_constraintStart_toStartOf="@+id/tvTitle"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            tools:text="Note" />
-
-        <ImageButton
-            android:id="@+id/ibUndo"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/undo"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_button_reset"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvNote" />
-
-        <Button
-            android:id="@+id/btnClearState"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/done"
-            android:textAppearance="@style/TextAppearance.AppTheme.Button"
-            app:layout_constraintBottom_toBottomOf="@+id/ibUndo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ibUndo"
-            app:layout_constraintTop_toTopOf="@+id/ibUndo" />
-
         <com.google.android.gms.maps.MapView
             android:id="@+id/mvZonePreview"
             android:layout_width="0dp"
@@ -84,31 +47,100 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ibUndo"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:mapType="satellite" />
 
-        <ImageButton
-            android:id="@+id/ibToggleNote"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="@string/iv_desc_zone_editor_center_camera"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_menu_menu"
-            app:layout_constraintBottom_toBottomOf="@+id/ibCenterCamera"
-            app:layout_constraintEnd_toStartOf="@+id/ibCenterCamera"
-            app:layout_constraintTop_toTopOf="@+id/ibCenterCamera" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clControl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
+            app:layout_constraintEnd_toEndOf="@id/mvZonePreview"
+            app:layout_constraintStart_toStartOf="@id/mvZonePreview"
+            app:layout_constraintTop_toTopOf="@+id/mvZonePreview">
 
-        <ImageButton
-            android:id="@+id/ibCenterCamera"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="8dp"
-            android:contentDescription="@string/iv_desc_zone_editor_center_camera"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_menu_location"
-            app:layout_constraintEnd_toEndOf="@+id/mvZonePreview"
-            app:layout_constraintTop_toTopOf="@+id/mvZonePreview" />
+            <ImageButton
+                android:id="@+id/ibUndo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/undo"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_button_reset"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnClearState"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/done"
+                android:textAppearance="@style/TextAppearance.AppTheme.Button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ibUndo"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clMapActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/mvZonePreview"
+            app:layout_constraintTop_toBottomOf="@+id/clControl">
+
+            <ImageButton
+                android:id="@+id/ibCenterCamera"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/iv_desc_zone_editor_center_camera"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_location"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ibToggleNote"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/ibToggleNote"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/iv_desc_zone_editor_center_camera"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_menu"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ibCenterCamera"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tvNote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:alpha="0.9"
+            android:background="?attr/colorSurface"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Note" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

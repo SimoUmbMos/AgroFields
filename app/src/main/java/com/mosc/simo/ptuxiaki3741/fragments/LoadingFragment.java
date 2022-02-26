@@ -2,7 +2,10 @@ package com.mosc.simo.ptuxiaki3741.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -13,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +24,9 @@ import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.models.LandHistoryRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.Snapshot;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -67,16 +72,26 @@ public class LoadingFragment extends Fragment {
     }
 
     private void initViewModel(){
-        if(getActivity() != null){
-            AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            appVM.getLandsHistory().observe(getViewLifecycleOwner(),this::onUpdate);
-            appVM.init();
-        }
+        Log.d(TAG, "initViewModel: called");
+        if(getActivity() == null) return;
+
+        AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+        appVM.getLandsHistory().observe(getViewLifecycleOwner(), this::onUpdate);
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        long snapshotKey = sharedPref.getLong(AppValues.argSnapshotKey, Snapshot.getInstance().getKey());
+        Log.d(TAG, "initViewModel: key = "+snapshotKey);
+        AsyncTask.execute(()->{
+            appVM.setDefaultSnapshot(Snapshot.getInstance(snapshotKey));
+            Log.d(TAG, "initViewModel: setDefaultSnapshot = "+snapshotKey);
+        });
     }
 
-    private void onUpdate(List<LandDataRecord> records) {
-        if(records != null)
+    private void onUpdate(List<LandHistoryRecord> records) {
+        Log.d(TAG, "onUpdate:  called");
+        if(records != null) {
             toMenu(getActivity());
+        }
     }
 
     private void handleFile(Intent intent) {

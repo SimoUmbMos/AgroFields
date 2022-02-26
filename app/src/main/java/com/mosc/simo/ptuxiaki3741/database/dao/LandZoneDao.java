@@ -12,12 +12,27 @@ import java.util.List;
 
 @Dao
 public interface LandZoneDao {
-    @Query("SELECT * FROM LandZoneData")
-    List<LandZoneData> getZones();
+    @Query(
+            "SELECT * FROM LandZoneData " +
+            "WHERE LandZoneData.Snapshot = :snapshot "+
+            "ORDER BY ID"
+    )
+    List<LandZoneData> getZones(long snapshot);
 
-    @Query("SELECT * FROM LandZoneData " +
-            "WHERE LandID = :lid")
-    List<LandZoneData> getLandZonesByLandID(long lid);
+    @Query(
+            "SELECT EXISTS( " +
+                "SELECT * FROM LandZoneData " +
+                "WHERE ID = :id AND LandZoneData.Snapshot = :snapshot " +
+            ")"
+    )
+    boolean zoneExist(long id, long snapshot);
+
+    @Query(
+            "SELECT * FROM LandZoneData " +
+            "WHERE LandZoneData.LandID = :lid AND LandZoneData.Snapshot = :snapshot "+
+            "ORDER BY ID"
+    )
+    List<LandZoneData> getLandZonesByLandID(long lid, long snapshot);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandZoneData zone);

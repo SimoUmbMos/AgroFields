@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.fragments.calendar;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -104,6 +105,7 @@ public class CalendarEventFragment extends Fragment{
             notificationDate.set(Calendar.MILLISECOND,0);
             calendarNotification = new CalendarNotification(
                     0,
+                    -1,
                     null,
                     null,
                     "",
@@ -351,6 +353,7 @@ public class CalendarEventFragment extends Fragment{
 
     private void save(){
         long id = calendarNotification.getId();
+        long snapshot = calendarNotification.getSnapshot();
         Long lid = null;
         Long zid = null;
         String title = "";
@@ -395,15 +398,19 @@ public class CalendarEventFragment extends Fragment{
         }
         if(viewModel == null || hasError) return;
 
-        calendarNotification = new CalendarNotification(id, lid, zid, title, message, type, date);
-        viewModel.saveNotification(calendarNotification);
-        goBack();
+        calendarNotification = new CalendarNotification(id, snapshot, lid, zid, title, message, type, date);
+        AsyncTask.execute(()->{
+            viewModel.saveNotification(calendarNotification);
+            goBack();
+        });
     }
 
     private void delete(){
         if(calendarNotification.getId() == 0) return;
-        viewModel.removeNotification(calendarNotification);
-        goBack();
+        AsyncTask.execute(()->{
+            viewModel.removeNotification(calendarNotification);
+            goBack();
+        });
     }
 
     private void printSelectedData(){
@@ -413,7 +420,7 @@ public class CalendarEventFragment extends Fragment{
 
     private void goBack(){
         if(getActivity() != null) {
-            getActivity().onBackPressed();
+            getActivity().runOnUiThread(getActivity()::onBackPressed);
         }
     }
 }

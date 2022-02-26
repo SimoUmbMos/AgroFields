@@ -399,6 +399,7 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
                         AppValues.argNotification,
                         new CalendarNotification(
                                 0,
+                                -1,
                                 null,
                                 null,
                                 "",

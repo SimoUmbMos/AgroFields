@@ -524,14 +524,17 @@ public class MapLandEditorFragment extends Fragment implements FragmentBackPress
         }
     }
     private void deleteLandActions(){
-        removeFromVM();
-        toMenu(getActivity());
+        AsyncTask.execute(()->{
+            if(removeFromVM()){
+                toMenu(getActivity());
+            }
+        });
     }
-    private void removeFromVM() {
-        if(getActivity() != null && currLand.getData().getId() > 0){
-            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            vmLands.removeLand(currLand);
-        }
+    private boolean removeFromVM() {
+        if(getActivity() == null) return false;
+        if(currLand.getData().getId() <= 0) return true;
+        AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+        return vmLands.removeLand(currLand);
     }
 
     //file relative

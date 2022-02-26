@@ -19,11 +19,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -36,6 +36,7 @@ import com.mosc.simo.ptuxiaki3741.file.openxml.OpenXmlDataBaseInput;
 import com.mosc.simo.ptuxiaki3741.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
+import com.mosc.simo.ptuxiaki3741.models.entities.Snapshot;
 import com.mosc.simo.ptuxiaki3741.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -56,10 +57,14 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private SharedPreferences sharedPref;
     private AppViewModel viewModel;
     private Thread backThread;
+    private List<Snapshot> snapshots;
     private List<Land> lands;
     private List<LandZone> zones;
     private boolean dataIsSaving;
     private AlertDialog dialog;
+    private int themeId;
+    private ArrayAdapter<String> themeAdapter;
+    private ArrayAdapter<String> snapshotAdapter;
     private int dialogChecked;
 
     private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
@@ -84,6 +89,72 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         initActivity();
         initViewModel();
         initFragment();
+    }
+
+    @Override
+    public void onStop() {
+        if(sharedPref != null){
+            SharedPreferences.Editor editor = sharedPref.edit();
+
+            if (binding.etOwnerName.getText() != null && binding.etOwnerName.getText().toString().trim().length() > 0) {
+                editor.putString(AppValues.ownerName, binding.etOwnerName.getText().toString().trim());
+            }else{
+                editor.remove(AppValues.ownerName);
+            }
+
+            if (binding.etOwnerEmail.getText() != null && binding.etOwnerEmail.getText().toString().trim().length() > 0) {
+                editor.putString(AppValues.ownerEmail, binding.etOwnerEmail.getText().toString().trim());
+            }else{
+                editor.remove(AppValues.ownerEmail);
+            }
+
+            editor.apply();
+        }
+
+        if(viewModel != null){
+            for(Snapshot snapshot : snapshots){
+                if(snapshot.toString().equals(binding.tvSnapshot.getText().toString())){
+                    AsyncTask.execute(()-> {
+                        if (snapshot != viewModel.getDefaultSnapshot()) {
+                            viewModel.setDefaultSnapshot(snapshot);
+                        }
+                    });
+                    break;
+                }
+            }
+        }
+
+        super.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        themeId=0;
+
+        if(sharedPref != null){
+            if(sharedPref.getBoolean(AppValues.isForceKey, false)){
+                if(!sharedPref.getBoolean(AppValues.isDarkKey, false)){
+                    themeId=1;
+                }else{
+                    themeId=2;
+                }
+            }
+
+            String ownerName = sharedPref.getString(AppValues.ownerName, null);
+            String ownerEmail = sharedPref.getString(AppValues.ownerEmail, null);
+            if(ownerName != null) binding.etOwnerName.setText(ownerName);
+            if(ownerEmail != null) binding.etOwnerEmail.setText(ownerEmail);
+        }
+
+        if(viewModel != null) binding.tvSnapshot.setText(viewModel.getDefaultSnapshot().toString(),false);
+        binding.tvSnapshot.setSelection(binding.tvSnapshot.getText().length());
+        binding.tvSnapshot.setAdapter(snapshotAdapter);
+
+        binding.tvTheme.setText(themeAdapter.getItem(themeId), false);
+        binding.tvTheme.setSelection(binding.tvTheme.getText().length());
+        binding.tvTheme.setAdapter(themeAdapter);
     }
 
     @Override public void onDestroyView() {
@@ -126,8 +197,20 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }else{
             sharedPref = null;
         }
+        themeId = 0;
+        themeAdapter = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.theme_styles)
+        );
+        snapshotAdapter = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_list_item_1,
+                new ArrayList<>()
+        );
         backThread = null;
         dataIsSaving = false;
+        snapshots = new ArrayList<>();
         lands = new ArrayList<>();
         zones = new ArrayList<>();
     }
@@ -135,8 +218,18 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void initViewModel(){
         if(getActivity() != null){
             viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            viewModel.getSnapshots().observe(getViewLifecycleOwner(),this::onSnapshotsUpdate);
         }else{
             viewModel = null;
+        }
+    }
+
+    private void onSnapshotsUpdate(List<Snapshot> snapshots) {
+        this.snapshots.clear();
+        snapshotAdapter.clear();
+        if(snapshots != null) {
+            this.snapshots.addAll(snapshots);
+            snapshots.forEach(it-> snapshotAdapter.add(it.toString()));
         }
     }
 
@@ -146,33 +239,21 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
         binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.theme_styles, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.svTheme.setAdapter(adapter);
-        int pos = 0;
-        if(sharedPref != null){
-            if(sharedPref.getBoolean(AppValues.isForceKey, false)){
-                if(!sharedPref.getBoolean(AppValues.isDarkKey, false)){
-                    pos=1;
-                }else{
-                    pos=2;
-                }
-            }
-        }
-        binding.svTheme.setSelection(pos,false);
-        binding.svTheme.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> p, View v, int pos, long id) {
-                onThemeSpinnerItemSelect(pos);
-            }
-            @Override public void onNothingSelected(AdapterView<?> adapterView) {}
+        binding.tvTheme.setOnItemClickListener((adapterView, view, position, id) -> {
+            binding.tvTheme.clearFocus();
+
+            if(themeId == position) return;
+            themeId = position;
+            onThemeSpinnerItemSelect();
         });
     }
 
-    private void onThemeSpinnerItemSelect(int pos){
+    private void onThemeSpinnerItemSelect(){
+        binding.tvTheme.setText(themeAdapter.getItem(themeId), false);
+        binding.tvTheme.setSelection(binding.tvTheme.getText().length());
         if(sharedPref != null){
             SharedPreferences.Editor editor = sharedPref.edit();
-            switch (pos){
+            switch (themeId){
                 case 1:
                     editor.putBoolean(AppValues.isForceKey,true);
                     editor.putBoolean(AppValues.isDarkKey,false);
@@ -188,11 +269,17 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             }
             editor.apply();
         }
-        MainActivity activity = (MainActivity) getActivity();
-        if(activity != null)
-            activity.checkThemeSettings();
+        new Handler().postDelayed(this::checkThemeSettings,200);
     }
 
+    private void checkThemeSettings(){
+        if(getActivity() != null) {
+            if(getActivity().getClass() == MainActivity.class) {
+                MainActivity activity = (MainActivity) getActivity();
+                activity.checkThemeSettings();
+            }
+        }
+    }
 
     private void onExportDBPressed() {
         if(getContext() != null){
@@ -312,7 +399,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void factoryReset(){
-        binding.svTheme.setSelection(0,false);
         if(sharedPref != null){
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.remove(AppValues.isForceKey);
@@ -375,9 +461,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                     zones.clear();
                     if(OpenXmlDataBaseInput.importDB(fis,lands,zones)){
                         onImportDBResult(true);
-                        if(getActivity() != null){
-                            getActivity().runOnUiThread(this::saveData);
-                        }
+                        saveData();
                     }else{
                         onImportDBResult(false);
                     }
@@ -395,20 +479,27 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void saveData() {
-        AsyncTask.execute(()->{
+        try {
+            dataIsSaving = true;
             Log.d(TAG, "saveData: lands size = "+lands.size());
-            Log.d(TAG, "saveData: zones size = "+zones.size());
-            try {
-                dataIsSaving = true;
-                Log.d(TAG, "saveData: dataIsSaving = true");
-                viewModel.importLandsAndZones(lands,zones);
-            }catch (Exception e){
-                Log.e(TAG, "saveData: ", e);
-            }finally {
-                dataIsSaving = false;
-                Log.d(TAG, "saveData: dataIsSaving = false");
+            for(Land land : lands){
+                if(land.getData() == null) continue;
+                Log.d(TAG, "saveData:  land = " + land.getData().getSnapshot());
+                viewModel.importLand(land);
             }
-        });
+            Log.d(TAG, "saveData: zones size = "+zones.size());
+            for(LandZone zone : zones){
+                if(zone.getData() == null) continue;
+                Log.d(TAG, "saveData:  zone = " + zone.getData().getSnapshot());
+                viewModel.importZone(zone);
+            }
+            viewModel.refreshImportLists();
+        }catch (Exception e){
+            Log.e(TAG, "saveData: ", e);
+        }finally {
+            dataIsSaving = false;
+            Log.d(TAG, "saveData: dataIsSaving = false");
+        }
     }
 
     private void onImportDBResult(boolean result) {

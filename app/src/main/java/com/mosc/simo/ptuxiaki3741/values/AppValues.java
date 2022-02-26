@@ -5,9 +5,10 @@ import android.graphics.Color;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
 
 public final class AppValues {
+
     private AppValues(){}
     /* DB VALUES */
-    public static final int DATABASE_VERSION = 41;
+    public static final int DATABASE_VERSION = 1;
     /* Open XML SDK */
     public static final String sheetLandName = "Lands";
     public static final String sheetLandNameLowerCase = "lands";
@@ -23,9 +24,11 @@ public final class AppValues {
     public static final int defaultPersonColorFill = Color.parseColor("#3777f1");
     public static final int defaultPersonColorStroke = Color.parseColor("#ffffff");
     /* Args Values */
+    public static final String argSnapshotKey = "data_snapshot_key";
     public static final String argLand = "land";
     public static final String argLands = "lands";
     public static final String argZone = "zone";
+    public static final String argZones = "zones";
     public static final String argAction = "action";
     public static final String argAddress = "address";
     public static final String argImportLand = "import_land";
@@ -50,6 +53,9 @@ public final class AppValues {
     public static final double currPositionSize = 18.0;
     public static final float currPositionSizeStroke = 5.0f;
     public static final float personZoom = 16.0f;
+    /* Settings Fragment Values */
+    public static final String ownerName = "AppOwnerName";
+    public static final String ownerEmail = "AppOwnerEmail";
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";

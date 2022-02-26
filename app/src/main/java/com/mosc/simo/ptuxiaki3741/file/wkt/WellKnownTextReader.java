@@ -31,8 +31,6 @@ public class WellKnownTextReader {
                 readPolygon(result, in);
             }else if(in.startsWith("MULTIPOLYGON")){
                 readMultiPolygon(result, in);
-            }else if(in.startsWith("GEOMETRYCOLLECTION")){
-                readGeometryCollection(result, in);
             }
         }
         return result;
@@ -82,10 +80,6 @@ public class WellKnownTextReader {
         }
     }
 
-    private static void readGeometryCollection(ArrayList<LandData> result, String in) {
-        //todo: code
-    }
-
     private static List<String> readPolygons(String in){
         List<String> polygons = new ArrayList<>();
         StringBuilder current = new StringBuilder();
@@ -94,7 +88,7 @@ public class WellKnownTextReader {
         for(int i = 0 ; i < in.length(); i++){
             char c = in.charAt(i);
             if(counter==0 && c==','){
-                polygons.add("POLYGON "+ current.toString());
+                polygons.add("POLYGON "+ current);
                 current = new StringBuilder();
                 continue;
             }else if(c=='('){
@@ -105,7 +99,7 @@ public class WellKnownTextReader {
             current.append(c);
         }
         if(current.length() > 0){
-            polygons.add("POLYGON "+ current.toString());
+            polygons.add("POLYGON "+ current);
         }
 
         return polygons;

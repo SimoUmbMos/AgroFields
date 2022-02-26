@@ -12,8 +12,10 @@ import java.util.List;
 
 @Dao
 public interface LandHistoryDao {
-    @Query("SELECT r.* FROM LandDataRecord r ORDER BY r.LandID, r.Date, r.LandTitle")
-    List<LandDataRecord> getLandRecords();
+    @Query("SELECT r.* FROM LandDataRecord r " +
+            "WHERE r.Snapshot = :snapshot " +
+            "ORDER BY r.LandID, r.Date, r.LandTitle")
+    List<LandDataRecord> getLandRecords(long snapshot);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandDataRecord landRecord);

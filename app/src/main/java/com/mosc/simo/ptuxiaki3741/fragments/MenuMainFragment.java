@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
@@ -64,7 +63,6 @@ public class MenuMainFragment extends Fragment{
 
     private void initFragment() {
         binding.btnLands.setOnClickListener(v -> toListMenu(getActivity()));
-        binding.btnZones.setOnClickListener(v -> toLandsZone(getActivity()));
         binding.btnLiveMap.setOnClickListener(v -> toLiveMap(getActivity()));
         binding.btnCalendar.setOnClickListener(v -> toCalendar(getActivity()));
         binding.ibMenuButton.setOnClickListener(v-> toSettings(getActivity()));
@@ -83,7 +81,6 @@ public class MenuMainFragment extends Fragment{
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
-            vmLands.getLandZones().observe(getViewLifecycleOwner(),this::onLandZoneUpdate);
             vmLands.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
         }
     }
@@ -106,30 +103,6 @@ public class MenuMainFragment extends Fragment{
             descLands = builder.toString();
         }
         binding.tvLandsNumber.setText(descLands);
-    }
-
-    private void onLandZoneUpdate(Map<Long,List<LandZone>> zones) {
-        int zonesNumber = 0;
-        if(zones != null){
-            for(Long key : zones.keySet()){
-                List<LandZone> temp = zones.getOrDefault(key,null);
-                if(temp != null){
-                    zonesNumber = zonesNumber + temp.size();
-                }
-            }
-        }
-        String descZones = "";
-        if(zonesNumber != 0){
-            StringBuilder builder = new StringBuilder();
-            builder.append(zonesNumber).append(" ");
-            if(zonesNumber == 1){
-                builder.append(getString(R.string.singular_zone_label));
-            }else{
-                builder.append(getString(R.string.plural_zone_label));
-            }
-            descZones = builder.toString();
-        }
-        binding.tvZonesNumber.setText(descZones);
     }
 
     private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
@@ -162,15 +135,6 @@ public class MenuMainFragment extends Fragment{
                 NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
                 if(nav != null)
                     nav.navigate(R.id.toMenuLands);
-            });
-    }
-
-    public void toLandsZone(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.MenuMainFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toMenuZoneLands);
             });
     }
 

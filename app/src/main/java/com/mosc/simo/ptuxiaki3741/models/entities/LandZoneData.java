@@ -8,7 +8,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.models.ColorData;
@@ -17,20 +16,38 @@ import java.util.List;
 
 @Entity(tableName = "LandZoneData",
         indices = {
-                @Index("LandID")
+                @Index(
+                        value = {"LandID", "Snapshot"}
+                ),
+                @Index(
+                        value = {"ID","Snapshot"},
+                        unique = true
+                )
         },
         foreignKeys = {
                 @ForeignKey(
                         entity = LandData.class,
-                        parentColumns = "id",
-                        childColumns = "LandID",
+                        parentColumns = {
+                                "ID",
+                                "Snapshot"
+                        },
+                        childColumns = {
+                                "LandID",
+                                "Snapshot"
+                        },
                         onDelete = ForeignKey.CASCADE
                 )
+        },
+        primaryKeys = {
+            "ID",
+            "Snapshot"
         }
 )
 public class LandZoneData implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "ID")
     private long id;
+    @ColumnInfo(name = "Snapshot")
+    private long snapshot;
     @ColumnInfo(name = "LandID")
     private final long lid;
     @ColumnInfo(name = "Title")
@@ -45,6 +62,7 @@ public class LandZoneData implements Parcelable {
     @Ignore
     protected LandZoneData(Parcel in) {
         id = in.readLong();
+        snapshot = in.readLong();
         lid = in.readLong();
         title = in.readString();
         note = in.readString();
@@ -59,6 +77,7 @@ public class LandZoneData implements Parcelable {
         this.note = "";
         this.color = new ColorData(80, 20, 249);
         this.border = border;
+        this.snapshot = -1;
     }
     @Ignore
     public LandZoneData(long lid, String title, String note, ColorData color, List<LatLng> border) {
@@ -68,9 +87,21 @@ public class LandZoneData implements Parcelable {
         this.note = note;
         this.color = color;
         this.border = border;
+        this.snapshot = -1;
     }
+    @Ignore
     public LandZoneData(long id, long lid, String title, String note, ColorData color, List<LatLng> border) {
         this.id = id;
+        this.lid = lid;
+        this.title = title;
+        this.note = note;
+        this.color = color;
+        this.border = border;
+        this.snapshot = -1;
+    }
+    public LandZoneData(long id, long snapshot, long lid, String title, String note, ColorData color, List<LatLng> border) {
+        this.id = id;
+        this.snapshot = snapshot;
         this.lid = lid;
         this.title = title;
         this.note = note;
@@ -96,6 +127,9 @@ public class LandZoneData implements Parcelable {
     public List<LatLng> getBorder() {
         return border;
     }
+    public long getSnapshot() {
+        return snapshot;
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -112,10 +146,14 @@ public class LandZoneData implements Parcelable {
     public void setBorder(List<LatLng> border) {
         this.border = border;
     }
+    public void setSnapshot(long snapshot) {
+        this.snapshot = snapshot;
+    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
+        dest.writeLong(snapshot);
         dest.writeLong(lid);
         dest.writeString(title);
         dest.writeString(note);

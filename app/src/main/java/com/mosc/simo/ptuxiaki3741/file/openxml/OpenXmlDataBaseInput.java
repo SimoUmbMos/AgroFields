@@ -121,6 +121,7 @@ public final class OpenXmlDataBaseInput {
     }
     private static void getLandData(Sheet sheet, List<Land> lands) {
         long id;
+        long snapshot;
         String title;
         ColorData color;
         List<LatLng> border;
@@ -129,6 +130,7 @@ public final class OpenXmlDataBaseInput {
             id = 0;
             title = "";
             color = null;
+            snapshot = -1;
             border = new ArrayList<>();
             holes = new ArrayList<>();
 
@@ -150,6 +152,20 @@ public final class OpenXmlDataBaseInput {
                         color = new ColorData(cell.getStringCellValue().trim());
                         break;
                     case 3:
+                        boolean isDouble;
+                        try{
+                            snapshot = Long.parseLong(cell.getStringCellValue().trim());
+                            isDouble = false;
+                        }catch (Exception ignore){
+                            isDouble = true;
+                        }
+                        if(isDouble){
+                            try{
+                                snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
+                            }catch (Exception ignore){}
+                        }
+                        break;
+                    case 4:
                         fillListsFromPointsString(
                                 border,
                                 holes,
@@ -162,11 +178,12 @@ public final class OpenXmlDataBaseInput {
                 continue;
             }
 
-            lands.add(new Land(new LandData(id,title,color,border,holes)));
+            lands.add(new Land(new LandData(id,snapshot,title,color,border,holes)));
         }
     }
     private static void getLandZoneData(Sheet sheet, List<LandZone> zones) {
         long id, lid;
+        long snapshot;
         String title, note;
         ColorData color;
         List<LatLng> border;
@@ -176,6 +193,7 @@ public final class OpenXmlDataBaseInput {
             title = "";
             note = "";
             color = null;
+            snapshot = -1;
             border = new ArrayList<>();
 
             for (Cell cell : row) {
@@ -208,6 +226,20 @@ public final class OpenXmlDataBaseInput {
                         color = new ColorData(cell.getStringCellValue().trim());
                         break;
                     case 5:
+                        boolean isDouble;
+                        try{
+                            snapshot = Long.parseLong(cell.getStringCellValue().trim());
+                            isDouble = false;
+                        }catch (Exception ignore){
+                            isDouble = true;
+                        }
+                        if(isDouble){
+                            try{
+                                snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
+                            }catch (Exception ignore){}
+                        }
+                        break;
+                    case 6:
                         fillListsFromPointsString(
                                 border,
                                 new ArrayList<>(),
@@ -220,7 +252,7 @@ public final class OpenXmlDataBaseInput {
                 continue;
             }
 
-            zones.add(new LandZone(new LandZoneData(id,lid,title,note,color,border)));
+            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,color,border)));
         }
     }
 
@@ -238,14 +270,16 @@ public final class OpenXmlDataBaseInput {
                 strings,
                 new XSSFSheetXMLHandler.SheetContentsHandler() {
                     private long id;
+                    private long snapshot;
                     private String title, color;
-                    List<LatLng> border;
-                    List<List<LatLng>> holes;
+                    private List<LatLng> border;
+                    private List<List<LatLng>> holes;
                     @Override
                     public void startRow(int rowNum) {
                         id = 0;
                         title = "";
                         color = "";
+                        snapshot = -1;
                         border = new ArrayList<>();
                         holes = new ArrayList<>();
                     }
@@ -253,7 +287,7 @@ public final class OpenXmlDataBaseInput {
                     @Override
                     public void endRow(int rowNum) {
                         if(!title.isEmpty() && border.size() != 0) {
-                            lands.add(new Land(new LandData(id, title, new ColorData(color), border, holes)));
+                            lands.add(new Land(new LandData(id, snapshot, title, new ColorData(color), border, holes)));
                         }
                     }
 
@@ -278,6 +312,20 @@ public final class OpenXmlDataBaseInput {
                                 color = value;
                                 break;
                             case "D":
+                                boolean isDouble;
+                                try{
+                                    snapshot = Long.parseLong(value.trim());
+                                    isDouble = false;
+                                }catch (Exception ignore){
+                                    isDouble = true;
+                                }
+                                if(isDouble){
+                                    try{
+                                        snapshot = (long) Double.parseDouble(value.trim());
+                                    }catch (Exception ignore){}
+                                }
+                                break;
+                            case "E":
                                 fillListsFromPointsString(
                                         border,
                                         holes,
@@ -306,8 +354,9 @@ public final class OpenXmlDataBaseInput {
                 strings,
                 new XSSFSheetXMLHandler.SheetContentsHandler() {
                     private long id, lid;
+                    private long snapshot;
                     private String title,note,color;
-                    List<LatLng> border;
+                    private List<LatLng> border;
                     @Override
                     public void startRow(int rowNum) {
                         id = 0;
@@ -315,13 +364,14 @@ public final class OpenXmlDataBaseInput {
                         title = "";
                         note = "";
                         color = "";
+                        snapshot = -1;
                         border = new ArrayList<>();
                     }
 
                     @Override
                     public void endRow(int rowNum) {
                         if(lid != -1 && !title.isEmpty() && border.size() != 0){
-                            zones.add(new LandZone(new LandZoneData(id,lid,title,note,new ColorData(color),border)));
+                            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,new ColorData(color),border)));
                         }
                     }
 
@@ -356,6 +406,20 @@ public final class OpenXmlDataBaseInput {
                                 color = value;
                                 break;
                             case "F":
+                                boolean isDouble;
+                                try{
+                                    snapshot = Long.parseLong(value.trim());
+                                    isDouble = false;
+                                }catch (Exception ignore){
+                                    isDouble = true;
+                                }
+                                if(isDouble){
+                                    try{
+                                        snapshot = (long) Double.parseDouble(value.trim());
+                                    }catch (Exception ignore){}
+                                }
+                                break;
+                            case "G":
                                 fillListsFromPointsString(
                                         border,
                                         new ArrayList<>(),

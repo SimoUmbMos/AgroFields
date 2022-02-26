@@ -862,11 +862,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             showTitleDialog();
         }
         if( state == ZoneEditorState.NormalState){
-            binding.btnClearState.setVisibility(View.GONE);
-            binding.ibUndo.setVisibility(View.GONE);
+            binding.clControl.setVisibility(View.GONE);
         }else{
-            binding.btnClearState.setVisibility(View.VISIBLE);
-            binding.ibUndo.setVisibility(View.VISIBLE);
+            binding.clControl.setVisibility(View.VISIBLE);
         }
     }
 

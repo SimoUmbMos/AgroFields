@@ -6,80 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.settings.AppSettingsFragment">
 
-    <Spinner
-        android:id="@+id/svTheme"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/tvThemeLabel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvThemeLabel"
-        app:layout_constraintTop_toTopOf="@+id/tvThemeLabel"
-        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-
-    <TextView
-        android:id="@+id/tvThemeLabel"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/select_theme_title"
-        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
-        app:layout_constraintEnd_toStartOf="@+id/svTheme"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnExportDB"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:padding="8dp"
-        android:text="@string/export_database_button_label"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="?attr/colorOnSecondary"
-        android:backgroundTint="?attr/colorSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:cornerRadius="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnImportDB"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnImportDB"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:padding="8dp"
-        android:text="@string/import_database_button_label"
-        android:textAllCaps="false"
-        android:textColor="?attr/colorOnError"
-        android:backgroundTint="?attr/colorError"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:cornerRadius="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnExportDB"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
@@ -89,7 +15,7 @@
         android:gravity="center_vertical"
         android:singleLine="true"
         android:text="@string/app_settings_title"
-        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+        android:textAppearance="@style/TextAppearance.AppTheme.Title"
         app:layout_constraintBottom_toBottomOf="@+id/ibInfo"
         app:layout_constraintEnd_toStartOf="@+id/ibInfo"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,4 +44,156 @@
         android:src="@drawable/ic_menu_factory_reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:padding="8dp"
+                android:text="@string/settings_section_ui"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilTheme"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="@string/select_theme_title">
+
+                <AutoCompleteTextView
+                    android:id="@+id/tvTheme"
+                    style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="false"
+                    android:inputType="none"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="@string/settings_section_feedback"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilOwnerName"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Owner Name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etOwnerName"
+                    style="@style/Widget.Material3.TextInputEditText.FilledBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPersonName"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilOwnerEmail"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Owner Email">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etOwnerEmail"
+                    style="@style/Widget.Material3.TextInputEditText.FilledBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="@string/settings_section_data"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilSnapshot"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="@string/select_snapshot_title">
+
+                <AutoCompleteTextView
+                    android:id="@+id/tvSnapshot"
+                    style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="false"
+                    android:inputType="none"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportDB"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="8dp"
+                android:text="@string/export_database_button_label"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body"
+                app:icon="@drawable/ic_menu_export"
+                app:iconGravity="end"
+                app:iconSize="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnImportDB"
+                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:padding="8dp"
+                android:text="@string/import_database_button_label"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body"
+                app:icon="@drawable/ic_drawer_menu_import"
+                app:iconGravity="end"
+                app:iconSize="24dp" />
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

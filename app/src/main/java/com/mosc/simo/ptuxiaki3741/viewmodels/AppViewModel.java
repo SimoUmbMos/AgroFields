@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.viewmodels;
 
 import android.app.Application;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,9 +12,11 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.models.Land;
+import com.mosc.simo.ptuxiaki3741.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.CalendarNotification;
-import com.mosc.simo.ptuxiaki3741.models.entities.TagData;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.entities.Snapshot;
 import com.mosc.simo.ptuxiaki3741.repositorys.implement.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.repositorys.interfaces.AppRepository;
@@ -32,13 +33,12 @@ import java.util.TreeMap;
 
 public class AppViewModel extends AndroidViewModel {
     public static final String TAG = "LandViewModel";
-
     private final AppRepository appRepository;
 
+    private final MutableLiveData<List<Snapshot>> snapshots = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
-    private final MutableLiveData<List<LandDataRecord>> landsHistory = new MutableLiveData<>();
-    private final MutableLiveData<List<TagData>> tags = new MutableLiveData<>();
+    private final MutableLiveData<List<LandHistoryRecord>> landsHistory = new MutableLiveData<>();
     private final MutableLiveData<Map<LocalDate,List<CalendarNotification>>> notifications = new MutableLiveData<>();
 
     public AppViewModel(@NonNull Application application) {
@@ -47,32 +47,47 @@ public class AppViewModel extends AndroidViewModel {
         appRepository = new AppRepositoryImpl(db);
     }
 
+    public LiveData<List<Snapshot>> getSnapshots(){
+        return snapshots;
+    }
     public LiveData<List<Land>> getLands(){
         return lands;
     }
     public LiveData<Map<Long,List<LandZone>>> getLandZones(){
         return landZones;
     }
-    public LiveData<List<LandDataRecord>> getLandsHistory() {
+    public LiveData<List<LandHistoryRecord>> getLandsHistory() {
         return landsHistory;
-    }
-    public LiveData<List<TagData>> getTags() {
-        return tags;
     }
     public LiveData<Map<LocalDate,List<CalendarNotification>>> getNotifications() {
         return notifications;
     }
 
-    public void init(){
-        AsyncTask.execute(this::populateLists);
+    public void setDefaultSnapshot(Snapshot snapshot){
+        appRepository.setDefaultSnapshot(snapshot);
+        populateLists();
+    }
+    public Snapshot getDefaultSnapshot(){
+        return appRepository.getDefaultSnapshot();
     }
 
     private void populateLists() {
+        populateDataSnapshots();
         populateLands();
         populateLandZones();
         populateLandsRecords();
-        populateTags();
         populateNotifications();
+    }
+    private void populateDataSnapshots() {
+        List<Snapshot> snapshotsList;
+        if(snapshots.getValue() != null){
+            snapshotsList = snapshots.getValue();
+            snapshotsList.clear();
+            snapshotsList.addAll(appRepository.getSnapshots());
+        }else{
+            snapshotsList = new ArrayList<>(appRepository.getSnapshots());
+        }
+        snapshots.postValue(snapshotsList);
     }
     private void populateLands() {
         List<Land> landList;
@@ -97,7 +112,7 @@ public class AppViewModel extends AndroidViewModel {
         landZones.postValue(zoneList);
     }
     private void populateLandsRecords() {
-        List<LandDataRecord> landsHistoryList;
+        List<LandHistoryRecord> landsHistoryList;
         if(landsHistory.getValue() != null){
             landsHistoryList = landsHistory.getValue();
             landsHistoryList.clear();
@@ -106,17 +121,6 @@ public class AppViewModel extends AndroidViewModel {
             landsHistoryList = new ArrayList<>(appRepository.getLandRecords());
         }
         landsHistory.postValue(landsHistoryList);
-    }
-    private void populateTags() {
-        List<TagData> tagsList;
-        if(tags.getValue() != null){
-            tagsList = tags.getValue();
-            tagsList.clear();
-            tagsList.addAll(appRepository.getTags());
-        }else{
-            tagsList = new ArrayList<>(appRepository.getTags());
-        }
-        tags.postValue(tagsList);
     }
     private void populateNotifications() {
         Map<LocalDate,List<CalendarNotification>> notificationsList;
@@ -130,233 +134,306 @@ public class AppViewModel extends AndroidViewModel {
         notifications.postValue(notificationsList);
     }
 
+    public void refreshImportLists(){
+        populateDataSnapshots();
+        populateLands();
+        populateLandZones();
+        populateLandsRecords();
+    }
+
     public void saveLand(Land land){
-        if(land != null){
-            LandDBAction action = LandDBAction.CREATE;
-            if(land.getData().getId() != 0){
-                if(appRepository.getLandByID(land.getData().getId()) != null){
-                    action = LandDBAction.UPDATE;
-                }
-            }
-            List<LandZone> zones = appRepository.getLandZonesByLID(land.getData().getId());
+        if(land == null) return;
+        if(land.getData() == null) return;
 
-            List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
-            List<List<LatLng>> tempHoles = new ArrayList<>();
-            for(List<LatLng> hole : land.getData().getHoles()){
-                tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
+        LandDBAction action = LandDBAction.CREATE;
+        if(land.getData().getId() != 0){
+            if(appRepository.landExist(land.getData().getId(),land.getData().getSnapshot())){
+                action = LandDBAction.UPDATE;
             }
-            land.getData().setBorder(tempPointList);
-            land.getData().setHoles(tempHoles);
+        }
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
 
-            appRepository.saveLand(land);
-            LandDataRecord landRecord = new LandDataRecord(
-                    land.getData(),
-                    action,
-                    new Date()
-            );
-            appRepository.saveLandRecord(landRecord);
-            if(zones != null){
-                for(LandZone zone:zones){
-                    if(MapUtil.contains(
-                            zone.getData().getBorder(),
-                            land.getData().getBorder()
-                    )){
-                        List<LatLng> tempBorders = DataUtil.removeSamePointStartEnd(
-                            MapUtil.intersection(
+        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
+        List<List<LatLng>> tempHoles = new ArrayList<>();
+        for(List<LatLng> hole : land.getData().getHoles()){
+            tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
+        }
+        land.getData().setBorder(tempPointList);
+        land.getData().setHoles(tempHoles);
+
+        appRepository.saveLand(land);
+
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                action,
+                new Date()
+        );
+        List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
+        for(LandZone zone:zones){
+            if(MapUtil.contains(
+                    zone.getData().getBorder(),
+                    land.getData().getBorder()
+            )){
+                List<LatLng> tempBorders = DataUtil.removeSamePointStartEnd(
+                        MapUtil.intersection(
                                 zone.getData().getBorder(),
                                 land.getData().getBorder()
-                            )
-                        );
-                        for(List<LatLng> hole : land.getData().getHoles()){
-                            if(MapUtil.contains(tempBorders,hole)){
-                                List<LatLng> tempDifference = MapUtil.getBiggerAreaZoneDifference(tempBorders,hole);
-                                tempBorders.clear();
-                                tempBorders.addAll(DataUtil.removeSamePointStartEnd(tempDifference));
-                            }
-                        }
-                        if(tempBorders.size()>0){
-                            zone.getData().setBorder(tempBorders);
-                            appRepository.saveZone(zone);
-                        }
+                        )
+                );
+                for(List<LatLng> hole : land.getData().getHoles()){
+                    if(MapUtil.contains(tempBorders,hole)){
+                        List<LatLng> tempDifference = MapUtil.getBiggerAreaZoneDifference(tempBorders,hole);
+                        tempBorders.clear();
+                        tempBorders.addAll(DataUtil.removeSamePointStartEnd(tempDifference));
                     }
                 }
+                if(tempBorders.size()>0){
+                    zone.getData().setBorder(tempBorders);
+                    appRepository.saveZone(zone);
+                    zoneDataRecords.add(new LandZoneDataRecord(landRecord,zone.getData()));
+                }
             }
-            populateLists();
         }
+
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
+        populateLists();
     }
-    public void restoreLand(Land land) {
-        if(land != null){
-            if(land.getData().getId() != 0){
-                List<LandZone> zones =appRepository.getLandZonesByLID(land.getData().getId());
-                appRepository.saveLand(land);
-                LandDataRecord landRecord = new LandDataRecord(
-                        land.getData(),
-                        LandDBAction.RESTORE,
-                        new Date()
-                );
-                appRepository.saveLandRecord(landRecord);
-                if(zones != null){
-                    for(LandZone zone:zones){
-                        if(MapUtil.contains(
+    public void importLand(Land land){
+        if(land == null) return;
+        if(land.getData() == null) return;
+
+        LandDBAction action = LandDBAction.IMPORTED;
+
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+
+        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
+        List<List<LatLng>> tempHoles = new ArrayList<>();
+        for(List<LatLng> hole : land.getData().getHoles()){
+            tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
+        }
+        land.getData().setBorder(tempPointList);
+        land.getData().setHoles(tempHoles);
+
+        appRepository.saveLand(land);
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                action,
+                new Date()
+        );
+        List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
+
+        for(LandZone zone:zones){
+            if(MapUtil.contains(
+                    zone.getData().getBorder(),
+                    land.getData().getBorder()
+            )){
+                List<LatLng> tempBorders = DataUtil.removeSamePointStartEnd(
+                        MapUtil.intersection(
                                 zone.getData().getBorder(),
                                 land.getData().getBorder()
-                        )){
-                            List<LatLng> tempBorders = MapUtil.intersection(
-                                    zone.getData().getBorder(),
-                                    land.getData().getBorder()
-                            );
-                            if(tempBorders.size()>0){
-                                zone.getData().setBorder(tempBorders);
-                                appRepository.saveZone(zone);
-                            }
-                        }
+                        )
+                );
+                for(List<LatLng> hole : land.getData().getHoles()){
+                    if(MapUtil.contains(tempBorders,hole)){
+                        List<LatLng> tempDifference = MapUtil.getBiggerAreaZoneDifference(tempBorders,hole);
+                        tempBorders.clear();
+                        tempBorders.addAll(DataUtil.removeSamePointStartEnd(tempDifference));
                     }
                 }
-            }
-            populateLists();
-        }
-    }
-    public void removeLand(Land land) {
-        if(land != null){
-            AsyncTask.execute(()-> {
-                LandDataRecord landRecord = new LandDataRecord(
-                        land.getData(),
-                        LandDBAction.DELETE,
-                        new Date()
-                );
-                appRepository.saveLandRecord(landRecord);
-                appRepository.deleteLand(land);
-                populateLists();
-            });
-        }
-    }
-    public void removeLands(List<Land> lands) {
-        if(lands != null){
-            AsyncTask.execute(()-> {
-                LandDataRecord landRecord;
-                for(Land land:lands){
-                    landRecord = new LandDataRecord(
-                            land.getData(),
-                            LandDBAction.DELETE,
-                            new Date()
-                    );
-                    appRepository.saveLandRecord(landRecord);
-                    appRepository.deleteLand(land);
+                if(tempBorders.size()>0){
+                    zone.getData().setBorder(tempBorders);
+                    appRepository.saveZone(zone);
+                    zoneDataRecords.add(new LandZoneDataRecord(landRecord,zone.getData()));
                 }
-                populateLists();
-            });
+            }
         }
+
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
+    }
+    private boolean removeLandAction(Land land) {
+        if(land == null) return false;
+        if(land.getData() == null) return false;
+        if(appRepository.getLandZonesByLandData(land.getData()).size() > 0) return false;
+
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                LandDBAction.DELETE,
+                new Date()
+        );
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord));
+        appRepository.deleteLand(land);
+        return true;
+    }
+    public boolean removeLand(Land land) {
+        if(land == null) return false;
+        if(land.getData() == null) return false;
+        if(removeLandAction(land)){
+            populateLists();
+            return true;
+        }
+        return false;
+    }
+    public boolean removeLands(List<Land> lands) {
+        if(lands == null) return false;
+
+        boolean ans = true;
+        for(Land land:lands){
+            if(!removeLandAction(land)) ans = false;
+        }
+        populateLists();
+        return ans;
     }
 
     public void saveZone(LandZone zone) {
-        if(zone != null){
-            List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
-            zone.getData().setBorder(tempPointList);
-            appRepository.saveZone(zone);
+        if(zone == null) return;
+        if(zone.getData() == null) return;
+
+        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        if(land == null) return;
+
+        LandDBAction action = LandDBAction.ZONE_ADDED;
+        if(zone.getData().getId() != 0){
+            if(appRepository.zoneExist(zone.getData().getId(),zone.getData().getSnapshot())){
+                action = LandDBAction.ZONE_UPDATED;
+            }
+        }
+
+        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
+        zone.getData().setBorder(tempPointList);
+        appRepository.saveZone(zone);
+
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                action,
+                new Date()
+        );
+        List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        for(LandZone temp : zones){
+            zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
+        }
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
+
+        populateLists();
+    }
+    public void importZone(LandZone zone) {
+        if(zone == null) return;
+        if(zone.getData() == null) return;
+
+        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        if(land == null) return;
+
+        LandDBAction action = LandDBAction.ZONE_IMPORTED;
+
+        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
+        zone.getData().setBorder(tempPointList);
+        appRepository.saveZone(zone);
+
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                action,
+                new Date()
+        );
+        List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        for(LandZone temp : zones){
+            zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
+        }
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
+    }
+    private boolean removeZoneAction(LandZone zone){
+        if(zone == null) return false;
+        if(zone.getData() == null) return false;
+
+        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        if(land == null) return false;
+
+        LandDBAction action = LandDBAction.ZONE_REMOVED;
+        appRepository.deleteZone(zone);
+
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                action,
+                new Date()
+        );
+        List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        for(LandZone temp : zones){
+            zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
+        }
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
+        return true;
+    }
+    public boolean removeZone(LandZone zone) {
+        if(removeZoneAction(zone)) {
             populateLists();
+            return true;
         }
+        return false;
     }
-    public void removeZone(LandZone zone) {
-        if(zone != null){
-            AsyncTask.execute(()-> {
-                appRepository.deleteZone(zone);
-                populateLists();
-            });
+    public boolean removeZones(List<LandZone> zones) {
+        if(zones == null) return false;
+        boolean ans = true;
+
+        for(LandZone zone:zones){
+            if(!removeZoneAction(zone)) ans = false;
         }
-    }
-    public void removeZones(List<LandZone> zones) {
-        if(zones != null){
-            AsyncTask.execute(()-> {
-                for(LandZone zone:zones){
-                    appRepository.deleteZone(zone);
-                }
-                populateLists();
-            });
-        }
+        if(ans) populateLists();
+        return ans;
     }
 
-    public void importLandsAndZones(List<Land> lands, List<LandZone> zones) {
-        if(lands != null){
-            LandDataRecord landRecord;
-            for(Land land:lands){
+    public void restoreLand(Land land, List<LandZone> zones) {
+        if(land == null) return;
+        if(land.getData() == null) return;
+        if(land.getData().getId() <= 0) return;
 
-                List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
-                land.getData().setBorder(tempPointList);
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                LandDBAction.RESTORE,
+                new Date()
+        );
+        List<LandZoneDataRecord> zonesRecord = new ArrayList<>();
 
-                List<List<LatLng>> tempHoles = new ArrayList<>();
-                for(List<LatLng> hole : land.getData().getHoles()){
-                    tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
-                }
-                land.getData().setHoles(tempHoles);
+        appRepository.saveLand(land);
 
-                appRepository.saveLand(land);
-                landRecord = new LandDataRecord(
-                        land.getData(),
-                        LandDBAction.IMPORTED,
-                        new Date()
-                );
-                appRepository.saveLandRecord(landRecord);
-            }
+        if(zones == null) zones = new ArrayList<>();
+        List<LandZone> zonesDelete =appRepository.getLandZonesByLandData(land.getData());
+        for(LandZone zone : zonesDelete){
+            appRepository.deleteZone(zone);
         }
-        if(zones != null){
-            Land temp;
-            for(LandZone zone : zones){
-                temp = appRepository.getLandByID(zone.getData().getLid());
-                if(temp != null){
-                    List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
-                    zone.getData().setBorder(tempPointList);
-                    appRepository.saveZone(zone);
-                }
-            }
+        for(LandZone zone : zones){
+            appRepository.saveZone(zone);
+            zonesRecord.add(new LandZoneDataRecord(landRecord, zone.getData()));
         }
+
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zonesRecord));
         populateLists();
     }
 
-    public void saveTag(TagData tag) {
-        if(tag != null){
-            AsyncTask.execute(()-> {
-                appRepository.saveTag(tag);
-                populateLists();
-            });
-        }
-    }
-    public void removeTag(TagData tag) {
-        if(tag != null){
-            AsyncTask.execute(()-> {
-                appRepository.deleteTag(tag);
-                populateLists();
-            });
-        }
-    }
-
     public void saveNotification(CalendarNotification notification) {
-        if(notification != null){
-            AsyncTask.execute(()-> {
-                if(notification.getId() != 0){
-                    DataUtil.removeNotificationToAlertManager(
-                            getApplication().getApplicationContext(),
-                            appRepository.getNotification(notification.getId())
-                    );
-                }
-                appRepository.saveNotification(notification);
-                populateLists();
-                DataUtil.addNotificationToAlertManager(
-                        getApplication().getApplicationContext(),
-                        notification
-                );
-            });
+        if(notification == null) return;
+
+        if(notification.getId() != 0){
+            DataUtil.removeNotificationToAlertManager(
+                    getApplication().getApplicationContext(),
+                    appRepository.getNotification(notification.getId(), notification.getSnapshot())
+            );
         }
+        appRepository.saveNotification(notification);
+        populateLists();
+        DataUtil.addNotificationToAlertManager(
+                getApplication().getApplicationContext(),
+                notification
+        );
     }
     public void removeNotification(CalendarNotification notification) {
-        if(notification != null){
-            AsyncTask.execute(()-> {
-                DataUtil.removeNotificationToAlertManager(
-                        getApplication().getApplicationContext(),
-                        notification
-                );
-                appRepository.deleteNotification(notification);
-                populateLists();
-            });
-        }
+        if(notification == null) return;
+
+        DataUtil.removeNotificationToAlertManager(
+                getApplication().getApplicationContext(),
+                notification
+        );
+        appRepository.deleteNotification(notification);
+        populateLists();
     }
 }

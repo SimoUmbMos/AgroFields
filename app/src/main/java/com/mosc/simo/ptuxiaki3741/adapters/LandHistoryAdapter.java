@@ -12,7 +12,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistoryBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.views.HistoryItemView;
 
 import java.text.DateFormat;
@@ -24,13 +24,13 @@ public class LandHistoryAdapter extends RecyclerView.Adapter<LandHistoryAdapter.
     private final List<LandHistory> data;
     private final String[] values;
     private final ActionResult<LandHistory> onHistoryClick;
-    private final ActionResult<LandDataRecord> onRecordClick;
+    private final ActionResult<LandHistoryRecord> onRecordClick;
     private final DateFormat dateFormat;
     public LandHistoryAdapter(
             List<LandHistory> data,
             String[] values,
             ActionResult<LandHistory> onHistoryClick,
-            ActionResult<LandDataRecord> onRecordClick
+            ActionResult<LandHistoryRecord> onRecordClick
     ){
         this.data = data;
         this.values = values;
@@ -86,9 +86,9 @@ public class LandHistoryAdapter extends RecyclerView.Adapter<LandHistoryAdapter.
             String action, date;
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 2, 0, 2);
-            for(LandDataRecord entry:item.getData()){
-                date = dateFormat.format(entry.getDate());
-                switch (entry.getActionID()){
+            for(LandHistoryRecord entry:item.getData()){
+                date = dateFormat.format(entry.getLandData().getDate());
+                switch (entry.getLandData().getActionID()){
                     case CREATE:
                         action = values[0];
                         break;
@@ -103,6 +103,18 @@ public class LandHistoryAdapter extends RecyclerView.Adapter<LandHistoryAdapter.
                         break;
                     case DELETE:
                         action = values[4];
+                        break;
+                    case ZONE_ADDED:
+                        action = values[5];
+                        break;
+                    case ZONE_UPDATED:
+                        action = values[6];
+                        break;
+                    case ZONE_IMPORTED:
+                        action = values[7];
+                        break;
+                    case ZONE_REMOVED:
+                        action = values[8];
                         break;
                     default:
                         action = "";

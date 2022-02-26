@@ -66,6 +66,9 @@
             app:popUpToInclusive="false"/>
         <action android:id="@+id/toLandHistory"
             app:destination="@id/LandHistorySelectedFragment"/>
+        <action
+            android:id="@+id/toZonesLandSelected"
+            app:destination="@id/ZonesLandSelectedFragment" />
     </fragment>
     <fragment android:id="@+id/LandHistorySelectedFragment"
         android:name="com.mosc.simo.ptuxiaki3741.fragments.land.LandHistorySelectedFragment"
@@ -92,17 +95,10 @@
         <action android:id="@+id/toLandsHistory"
             app:destination="@id/LandHistoryDeletedFragment" />
     </fragment>
-    <fragment android:id="@+id/ZonesLandSelectFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.zones.ZonesLandSelectFragment"
-        android:label="fragment_zones_land_select"
-        tools:layout="@layout/fragment_zones_land_select" >
-        <action android:id="@+id/toZonesLandSelected"
-            app:destination="@id/ZonesLandSelectedFragment" />
-    </fragment>
     <fragment android:id="@+id/ZonesLandSelectedFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.zones.ZonesLandSelectedFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.fragments.zones.ZonesMenuFragment"
         android:label="fragment_zones_land_selected"
-        tools:layout="@layout/fragment_zones_land_selected" >
+        tools:layout="@layout/fragment_zones_menu" >
         <action
             android:id="@+id/toLandPreview"
             app:destination="@id/ZoneEditorFragment" />
@@ -119,8 +115,6 @@
             app:destination="@id/AppSettingsFragment" />
         <action android:id="@+id/toMenuLands"
             app:destination="@id/MenuLandsFragment" />
-        <action android:id="@+id/toMenuZoneLands"
-            app:destination="@id/ZonesLandSelectFragment" />
         <action android:id="@+id/toLiveMap"
             app:destination="@id/LiveMapFragment" />
         <action android:id="@+id/toCalendar"

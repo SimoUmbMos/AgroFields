@@ -5,9 +5,12 @@ import android.graphics.Color;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
+import com.mosc.simo.ptuxiaki3741.models.LandHistoryRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.models.entities.LandZoneDataRecord;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
 
 import java.util.ArrayList;
@@ -108,8 +111,9 @@ public final class LandUtil {
         );
     }
 
-    public static LandData getLandDataFromLandRecord(LandDataRecord record){
-        if(record != null){
+    public static LandData getLandDataFromLandRecord(LandHistoryRecord r){
+        if(r != null){
+            LandDataRecord record = r.getLandData();
             return new LandData(
                     record.getLandID(),
                     record.getLandTitle(),
@@ -121,19 +125,38 @@ public final class LandUtil {
         return null;
     }
 
-    public static List<LandHistory> splitLandRecordByLand(List<LandDataRecord> r){
+    public static ArrayList<LandZone> getLandZonesFromLandRecord(LandHistoryRecord r){
+        ArrayList<LandZone> zones = new ArrayList<>();
+        if(r == null ) return zones;
+        List<LandZoneDataRecord> zoneRecords = r.getLandZonesData();
+        for(LandZoneDataRecord zoneRecord : zoneRecords){
+            LandZoneData data = new LandZoneData(
+                    zoneRecord.getZoneID(),
+                    zoneRecord.getRecordSnapshot(),
+                    r.getLandData().getLandID(),
+                    zoneRecord.getZoneTitle(),
+                    zoneRecord.getZoneNote(),
+                    zoneRecord.getZoneColor(),
+                    zoneRecord.getZoneBorder()
+            );
+            zones.add(new LandZone(data));
+        }
+        return zones;
+    }
+
+    public static List<LandHistory> splitLandRecordByLand(List<LandHistoryRecord> r){
         if(r != null){
-            List<LandDataRecord> records = new ArrayList<>(r);
-            List<List<LandDataRecord>> recordsList = new ArrayList<>();
-            List<LandDataRecord> tempRecordsList;
-            LandDataRecord tempRecord;
+            List<LandHistoryRecord> records = new ArrayList<>(r);
+            List<List<LandHistoryRecord>> recordsList = new ArrayList<>();
+            List<LandHistoryRecord> tempRecordsList;
+            LandHistoryRecord tempRecord;
             boolean exist;
-            for(LandDataRecord record : records){
+            for(LandHistoryRecord record : records){
                 if(record != null){
                     exist = false;
-                    for(List<LandDataRecord> tempRecords : recordsList){
+                    for(List<LandHistoryRecord> tempRecords : recordsList){
                         tempRecord = tempRecords.get(0);
-                        if(tempRecord.getLandID() == record.getLandID()){
+                        if(tempRecord.getLandData().getLandID() == record.getLandData().getLandID()){
                             tempRecords.add(record);
                             exist = true;
                             break;
@@ -148,7 +171,7 @@ public final class LandUtil {
                 }
             }
             List<LandHistory> result = new ArrayList<>();
-            for(List<LandDataRecord> dataRecordList:recordsList){
+            for(List<LandHistoryRecord> dataRecordList:recordsList){
                 result.add(new LandHistory(dataRecordList));
             }
             return result;

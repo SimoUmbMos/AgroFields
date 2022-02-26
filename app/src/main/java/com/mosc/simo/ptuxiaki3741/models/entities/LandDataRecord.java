@@ -3,7 +3,7 @@ package com.mosc.simo.ptuxiaki3741.models.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+import androidx.room.Index;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.enums.LandDBAction;
@@ -15,10 +15,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(tableName = "LandDataRecord")
+@Entity(
+        tableName = "LandDataRecord",
+        primaryKeys = {
+            "ID",
+            "Snapshot"
+        },
+        indices = {
+                @Index(
+                        value = {"ID","Snapshot"},
+                        unique = true
+                )
+        }
+)
 public class LandDataRecord {
-    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "ID")
     private long id;
+    @ColumnInfo(name = "Snapshot")
+    private long snapshot;
     @ColumnInfo(name = "LandID")
     private final long landID;
     @ColumnInfo(name = "LandTitle")
@@ -37,19 +51,7 @@ public class LandDataRecord {
     @Ignore
     public LandDataRecord(LandData land, LandDBAction actionID, Date date) {
         this.id = 0;
-        this.landID = land.getId();
-        this.landTitle = land.getTitle();
-        this.landColor = land.getColor();
-        this.actionID = actionID;
-        this.date = date;
-        this.border = new ArrayList<>();
-        this.holes = new ArrayList<>();
-        setBorder(land.getBorder());
-        setHoles(land.getHoles());
-    }
-    @Ignore
-    public LandDataRecord(long id, LandData land, LandDBAction actionID, Date date) {
-        this.id = id;
+        this.snapshot = land.getSnapshot();
         this.landID = land.getId();
         this.landTitle = land.getTitle();
         this.landColor = land.getColor();
@@ -61,10 +63,13 @@ public class LandDataRecord {
         setHoles(land.getHoles());
     }
 
-    public LandDataRecord(long id, long landID, String landTitle, ColorData landColor, LandDBAction actionID, Date date,
-                          List<LatLng> border, List<List<LatLng>> holes
+    public LandDataRecord(long id, long snapshot,
+                          long landID, String landTitle, ColorData landColor,
+                          List<LatLng> border, List<List<LatLng>> holes,
+                          LandDBAction actionID, Date date
     ) {
         this.id = id;
+        this.snapshot = snapshot;
         this.landID = landID;
         this.landTitle = landTitle;
         this.landColor = landColor;
@@ -100,6 +105,9 @@ public class LandDataRecord {
     public List<List<LatLng>> getHoles() {
         return this.holes;
     }
+    public long getSnapshot() {
+        return snapshot;
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -113,6 +121,9 @@ public class LandDataRecord {
         this.holes.clear();
         this.holes.addAll(holes);
     }
+    public void setSnapshot(long snapshot) {
+        this.snapshot = snapshot;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -121,6 +132,7 @@ public class LandDataRecord {
         LandDataRecord that = (LandDataRecord) o;
         return
                 id == that.id &&
+                snapshot == that.snapshot &&
                 landID == that.landID &&
                 actionID == that.actionID &&
                 landTitle.equals(that.landTitle) &&
@@ -131,6 +143,6 @@ public class LandDataRecord {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, landID, actionID, landTitle, date, border,holes);
+        return Objects.hash(id, snapshot, landID, actionID, landTitle, date, border,holes);
     }
 }

@@ -1,7 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.models;
 
 import com.mosc.simo.ptuxiaki3741.models.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.ListUtils;
 
@@ -12,9 +11,9 @@ import java.util.Objects;
 public class LandHistory {
     private LandData landData;
     private boolean isVisible;
-    private final List<LandDataRecord> landRecords;
+    private final List<LandHistoryRecord> landRecords;
 
-    public LandHistory(List<LandDataRecord> records){
+    public LandHistory(List<LandHistoryRecord> records){
         if(records != null)
             landRecords = new ArrayList<>(records);
         else
@@ -34,7 +33,7 @@ public class LandHistory {
     public boolean isVisible() {
         return isVisible;
     }
-    public List<LandDataRecord> getData() {
+    public List<LandHistoryRecord> getData() {
         return landRecords;
     }
 
@@ -44,7 +43,7 @@ public class LandHistory {
     public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
     }
-    public void setData(List<LandDataRecord> landRecords) {
+    public void setData(List<LandHistoryRecord> landRecords) {
         this.landRecords.clear();
         this.landRecords.addAll(landRecords);
     }

@@ -294,10 +294,11 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_live_map.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_loading.xml" value="0.16247379454926625" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.2975630611372381" />
-        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.16247379454926625" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zone_editor.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_select.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_selected.xml" value="0.27247451343836887" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_menu.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/menu_view_add.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/menu_view_delete.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/menu_view_export.xml" value="0.2975630611372381" />
@@ -328,6 +329,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/zone_list_menu.xml" value="0.15220179563916203" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/mipmap-anydpi/application_icon.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/mipmap-anydpi/application_icon_round.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AppData/Local/Android/Sdk/platforms/android-32/data/res/layout/simple_spinner_dropdown_item.xml" value="0.15220179563916203" />
       </map>
     </option>
   </component>

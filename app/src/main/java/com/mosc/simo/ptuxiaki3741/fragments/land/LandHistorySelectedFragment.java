@@ -20,10 +20,11 @@ import com.mosc.simo.ptuxiaki3741.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.adapters.LandHistorySelectedAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandHistorySelectedBinding;
+import com.mosc.simo.ptuxiaki3741.models.LandHistoryRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.models.Land;
 import com.mosc.simo.ptuxiaki3741.models.LandHistory;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.values.AppValues;
@@ -37,7 +38,7 @@ public class LandHistorySelectedFragment extends Fragment {
     private LandHistorySelectedAdapter adapter;
 
     private Land land;
-    private List<LandDataRecord> data2;
+    private List<LandHistoryRecord> data2;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -98,7 +99,11 @@ public class LandHistorySelectedFragment extends Fragment {
                 getString(R.string.land_action_updated),
                 getString(R.string.land_action_restored),
                 getString(R.string.land_action_imported),
-                getString(R.string.land_action_deleted)
+                getString(R.string.land_action_deleted),
+                getString(R.string.land_action_zone_created),
+                getString(R.string.land_action_zone_updated),
+                getString(R.string.land_action_zone_imported),
+                getString(R.string.land_action_zone_deleted)
         };
         adapter = new LandHistorySelectedAdapter(
                 data2,
@@ -117,22 +122,21 @@ public class LandHistorySelectedFragment extends Fragment {
     }
 
     //data
-    private void populateData(List<LandDataRecord> r) {
+    private void populateData(List<LandHistoryRecord> r) {
+        if (land == null) return;
+        data2.clear();
         List<LandHistory> temp1 = LandUtil.splitLandRecordByLand(r);
-        if(land != null){
-            data2.clear();
-            for(LandHistory temp2:temp1){
-                if(temp2.getLandData().getId() == land.getData().getId()){
-                    data2.addAll(temp2.getData());
-                    break;
-                }
+        for(LandHistory temp2 : temp1){
+            if(temp2.getLandData().getId() == land.getData().getId()){
+                data2.addAll(temp2.getData());
+                break;
             }
         }
     }
 
     //observers
     @SuppressLint("NotifyDataSetChanged")
-    private void onHistoryChange(List<LandDataRecord> r) {
+    private void onHistoryChange(List<LandHistoryRecord> r) {
         AsyncTask.execute(()->{
             if(getActivity() != null) {
                 populateData(r);
@@ -144,10 +148,11 @@ public class LandHistorySelectedFragment extends Fragment {
         });
     }
 
-    public void onRecordClick(LandDataRecord record){
+    public void onRecordClick(LandHistoryRecord record){
         Land land = new Land(LandUtil.getLandDataFromLandRecord(record));
+        ArrayList<LandZone> zones = LandUtil.getLandZonesFromLandRecord(record);
         if(land.getData() != null){
-            toLandMap(getActivity(),land);
+            toLandMap(getActivity(), land, zones);
         }
     }
 
@@ -161,13 +166,14 @@ public class LandHistorySelectedFragment extends Fragment {
     }
 
     //ui
-    public void toLandMap(@Nullable Activity activity, Land land) {
+    public void toLandMap(@Nullable Activity activity, Land land, ArrayList<LandZone> zones) {
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.LandHistorySelectedFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,land);
                 bundle.putBoolean(AppValues.argIsHistory,true);
+                bundle.putParcelable(AppValues.argLand,land);
+                if(zones != null) bundle.putParcelableArrayList(AppValues.argZones, zones);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);
             });

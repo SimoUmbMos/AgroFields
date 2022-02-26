@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderHistorySelectedBinding;
 import com.mosc.simo.ptuxiaki3741.interfaces.ActionResult;
-import com.mosc.simo.ptuxiaki3741.models.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.models.LandHistoryRecord;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Locale;
 
 public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistorySelectedAdapter.HistoryItemSelectedViewHolder>{
-    private final List<LandDataRecord> data;
+    private final List<LandHistoryRecord> data;
     private final String[] values;
-    private final ActionResult<LandDataRecord> onClick;
+    private final ActionResult<LandHistoryRecord> onClick;
     private final DateFormat dateFormat;
     public LandHistorySelectedAdapter(
-            List<LandDataRecord> data,
+            List<LandHistoryRecord> data,
             String[] values,
-            ActionResult<LandDataRecord> onClick
+            ActionResult<LandHistoryRecord> onClick
     ){
         this.data = data;
         this.values = values;
@@ -58,14 +58,14 @@ public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistory
     }
 
     private void setupViewHolder(@NonNull HistoryItemSelectedViewHolder holder, int position) {
-        LandDataRecord item = data.get(position);
+        LandHistoryRecord item = data.get(position);
         holder.binding.getRoot().setOnClickListener(v->onClick.onActionResult(item));
 
-        String date = dateFormat.format(item.getDate());
+        String date = dateFormat.format(item.getLandData().getDate());
         holder.binding.hiData.setDate(date);
 
-        String action = "";
-        switch (item.getActionID()){
+        String action;
+        switch (item.getLandData().getActionID()){
             case CREATE:
                 action = values[0];
                 break;
@@ -80,6 +80,21 @@ public class LandHistorySelectedAdapter extends RecyclerView.Adapter<LandHistory
                 break;
             case DELETE:
                 action = values[4];
+                break;
+            case ZONE_ADDED:
+                action = values[5];
+                break;
+            case ZONE_UPDATED:
+                action = values[6];
+                break;
+            case ZONE_IMPORTED:
+                action = values[7];
+                break;
+            case ZONE_REMOVED:
+                action = values[8];
+                break;
+            default:
+                action = "";
                 break;
         }
         holder.binding.hiData.setAction(action);

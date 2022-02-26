@@ -9,7 +9,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import com.mosc.simo.ptuxiaki3741.enums.CalendarEventType;
 
@@ -17,28 +16,53 @@ import java.util.Date;
 
 @Entity(tableName = "CalendarNotification",
         indices = {
-                @Index("id"),
-                @Index("LandID"),
-                @Index("ZoneID")
+                @Index(
+                        value = {"LandID", "Snapshot"}
+                ),
+                @Index(
+                        value = {"ZoneID", "Snapshot"}
+                ),
+                @Index(
+                        value = {"ID","Snapshot"},
+                        unique = true
+                )
         },
         foreignKeys = {
                 @ForeignKey(
                         entity = LandData.class,
-                        parentColumns = "id",
-                        childColumns = "LandID",
+                        parentColumns = {
+                                "ID",
+                                "Snapshot"
+                        },
+                        childColumns = {
+                                "LandID",
+                                "Snapshot"
+                        },
                         onDelete = ForeignKey.CASCADE
                 ),
                 @ForeignKey(
                         entity = LandZoneData.class,
-                        parentColumns = "id",
-                        childColumns = "ZoneID",
+                        parentColumns = {
+                                "ID",
+                                "Snapshot"
+                        },
+                        childColumns = {
+                                "ZoneID",
+                                "Snapshot"
+                        },
                         onDelete = ForeignKey.CASCADE
                 )
+        },
+        primaryKeys = {
+                "ID",
+                "Snapshot"
         }
 )
 public class CalendarNotification implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "ID")
     private long id;
+    @ColumnInfo(name = "Snapshot")
+    private long snapshot;
     @ColumnInfo(name = "LandID")
     private Long lid;
     @ColumnInfo(name = "ZoneID")
@@ -55,6 +79,7 @@ public class CalendarNotification implements Parcelable {
     @Ignore
     public CalendarNotification(Parcel in){
         id = in.readLong();
+        snapshot = in.readLong();
         lid = in.readLong();
         zid = in.readLong();
         title = in.readString();
@@ -65,8 +90,9 @@ public class CalendarNotification implements Parcelable {
         if(lid == 0) lid = null;
         if(zid == 0) zid = null;
     }
-    public CalendarNotification(long id, Long lid, Long zid, String title, String message, CalendarEventType type, Date date) {
+    public CalendarNotification(long id, long snapshot, Long lid, Long zid, String title, String message, CalendarEventType type, Date date) {
         setId(id);
+        setSnapshot(snapshot);
         setLid(lid);
         setZid(zid);
         setTitle(title);
@@ -96,6 +122,9 @@ public class CalendarNotification implements Parcelable {
     public Date getDate() {
         return date;
     }
+    public long getSnapshot() {
+        return snapshot;
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -117,6 +146,9 @@ public class CalendarNotification implements Parcelable {
     }
     public void setDate(Date date) {
         this.date = date;
+    }
+    public void setSnapshot(long snapshot) {
+        this.snapshot = snapshot;
     }
 
     @Override
@@ -149,6 +181,7 @@ public class CalendarNotification implements Parcelable {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeLong(id);
+        out.writeLong(snapshot);
         if(lid == null){
             out.writeLong(0);
         }else{
