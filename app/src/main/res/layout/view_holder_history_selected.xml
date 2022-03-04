@@ -11,7 +11,7 @@
     app:strokeWidth="@dimen/cardStrokeWidth"
     app:cardElevation="@dimen/cardElevation">
 
-    <com.mosc.simo.ptuxiaki3741.views.HistoryItemView
+    <com.mosc.simo.ptuxiaki3741.ui.views.HistoryItemView
         android:id="@+id/hiData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

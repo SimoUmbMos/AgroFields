@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutDescription="@xml/fragment_zones_land_selected_scene"
-    tools:context=".fragments.zones.ZonesMenuFragment">
+    tools:context=".ui.fragments.ZoneMenuFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/glBegin"
@@ -42,6 +42,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:padding="14dp"
         android:background="@color/transparent"
         android:scaleType="centerInside"
         android:src="@drawable/ic_menu_close"

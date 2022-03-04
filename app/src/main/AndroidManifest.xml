@@ -32,12 +32,12 @@
             android:value="@string/google_maps_key" />
 
         <receiver
-            android:name=".broadcast_receivers.CalendarReceiver"
+            android:name=".ui.broadcast_receivers.CalendarReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:exported="true"
             android:screenOrientation="portrait"

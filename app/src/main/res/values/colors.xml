@@ -40,13 +40,6 @@
   <color name="light_surfaceVariant">#DFE5D7</color>
   <color name="light_onSurfaceVariant">#43493F</color>
   <color name="light_outline">#73796E</color>
-  <!-- Light Fab Colors -->
-  <color name="light_fabPrimary">#C9EBC6</color>
-  <color name="light_onFabPrimary">#05210A</color>
-  <color name="light_fabSecondary">#BBECEA</color>
-  <color name="light_onFabSecondary">#002020</color>
-  <color name="light_fabTertiary">#FFDAD2</color>
-  <color name="light_onFabTertiary">#32110B</color>
   <!-- Light Events Colors -->
   <color name="light_colorEventSchedule">#C2C6E1</color>
   <color name="light_colorEventPlant">#D5E3C6</color>
@@ -80,17 +73,6 @@
   <color name="dark_surfaceVariant">#43493F</color>
   <color name="dark_onSurfaceVariant">#C2C8BB</color>
   <color name="dark_outline">#8D9387</color>
-  <!-- Dark Fab Colors -->
-  <color name="dark_fabPrimary">#314D32</color>
-  <color name="dark_onFabPrimary">#C9EBC6</color>
-  <color name="dark_fabSecondary">#1E4E4D</color>
-  <color name="dark_onFabSecondary">#BBECEA</color>
-  <color name="dark_fabTertiary">#663B33</color>
-  <color name="dark_onFabTertiary">#FFDAD2</color>
-  <color name="dark_fabQuaternary">#5A4300</color>
-  <color name="dark_onFabQuaternary">#FFDF8E</color>
-  <color name="dark_fabQuinary">#534152</color>
-  <color name="dark_onFabQuinary">#F5DBF1</color>
   <!-- Dark Events Colors -->
   <color name="dark_colorEventSchedule">#2A3755</color>
   <color name="dark_colorEventPlant">#415935</color>

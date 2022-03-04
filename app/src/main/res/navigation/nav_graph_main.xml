@@ -7,18 +7,18 @@
     app:startDestination="@id/LoadingFragment">
 
     <fragment android:id="@+id/AppSettingsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.settings.AppSettingsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppSettingsFragment"
         android:label="fragment_app_settings"
         tools:layout="@layout/fragment_app_settings" >
         <action android:id="@+id/toDegreeInfo"
             app:destination="@id/DegreeInfoFragment" />
     </fragment>
     <fragment android:id="@+id/DegreeInfoFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.settings.DegreeInfoFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppInfoFragment"
         android:label="fragment_degree_info"
         tools:layout="@layout/fragment_degree_info" />
     <fragment android:id="@+id/LoadingFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.LoadingFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppLoadingFragment"
         android:label="fragment_loading"
         tools:layout="@layout/fragment_loading" >
         <action android:id="@+id/toMenuMain"
@@ -33,7 +33,7 @@
             app:popUpToInclusive="true"/>
     </fragment>
     <fragment android:id="@+id/MapFileFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.MapFileFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.MapFileFragment"
         android:label="fragment_file_map"
         tools:layout="@layout/fragment_file_map" >
         <action
@@ -43,7 +43,7 @@
             app:popUpToInclusive="false" />
     </fragment>
     <fragment android:id="@+id/MapLandEditorFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.land.MapLandEditorFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandEditorFragment"
         android:label="fragment_land_map"
         tools:layout="@layout/fragment_land_map" >
         <action android:id="@+id/toProfileLand"
@@ -56,7 +56,7 @@
             app:destination="@id/MapFileFragment" />
     </fragment>
     <fragment android:id="@+id/MapLandPreviewFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.land.MapLandPreviewFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandPreviewFragment"
         android:label="fragment_land_map_preview"
         tools:layout="@layout/fragment_land_map_preview">
         <action
@@ -71,21 +71,21 @@
             app:destination="@id/ZonesLandSelectedFragment" />
     </fragment>
     <fragment android:id="@+id/LandHistorySelectedFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.land.LandHistorySelectedFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandSelectedHistoryFragment"
         android:label="fragment_land_history_menu"
         tools:layout="@layout/fragment_land_history_selected" >
         <action android:id="@+id/toMapLandPreview"
             app:destination="@id/MapLandPreviewFragment" />
     </fragment>
     <fragment android:id="@+id/LandHistoryDeletedFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.land.LandHistoryDeletedFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandHistoriesFragment"
         android:label="fragment_land_history_menu"
         tools:layout="@layout/fragment_land_history_deleted" >
         <action android:id="@+id/toMapLandPreview"
             app:destination="@id/MapLandPreviewFragment" />
     </fragment>
     <fragment android:id="@+id/MenuLandsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.land.MenuLandsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandMenuFragment"
         android:label="fragment_land_collection"
         tools:layout="@layout/fragment_menu_land" >
         <action android:id="@+id/toProfileLand"
@@ -96,7 +96,7 @@
             app:destination="@id/LandHistoryDeletedFragment" />
     </fragment>
     <fragment android:id="@+id/ZonesLandSelectedFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.zones.ZonesMenuFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.ZoneMenuFragment"
         android:label="fragment_zones_land_selected"
         tools:layout="@layout/fragment_zones_menu" >
         <action
@@ -104,11 +104,11 @@
             app:destination="@id/ZoneEditorFragment" />
     </fragment>
     <fragment android:id="@+id/ZoneEditorFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.zones.ZoneEditorFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.ZoneEditorFragment"
         android:label="fragment_zone_editor"
         tools:layout="@layout/fragment_zone_editor" />
     <fragment android:id="@+id/MenuMainFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.MenuMainFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppMainFragment"
         android:label="fragment_menu"
         tools:layout="@layout/fragment_menu_main" >
         <action android:id="@+id/toAppSettings"
@@ -121,7 +121,7 @@
             app:destination="@id/CalendarFragment" />
     </fragment>
     <fragment android:id="@+id/ProfileLandFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.land.ProfileLandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandProfileFragment"
         android:label="fragment_land_info"
         tools:layout="@layout/fragment_land_info" >
         <action
@@ -131,12 +131,12 @@
             app:popUpToInclusive="false" />
     </fragment>
     <fragment android:id="@+id/LiveMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.features.LiveMapFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.MapMenuFragment"
         android:label="fragment_contacts_container"
         tools:layout="@layout/fragment_live_map"/>
     <fragment
         android:id="@+id/CalendarFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarMenuFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar" >
         <action
@@ -148,7 +148,7 @@
     </fragment>
     <fragment
         android:id="@+id/CalendarEventListFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarEventListFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarEventListFragment"
         android:label="fragment_calendar_event_list"
         tools:layout="@layout/fragment_calendar_event_list" >
         <action
@@ -157,7 +157,7 @@
     </fragment>
     <fragment
         android:id="@+id/CalendarNewEventFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.fragments.calendar.CalendarEventFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarEventFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar_new_event" />
 

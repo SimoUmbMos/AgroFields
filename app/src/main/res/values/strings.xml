@@ -3,8 +3,6 @@
     <!-- not translatable -->
     <string name="app_name" translatable="false">Land Holder</string>
 
-    <string name="arrow_left" translatable="false">←</string>
-    <string name="arrow_right" translatable="false">→</string>
     <string name="degree_info_title" translatable="false">Χαρτογράφηση αγροκτήματος με συμμετοχή θέσης, ορίων και παρεμβολής με χάρτες</string>
     <string name="degree_info_par1" translatable="false">Σκοπός της πτυχιακής αυτής είναι σχεδίαση μια εφαρμογής σε κινητό τηλέφωνο και σε υπολογιστή γραφείου η οποία θα επιτρέπει αγρότες να χαρτογραφούν τα αγροκτήματα τους. Η Εφαρμογή θα επιτρέπει τον χρήστη όχι μόνο να ορίσει την τοποθεσία στο google maps αλλά να ορίσει τα σύνορα και τους ιδιοκτήτες όπως και την δυνατότητα παρεμβολής χαρτών με αγροτική υπηρεσία και ΤΟΕΒ. Αποτέλεσμα αυτής της εφαρμογής θα είναι ένα προϊόν το οποίο θα δίνει μια ξεκάθαρη εικόνα στον αγρότη για το χαρτογραφικό υπόβαθρο του αγροκτήματος του, καθώς και η μεταφορά δεδομένων σε άλλα συστήματα όπως εξαγωγή χάρτη σε άλλες εφαρμογές θα του επιτρέψει την έγκυρη επίλυση προβλημάτων με οργανισμούς και διαχειριστή αγροκτήματος.</string>
     <string name="degree_info_par2" translatable="false">Η εφαρμογή θα επιτρέπει την έτοιμη εισαγωγή και εξαγωγή χωραφιών από το κτήμα καθώς και τις δυνατότητες διαίρεσης και πρόσθεσης γειτονικών κτημάτων. Ύπαρξη δυνατότητας ιστορικού για το πότε δημιουργήθηκε και από ποιον θα είναι βασικά ιστορικά δεδομένα που αφορούν άλλες εφαρμογές.</string>
@@ -33,7 +31,6 @@
     <string name="calendar_notification_channel_description">Background Calendar Notifications</string>
     <string name="my_lands_label">My Land\'s</string>
     <string name="my_zones_label">My Zone\'s</string>
-    <string name="select_all">Select All</string>
     <string name="file_created">File created</string>
     <string name="file_not_created">File not created</string>
     <string name="saving_label">Saving…</string>
@@ -41,17 +38,12 @@
     <string name="add">Add</string>
     <string name="delete">Delete</string>
     <string name="export">Export</string>
-    <string name="history">History</string>
     <string name="singular_land_label">Land</string>
     <string name="plural_land_label">Land\'s</string>
     <string name="singular_zone_label">Zone</string>
-    <string name="plural_zone_label">Zone\'s</string>
     <string name="singular_event_label">Event</string>
     <string name="plural_event_label">Event\'s</string>
     <string name="pick_color">Pick Color</string>
-    <string name="color_dialog_red_label">Red:</string>
-    <string name="color_dialog_green_label">Green:</string>
-    <string name="color_dialog_blue_label">Blue:</string>
     <string name="add_point">Add Point</string>
     <string name="add_by_location">Add Point By Location</string>
     <string name="add_between_points">Add Point Between Points</string>
@@ -64,7 +56,6 @@
     <string name="clear_points">Delete All Points</string>
     <string name="reset_points">Reset All Points</string>
     <string name="edit_color">Change Color</string>
-    <string name="tag_input_view_label">Tags:</string>
     <string name="some_lands_have_zones_error">Some Lands Have Zones</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
@@ -74,11 +65,7 @@
     <string name="main_menu_live_map_button">Map</string>
     <string name="main_menu_calendar_button">Calendar</string>
     <string name="main_menu_land_button">Land\'s</string>
-    <string name="main_menu_zone_button">Zone\'s</string>
-    <string name="main_menu_tag_button">Manage Tag\'s</string>
-    <string name="dashboard_title">Dashboard</string>
     <!-- Land Menu Fragment -->
-    <string name="contextual_menu_land_label">Select Land\'s</string>
     <string name="delete_lands_title">Delete Lands</string>
     <string name="delete_lands_text">Are you sure you want to delete the selected lands?</string>
     <!-- Land Info Fragment -->
@@ -87,15 +74,8 @@
     <string name="address_hint">Land Address</string>
     <string name="create_land_label">Set Land Name</string>
     <string name="edit_land_label">Edit Land Name</string>
-    <!-- Land Map Preview Fragment -->
-    <string name="edit_land">Edit Land</string>
-    <string name="restore_land">Restore Land</string>
     <!-- Land Map Fragment -->
-    <string name="fabSave">Save edits</string>
-    <string name="fabReset">Reset edits</string>
     <string name="land_imageView">Show image above map</string>
-    <string name="open_menu">Open Menu</string>
-    <string name="save_land">Save Land</string>
     <string name="map_view_actions_group_title">Map Actions</string>
     <string name="lock_map">Lock map</string>
     <string name="show_road_name">Show Road Names</string>
@@ -126,16 +106,11 @@
     <string name="land_action_zone_updated">Zone Updated</string>
     <string name="land_action_zone_imported">Zone Imported</string>
     <string name="land_action_zone_deleted">Zone Deleted</string>
-    <string name="toggle_history_list">Toggle List</string>
-    <!-- Zone Land Select Fragment -->
-    <string name="zones_land_list_bar_label">Select Land</string>
     <!-- Zone Land Selected Fragment -->
-    <string name="contextual_menu_zone_label">Select Zone\'s</string>
     <string name="zone_delete">Zones Deleted Successfully</string>
     <string name="zone_export">Zones Exported Successfully</string>
     <!-- Zone Preview Fragment -->
     <string name="new_zone_bar_label">New Zone</string>
-    <string name="edit_zone">Edit Zone</string>
     <string name="save_zone">Save Zone</string>
     <string name="zone_actions_group_title">Zone Actions</string>
     <string name="edit_zone_title">Change Zone Title</string>
@@ -156,12 +131,13 @@
     <string name="zone_null_error">Something has goes wrong, try recreate the zone</string>
     <string name="iv_desc_zone_editor_center_camera">center camera button</string>
     <!-- App Settings Fragment-->
-    <string name="settings_section_ui">Ui Settings</string>
-    <string name="settings_section_feedback">Feedback Settings</string>
-    <string name="settings_section_data">Data Settings</string>
     <string name="app_settings_title">Settings</string>
-    <string name="factory_reset">Factory Reset</string>
+    <string name="settings_section_feedback">Feedback Settings</string>
+    <string name="owner_name_setting">Owner Name</string>
+    <string name="owner_email_setting">Owner Email</string>
+    <string name="settings_section_data">Data Settings</string>
     <string name="select_snapshot_title">Snapshot</string>
+    <string name="settings_section_ui">Ui Settings</string>
     <string name="select_theme_title">App Style</string>
     <string-array name="theme_styles">
         <item>System Default</item>
@@ -183,9 +159,6 @@
     <string name="file_map_fragment_subtract_action">Click Shape To Subtract</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_grid_title">Calendar</string>
-    <string name="menu_filter">Filter</string>
-    <string name="menu_grid_view">Grid View</string>
-    <string name="menu_list_view">List View</string>
     <string name="date_filter_side_label">Date Filter</string>
     <string name="older_events_side_label">Older Events</string>
     <string name="new_events_side_label">New Events</string>

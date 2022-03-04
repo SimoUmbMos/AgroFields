@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.settings.AppSettingsFragment">
+    tools:context=".ui.fragments.AppSettingsFragment">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -76,6 +76,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:labelFor="@id/tvTheme"
                 android:hint="@string/select_theme_title">
 
                 <AutoCompleteTextView
@@ -104,7 +105,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:hint="Owner Name">
+                android:hint="@string/owner_name_setting">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etOwnerName"
@@ -124,7 +125,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:hint="Owner Email">
+                android:hint="@string/owner_email_setting">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etOwnerEmail"
@@ -152,7 +153,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:hint="@string/select_snapshot_title">
+                android:hint="@string/select_snapshot_title"
+                android:labelFor="@id/tvSnapshot">
 
                 <AutoCompleteTextView
                     android:id="@+id/tvSnapshot"

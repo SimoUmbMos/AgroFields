@@ -21,7 +21,6 @@
     <string name="calendar_notification_channel_description">Ειδοποιήσεις παρασκηνίου ημερολογίου</string>
     <string name="my_lands_label">Τα Χωράφια μου</string>
     <string name="my_zones_label">Οι Περιοχές μου</string>
-    <string name="select_all">Επιλογή όλων</string>
     <string name="file_created">Το αρχείο δημιουργήθηκε</string>
     <string name="file_not_created">Το αρχείο δεν δημιουργήθηκε</string>
     <string name="saving_label">Αποθήκευση…</string>
@@ -29,17 +28,12 @@
     <string name="add">Προσθήκη</string>
     <string name="delete">Διαγράφή</string>
     <string name="export">Εξαγωγή</string>
-    <string name="history">Ιστορικό</string>
     <string name="singular_land_label">Χωράφι</string>
     <string name="plural_land_label">Χωράφια</string>
     <string name="singular_zone_label">Περιοχή</string>
-    <string name="plural_zone_label">Περιοχές</string>
     <string name="singular_event_label">Συμβάν</string>
     <string name="plural_event_label">Συμβάντα</string>
     <string name="pick_color">Επιλέξτε Χρώμα</string>
-    <string name="color_dialog_red_label">Κόκκινο:</string>
-    <string name="color_dialog_green_label">Πράσινο:</string>
-    <string name="color_dialog_blue_label">Μπλε:</string>
     <string name="add_point">Προσθήκη σημείου</string>
     <string name="add_by_location">Προσθήκη τοποθεσία</string>
     <string name="add_between_points">Προσθήκη μεταξύ σημείων</string>
@@ -52,7 +46,6 @@
     <string name="clear_points">Διαγραφή σημείων</string>
     <string name="reset_points">Επαναφορά σημείων</string>
     <string name="edit_color">Αλλαγή χρώματος</string>
-    <string name="tag_input_view_label">Ετικέτες:</string>
     <string name="some_lands_have_zones_error">Some Lands Have Zones</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
@@ -62,11 +55,7 @@
     <string name="main_menu_live_map_button">Χάρτης</string>
     <string name="main_menu_calendar_button">Ημερολόγιο</string>
     <string name="main_menu_land_button">Χωράφια</string>
-    <string name="main_menu_zone_button">Περιοχές</string>
-    <string name="main_menu_tag_button">Διαχείριση Ετικετών</string>
-    <string name="dashboard_title">Πίνακας Ελέγχου</string>
     <!-- Land Menu Fragment -->
-    <string name="contextual_menu_land_label">Επιλέξτε χωράφια</string>
     <string name="delete_lands_title">Διαγραφή χωράφιων</string>
     <string name="delete_lands_text">Επιθυμείτε να διαγράψετε τα επιλεγμένα χωράφια;</string>
     <!-- Land Info Fragment -->
@@ -75,15 +64,8 @@
     <string name="address_hint">Διεύθυνση χωραφιού</string>
     <string name="create_land_label">Ορισμός τίτλου χωραφιού</string>
     <string name="edit_land_label">Επεξεργασία τίτλου χωραφιού</string>
-    <!-- Land Map Preview Fragment -->
-    <string name="edit_land">Επεξεργασία χωραφιού</string>
-    <string name="restore_land">Επαναφορά χωραφιού</string>
     <!-- Land Map Fragment -->
-    <string name="fabSave">Αποθήκευση αλλαγών</string>
-    <string name="fabReset">Επαναφορά αλλαγών</string>
     <string name="land_imageView">Εμφάνιση εικόνας πάνω από τον χάρτη</string>
-    <string name="open_menu">Άνοιγμα Μενού</string>
-    <string name="save_land">Αποθήκευση χωραφιού</string>
     <string name="map_view_actions_group_title">Ενέργειες του Χάρτη</string>
     <string name="lock_map">Κλείδωμα χάρτη</string>
     <string name="show_road_name">Εμφάνιση τοποθεσιών</string>
@@ -114,16 +96,11 @@
     <string name="land_action_zone_updated">Zone Updated</string>
     <string name="land_action_zone_imported">Zone Imported</string>
     <string name="land_action_zone_deleted">Zone Deleted</string>
-    <string name="toggle_history_list">Εναλλαγή λίστας</string>
-    <!-- Zone Land Select Fragment -->
-    <string name="zones_land_list_bar_label">Επιλέξτε Χωράφι</string>
     <!-- Zone Land Selected Fragment -->
-    <string name="contextual_menu_zone_label">Επιλέξτε περιοχές</string>
     <string name="zone_delete">Οι περιοχές διαγράφηκαν με επιτυχία</string>
     <string name="zone_export">Οι περιοχές εξήχθησαν με επιτυχία</string>
     <!-- Zone Preview Fragment -->
     <string name="new_zone_bar_label">Νέα περιοχή</string>
-    <string name="edit_zone">Επεξεργασία περιοχής</string>
     <string name="save_zone">Αποθήκευση περιοχής</string>
     <string name="zone_actions_group_title">Ενέργειες περιοχής</string>
     <string name="edit_zone_title">Αλλαγή τίτλου περιοχής</string>
@@ -144,12 +121,13 @@
     <string name="zone_null_error">Κάτι πήγε στραβά, δοκιμάστε να δημιουργήσετε ξανά την περιοχή</string>
     <string name="iv_desc_zone_editor_center_camera">Κεντρικό κουμπί κάμερας</string>
     <!-- App Settings Fragment-->
-    <string name="settings_section_ui">Ui Settings</string>
-    <string name="settings_section_feedback">Feedback Settings</string>
-    <string name="settings_section_data">Data Settings</string>
     <string name="app_settings_title">Ρυθμίσεις</string>
-    <string name="factory_reset">Εργοστασιακή επανεκκίνηση</string>
+    <string name="settings_section_feedback">Feedback Settings</string>
+    <string name="owner_name_setting">Owner Name</string>
+    <string name="owner_email_setting">Owner Email</string>
+    <string name="settings_section_data">Data Settings</string>
     <string name="select_snapshot_title">Snapshot</string>
+    <string name="settings_section_ui">Ui Settings</string>
     <string name="select_theme_title">Στυλ εφαρμογής</string>
     <string-array name="theme_styles">
         <item>Προεπιλογή συστήματος</item>
@@ -171,9 +149,6 @@
     <string name="file_map_fragment_subtract_action">Κάντε κλικ σε σχήμα για αφαίρεση</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_grid_title">Ημερολόγιο</string>
-    <string name="menu_filter">Φίλτρα</string>
-    <string name="menu_grid_view">Προβολή πλέγματος</string>
-    <string name="menu_list_view">Προβολή λίστας</string>
     <string name="date_filter_side_label">Φίλτρο ημερομηνίας</string>
     <string name="older_events_side_label">Παλαιότερα συμβάντα</string>
     <string name="new_events_side_label">Μελλοντικά συμβάντα</string>

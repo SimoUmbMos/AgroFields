@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.MenuMainFragment">
+    tools:context=".ui.fragments.AppMainFragment"
+    android:background="@drawable/bg_main_menu">
 
     <ImageButton
         android:id="@+id/ibMenuButton"
@@ -44,13 +45,13 @@
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
         app:cardCornerRadius="16dp"
-        app:cardElevation="@dimen/cardElevation"
+        app:cardElevation="@dimen/cardElevationMainMenuPrimary"
         app:layout_constraintBottom_toTopOf="@+id/btnCalendar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_max="152dp"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ibMenuButton"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
         app:strokeWidth="@dimen/cardStrokeWidth">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -120,7 +121,7 @@
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
         app:cardCornerRadius="16dp"
-        app:cardElevation="@dimen/cardElevation"
+        app:cardElevation="@dimen/cardElevationMainMenuSecondary"
         app:layout_constraintBottom_toTopOf="@+id/btnLiveMap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_max="152dp"
@@ -225,7 +226,7 @@
         android:layout_marginBottom="16dp"
         android:layout_weight="1"
         app:cardCornerRadius="16dp"
-        app:cardElevation="@dimen/cardElevation"
+        app:cardElevation="@dimen/cardElevationMainMenuSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_max="152dp"
@@ -278,5 +279,33 @@
                 app:tint="?attr/colorOnSurface" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/select_snapshot_title"
+        android:textAlignment="textEnd"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:layout_constraintEnd_toStartOf="@+id/tvSnapshot"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <TextView
+        android:id="@+id/tvSnapshot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="@+id/tvTitle"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        tools:text="2022" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
