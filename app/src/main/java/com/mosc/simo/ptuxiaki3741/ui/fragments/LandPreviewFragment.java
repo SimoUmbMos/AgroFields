@@ -101,8 +101,9 @@ public class LandPreviewFragment extends Fragment {
 
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMinZoomPreference(AppValues.countryZoom-1);
-        mMap.setMaxZoomPreference(AppValues.streetZoom+1);
+        mMap.setMinZoomPreference(AppValues.minZoom);
+        mMap.setMaxZoomPreference(AppValues.maxZoom);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
         mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);

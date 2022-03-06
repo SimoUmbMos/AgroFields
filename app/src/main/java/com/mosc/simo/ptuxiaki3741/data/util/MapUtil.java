@@ -379,9 +379,10 @@ public final class MapUtil {
         return ans;
     }
 
-    @Nullable private static com.esri.arcgisruntime.geometry.Polygon convert(List<LatLng> p){
+    @Nullable
+    private static com.esri.arcgisruntime.geometry.Polygon convert(List<LatLng> p){
         PointCollection polygonPoints = new PointCollection(SpatialReferences.getWgs84());
-        if(p !=null) {
+        if(p != null) {
             for(LatLng ll : p){
                 polygonPoints.add(ll.latitude,ll.longitude);
             }

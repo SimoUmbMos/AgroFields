@@ -147,6 +147,8 @@
     <string name="file_map_fragment_error">Σφάλμα αρχείου</string>
     <string name="file_map_fragment_add_action">Κάντε κλικ σε σχήμα για προσθήκη</string>
     <string name="file_map_fragment_subtract_action">Κάντε κλικ σε σχήμα για αφαίρεση</string>
+    <string name="file_map_fragment_preview_action">File Preview</string>
+    <string name="file_map_fragment_no_land_selected">No land selected</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_grid_title">Ημερολόγιο</string>
     <string name="date_filter_side_label">Φίλτρο ημερομηνίας</string>
@@ -184,5 +186,5 @@
     </string-array>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Απαιτείται άδεια τοποθεσίας</string>
-    <string name="default_live_map_title">Όχι μέσα σε χωράφι</string>
+    <string name="live_map_title">Χάρτης</string>
 </resources>

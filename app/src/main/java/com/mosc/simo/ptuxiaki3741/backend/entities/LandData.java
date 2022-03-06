@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.backend.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -75,6 +76,22 @@ public class LandData implements Parcelable {
     private final List<List<LatLng>> holes;
 
     /**
+     * Creates Land Data from another Land Data.
+     * @param clone A LandData to clone
+     */
+    @Ignore
+    protected LandData(LandData clone) {
+        id = clone.id;
+        snapshot = clone.snapshot;
+        title = clone.title;
+        color = new ColorData(clone.color.toString());
+        border = new ArrayList<>();
+        holes = new ArrayList<>();
+        setBorder(clone.border);
+        setHoles(clone.holes);
+    }
+
+    /**
      * Creates Land Data from a parcel.
      * @param parcel A Parcel containing the land data
      */
@@ -92,8 +109,8 @@ public class LandData implements Parcelable {
 
     /**
      * Creates Land Data with the Land border
-     * @param border A {@literal List<LatLng>} containing the land border
-    */
+     * @param border A List&lt;LatLng&gt; containing the land border
+     */
     @Ignore
     public LandData(List<LatLng> border) {
         this.id = 0;
@@ -107,8 +124,8 @@ public class LandData implements Parcelable {
 
     /**
      * Creates Land Data with the Land border and holes
-     * @param border A {@literal List<LatLng>} containing the land border
-     * @param holes A {@literal List<List<LatLng>>} containing the land holes
+     * @param border A List&lt;LatLng&gt; containing the land border
+     * @param holes A List&lt;List&lt;LatLng&gt;&gt; containing the land holes
      */
     @Ignore
     public LandData(List<LatLng> border,List<List<LatLng>> holes) {
@@ -123,10 +140,26 @@ public class LandData implements Parcelable {
     }
 
     /**
+     * Creates Land Data with the Land color and border
+     * @param color A ColorData containing the land color
+     * @param border A List&lt;LatLng&gt; containing the land border
+     */
+    @Ignore
+    public LandData(ColorData color,List<LatLng> border) {
+        this.id = 0;
+        this.title = "";
+        this.border = new ArrayList<>();
+        this.holes = new ArrayList<>();
+        this.color = color;
+        setBorder(border);
+        this.snapshot = -1;
+    }
+
+    /**
      * Creates Land Data with the Land color, border and holes
      * @param color A ColorData containing the land color
-     * @param border A {@literal List<LatLng>} containing the land border
-     * @param holes A {@literal List<List<LatLng>>} containing the land holes
+     * @param border A List&lt;LatLng&gt; containing the land border
+     * @param holes A List&lt;List&lt;LatLng&gt;&gt; containing the land holes
      */
     @Ignore
     public LandData(ColorData color, List<LatLng> border,List<List<LatLng>> holes) {
@@ -162,8 +195,8 @@ public class LandData implements Parcelable {
      * @param snapshot A long representing the land snapshot key
      * @param title  A String representing the land title
      * @param color A ColorData containing the land color
-     * @param border A {@literal List<LatLng>} containing the land border
-     * @param holes A {@literal List<List<LatLng>>} containing the land holes
+     * @param border A List&lt;LatLng&gt; containing the land border
+     * @param holes A List&lt;List&lt;LatLng&gt;&gt; containing the land holes
      */
     public LandData(long id, long snapshot, String title, ColorData color, List<LatLng> border, List<List<LatLng>> holes) {
         this.id = id;
@@ -210,7 +243,7 @@ public class LandData implements Parcelable {
 
     /**
      * Gets the Land border
-     * @return A {@literal List<LatLng>} containing the land border
+     * @return A List&lt;LatLng&gt; containing the land border
      */
     public List<LatLng> getBorder() {
         return border;
@@ -218,7 +251,7 @@ public class LandData implements Parcelable {
 
     /**
      * Gets the Land holes
-     * @return A {@literal List<List<LatLng>>} containing the land holes
+     * @return A List&lt;List&lt;LatLng&gt;&gt; containing the land holes
      */
     public List<List<LatLng>> getHoles() {
         return holes;
@@ -258,7 +291,7 @@ public class LandData implements Parcelable {
 
     /**
      * Sets the Land border
-     * @param border A {@literal List<LatLng>} containing the land border
+     * @param border A List&lt;LatLng&gt; containing the land border
      */
     public void setBorder(List<LatLng> border){
         this.border.clear();
@@ -269,7 +302,7 @@ public class LandData implements Parcelable {
 
     /**
      * Sets the Land holes
-     * @param holes A {@literal List<List<LatLng>>} containing the land holes
+     * @param holes A List&lt;List&lt;LatLng&gt;&gt; containing the land holes
      */
     public void setHoles(List<List<LatLng>> holes){
         this.holes.clear();
@@ -346,5 +379,16 @@ public class LandData implements Parcelable {
     @Override
     public int hashCode() {
         return Objects.hash(id, snapshot, title, color, border, holes);
+    }
+
+    /**
+     * Convert LandData content to String
+     * @return A String containing the id and title of the land
+     */
+    @NonNull
+    @Override
+    public String toString() {
+        if(id > 0) return "#" + id + " " + title;
+        return title;
     }
 }

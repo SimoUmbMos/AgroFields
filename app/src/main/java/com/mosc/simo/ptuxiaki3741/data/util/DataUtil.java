@@ -7,9 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.ui.broadcast_receivers.CalendarReceiver;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
@@ -27,10 +31,32 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class DataUtil {
     private static final String TAG = "DataUtil";
     private DataUtil(){}
+
+    public static ColorData getRandomLandColor(Context context){
+        if(context == null) {
+            if (ThreadLocalRandom.current().nextInt(0, 2) == 0) {
+                return AppValues.defaultLandColor;
+            } else {
+                return AppValues.defaultZoneColor;
+            }
+        }else{
+            List<Integer> colors = new ArrayList<>();
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker1));
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker2));
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker3));
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker4));
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker5));
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker6));
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker7));
+            colors.add(ContextCompat.getColor(context, R.color.common_colorPicker8));
+            return new ColorData(colors.get(ThreadLocalRandom.current().nextInt(0, colors.size())));
+        }
+    }
 
     public static int lineCount(String string){
         if(string == null)

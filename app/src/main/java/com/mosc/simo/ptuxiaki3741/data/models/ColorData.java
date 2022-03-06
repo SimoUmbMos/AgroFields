@@ -38,6 +38,12 @@ public class ColorData implements Parcelable {
         setBlue(blue);
     }
 
+    public ColorData(int color) {
+        red = Color.red(color);
+        green = Color.green(color);
+        blue = Color.blue(color);
+    }
+
     public int getColor(){
         return Color.rgb(red,green,blue);
     }

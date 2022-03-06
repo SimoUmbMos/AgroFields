@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.geojson;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -19,7 +20,7 @@ public class GeoJsonReader {
     private static final String TAG = "GeoJsonReader";
     private static CoordinatesHelper converter;
 
-    public static ArrayList<LandData> exec(InputStream inputStream) throws Exception{
+    public static ArrayList<LandData> exec(Context context, InputStream inputStream) throws Exception{
         List<List<List<LatLng>>> lands = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(DataUtil.inputSteamToString(inputStream));
         if(!jsonObject.has("type")){
@@ -49,7 +50,7 @@ public class GeoJsonReader {
                     holes.add(land.get(i));
                 }
                 if(border.size()>0){
-                    ans.add(new LandData(border,holes));
+                    ans.add(new LandData(DataUtil.getRandomLandColor(context),border,holes));
                 }
             }
         }

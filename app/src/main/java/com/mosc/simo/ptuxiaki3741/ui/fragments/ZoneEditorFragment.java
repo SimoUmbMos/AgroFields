@@ -189,8 +189,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMinZoomPreference(AppValues.countryZoom-1);
-        mMap.setMaxZoomPreference(AppValues.streetZoom+1);
+        mMap.setMinZoomPreference(AppValues.minZoom);
+        mMap.setMaxZoomPreference(AppValues.maxZoom);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         binding.ibCenterCamera.setOnClickListener(v-> {

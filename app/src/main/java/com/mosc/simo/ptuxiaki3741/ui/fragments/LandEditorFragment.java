@@ -123,7 +123,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                         locationHelperCamera.setLocationPermission(locationPermission);
                         locationHelperCamera.getLastKnownLocation();
                     }else{
-                        moveCameraOnDefault();
+                        binding.tvLoadingLabel.setVisibility(View.GONE);
                     }
                 }
                 if(locationHelperPoint != null){
@@ -193,6 +193,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                         Log.d(TAG, "fileLauncher: file = " + filePath);
                         new Thread(() -> {
                             ArrayList<LandData> data = FileUtil.handleFile(
+                                    getContext(),
                                     filePath
                             );
                             Log.d(TAG, "fileLauncher: data read = "+data.size());
@@ -255,7 +256,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     }
 
     //init relative
-    private boolean initData(){
+    private boolean initData(LandData landData){
         points = new ArrayList<>();
         holes = new ArrayList<>();
         startPoints = new ArrayList<>();
@@ -269,8 +270,12 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         cameraInit = true;
         locationPointWasRunning = false;
         if(getArguments() != null){
-            if(getArguments().containsKey(AppValues.argLand)) {
-                currLand = getArguments().getParcelable(AppValues.argLand);
+            if(landData != null){
+                currLand = new Land(landData);
+            }else{
+                if(getArguments().containsKey(AppValues.argLand)) {
+                    currLand = getArguments().getParcelable(AppValues.argLand);
+                }
             }
             if(getArguments().containsKey(AppValues.argAddress)){
                 address = getArguments().getString(AppValues.argAddress);
@@ -279,10 +284,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             }
         }
 
-        if(currLand == null){
-            return false;
-        }
-        if(currLand.getData() == null){
+        if(currLand == null || currLand.getData() == null){
             return false;
         }
 
@@ -354,8 +356,9 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     @SuppressLint("PotentialBehaviorOverride")
     private void initMap(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMinZoomPreference(AppValues.countryZoom-1);
-        mMap.setMaxZoomPreference(AppValues.streetZoom+1);
+        mMap.setMinZoomPreference(AppValues.minZoom);
+        mMap.setMaxZoomPreference(AppValues.maxZoom);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
         mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
@@ -376,7 +379,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         });
         if(points.size() == 0){
             if(currLocation){
-                moveCameraOnDefault();
+                binding.tvLoadingLabel.setVisibility(View.GONE);
             }else{
                 moveCameraOnLocation();
             }
@@ -454,51 +457,35 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     }
 
     //save relative
-    private void saveLand(LandData data) {
-        binding.getRoot().closeDrawer(GravityCompat.END);
-        if(isValidToSave(data)){
-            binding.tvLoadingLabel.setText(getString(R.string.saving_label));
-            binding.tvLoadingLabel.setVisibility(View.VISIBLE);
-            AsyncTask.execute(()-> {
-                addToVM(data);
-                toMenu(getActivity());
-            });
-        }
-    }
-    private boolean isValidToSave(LandData data) {
-        if(data != null){
-            return data.getBorder().size() > 2;
-        }
-        return false;
-    }
-    private void addToVM(LandData data) {
-        if(getActivity() != null){
-            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            vmLands.saveLand(new Land(data));
-        }
-    }
     private void saveLand() {
+        Log.d(TAG, "saveLand: called");
         binding.getRoot().closeDrawer(GravityCompat.END);
         if(isValidToSave()){
+            Log.d(TAG, "isValidToSave: true");
             binding.tvLoadingLabel.setText(getString(R.string.saving_label));
             binding.tvLoadingLabel.setVisibility(View.VISIBLE);
             AsyncTask.execute(()->{
                 addToVM();
                 toMenu(getActivity());
             });
+        }else{
+            Log.d(TAG, "isValidToSave: false");
         }
     }
     private boolean isValidToSave() {
         return points.size() > 2 &&
-                currLand != null;
+                currLand != null &&
+                currLand.getData() != null;
     }
     private void addToVM() {
+        Log.d(TAG, "addToVM: called");
         currLand.getData().setBorder(points);
         currLand.getData().setHoles(holes);
         currLand.getData().setColor(color);
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             vmLands.saveLand(currLand);
+            Log.d(TAG, "vmLands.saveLand: called");
         }
     }
 
@@ -1173,19 +1160,13 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
 
                         });
                     }else{
-                        activity.runOnUiThread(this::moveCameraOnDefault);
+                        activity.runOnUiThread(()->binding.tvLoadingLabel.setVisibility(View.GONE));
                     }
                 }else{
-                    activity.runOnUiThread(this::moveCameraOnDefault);
+                    activity.runOnUiThread(()->binding.tvLoadingLabel.setVisibility(View.GONE));
                 }
             });
         }
-    }
-    private void moveCameraOnDefault() {
-        if(mMap != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
-        }
-        binding.tvLoadingLabel.setVisibility(View.GONE);
     }
     private void moveCameraOnLocation(Location location) {
         currLocation = false;
@@ -1277,10 +1258,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initActivity();
-        LandData data = handleImport();
-        if(data != null){
-            saveLand(data);
-        }else if(initData()){
+        if(initData(handleImport())){
             initViews();
         }else{
             toMenu(getActivity());

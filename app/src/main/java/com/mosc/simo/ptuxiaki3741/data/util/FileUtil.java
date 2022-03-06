@@ -261,7 +261,7 @@ public final class FileUtil {
         }
         return new ArrayList<>();
     }
-    public static ArrayList<LandData> handleFile(String filePath){
+    public static ArrayList<LandData> handleFile(Context ctx, String filePath){
         if(fileIsValid(filePath)){
             File file = new File(filePath);
             ArrayList<LandData> data = new ArrayList<>();
@@ -269,7 +269,7 @@ public final class FileUtil {
                 case KML:
                     Log.d(TAG, "handleFile: KML");
                     try{
-                        data.addAll(handleKml(new FileInputStream(file)));
+                        data.addAll(handleKml(ctx, new FileInputStream(file)));
                         return data;
                     }catch (Exception e){
                         Log.e(TAG, "handleKml: ", e);
@@ -278,7 +278,7 @@ public final class FileUtil {
                 case SHAPEFILE:
                     Log.d(TAG, "handleFile: SHAPEFILE");
                     try{
-                        data.addAll(handleShapeFile(new FileInputStream(file)));
+                        data.addAll(handleShapeFile(ctx, new FileInputStream(file)));
                         return data;
                     }catch (Exception e){
                         Log.e(TAG, "handleShapeFile: ", e);
@@ -287,7 +287,7 @@ public final class FileUtil {
                 case GEOJSON:
                     Log.d(TAG, "handleFile: GEOJSON");
                     try{
-                        data.addAll(handleJson(new FileInputStream(file)));
+                        data.addAll(handleJson(ctx, new FileInputStream(file)));
                         return data;
                     }catch (Exception e){
                         Log.e(TAG, "handleJson: ", e);
@@ -296,7 +296,7 @@ public final class FileUtil {
                 case GML:
                     Log.d(TAG, "handleFile: GML");
                     try{
-                        data.addAll(handleGML(new FileInputStream(file)));
+                        data.addAll(handleGML(ctx, new FileInputStream(file)));
                         return data;
                     }catch (Exception e){
                         Log.e(TAG, "handleGML: ", e);
@@ -305,7 +305,7 @@ public final class FileUtil {
                 case XML:
                     Log.d(TAG, "handleFile: XML");
                     try{
-                        data.addAll(handleGML(new FileInputStream(file)));
+                        data.addAll(handleGML(ctx, new FileInputStream(file)));
                         if(data.size()>0){
                             return data;
                         }
@@ -314,7 +314,7 @@ public final class FileUtil {
                     }
                     data.clear();
                     try{
-                        data.addAll(handleKml(new FileInputStream(file)));
+                        data.addAll(handleKml(ctx, new FileInputStream(file)));
                         if(data.size()>0){
                             return data;
                         }
@@ -325,7 +325,7 @@ public final class FileUtil {
                 case TEXT:
                     Log.d(TAG, "handleFile: TEXT");
                     try{
-                        data.addAll(handleWKT(new FileInputStream(file)));
+                        data.addAll(handleWKT(ctx, new FileInputStream(file)));
                         return data;
                     }catch (Exception e){
                         Log.e(TAG, "handleWKT: ", e);
@@ -439,34 +439,34 @@ public final class FileUtil {
         return displayName;
     }
     private static ArrayList<LandData> handleKml(Context ctx, Uri uri) throws Exception{
-        return KmlReader.exec(ctx.getContentResolver().openInputStream(uri));
+        return KmlReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleJson(Context ctx, Uri uri) throws Exception{
-        return GeoJsonReader.exec(ctx.getContentResolver().openInputStream(uri));
+        return GeoJsonReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleGML(Context ctx, Uri uri) throws Exception{
-        return GMLReader.exec(ctx.getContentResolver().openInputStream(uri));
+        return GMLReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleWKT(Context ctx, Uri uri) throws Exception{
-        return WellKnownTextReader.exec(ctx.getContentResolver().openInputStream(uri));
+        return WellKnownTextReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleShapeFile(Context ctx, Uri uri) throws Exception{
-        return MyShapeFileReader.exec(ctx.getContentResolver().openInputStream(uri));
+        return MyShapeFileReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));
     }
-    private static ArrayList<LandData> handleKml(InputStream in) throws Exception{
-        return KmlReader.exec(in);
+    private static ArrayList<LandData> handleKml(Context ctx, InputStream in) throws Exception{
+        return KmlReader.exec(ctx, in);
     }
-    private static ArrayList<LandData> handleJson(InputStream in) throws Exception{
-        return GeoJsonReader.exec(in);
+    private static ArrayList<LandData> handleJson(Context ctx, InputStream in) throws Exception{
+        return GeoJsonReader.exec(ctx, in);
     }
-    private static ArrayList<LandData> handleGML(InputStream in) throws Exception{
-        return GMLReader.exec(in);
+    private static ArrayList<LandData> handleGML(Context ctx, InputStream in) throws Exception{
+        return GMLReader.exec(ctx, in);
     }
-    private static ArrayList<LandData> handleWKT(InputStream in){
-        return WellKnownTextReader.exec(in);
+    private static ArrayList<LandData> handleWKT(Context ctx, InputStream in){
+        return WellKnownTextReader.exec(ctx, in);
     }
-    private static ArrayList<LandData> handleShapeFile(InputStream in) throws Exception{
-        return MyShapeFileReader.exec(in);
+    private static ArrayList<LandData> handleShapeFile(Context ctx, InputStream in) throws Exception{
+        return MyShapeFileReader.exec(ctx, in);
     }
     private static String getExtension(String s){
         String[] segments = s.split("\\.");

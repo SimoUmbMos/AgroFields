@@ -1,7 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.data.values;
 
-import android.graphics.Color;
-
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 
 public final class AppValues {
@@ -17,12 +15,13 @@ public final class AppValues {
     /* Common Values */
     public static final int defaultPadding = 64;
     public static final int defaultPaddingLite = 16;
+    public static final int defaultPaddingLarge = 128;
     public static final int defaultStrokeAlpha = 160;
     public static final int defaultFillAlpha = 80;
     public static final ColorData defaultLandColor = new ColorData("#FF9100");
     public static final ColorData defaultZoneColor = new ColorData("#76FF03");
-    public static final int defaultPersonColorFill = Color.parseColor("#3777f1");
-    public static final int defaultPersonColorStroke = Color.parseColor("#ffffff");
+    public static final float minZoom = 1.0f;
+    public static final float maxZoom = 19.0f;
     /* Args Values */
     public static final String argSnapshotKey = "data_snapshot_key";
     public static final String argLand = "land";
@@ -42,17 +41,11 @@ public final class AppValues {
     public static final float cityZoom = 13.0f;
     public static final float streetZoom = 16.0f;
     /* Live Map Fragment Values */
-    public static final int LoopDelay = 120;
-    public static final int AnimationMove = 240;
-    public static final float defaultTilt = 60f;
     public static final float locationSensitivity = 1.0f;
     public static final float bearingAlphaHigh = 0.15f;
     public static final float bearingAlphaMedium = 0.075f;
     public static final float bearingAlphaLow = 0.0375f;
     public static final float bearingAlphaNone = 0.01875f;
-    public static final double currPositionSize = 18.0;
-    public static final float currPositionSizeStroke = 5.0f;
-    public static final float personZoom = 16.0f;
     /* Settings Fragment Values */
     public static final String ownerName = "AppOwnerName";
     public static final String ownerEmail = "AppOwnerEmail";

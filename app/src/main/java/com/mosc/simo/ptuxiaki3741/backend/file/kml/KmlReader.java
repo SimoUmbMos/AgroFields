@@ -1,7 +1,10 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.kml;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class KmlReader {
-    public static ArrayList<LandData> exec(InputStream is) throws Exception{
+    public static ArrayList<LandData> exec(Context context, InputStream is) throws Exception{
         ArrayList<LandData> border_fragment = new ArrayList<>();
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(is);
@@ -83,7 +86,7 @@ public class KmlReader {
                     }
                 }
 
-                border_fragment.add(new LandData(border,holes));
+                border_fragment.add(new LandData(DataUtil.getRandomLandColor(context),border,holes));
             }
         }
         return border_fragment;

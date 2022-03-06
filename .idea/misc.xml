@@ -225,6 +225,8 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/background_badge_3.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/background_badge_4.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_badge_background.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_cluster_group.xml" value="0.1935" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_cluster_marker.xml" value="0.324" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_main_background.xml" value="0.193" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_main_menu.xml" value="0.193" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_round.xml" value="0.26" />
@@ -260,6 +262,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_add.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_arrow_left.xml" value="0.26" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_arrow_right.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_back_arrow.xml" value="0.324" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_close.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_color_palette.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_degree_info.xml" value="0.2985" />
@@ -279,6 +282,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_save.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_select_all.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_settings.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_submit.xml" value="0.1925" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/activity_main.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_day_layout.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_month_header_layout.xml" value="0.2975630611372381" />
@@ -313,6 +317,8 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_history.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_history_selected.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_land.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_land_cluster.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_land_marker.xml" value="1.0" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_tag_input.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_text_area.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/menu/app_settings_menu.xml" value="0.15220179563916203" />

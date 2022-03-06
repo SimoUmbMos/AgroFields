@@ -157,6 +157,8 @@
     <string name="file_map_fragment_error">File Error</string>
     <string name="file_map_fragment_add_action">Click Shape To Add</string>
     <string name="file_map_fragment_subtract_action">Click Shape To Subtract</string>
+    <string name="file_map_fragment_preview_action">File Preview</string>
+    <string name="file_map_fragment_no_land_selected">No land selected</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_grid_title">Calendar</string>
     <string name="date_filter_side_label">Date Filter</string>
@@ -194,5 +196,5 @@
     </string-array>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Location permission is needed</string>
-    <string name="default_live_map_title">Not Inside an Land</string>
+    <string name="live_map_title">Map</string>
 </resources>

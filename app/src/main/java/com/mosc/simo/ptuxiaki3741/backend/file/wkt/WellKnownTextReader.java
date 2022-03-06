@@ -1,5 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.wkt;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
@@ -10,11 +12,11 @@ import java.util.List;
 
 public class WellKnownTextReader {
 
-    public static ArrayList<LandData> exec(InputStream is){
-        return exec(DataUtil.inputSteamToString(is));
+    public static ArrayList<LandData> exec(Context context, InputStream is){
+        return exec(context,DataUtil.inputSteamToString(is));
     }
 
-    public static ArrayList<LandData> exec(String is){
+    public static ArrayList<LandData> exec(Context context, String is){
         ArrayList<LandData> result = new ArrayList<>();
         if(is != null){
             String in = is.toUpperCase().replaceAll("\\r\\n|\\r|\\n", " ").trim()
@@ -26,17 +28,17 @@ public class WellKnownTextReader {
                     .replaceAll("\\s+,", ",")
                     .replaceAll("\\s+", " ");
             if(in.startsWith("POLYGON")){
-                readPolygon(result, in);
+                readPolygon(context, result, in);
             }else if(in.startsWith("TRIANGLE")){
-                readPolygon(result, in);
+                readPolygon(context, result, in);
             }else if(in.startsWith("MULTIPOLYGON")){
-                readMultiPolygon(result, in);
+                readMultiPolygon(context, result, in);
             }
         }
         return result;
     }
 
-    private static void readPolygon(ArrayList<LandData> result, String in) {
+    private static void readPolygon(Context context, ArrayList<LandData> result, String in) {
         List<List<LatLng>> land = new ArrayList<>();
         if(in.contains("(") || in.contains(")")){
             String data = in.substring(in.indexOf("(")+1,in.lastIndexOf(")")).trim();
@@ -65,18 +67,19 @@ public class WellKnownTextReader {
             for(int i = 1; i < land.size(); i++){
                 holes.add(DataUtil.removeSamePointStartEnd(new ArrayList<>(land.get(i))));
             }
-            result.add(new LandData(border, holes));
+
+            result.add(new LandData(DataUtil.getRandomLandColor(context),border, holes));
         }
     }
 
-    private static void readMultiPolygon(ArrayList<LandData> result, String in) {
+    private static void readMultiPolygon(Context context, ArrayList<LandData> result, String in) {
         List<String> polygons = new ArrayList<>();
         if(in.contains("(") || in.contains(")")){
             String data = in.substring(in.indexOf("(")+1,in.lastIndexOf(")")).trim();
             polygons.addAll(readPolygons(data));
         }
         for(String polygon : polygons){
-            readPolygon(result, polygon);
+            readPolygon(context, result, polygon);
         }
     }
 
