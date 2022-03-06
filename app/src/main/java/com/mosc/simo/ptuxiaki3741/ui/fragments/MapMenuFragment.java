@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
@@ -143,6 +144,9 @@ public class MapMenuFragment extends Fragment{
         LandRendered renderer = new LandRendered(getActivity(),mMap,clusterManager);
         renderer.setMinClusterSize(2);
         clusterManager.setRenderer(renderer);
+        NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
+        algorithm.setMaxDistanceBetweenClusteredItems(50);
+        clusterManager.setAlgorithm(algorithm);
 
 
         mMap.setOnCameraMoveStartedListener(reason-> cameraMoving = true);
