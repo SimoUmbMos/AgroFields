@@ -14,7 +14,8 @@
         android:maxWidth="100dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.AppTheme.Button"
         android:textColor="?attr/colorOnSurface"
         tools:text="Land Title" />

@@ -27,7 +27,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:text="@string/calendar_new_instance_fragment_title"
         android:textAppearance="@style/TextAppearance.AppTheme.Headline"
         app:layout_constraintEnd_toStartOf="@+id/ibDelete"
@@ -69,7 +70,8 @@
             android:clickable="true"
             android:focusable="false"
             android:inputType="textNoSuggestions"
-            android:singleLine="true" />
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,7 +98,8 @@
             android:clickable="true"
             android:focusable="false"
             android:inputType="textNoSuggestions"
-            android:singleLine="true" />
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,7 +125,8 @@
             android:autofillHints="false"
             android:imeOptions="actionDone"
             android:inputType="textShortMessage"
-            android:singleLine="true" />
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -147,7 +151,8 @@
             android:layout_height="wrap_content"
             android:autofillHints="false"
             android:inputType="none"
-            android:singleLine="true" />
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -172,7 +177,8 @@
             android:layout_height="wrap_content"
             android:autofillHints="false"
             android:inputType="none"
-            android:singleLine="true" />
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -197,7 +203,8 @@
             android:layout_height="wrap_content"
             android:autofillHints="false"
             android:inputType="none"
-            android:singleLine="true" />
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

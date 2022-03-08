@@ -32,7 +32,8 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
-                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppTheme.Caption"
                 tools:text="TextView" />
