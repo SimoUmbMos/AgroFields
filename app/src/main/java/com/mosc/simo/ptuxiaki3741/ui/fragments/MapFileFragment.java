@@ -116,12 +116,22 @@ public class MapFileFragment extends Fragment {
         if(getActivity() != null){
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(()->true);
+                mainActivity.setOnBackPressed(this::onBackPress);
                 if(action == ImportAction.NONE){
                     mainActivity.setOverrideDoubleBack(true);
                 }
             }
         }
+    }
+
+    private boolean onBackPress() {
+        if(landData == null) return true;
+
+        if(landDataList.size() > 1 && result != null) {
+            zoomOnLandsWithSelect();
+            return false;
+        }
+        return true;
     }
 
     private void initFragment(){

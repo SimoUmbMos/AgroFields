@@ -12,8 +12,8 @@
   <color name="common_colorPicker6">#76FF03</color>
   <color name="common_colorPicker7">#FFEA00</color>
   <color name="common_colorPicker8">#FF9100</color>
-  <color name="common_MapSurface">#fff</color>
-  <color name="common_colorOnMapSurface">#404040</color>
+  <color name="common_MapSurface">#BFFFFFFF</color>
+  <color name="common_colorOnMapSurface">#E6494746</color>
 
   <!-- LIGHT -->
   <!-- Light Theme Colors -->
