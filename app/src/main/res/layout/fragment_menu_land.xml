@@ -66,27 +66,37 @@
         app:layout_constraintStart_toEndOf="@+id/ibCloseContainer"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibHistory"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_history"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/history"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_history"
         app:layout_constraintEnd_toStartOf="@id/glEnd"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibSelectAll"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_select_all"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/select_all"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_select_all"
         app:layout_constraintEnd_toStartOf="@id/ibHistory"
         app:layout_constraintTop_toTopOf="parent" />
 

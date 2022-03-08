@@ -10,6 +10,18 @@
     <string name="done">Ολοκλήρωση</string>
     <string name="cancel">Ακύρωση</string>
     <string name="undo">Aναίρεση</string>
+    <string name="select_all">Επιλογή όλων</string>
+    <string name="collapse_all">Σύμπτυξη όλων</string>
+    <string name="history">Ιστορικό</string>
+    <string name="edit">Επεξεργασία</string>
+    <string name="restore">Επαναφορά</string>
+    <string name="save">Αποθήκευση</string>
+    <string name="menu">Μενού</string>
+    <string name="filters">Φίλτρα</string>
+    <string name="list_view">Λίστα</string>
+    <string name="grid_view">Πλέγμα</string>
+    <string name="info">Πληροφορίες</string>
+    <string name="factory_reset">Επαναφορά</string>
     <string name="file_type_select_title">Επιλέξτε Τύπος αρχείου</string>
     <string name="file_picker_label">Επιλέξτε ένα αρχείο σχήματος</string>
     <string name="file_backup_picker_label">Επιλέξτε ένα αντίγραφο ασφαλείας</string>
@@ -47,7 +59,7 @@
     <string name="clear_points">Διαγραφή σημείων</string>
     <string name="reset_points">Επαναφορά σημείων</string>
     <string name="edit_color">Αλλαγή χρώματος</string>
-    <string name="some_lands_have_zones_error">Some Lands Have Zones</string>
+    <string name="some_lands_have_zones_error">Ορισμένα χωράφια έχουν ζώνες</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
     <!-- Loading Fragment -->
@@ -93,10 +105,10 @@
     <string name="land_action_restored">Επαναφέρθηκε</string>
     <string name="land_action_imported">Έγινε εισαγωγή</string>
     <string name="land_action_deleted">Διαγράφηκε</string>
-    <string name="land_action_zone_created">Zone Created</string>
-    <string name="land_action_zone_updated">Zone Updated</string>
-    <string name="land_action_zone_imported">Zone Imported</string>
-    <string name="land_action_zone_deleted">Zone Deleted</string>
+    <string name="land_action_zone_created">Δημιουργία Ζώνης</string>
+    <string name="land_action_zone_updated">Ενημέρωση Ζώνης</string>
+    <string name="land_action_zone_imported">Εισαγωγή Ζώνης</string>
+    <string name="land_action_zone_deleted">Διαγράφη Ζώνης</string>
     <!-- Zone Land Selected Fragment -->
     <string name="zone_delete">Οι περιοχές διαγράφηκαν με επιτυχία</string>
     <string name="zone_export">Οι περιοχές εξήχθησαν με επιτυχία</string>
@@ -123,12 +135,12 @@
     <string name="iv_desc_zone_editor_center_camera">Κεντρικό κουμπί κάμερας</string>
     <!-- App Settings Fragment-->
     <string name="app_settings_title">Ρυθμίσεις</string>
-    <string name="settings_section_feedback">Feedback Settings</string>
-    <string name="owner_name_setting">Owner Name</string>
-    <string name="owner_email_setting">Owner Email</string>
-    <string name="settings_section_data">Data Settings</string>
-    <string name="select_snapshot_title">Snapshot</string>
-    <string name="settings_section_ui">Ui Settings</string>
+    <string name="settings_section_feedback">Ρυθμίσεις σχολίων</string>
+    <string name="owner_name_setting">Ονομα κατόχου</string>
+    <string name="owner_email_setting">Email κατόχου</string>
+    <string name="settings_section_data">Ρυθμίσεις δεδομένων</string>
+    <string name="select_snapshot_title">Στιγμιότυπο</string>
+    <string name="settings_section_ui">Ρυθμίσεις Ui</string>
     <string name="select_theme_title">Στυλ εφαρμογής</string>
     <string-array name="theme_styles">
         <item>Προεπιλογή συστήματος</item>
@@ -148,8 +160,8 @@
     <string name="file_map_fragment_error">Σφάλμα αρχείου</string>
     <string name="file_map_fragment_add_action">Κάντε κλικ σε σχήμα για προσθήκη</string>
     <string name="file_map_fragment_subtract_action">Κάντε κλικ σε σχήμα για αφαίρεση</string>
-    <string name="file_map_fragment_preview_action">File Preview</string>
-    <string name="file_map_fragment_no_land_selected">No land selected</string>
+    <string name="file_map_fragment_preview_action">Προεπισκόπηση</string>
+    <string name="file_map_fragment_no_land_selected">Δεν έχει επιλεγεί χωράφι</string>
     <!-- Calendar Fragment -->
     <string name="calendar_fragment_grid_title">Ημερολόγιο</string>
     <string name="date_filter_side_label">Φίλτρο ημερομηνίας</string>
@@ -164,8 +176,8 @@
     <string name="spray_filter_side_label">Εργασίες ψεκασμού</string>
     <string name="harvest_filter_side_label">Εργασίες συγκομ.</string>
     <!-- Calendar Event Fragment -->
-    <string name="calendar_new_instance_fragment_title">Ημερολόγιο: νέο συμβάν</string>
-    <string name="calendar_edit_instance_fragment_title">Ημερολόγιο: επεξεργασία συμβάντος</string>
+    <string name="calendar_new_instance_fragment_title">Νέο συμβάν</string>
+    <string name="calendar_edit_instance_fragment_title">Επεξεργασία συμβάντος</string>
     <string name="default_land_spinner_value">Όλα τα χωράφια</string>
     <string name="default_zone_spinner_value">Όλο το χωράφι</string>
     <string name="calendar_pop_up_date_title">Επιλέξτε ημερομηνία</string>

@@ -35,27 +35,37 @@
         app:layout_constraintStart_toEndOf="@+id/ibClose"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibInfo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_degree_info"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/info"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_degree_info"
         app:layout_constraintEnd_toStartOf="@+id/ibReset"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibReset"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_factory_reset"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/factory_reset"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_factory_reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

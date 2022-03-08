@@ -40,14 +40,19 @@
             app:layout_constraintStart_toEndOf="@+id/ibClose"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/ibEditMenu"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/menu_button"
             android:layout_marginEnd="16dp"
-            android:background="@color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_drawer_menu_edit"
+            android:ellipsize="end"
+            android:gravity="bottom|center_horizontal"
+            android:maxWidth="@dimen/max_width_menu_button"
+            android:maxLines="1"
+            android:minWidth="@dimen/menu_button"
+            android:text="@string/menu"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            app:drawableTopCompat="@drawable/ic_menu_menu"
             app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvTitle" />
@@ -105,16 +110,20 @@
             app:layout_constraintStart_toStartOf="@id/mvZonePreview"
             app:layout_constraintTop_toTopOf="@+id/mvZonePreview">
 
-            <ImageButton
+            <TextView
                 android:id="@+id/ibUndo"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/menu_button"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="8dp"
-                android:background="@color/transparent"
-                android:contentDescription="@string/undo"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_button_reset"
+                android:ellipsize="end"
+                android:gravity="bottom|center_horizontal"
+                android:maxWidth="@dimen/max_width_menu_button"
+                android:maxLines="1"
+                android:minWidth="@dimen/menu_button"
+                android:text="@string/undo"
+                android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                app:drawableTopCompat="@drawable/ic_button_reset"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

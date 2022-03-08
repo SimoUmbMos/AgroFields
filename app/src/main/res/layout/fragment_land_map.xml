@@ -39,27 +39,37 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/ibSave"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/menu_button"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_menu_save"
+            android:ellipsize="end"
+            android:gravity="bottom|center_horizontal"
+            android:maxWidth="@dimen/max_width_menu_button"
+            android:maxLines="1"
+            android:minWidth="@dimen/menu_button"
+            android:text="@string/save"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            app:drawableTopCompat="@drawable/ic_menu_save"
             app:layout_constraintEnd_toStartOf="@+id/ibToggleMenu"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <TextView
             android:id="@+id/ibToggleMenu"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/menu_button"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:background="@color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_menu_menu"
+            android:ellipsize="end"
+            android:gravity="bottom|center_horizontal"
+            android:maxWidth="@dimen/max_width_menu_button"
+            android:maxLines="1"
+            android:minWidth="@dimen/menu_button"
+            android:text="@string/menu"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            app:drawableTopCompat="@drawable/ic_menu_menu"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 

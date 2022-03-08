@@ -26,14 +26,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibFilter"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginEnd="16dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_filter"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:minWidth="@dimen/menu_button"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxLines="1"
+        android:text="@string/filters"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_filter"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

@@ -41,39 +41,54 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibEdit"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_edit"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/edit"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_edit"
         app:layout_constraintEnd_toStartOf="@+id/ibHistory"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibHistory"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_history"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/history"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_history"
         app:layout_constraintEnd_toStartOf="@+id/ibRestore"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ibRestore"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/transparent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_restore"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/restore"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_restore"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
