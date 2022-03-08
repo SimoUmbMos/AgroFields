@@ -200,6 +200,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void initData(){
+        binding.ibClose.setOnClickListener( v -> goBack());
         if(getActivity() != null){
             sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         }else{
@@ -416,6 +417,11 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         MainActivity activity = (MainActivity) getActivity();
         if(activity != null)
             activity.checkThemeSettings();
+    }
+
+    public void goBack(){
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->getActivity().onBackPressed());
     }
 
     public void toDegreeInfo(@Nullable Activity activity) {

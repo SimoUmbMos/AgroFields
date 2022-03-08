@@ -85,6 +85,7 @@ public class LandSelectedHistoryFragment extends Fragment {
     }
 
     private void initFragment() {
+        binding.ibClose.setOnClickListener(view -> goBack());
         binding.tvHistoryActionLabel.setText(getString(R.string.empty_list));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
@@ -154,6 +155,10 @@ public class LandSelectedHistoryFragment extends Fragment {
     }
 
     //ui
+    private void goBack(){
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->getActivity().onBackPressed());
+    }
     public void toLandMap(@Nullable Activity activity, Land land, ArrayList<LandZone> zones) {
         if(activity != null)
             activity.runOnUiThread(()-> {

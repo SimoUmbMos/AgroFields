@@ -96,6 +96,7 @@ public class LandPreviewFragment extends Fragment {
         binding.ibHistory.setOnClickListener( v -> toLandHistory(getActivity()) );
         binding.ibRestore.setOnClickListener( v -> restoreLand() );
         binding.fabZonesMenu.setOnClickListener( v -> toZonesMenu(getActivity()) );
+        binding.ibClose.setOnClickListener( v -> goBack(getActivity()) );
         binding.mvLand.getMapAsync(this::initMap);
     }
 

@@ -31,6 +31,7 @@
     <string name="singular_land_label">Χωράφι</string>
     <string name="plural_land_label">Χωράφια</string>
     <string name="singular_zone_label">Περιοχή</string>
+    <string name="plural_zone_label">Περιοχές</string>
     <string name="singular_event_label">Συμβάν</string>
     <string name="plural_event_label">Συμβάντα</string>
     <string name="pick_color">Επιλέξτε Χρώμα</string>

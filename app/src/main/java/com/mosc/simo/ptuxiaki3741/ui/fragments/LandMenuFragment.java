@@ -160,6 +160,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         binding.ibSelectAll.setOnClickListener( v -> onSelectAllButtonClick() );
         binding.ibHistory.setOnClickListener( v -> onHistoryButtonClick() );
         binding.ibClose.setOnClickListener( v -> onCloseButtonClick() );
+        binding.ibClose1.setOnClickListener( v -> onCloseButtonClick() );
 
         binding.fabAdd.setOnClickListener( v -> onAddButtonClick() );
         binding.fabExport.setOnClickListener( v -> onExportButtonClick() );
@@ -249,6 +250,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private void onCloseButtonClick(){
         if(state != ListMenuState.NormalState){
             setState(ListMenuState.NormalState);
+        }else{
+            goBack();
         }
     }
 
@@ -435,8 +438,10 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             deselectAllLands();
             binding.getRoot().transitionToStart();
             binding.ibClose.setVisibility(View.GONE);
+            binding.ibClose1.setVisibility(View.VISIBLE);
         }else{
             binding.ibClose.setVisibility(View.VISIBLE);
+            binding.ibClose1.setVisibility(View.GONE);
         }
         updateUi();
     }
@@ -539,6 +544,10 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //navigate
+    public void goBack(){
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->getActivity().onBackPressed());
+    }
     public void toLandPreview(@Nullable Activity activity, Land land) {
         if(activity != null)
             activity.runOnUiThread(()-> {

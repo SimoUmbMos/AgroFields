@@ -128,7 +128,8 @@ public class CalendarEventFragment extends Fragment{
     }
 
     private void initFragment(){
-        binding.ibDelete.setOnClickListener(V->delete());
+        binding.ibClose.setOnClickListener(view -> goBack());
+        binding.ibDelete.setOnClickListener(v->delete());
 
         if(calendarNotification.getId() == 0){
             binding.ibDelete.setVisibility(View.GONE);

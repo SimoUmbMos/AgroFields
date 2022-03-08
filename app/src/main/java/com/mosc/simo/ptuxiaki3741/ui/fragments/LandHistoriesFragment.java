@@ -72,6 +72,7 @@ public class LandHistoriesFragment extends Fragment {
                 this::onLandHistoryClick,
                 this::onRecordClick
         );
+        binding.ibClose.setOnClickListener(v -> goBack());
         binding.ibCollapse.setOnClickListener( v -> closeAllTabs() );
         binding.tvDeletedHistoryActionLabel.setText(getString(R.string.loading_list));
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -163,6 +164,10 @@ public class LandHistoriesFragment extends Fragment {
     }
 
     //nav
+    private void goBack(){
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->getActivity().onBackPressed());
+    }
     public void toLandMap(@Nullable Activity activity, Land land, ArrayList<LandZone> zones) {
         if(activity != null)
             activity.runOnUiThread(()-> {

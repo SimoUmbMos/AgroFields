@@ -329,7 +329,8 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         clearFlags();
         clearUndo();
 
-        binding.ibSave.setOnClickListener(v -> saveLand() );
+        binding.ibClose.setOnClickListener( v -> goBack() );
+        binding.ibSave.setOnClickListener( v -> saveLand() );
         binding.ibToggleMenu.setOnClickListener(v -> toggleDrawer(true) );
 
         binding.tvLoadingLabel.setVisibility(View.GONE);
@@ -1205,6 +1206,10 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     }
 
     //navigation relative
+    public void goBack(){
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->getActivity().onBackPressed());
+    }
     public void toMenu(Activity activity) {
         if(activity != null)
             activity.runOnUiThread(()->{

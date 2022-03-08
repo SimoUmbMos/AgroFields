@@ -81,6 +81,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             binding.tvTitle.setText(selectedLand.toString());
         }
         binding.ibClose.setOnClickListener(view -> onCloseClick());
+        binding.ibClose1.setOnClickListener(view -> onCloseClick());
         binding.ibSelectAll.setOnClickListener(view -> onSelectAllClick());
         binding.fabAdd.setOnClickListener(view -> onAddClick());
         binding.fabDelete.setOnClickListener(view -> onDeleteClick());
@@ -384,6 +385,11 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         if(state == ListMenuState.NormalState){
             deselectAllZones();
             binding.getRoot().transitionToStart();
+            binding.ibClose.setVisibility(View.GONE);
+            binding.ibClose1.setVisibility(View.VISIBLE);
+        }else{
+            binding.ibClose.setVisibility(View.VISIBLE);
+            binding.ibClose1.setVisibility(View.GONE);
         }
         updateUi();
     }

@@ -148,7 +148,8 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
     }
 
     private void initFragment(){
-
+        binding.ibClose1.setOnClickListener( view -> goBack());
+        binding.ibClose2.setOnClickListener( view -> goBack());
         binding.ibGridView.setOnClickListener(v->{
             toggleDrawer(false);
             onListViewUpdate(false);
@@ -511,6 +512,11 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
     private String getCurrentMonthYearTitle() {
         String month = new DateFormatSymbols().getShortMonths()[currentMonth.getMonth().getValue()-1];
         return String.format(Locale.getDefault(), "%s %d", month, currentMonth.getYear());
+    }
+
+    private void goBack(){
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->getActivity().onBackPressed());
     }
 
     private void toNewEvent(@Nullable Activity activity) {

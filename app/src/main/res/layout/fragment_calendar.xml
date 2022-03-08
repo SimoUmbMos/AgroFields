@@ -21,56 +21,70 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <ImageButton
+                android:id="@+id/ibClose1"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/transparent"
+                android:padding="14dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_back_arrow"
+                app:layout_constraintEnd_toStartOf="@+id/textView9"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/textView9"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="@string/plural_event_label"
                 android:textAppearance="@style/TextAppearance.AppTheme.Headline"
                 app:layout_constraintEnd_toStartOf="@+id/ibGridView"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ibClose1"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/ibGridView"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@color/transparent"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_menu_grid_view"
-                app:layout_constraintBottom_toBottomOf="@+id/textView9"
                 app:layout_constraintEnd_toStartOf="@+id/ibFilters"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/textView9"
-                app:layout_constraintTop_toTopOf="@+id/textView9"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/ibFilters"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_menu_filter"
-                app:layout_constraintBottom_toBottomOf="@+id/textView9"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/ibGridView"
-                app:layout_constraintTop_toTopOf="@+id/textView9" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcCalendarList"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:overScrollMode="never"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -98,18 +112,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="0dp"
+            <ImageButton
+                android:id="@+id/ibClose2"
+                android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="@string/calendar_fragment_grid_title"
-                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
-                app:layout_constraintEnd_toStartOf="@+id/ibListView"
-                app:layout_constraintHorizontal_bias="0.5"
+                android:layout_marginTop="8dp"
+                android:background="@color/transparent"
+                android:padding="14dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_menu_back_arrow"
+                app:layout_constraintEnd_toStartOf="@+id/textView10"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -117,16 +130,31 @@
                 android:id="@+id/ibListView"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_menu_list_view"
-                app:layout_constraintBottom_toBottomOf="@+id/textView10"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/textView10"
-                app:layout_constraintTop_toTopOf="@+id/textView10" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/calendar_fragment_grid_title"
+                android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+                app:layout_constraintEnd_toStartOf="@+id/ibListView"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ibClose2"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/headerPreviousMonth"
@@ -144,9 +172,9 @@
                 android:id="@+id/headerTextView"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:gravity="center"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppTheme.Headline"
@@ -171,7 +199,10 @@
                 android:id="@+id/calendarView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
                 android:overScrollMode="never"
                 app:cv_dayViewResource="@layout/calendar_day_layout"
                 app:cv_inDateStyle="firstMonth"

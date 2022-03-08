@@ -94,6 +94,11 @@
                 motion:applyMotionScene="false"
                 motion:visibilityMode="ignore" />
         </Constraint>
+        <Constraint android:id="@id/ibClose1">
+            <PropertySet
+                motion:applyMotionScene="false"
+                motion:visibilityMode="ignore" />
+        </Constraint>
         <Constraint android:id="@id/ibSelectAll">
             <PropertySet
                 motion:applyMotionScene="false"

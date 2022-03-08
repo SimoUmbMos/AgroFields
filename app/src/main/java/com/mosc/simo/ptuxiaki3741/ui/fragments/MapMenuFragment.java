@@ -119,7 +119,7 @@ public class MapMenuFragment extends Fragment{
     }
 
     private void initFragment() {
-        binding.ibBack.setOnClickListener(v ->goBack());
+        binding.ibClose.setOnClickListener(v ->goBack());
         binding.ibZoom.setOnClickListener(v -> zoomOnLands());
         binding.mvLiveMap.getMapAsync(this::initMap);
     }
@@ -145,7 +145,7 @@ public class MapMenuFragment extends Fragment{
         renderer.setMinClusterSize(2);
         clusterManager.setRenderer(renderer);
         NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
-        algorithm.setMaxDistanceBetweenClusteredItems(50);
+        algorithm.setMaxDistanceBetweenClusteredItems(66);
         clusterManager.setAlgorithm(algorithm);
 
 

@@ -168,6 +168,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private void initFragment(){
+        binding.ibClose.setOnClickListener( v -> goBack());
         binding.ibEditMenu.setOnClickListener(v->{
             onStateUpdate(ZoneEditorState.NormalState);
             toggleDrawer(true);

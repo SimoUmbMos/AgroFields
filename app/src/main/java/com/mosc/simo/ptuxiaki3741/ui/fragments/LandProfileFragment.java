@@ -88,6 +88,7 @@ public class LandProfileFragment extends Fragment {
         binding.tvLandInfoActionLabel.setText(landLabel);
         binding.btnLandInfoSubmit.setOnClickListener(v->onSubmit());
         binding.btnLandInfoCancel.setOnClickListener(v->onCancel());
+        binding.ibClose.setOnClickListener(v->goBack());
     }
 
     //ui
@@ -139,10 +140,10 @@ public class LandProfileFragment extends Fragment {
     //cancel
     public void onCancel() {
         closeKeyboard();
-        finish();
+        goBack();
     }
 
-    private void finish() {
+    private void goBack() {
         if(getActivity() != null)
             getActivity().onBackPressed();
     }

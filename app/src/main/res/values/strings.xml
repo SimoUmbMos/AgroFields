@@ -41,6 +41,7 @@
     <string name="singular_land_label">Land</string>
     <string name="plural_land_label">Land\'s</string>
     <string name="singular_zone_label">Zone</string>
+    <string name="plural_zone_label">Zone\'s</string>
     <string name="singular_event_label">Event</string>
     <string name="plural_event_label">Event\'s</string>
     <string name="pick_color">Pick Color</string>

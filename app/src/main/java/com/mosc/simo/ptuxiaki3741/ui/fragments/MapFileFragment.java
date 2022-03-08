@@ -167,7 +167,7 @@ public class MapFileFragment extends Fragment {
         renderer.setMinClusterSize(2);
         clusterManager.setRenderer(renderer);
         NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
-        algorithm.setMaxDistanceBetweenClusteredItems(50);
+        algorithm.setMaxDistanceBetweenClusteredItems(66);
         clusterManager.setAlgorithm(algorithm);
         mMap.setOnCameraIdleListener(clusterManager);
 
