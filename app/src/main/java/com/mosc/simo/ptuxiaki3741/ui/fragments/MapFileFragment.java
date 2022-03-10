@@ -20,7 +20,6 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
-import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -331,14 +330,7 @@ public class MapFileFragment extends Fragment {
     private void submitLand() {
         if(this.landData == null || this.result == null) return;
 
-        LandData data = new LandData(
-                landData.getId(),
-                landData.getSnapshot(),
-                landData.getTitle(),
-                new ColorData(landData.getColor().toString()),
-                landData.getBorder(),
-                landData.getHoles()
-        );
+        LandData data = new LandData(landData);
         LandData result = null;
         switch (action){
             case ADD:

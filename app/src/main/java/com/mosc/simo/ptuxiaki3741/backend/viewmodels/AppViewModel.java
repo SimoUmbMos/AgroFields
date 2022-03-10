@@ -37,6 +37,7 @@ public class AppViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Snapshot>> snapshots = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> landsTags = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandHistoryRecord>> landsHistory = new MutableLiveData<>();
     private final MutableLiveData<Map<LocalDate,List<CalendarNotification>>> notifications = new MutableLiveData<>();
@@ -52,6 +53,9 @@ public class AppViewModel extends AndroidViewModel {
     }
     public LiveData<List<Land>> getLands(){
         return lands;
+    }
+    public LiveData<List<String>> getLandsTags(){
+        return landsTags;
     }
     public LiveData<Map<Long,List<LandZone>>> getLandZones(){
         return landZones;
@@ -73,6 +77,7 @@ public class AppViewModel extends AndroidViewModel {
 
     private void populateLists() {
         populateDataSnapshots();
+        populateLandsTags();
         populateLands();
         populateLandZones();
         populateLandsRecords();
@@ -83,10 +88,10 @@ public class AppViewModel extends AndroidViewModel {
         if(snapshots.getValue() != null){
             snapshotsList = snapshots.getValue();
             snapshotsList.clear();
-            snapshotsList.addAll(appRepository.getSnapshots());
         }else{
-            snapshotsList = new ArrayList<>(appRepository.getSnapshots());
+            snapshotsList = new ArrayList<>();
         }
+        snapshotsList.addAll(appRepository.getSnapshots());
         snapshots.postValue(snapshotsList);
     }
     private void populateLands() {
@@ -94,21 +99,32 @@ public class AppViewModel extends AndroidViewModel {
         if(lands.getValue() != null){
             landList = lands.getValue();
             landList.clear();
-            landList.addAll(appRepository.getLands());
         }else{
-            landList = new ArrayList<>(appRepository.getLands());
+            landList = new ArrayList<>();
         }
+        landList.addAll(appRepository.getLands());
         lands.postValue(landList);
+    }
+    private void populateLandsTags() {
+        List<String> snapshotsList;
+        if(landsTags.getValue() != null){
+            snapshotsList = landsTags.getValue();
+            snapshotsList.clear();
+        }else{
+            snapshotsList = new ArrayList<>();
+        }
+        snapshotsList.addAll(appRepository.getLandTags());
+        landsTags.postValue(snapshotsList);
     }
     private void populateLandZones(){
         Map<Long,List<LandZone>> zoneList;
         if(landZones.getValue() != null){
             zoneList = landZones.getValue();
             zoneList.clear();
-            zoneList.putAll(appRepository.getLandZones());
         }else{
-            zoneList = new HashMap<>(appRepository.getLandZones());
+            zoneList = new HashMap<>();
         }
+        zoneList.putAll(appRepository.getLandZones());
         landZones.postValue(zoneList);
     }
     private void populateLandsRecords() {
@@ -116,10 +132,10 @@ public class AppViewModel extends AndroidViewModel {
         if(landsHistory.getValue() != null){
             landsHistoryList = landsHistory.getValue();
             landsHistoryList.clear();
-            landsHistoryList.addAll(appRepository.getLandRecords());
         }else{
-            landsHistoryList = new ArrayList<>(appRepository.getLandRecords());
+            landsHistoryList = new ArrayList<>();
         }
+        landsHistoryList.addAll(appRepository.getLandRecords());
         landsHistory.postValue(landsHistoryList);
     }
     private void populateNotifications() {
@@ -127,16 +143,17 @@ public class AppViewModel extends AndroidViewModel {
         if(notifications.getValue() != null){
             notificationsList = notifications.getValue();
             notificationsList.clear();
-            notificationsList.putAll(appRepository.getNotifications());
         }else{
-            notificationsList = new TreeMap<>(appRepository.getNotifications());
+            notificationsList = new TreeMap<>();
         }
+        notificationsList.putAll(appRepository.getNotifications());
         notifications.postValue(notificationsList);
     }
 
     public void refreshImportLists(){
         populateDataSnapshots();
         populateLands();
+        populateLandsTags();
         populateLandZones();
         populateLandsRecords();
     }

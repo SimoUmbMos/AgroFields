@@ -24,6 +24,8 @@ import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
+import java.util.List;
+
 public class LandProfileFragment extends Fragment {
     public static final String TAG = "LandInfoFragment";
     private Land land;
@@ -81,6 +83,7 @@ public class LandProfileFragment extends Fragment {
         }else{
             landLabel = getString(R.string.edit_land_label);
             binding.etLandInfoName.setText(land.getData().getTitle());
+            binding.etLandInfoTags.setText(land.getData().getTags());
             binding.etLandInfoAddress.setText("");
             binding.etLandInfoAddress.setEnabled(false);
             binding.etLandInfoAddressLayout.setVisibility(View.GONE);
@@ -106,34 +109,52 @@ public class LandProfileFragment extends Fragment {
     public void onSubmit() {
         closeKeyboard();
         String landName = "";
+        String landTags = "";
         String address = "";
         if(binding.etLandInfoName.getText()!=null){
             landName = binding.etLandInfoName.getText().toString();
+            landName = DataUtil.removeSpecialCharacters(landName);
+            binding.etLandInfoName.setText(landName);
+        }
+        if(binding.etLandInfoTags.getText()!=null){
+            landTags = binding.etLandInfoTags.getText().toString();
+            landTags = DataUtil.removeSpecialCharactersCSV(landTags);
+            List<String> tags = DataUtil.splitTags(landTags);
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < tags.size(); i++){
+                if(tags.get(i) == null) continue;
+
+                builder.append(tags.get(i));
+                if(i != (tags.size() - 1)) builder.append(", ");
+            }
+            landTags = builder.toString();
+            binding.etLandInfoTags.setText(landTags);
         }
         if(binding.etLandInfoAddress.getText()!=null){
             address = binding.etLandInfoAddress.getText().toString();
         }
-        landName = DataUtil.removeSpecialCharacters(landName);
-        binding.etLandInfoName.setText(landName);
         if(!landName.isEmpty()){
             binding.etLandInfoNameLayout.setError(null);
-            submit(landName, address);
+            submit(landName, landTags, address);
         }else{
             binding.etLandInfoNameLayout.setError(getString(R.string.title_empty_error));
         }
     }
 
-    private void submit(String landName, String address) {
-        if(land == null){
-            LandData landData = new LandData(snapshot,landName,color);
+    private void submit(String landName,String landTags, String address) {
+        LandData landData;
+        if(land == null || land.getData() == null){
+            landData = new LandData(snapshot,landName,landTags,color);
             if(address.trim().isEmpty()){
                 toLandMap(getActivity(),new Land(landData));
             }else{
                 toLandMap(getActivity(),new Land(landData),address);
             }
         }else{
-            land.getData().setTitle(landName);
-            toLandMap(getActivity(),land);
+            landData = new LandData(land.getData());
+            landData.setTitle(landName);
+            landData.setTags(landTags);
+            toLandMap(getActivity(),new Land(landData));
         }
     }
 

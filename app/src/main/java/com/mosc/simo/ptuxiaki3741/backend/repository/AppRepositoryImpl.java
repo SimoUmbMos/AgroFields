@@ -11,6 +11,7 @@ import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
+import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,6 +43,25 @@ public class AppRepositoryImpl implements AppRepository {
     public List<Snapshot> getSnapshots(){
         List<Snapshot> ans = db.snapshotDao().getDataSnapshots();
         if(ans == null) ans = new ArrayList<>();
+        return ans;
+    }
+
+    @Override
+    public List<String> getLandTags(){
+        List<String> ans = new ArrayList<>();
+
+        List<LandData> landsData = db.landDao().getLands(snapshot.getKey());
+        if(landsData == null) return ans;
+
+        for(LandData landData : landsData){
+            List<String> tags = LandUtil.getLandTags(landData);
+            for(String tag : tags){
+                if(!ans.contains(tag)) {
+                    ans.add(tag);
+                }
+            }
+        }
+
         return ans;
     }
 

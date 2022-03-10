@@ -74,6 +74,7 @@
     <!-- Land Info Fragment -->
     <string name="land_info_title">Πληροφορίες χωραφιού</string>
     <string name="land_name">Τίτλος χωραφιού</string>
+    <string name="land_tags">Ετικέτες χωραφιού</string>
     <string name="address_hint">Διεύθυνση χωραφιού</string>
     <string name="create_land_label">Ορισμός τίτλου χωραφιού</string>
     <string name="edit_land_label">Επεξεργασία τίτλου χωραφιού</string>
@@ -200,4 +201,6 @@
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Απαιτείται άδεια τοποθεσίας</string>
     <string name="live_map_title">Χάρτης</string>
+    <!-- Tags Common -->
+    <string name="empty_tag">Not Set</string>
 </resources>

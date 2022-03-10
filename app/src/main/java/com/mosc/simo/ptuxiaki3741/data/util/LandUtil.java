@@ -19,6 +19,11 @@ import java.util.List;
 public final class LandUtil {
     private LandUtil(){}
 
+    public static List<String> getLandTags(LandData landData){
+        if(landData == null) return new ArrayList<>();
+        return DataUtil.splitTags(landData.getTags());
+    }
+
     public static LandData uniteLandData(LandData currLandData, LandData landDataToAdd){
         List<LatLng> newBorder = new ArrayList<>(currLandData.getBorder());
         List<List<LatLng>> holes = new ArrayList<>(currLandData.getHoles());
@@ -61,6 +66,7 @@ public final class LandUtil {
                 currLandData.getId(),
                 currLandData.getSnapshot(),
                 currLandData.getTitle(),
+                currLandData.getTags(),
                 currLandData.getColor(),
                 newBorder,
                 holes
@@ -107,6 +113,7 @@ public final class LandUtil {
                 currLandData.getId(),
                 currLandData.getSnapshot(),
                 currLandData.getTitle(),
+                currLandData.getTags(),
                 currLandData.getColor(),
                 newBorder,
                 holes
@@ -120,6 +127,7 @@ public final class LandUtil {
                     record.getLandID(),
                     record.getSnapshot(),
                     record.getLandTitle(),
+                    record.getLandTags(),
                     record.getLandColor(),
                     record.getBorder(),
                     record.getHoles()

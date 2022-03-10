@@ -123,12 +123,14 @@ public final class OpenXmlDataBaseInput {
         long id;
         long snapshot;
         String title;
+        String tags;
         ColorData color;
         List<LatLng> border;
         List<List<LatLng>> holes;
         for (Row row : sheet) {
             id = 0;
             title = "";
+            tags = "";
             color = null;
             snapshot = -1;
             border = new ArrayList<>();
@@ -146,12 +148,6 @@ public final class OpenXmlDataBaseInput {
                         }
                         break;
                     case 1:
-                        title = cell.getStringCellValue().trim();
-                        break;
-                    case 2:
-                        color = new ColorData(cell.getStringCellValue().trim());
-                        break;
-                    case 3:
                         boolean isDouble;
                         try{
                             snapshot = Long.parseLong(cell.getStringCellValue().trim());
@@ -165,7 +161,16 @@ public final class OpenXmlDataBaseInput {
                             }catch (Exception ignore){}
                         }
                         break;
+                    case 2:
+                        title = cell.getStringCellValue().trim();
+                        break;
+                    case 3:
+                        tags = cell.getStringCellValue().trim();
+                        break;
                     case 4:
+                        color = new ColorData(cell.getStringCellValue().trim());
+                        break;
+                    case 5:
                         fillListsFromPointsString(
                                 border,
                                 holes,
@@ -178,7 +183,7 @@ public final class OpenXmlDataBaseInput {
                 continue;
             }
 
-            lands.add(new Land(new LandData(id,snapshot,title,color,border,holes)));
+            lands.add(new Land(new LandData(id,snapshot,title,tags,color,border,holes)));
         }
     }
     private static void getLandZoneData(Sheet sheet, List<LandZone> zones) {
@@ -208,24 +213,6 @@ public final class OpenXmlDataBaseInput {
                         }
                         break;
                     case 1:
-                        if(cell.getCellType() == CellType.NUMERIC){
-                            try{
-                                lid = Double.valueOf(cell.getNumericCellValue()).longValue();
-                            }catch (Exception e){
-                                lid = -1;
-                            }
-                        }
-                        break;
-                    case 2:
-                        title = cell.getStringCellValue().trim();
-                        break;
-                    case 3:
-                        note = cell.getStringCellValue().trim();
-                        break;
-                    case 4:
-                        color = new ColorData(cell.getStringCellValue().trim());
-                        break;
-                    case 5:
                         boolean isDouble;
                         try{
                             snapshot = Long.parseLong(cell.getStringCellValue().trim());
@@ -238,6 +225,24 @@ public final class OpenXmlDataBaseInput {
                                 snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
                             }catch (Exception ignore){}
                         }
+                        break;
+                    case 2:
+                        if(cell.getCellType() == CellType.NUMERIC){
+                            try{
+                                lid = Double.valueOf(cell.getNumericCellValue()).longValue();
+                            }catch (Exception e){
+                                lid = -1;
+                            }
+                        }
+                        break;
+                    case 3:
+                        title = cell.getStringCellValue().trim();
+                        break;
+                    case 4:
+                        note = cell.getStringCellValue().trim();
+                        break;
+                    case 5:
+                        color = new ColorData(cell.getStringCellValue().trim());
                         break;
                     case 6:
                         fillListsFromPointsString(
@@ -271,13 +276,14 @@ public final class OpenXmlDataBaseInput {
                 new XSSFSheetXMLHandler.SheetContentsHandler() {
                     private long id;
                     private long snapshot;
-                    private String title, color;
+                    private String title, tags, color;
                     private List<LatLng> border;
                     private List<List<LatLng>> holes;
                     @Override
                     public void startRow(int rowNum) {
                         id = 0;
                         title = "";
+                        tags = "";
                         color = "";
                         snapshot = -1;
                         border = new ArrayList<>();
@@ -287,7 +293,7 @@ public final class OpenXmlDataBaseInput {
                     @Override
                     public void endRow(int rowNum) {
                         if(!title.isEmpty() && border.size() != 0) {
-                            lands.add(new Land(new LandData(id, snapshot, title, new ColorData(color), border, holes)));
+                            lands.add(new Land(new LandData(id, snapshot, title, tags, new ColorData(color), border, holes)));
                         }
                     }
 
@@ -306,12 +312,6 @@ public final class OpenXmlDataBaseInput {
                                 }
                                 break;
                             case "B":
-                                title = value;
-                                break;
-                            case "C":
-                                color = value;
-                                break;
-                            case "D":
                                 boolean isDouble;
                                 try{
                                     snapshot = Long.parseLong(value.trim());
@@ -325,7 +325,16 @@ public final class OpenXmlDataBaseInput {
                                     }catch (Exception ignore){}
                                 }
                                 break;
+                            case "C":
+                                title = value;
+                                break;
+                            case "D":
+                                tags = value;
+                                break;
                             case "E":
+                                color = value;
+                                break;
+                            case "F":
                                 fillListsFromPointsString(
                                         border,
                                         holes,
@@ -390,22 +399,6 @@ public final class OpenXmlDataBaseInput {
                                 }
                                 break;
                             case "B":
-                                try{
-                                    lid = Double.valueOf(value).longValue();
-                                }catch (Exception e){
-                                    lid = -1;
-                                }
-                                break;
-                            case "C":
-                                title = value;
-                                break;
-                            case "D":
-                                note = value;
-                                break;
-                            case "E":
-                                color = value;
-                                break;
-                            case "F":
                                 boolean isDouble;
                                 try{
                                     snapshot = Long.parseLong(value.trim());
@@ -418,6 +411,22 @@ public final class OpenXmlDataBaseInput {
                                         snapshot = (long) Double.parseDouble(value.trim());
                                     }catch (Exception ignore){}
                                 }
+                                break;
+                            case "C":
+                                try{
+                                    lid = Double.valueOf(value).longValue();
+                                }catch (Exception e){
+                                    lid = -1;
+                                }
+                                break;
+                            case "D":
+                                title = value;
+                                break;
+                            case "E":
+                                note = value;
+                                break;
+                            case "F":
+                                color = value;
                                 break;
                             case "G":
                                 fillListsFromPointsString(

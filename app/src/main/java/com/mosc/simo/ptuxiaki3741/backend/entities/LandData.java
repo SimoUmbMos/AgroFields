@@ -58,6 +58,12 @@ public class LandData implements Parcelable {
     private String title;
 
     /**
+     * Represents the Land Tags
+     */
+    @ColumnInfo(name = "Tags")
+    private String tags;
+
+    /**
      * Contains the Land Color
      */
     @ColumnInfo(name = "Color")
@@ -80,10 +86,11 @@ public class LandData implements Parcelable {
      * @param clone A LandData to clone
      */
     @Ignore
-    protected LandData(LandData clone) {
+    public LandData(LandData clone) {
         id = clone.id;
         snapshot = clone.snapshot;
         title = clone.title;
+        tags = clone.tags;
         color = new ColorData(clone.color.toString());
         border = new ArrayList<>();
         holes = new ArrayList<>();
@@ -100,6 +107,7 @@ public class LandData implements Parcelable {
         id = parcel.readLong();
         snapshot = parcel.readLong();
         title = parcel.readString();
+        tags = parcel.readString();
         color = parcel.readParcelable(ColorData.class.getClassLoader());
         border = parcel.createTypedArrayList(LatLng.CREATOR);
         List<ParcelableHole> holes = parcel.createTypedArrayList(ParcelableHole.CREATOR);
@@ -115,6 +123,7 @@ public class LandData implements Parcelable {
     public LandData(List<LatLng> border) {
         this.id = 0;
         this.title = "";
+        this.tags = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
         this.color = new ColorData(20, 249, 80);
@@ -131,6 +140,7 @@ public class LandData implements Parcelable {
     public LandData(List<LatLng> border,List<List<LatLng>> holes) {
         this.id = 0;
         this.title = "";
+        this.tags = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
         this.color = new ColorData(20, 249, 80);
@@ -165,6 +175,7 @@ public class LandData implements Parcelable {
     public LandData(ColorData color, List<LatLng> border,List<List<LatLng>> holes) {
         this.id = 0;
         this.title = "";
+        this.tags = "";
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
         this.color = color;
@@ -177,13 +188,15 @@ public class LandData implements Parcelable {
      * Creates Land Data with the Land snapshot key, title and color
      * @param snapshot A long representing the land snapshot key
      * @param title  A String representing the land title
+     * @param tags  A String representing the land tags
      * @param color A ColorData containing the land color
      */
     @Ignore
-    public LandData(long snapshot, String title, ColorData color) {
+    public LandData(long snapshot, String title, String tags, ColorData color) {
         this.id = 0;
         this.snapshot = snapshot;
         this.title = title;
+        this.tags = tags;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
         this.color = color;
@@ -194,14 +207,16 @@ public class LandData implements Parcelable {
      * @param id A long representing the land id
      * @param snapshot A long representing the land snapshot key
      * @param title  A String representing the land title
+     * @param tags  A String representing the land tags
      * @param color A ColorData containing the land color
      * @param border A List&lt;LatLng&gt; containing the land border
      * @param holes A List&lt;List&lt;LatLng&gt;&gt; containing the land holes
      */
-    public LandData(long id, long snapshot, String title, ColorData color, List<LatLng> border, List<List<LatLng>> holes) {
+    public LandData(long id, long snapshot, String title, String tags, ColorData color, List<LatLng> border, List<List<LatLng>> holes) {
         this.id = id;
         this.snapshot = snapshot;
         this.title = title;
+        this.tags = tags;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
         this.color = color;
@@ -231,6 +246,14 @@ public class LandData implements Parcelable {
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * Gets the Land tags
+     * @return A String representing the land tags
+     */
+    public String getTags() {
+        return tags;
     }
 
     /**
@@ -279,6 +302,14 @@ public class LandData implements Parcelable {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * Sets the Land tags
+     * @param tags A string representing the land tags
+     */
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     /**
@@ -342,6 +373,7 @@ public class LandData implements Parcelable {
         dest.writeLong(id);
         dest.writeLong(snapshot);
         dest.writeString(title);
+        dest.writeString(tags);
         dest.writeParcelable(color,flags);
         dest.writeTypedList(border);
         List<ParcelableHole> holes = new ArrayList<>();
@@ -367,6 +399,7 @@ public class LandData implements Parcelable {
                 id == landData.id &&
                 snapshot == landData.snapshot &&
                 title.equals(landData.title) &&
+                tags.equals(landData.tags) &&
                 color.equals(landData.color) &&
                 ListUtils.arraysMatch(border,landData.border) &&
                 ListUtils.arraysMatch(holes,landData.holes);
@@ -378,7 +411,7 @@ public class LandData implements Parcelable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, snapshot, title, color, border, holes);
+        return Objects.hash(id, snapshot, title, tags, color, border, holes);
     }
 
     /**

@@ -12,6 +12,7 @@ import androidx.room.Index;
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "LandZoneData",
@@ -60,6 +61,18 @@ public class LandZoneData implements Parcelable {
     private List<LatLng> border;
 
     @Ignore
+    public LandZoneData(LandZoneData in) {
+        id = in.id;
+        snapshot = in.snapshot;
+        lid = in.lid;
+        title = in.title;
+        note = in.note;
+        color = new ColorData(in.color.toString());
+        border = new ArrayList<>();
+        setBorder(in.border);
+    }
+
+    @Ignore
     protected LandZoneData(Parcel in) {
         id = in.readLong();
         snapshot = in.readLong();
@@ -69,6 +82,7 @@ public class LandZoneData implements Parcelable {
         color = in.readParcelable(ColorData.class.getClassLoader());
         border = in.createTypedArrayList(LatLng.CREATOR);
     }
+
     @Ignore
     public LandZoneData(long snapshot, long lid, String title, String note, ColorData color, List<LatLng> border) {
         this.id = 0;
@@ -77,8 +91,10 @@ public class LandZoneData implements Parcelable {
         this.title = title;
         this.note = note;
         this.color = color;
-        this.border = border;
+        this.border = new ArrayList<>();
+        setBorder(border);
     }
+
     public LandZoneData(long id, long snapshot, long lid, String title, String note, ColorData color, List<LatLng> border) {
         this.id = id;
         this.snapshot = snapshot;

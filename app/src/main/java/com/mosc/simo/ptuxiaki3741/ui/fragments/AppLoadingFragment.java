@@ -82,7 +82,7 @@ public class AppLoadingFragment extends Fragment {
         long snapshotKey = sharedPref.getLong(AppValues.argSnapshotKey, Snapshot.getInstance().getKey());
         Log.d(TAG, "initViewModel: key = "+snapshotKey);
         AsyncTask.execute(()->{
-            appVM.setDefaultSnapshot(Snapshot.getInstance(snapshotKey));
+            appVM.setDefaultSnapshot(new Snapshot(snapshotKey));
             Log.d(TAG, "initViewModel: setDefaultSnapshot = "+snapshotKey);
         });
     }

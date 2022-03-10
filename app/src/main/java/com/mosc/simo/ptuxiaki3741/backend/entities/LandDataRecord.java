@@ -37,6 +37,8 @@ public class LandDataRecord {
     private final long landID;
     @ColumnInfo(name = "LandTitle")
     private final String landTitle;
+    @ColumnInfo(name = "LandTags")
+    private final String landTags;
     @ColumnInfo(name = "LandColor")
     private final ColorData landColor;
     @ColumnInfo(name = "ActionID")
@@ -54,6 +56,7 @@ public class LandDataRecord {
         this.snapshot = land.getSnapshot();
         this.landID = land.getId();
         this.landTitle = land.getTitle();
+        this.landTags = land.getTags();
         this.landColor = land.getColor();
         this.actionID = actionID;
         this.date = date;
@@ -64,7 +67,7 @@ public class LandDataRecord {
     }
 
     public LandDataRecord(long id, long snapshot,
-                          long landID, String landTitle, ColorData landColor,
+                          long landID, String landTitle, String landTags, ColorData landColor,
                           List<LatLng> border, List<List<LatLng>> holes,
                           LandDBAction actionID, Date date
     ) {
@@ -72,6 +75,7 @@ public class LandDataRecord {
         this.snapshot = snapshot;
         this.landID = landID;
         this.landTitle = landTitle;
+        this.landTags = landTags;
         this.landColor = landColor;
         this.actionID = actionID;
         this.date = date;
@@ -89,6 +93,9 @@ public class LandDataRecord {
     }
     public String getLandTitle() {
         return landTitle;
+    }
+    public String getLandTags() {
+        return landTags;
     }
     public ColorData getLandColor() {
         return landColor;
@@ -136,6 +143,7 @@ public class LandDataRecord {
                 landID == that.landID &&
                 actionID == that.actionID &&
                 landTitle.equals(that.landTitle) &&
+                landTags.equals(that.landTags) &&
                 date.equals(that.date) &&
                 ListUtils.arraysMatch(border,that.border) &&
                 ListUtils.arraysMatch(holes,that.holes);
@@ -143,6 +151,6 @@ public class LandDataRecord {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, snapshot, landID, actionID, landTitle, date, border, holes);
+        return Objects.hash(id, snapshot, landID, actionID, landTitle, landTags, date, border, holes);
     }
 }

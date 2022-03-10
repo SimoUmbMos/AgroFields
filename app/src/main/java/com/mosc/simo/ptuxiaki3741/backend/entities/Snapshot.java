@@ -101,13 +101,8 @@ public class Snapshot implements Serializable {
         this.needInit = init;
     }
 
-
     public static Snapshot getInstance() {
         return new Snapshot(LocalDate.now().getYear());
-    }
-
-    public static Snapshot getInstance(long key) {
-        return new Snapshot(key);
     }
 
     @Override

@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
@@ -199,7 +200,10 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private void onLandsChange(List<Land> lands) {
         data.clear();
         if(lands != null){
-            data.addAll(lands);
+            for(Land land : lands){
+                if(land == null || land.getData() == null) continue;
+                data.add(land);
+            }
         }
         binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
         updateListUi();
@@ -549,11 +553,13 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         getActivity().runOnUiThread(()->getActivity().onBackPressed());
     }
     public void toLandPreview(@Nullable Activity activity, Land land) {
+        if(land == null || land.getData() == null) return;
+
         if(activity != null)
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuLandsFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,land);
+                bundle.putParcelable(AppValues.argLand,new Land(new LandData(land.getData())));
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);
             });

@@ -64,9 +64,34 @@ public final class DataUtil {
         String[] lines = string.split("\r\n|\r|\n");
         return  lines.length;
     }
+    public static List<String> splitTags(String in){
+        List<String> ans = new ArrayList<>();
+        if(in == null || in.isEmpty()){
+            ans.add(null);
+            return ans;
+        }
+        String[] tags = in.split(",");
+        for(String tag : tags){
+            String comp = tag;
+            if(comp == null || comp.isEmpty()) comp = null;
+            if(comp != null) {
+                comp = comp.trim();
+            }
+            if(!ans.contains(comp)) ans.add(comp);
+        }
+
+        return ans;
+    }
     public static String removeSpecialCharacters(String string){
         String ans = string.replaceAll(
                 "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
+                " "
+        ).trim();
+        return ans.replaceAll(" +", " ");
+    }
+    public static String removeSpecialCharactersCSV(String string){
+        String ans = string.replaceAll(
+                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>]",
                 " "
         ).trim();
         return ans.replaceAll(" +", " ");

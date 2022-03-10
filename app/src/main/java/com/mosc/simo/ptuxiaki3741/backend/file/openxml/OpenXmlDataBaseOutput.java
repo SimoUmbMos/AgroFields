@@ -68,13 +68,16 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(land.getData().getId());
 
             cell = row.createCell(colNum++);
+            cell.setCellValue(land.getData().getSnapshot());
+
+            cell = row.createCell(colNum++);
             cell.setCellValue(land.getData().getTitle());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(land.getData().getColor().toString());
+            cell.setCellValue(land.getData().getTags());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(land.getData().getSnapshot());
+            cell.setCellValue(land.getData().getColor().toString());
 
             cell = row.createCell(colNum);
             border = new ArrayList<>(land.getData().getBorder());
@@ -105,6 +108,9 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(zone.getData().getId());
 
             cell = row.createCell(colNum++);
+            cell.setCellValue(zone.getData().getSnapshot());
+
+            cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getLid());
 
             cell = row.createCell(colNum++);
@@ -115,9 +121,6 @@ public final class OpenXmlDataBaseOutput {
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getColor().toString());
-
-            cell = row.createCell(colNum++);
-            cell.setCellValue(zone.getData().getSnapshot());
 
             cell = row.createCell(colNum);
             points = new ArrayList<>();
@@ -175,13 +178,16 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(land.getData().getId());
 
             cell = row.createCell(colNum++);
+            cell.setCellValue(land.getData().getSnapshot());
+
+            cell = row.createCell(colNum++);
             cell.setCellValue(land.getData().getTitle());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(land.getData().getColor().toString());
+            cell.setCellValue(land.getData().getTags());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(land.getData().getSnapshot());
+            cell.setCellValue(land.getData().getColor().toString());
 
             cell = row.createCell(colNum);
             border = new ArrayList<>(land.getData().getBorder());
@@ -212,6 +218,9 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(zone.getData().getId());
 
             cell = row.createCell(colNum++);
+            cell.setCellValue(zone.getData().getSnapshot());
+
+            cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getLid());
 
             cell = row.createCell(colNum++);
@@ -222,9 +231,6 @@ public final class OpenXmlDataBaseOutput {
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getColor().toString());
-
-            cell = row.createCell(colNum++);
-            cell.setCellValue(zone.getData().getSnapshot());
 
             cell = row.createCell(colNum);
             points = new ArrayList<>();

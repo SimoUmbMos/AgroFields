@@ -18,6 +18,7 @@ public interface AppRepository {
     Snapshot saveSnapshot(Snapshot snapshot);
     List<Snapshot> getSnapshots();
 
+    List<String> getLandTags();
     List<Land> getLands();
     Map<Long,List<LandZone>> getLandZones();
     List<LandHistoryRecord> getLandRecords();

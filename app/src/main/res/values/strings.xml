@@ -84,6 +84,7 @@
     <!-- Land Info Fragment -->
     <string name="land_info_title">Land Info</string>
     <string name="land_name">Land Name</string>
+    <string name="land_tags">Land Tags</string>
     <string name="address_hint">Land Address</string>
     <string name="create_land_label">Set Land Name</string>
     <string name="edit_land_label">Edit Land Name</string>
@@ -210,4 +211,6 @@
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Location permission is needed</string>
     <string name="live_map_title">Map</string>
+    <!-- Tags Common -->
+    <string name="empty_tag">Not Set</string>
 </resources>

@@ -149,7 +149,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 land = getArguments().getParcelable(AppValues.argLand);
             }
         }
-        if(zone != null){
+        if(zone != null && zone.getData() != null){
+            LandZoneData data = new LandZoneData(zone.getData());
+            zone = new LandZone(data);
             title = zone.getData().getTitle();
             note = zone.getData().getNote();
             color = zone.getData().getColor();
