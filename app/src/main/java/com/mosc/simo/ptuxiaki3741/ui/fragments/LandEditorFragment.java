@@ -89,7 +89,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     private String address;
     private LatLng startZoomLocation;
     private float startZoomLevel;
-    private boolean currLocation, locationPointWasRunning, cameraInit;
+    private boolean currLocation, locationPointWasRunning, cameraInit, isSaving;
     private Land currLand;
     private ColorData color, tempColor;
     private String displayTitle;
@@ -269,13 +269,13 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         currLocation = false;
         cameraInit = true;
         locationPointWasRunning = false;
+        isSaving = false;
+        if(landData != null){
+            currLand = new Land(landData);
+        }
         if(getArguments() != null){
-            if(landData != null){
-                currLand = new Land(landData);
-            }else{
-                if(getArguments().containsKey(AppValues.argLand)) {
-                    currLand = getArguments().getParcelable(AppValues.argLand);
-                }
+            if(currLand == null && getArguments().containsKey(AppValues.argLand)) {
+                currLand = getArguments().getParcelable(AppValues.argLand);
             }
             if(getArguments().containsKey(AppValues.argAddress)){
                 address = getArguments().getString(AppValues.argAddress);
@@ -465,6 +465,9 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             Log.d(TAG, "isValidToSave: true");
             binding.tvLoadingLabel.setText(getString(R.string.saving_label));
             binding.tvLoadingLabel.setVisibility(View.VISIBLE);
+            binding.ibSave.setEnabled(false);
+            binding.ibToggleMenu.setEnabled(false);
+            isSaving = true;
             AsyncTask.execute(()->{
                 addToVM();
                 toMenu(getActivity());
@@ -1319,6 +1322,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
 
     @Override
     public boolean onBackPressed() {
+        if(isSaving) return false;
         if(binding.getRoot().isDrawerOpen(GravityCompat.END)){
             binding.getRoot().closeDrawer(GravityCompat.END);
             return false;

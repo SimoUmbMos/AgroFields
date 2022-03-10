@@ -90,11 +90,12 @@ public final class DataUtil {
         return ans.replaceAll(" +", " ");
     }
     public static String removeSpecialCharactersCSV(String string){
-        String ans = string.replaceAll(
-                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>]",
-                " "
-        ).trim();
-        return ans.replaceAll(" +", " ");
+        String ans = string
+                .replaceAll("[@#€&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>.]", " ")
+                .replaceAll("_+", " ")
+                .replaceAll("( *),( *)", ",")
+                .trim();
+        return ans.replaceAll(" +", "_");
     }
     public static boolean isColor(String string){
         String colorRegex = "^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";

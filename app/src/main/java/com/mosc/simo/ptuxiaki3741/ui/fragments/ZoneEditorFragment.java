@@ -84,7 +84,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private String title, note;
     private ColorData color,tempColor;
     private List<LatLng> border;
-    private boolean forceBack, showNote, mapLoaded, doubleBackToExit;
+    private boolean forceBack, showNote, mapLoaded, doubleBackToExit, isSaving;
     private int index1, index2, index3;
 
     private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
@@ -136,6 +136,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         mapLoaded = false;
         forceBack = false;
         showNote = false;
+        isSaving = false;
         state = ZoneEditorState.NormalState;
         index1 = -1;
         index2 = -1;
@@ -323,7 +324,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private void saveZone(){
         toggleDrawer(false);
         if(needSave()){
-            if(isValidSave()){
+            if(isValidSave() && getActivity() != null){
+                isSaving = true;
+                binding.ibEditMenu.setEnabled(false);
                 AsyncTask.execute(()->{
                     List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
                     border.clear();
@@ -338,9 +341,6 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                         List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
                         border.clear();
                         border.addAll(tempBorder);
-                    }
-                    if(getActivity() != null){
-                        getActivity().runOnUiThread(this::updateMap);
                     }
                     if(isValidSave()){
                             if(zone != null){
@@ -360,6 +360,13 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             }
                     }else{
                         Snackbar.make(binding.getRoot(), getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG).show();
+                    }
+                    if(getActivity() != null){
+                        getActivity().runOnUiThread(()->{
+                            updateMap();
+                            binding.ibEditMenu.setEnabled(true);
+                            isSaving = false;
+                        });
                     }
                 });
             }else{
@@ -1053,9 +1060,8 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     @Override public boolean onBackPressed() {
-        if(forceBack) {
-            return true;
-        }
+        if(forceBack) return true;
+        if(isSaving) return false;
         if (state != ZoneEditorState.NormalState) {
             onStateUpdate(ZoneEditorState.NormalState);
             return false;
