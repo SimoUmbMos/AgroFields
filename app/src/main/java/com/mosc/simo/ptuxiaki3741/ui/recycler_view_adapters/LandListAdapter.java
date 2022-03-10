@@ -1,12 +1,9 @@
 package com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters;
 
 import android.content.Context;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -19,7 +16,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.material.card.MaterialCardView;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.util.ListUtils;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
@@ -78,16 +74,9 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             holder.binding.item.setOnClickListener(v ->
                 onLandClick.onActionResult(land)
             );
-            holder.binding.llTagsContainer.setOnClickListener(v ->
-                onLandClick.onActionResult(land)
-            );
         }
         if(onLandLongClick != null){
             holder.binding.item.setOnLongClickListener(v -> {
-                onLandLongClick.onActionResult(land);
-                return true;
-            });
-            holder.binding.llTagsContainer.setOnLongClickListener(v -> {
                 onLandLongClick.onActionResult(land);
                 return true;
             });
@@ -127,8 +116,6 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             binding = ViewHolderLandWithTagsBinding.bind(itemView);
             this.parentContext = parentContext;
 
-            binding.hsvTagsParent.setVisibility(View.GONE);
-
             binding.mapView.setTag(null);
             binding.getRoot().setTag(null);
 
@@ -141,55 +128,21 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             if(land == null) return;
             if(land.getData() == null) return;
 
-            int smallDistance = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    2,
-                    parentContext.getResources().getDisplayMetrics()
-            );
-            int normalDistance = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    4,
-                    parentContext.getResources().getDisplayMetrics()
-            );
-            int largeDistance = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    8,
-                    parentContext.getResources().getDisplayMetrics()
-            );
             List<String> tags = LandUtil.getLandTags(land.getData());
-            binding.llTagsContainer.removeAllViews();
+            StringBuilder builder = new StringBuilder();
             for(int i = 0; i < tags.size(); i++){
                 if( tags.get(i) == null ) continue;
-                MaterialCardView cardView = new MaterialCardView(parentContext);
-                cardView.setCardElevation(4);
-                TextView tagView = new TextView(parentContext);
-                tagView.setText(tags.get(i));
-
-                LinearLayout.LayoutParams pText  = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                pText.setMargins(largeDistance,smallDistance,largeDistance,smallDistance);
-                tagView.setLayoutParams(pText);
-
-                LinearLayout.LayoutParams pCard  = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                if(i == 0){
-                    pCard.setMargins(normalDistance,normalDistance,normalDistance,normalDistance);
-                }else{
-                    pCard.setMargins(0,normalDistance,normalDistance,normalDistance);
-                }
-                cardView.setLayoutParams(pCard);
-
-                cardView.addView(tagView);
-                binding.llTagsContainer.addView(cardView);
+                builder.append("#");
+                builder.append(tags.get(i));
+                if(i != (tags.size()-1))
+                    builder.append(" ");
             }
-            if(binding.llTagsContainer.getChildCount() > 0){
-                binding.hsvTagsParent.setVisibility(View.VISIBLE);
+            String display = builder.toString();
+            binding.tvTagsContainer.setText(display);
+            if(display.isEmpty()){
+                binding.tvTagsContainer.setVisibility(View.GONE);
             }else{
-                binding.hsvTagsParent.setVisibility(View.GONE);
+                binding.tvTagsContainer.setVisibility(View.VISIBLE);
             }
 
             binding.getRoot().setTag(land.getData());

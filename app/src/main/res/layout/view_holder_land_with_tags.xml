@@ -15,6 +15,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tvTagsContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mapView" />
+
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="0dp"
@@ -31,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
             android:ellipsize="end"
@@ -40,7 +54,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hsvTagsParent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTagsContainer"
             tools:text="land" />
 
         <TextView
@@ -48,6 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:maxLines="1"
@@ -57,7 +72,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/hsvTagsParent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTagsContainer"
             tools:text="land" />
 
         <FrameLayout
@@ -71,25 +86,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
             tools:ignore="UselessLeaf" />
-
-        <HorizontalScrollView
-            android:id="@+id/hsvTagsParent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:foregroundGravity="center"
-            android:overScrollMode="never"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mapView">
-
-            <LinearLayout
-                android:id="@+id/llTagsContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

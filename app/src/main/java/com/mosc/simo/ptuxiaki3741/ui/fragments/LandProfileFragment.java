@@ -24,6 +24,7 @@ import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LandProfileFragment extends Fragment {
@@ -120,10 +121,15 @@ public class LandProfileFragment extends Fragment {
             landTags = binding.etLandInfoTags.getText().toString();
             landTags = DataUtil.removeSpecialCharactersCSV(landTags);
             List<String> tags = DataUtil.splitTags(landTags);
+            List<String> temp = new ArrayList<>();
+            for(int i = 0; i < tags.size(); i++){
+                if(tags.get(i) == null || tags.get(i).isEmpty()) continue;
+                temp.add(tags.get(i));
+            }
+            tags.clear();
+            tags.addAll(temp);
             StringBuilder builder = new StringBuilder();
             for(int i = 0; i < tags.size(); i++){
-                if(tags.get(i) == null) continue;
-
                 builder.append(tags.get(i));
                 if(i != (tags.size() - 1)) builder.append(", ");
             }
