@@ -41,6 +41,12 @@ public final class AppValues {
     public static final float cityZoom = 13.0f;
     public static final float streetZoom = 16.0f;
     /* Live Map Fragment Values */
+    public static final int myLocationLoop = 500;
+    public static final int liveMapLandZIndex = 1;
+    public static final int liveMapZoneZIndex = 2;
+    public static final int liveMapMyLocationZIndex = 3;
+    public static final int liveMapMarkerZIndex = 4;
+    public static final int liveMapClusterZIndex = 5;
     public static final float locationSensitivity = 1.0f;
     public static final float bearingAlphaHigh = 0.15f;
     public static final float bearingAlphaMedium = 0.075f;

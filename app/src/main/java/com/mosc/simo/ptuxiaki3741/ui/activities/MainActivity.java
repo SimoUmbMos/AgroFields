@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         NotificationChannel channel1 = new NotificationChannel(
                 AppValues.NotificationChannelID,
                 name1,
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_HIGH
         );
         channel1.setDescription(description1);
         channel1.enableVibration(true);

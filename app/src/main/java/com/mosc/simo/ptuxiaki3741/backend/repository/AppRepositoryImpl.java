@@ -67,7 +67,9 @@ public class AppRepositoryImpl implements AppRepository {
 
     @Override
     public Land getLand(long id, long snapshot) {
-        LandData data = db.landDao().getLand(id, snapshot);
+        long snap = snapshot;
+        if(snap == -1) snap = this.snapshot.getKey();
+        LandData data = db.landDao().getLand(id, snap);
         if(data != null) return new Land(data);
         return null;
     }

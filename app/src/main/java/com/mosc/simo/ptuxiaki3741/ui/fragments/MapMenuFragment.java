@@ -1,14 +1,20 @@
 package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.location.Location;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +22,21 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.data.enums.LocationStates;
+import com.mosc.simo.ptuxiaki3741.data.helpers.LocationHelper;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
+import com.mosc.simo.ptuxiaki3741.data.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLiveMapBinding;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
@@ -37,16 +51,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MapMenuFragment extends Fragment{
-    //todo: background check location and notify by notifications
-    //todo(?): add curr location with follow
-
+    //todo(?): add curr location camera
     public static final String TAG = "ContactsContainerFragment";
-    public static final int NotificationID = 3741;
-
-    private NotificationManager notificationManager;
-    private Notification notification;
-    private String notificationTitle;
-    private String notificationMsg;
 
     private FragmentLiveMapBinding binding;
     private GoogleMap mMap;
@@ -54,6 +60,50 @@ public class MapMenuFragment extends Fragment{
     private ClusterManager<ClusterLand> clusterManager;
     private Map<Land, List<LandZone>> data;
     private boolean cameraMoving, isInit, firstLandUpdate;
+
+    public static final int NotificationID = 3741;
+    private NotificationManager notificationManager;
+    private Notification notification;
+    private String notificationTitle;
+    private String notificationMsg;
+
+    private final Handler locationThread = new Handler();
+    private final Runnable locationLoop = new Runnable() {
+        @Override
+        public void run() {
+            onLoop();
+            locationThread.postDelayed(locationLoop, AppValues.myLocationLoop);
+        }
+    };
+    private LocationHelper locationHelper;
+    private Marker myLocation;
+    private LatLng userLocation;
+
+    @SuppressLint("MissingPermission")
+    private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            this::onPermissionResult
+    );
+
+    public void onPermissionResult(Map<String, Boolean> results){
+        Boolean fineLocationGranted = results.getOrDefault(
+                Manifest.permission.ACCESS_FINE_LOCATION, false);
+        Boolean coarseLocationGranted = results.getOrDefault(
+                Manifest.permission.ACCESS_COARSE_LOCATION,false);
+
+        LocationStates locationPermission;
+        if (fineLocationGranted != null && fineLocationGranted){
+            locationPermission = LocationStates.FINE_LOCATION;
+        }else if(coarseLocationGranted != null && coarseLocationGranted){
+            locationPermission = LocationStates.COARSE_LOCATION;
+        }else{
+            locationPermission = LocationStates.DISABLE;
+        }
+
+        locationHelper.setLocationPermission(locationPermission);
+        locationHelper.getLastKnownLocation();
+        locationHelper.start();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -79,6 +129,22 @@ public class MapMenuFragment extends Fragment{
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        binding.mvLiveMap.onStart();
+        if(locationHelper != null) locationHelper.start();
+        locationThread.postDelayed(locationLoop, AppValues.myLocationLoop);
+    }
+
+    @Override
+    public void onStop() {
+        locationThread.removeCallbacks(locationLoop);
+        if(locationHelper != null) locationHelper.stop();
+        binding.mvLiveMap.onStop();
+        super.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         binding.mvLiveMap.onResume();
@@ -97,6 +163,10 @@ public class MapMenuFragment extends Fragment{
     }
 
     private void initData() {
+        myLocation = null;
+        userLocation = null;
+        locationHelper = null;
+
         notification = null;
         notificationTitle = "";
         notificationMsg = "";
@@ -148,8 +218,7 @@ public class MapMenuFragment extends Fragment{
         algorithm.setMaxDistanceBetweenClusteredItems(66);
         clusterManager.setAlgorithm(algorithm);
 
-
-        mMap.setOnCameraMoveStartedListener(reason-> cameraMoving = true);
+        mMap.setOnCameraMoveStartedListener(reason -> cameraMoving = true);
         mMap.setOnCameraIdleListener(()->{
             cameraMoving = false;
             clusterManager.onCameraIdle();
@@ -174,7 +243,69 @@ public class MapMenuFragment extends Fragment{
         if (getActivity() != null) {
             AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             appVM.getLandZones().observe(getViewLifecycleOwner(), this::onZonesUpdate);
+            initLocation();
         }
+    }
+
+    private void initLocation(){
+        if(getActivity() != null){
+            locationHelper = new LocationHelper(getActivity(),this::onLocationUpdate);
+            locationPermissionRequest.launch(new String[] {
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+        }
+    }
+
+    private void onLoop() {
+        if(mMap != null && getActivity() != null){
+            getActivity().runOnUiThread(()->{
+                if(myLocation != null){
+                    myLocation.remove();
+                    myLocation = null;
+                }
+                if(userLocation != null){
+                    myLocation = mMap.addMarker(new MarkerOptions().position(userLocation).zIndex(AppValues.liveMapMyLocationZIndex));
+                }
+            });
+        }
+
+        String title = "";
+        String msg = "";
+        if(userLocation != null && clusterManager != null){
+            for(ClusterLand item : clusterManager.getAlgorithm().getItems()){
+                if(item == null || item.getZonesData() == null) continue;
+                if(MapUtil.contains(userLocation,item.getLandData().getBorder())){
+                    boolean onHole = false;
+                    for(List<LatLng> hole : item.getLandData().getHoles()){
+                        if(hole == null) continue;
+                        if(MapUtil.contains(userLocation,hole)){
+                            onHole = true;
+                            break;
+                        }
+                    }
+                    if(onHole) continue;
+
+                    title = item.getTitle();
+                    msg = item.getSnippet();
+                    for(LandZoneData zoneData : item.getZonesData()){
+                        if(zoneData == null) continue;
+                        if(MapUtil.contains(userLocation,zoneData.getBorder())){
+                            title = zoneData.getTitle();
+                            msg = zoneData.getNote();
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        displayNotification(title, msg);
+    }
+
+    private void onLocationUpdate(Location location) {
+        if(location != null) userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        else userLocation = null;
     }
 
     private void onLandsUpdate(List<Land> lands) {

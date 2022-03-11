@@ -19,6 +19,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
+import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewLandClusterBinding;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewLandMarkerBinding;
 
@@ -65,7 +66,7 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
                 LandUtil.getPolygonOptions(
                         item.getLandData(),
                         false
-                ).zIndex(1)
+                ).zIndex(AppValues.liveMapLandZIndex)
         );
 
         itemPolygons.add(polygon);
@@ -74,7 +75,7 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
                     LandUtil.getPolygonOptions(
                             zone,
                             false
-                    ).zIndex(2)
+                    ).zIndex(AppValues.liveMapZoneZIndex)
             );
             itemPolygons.add(polygon);
         }
@@ -99,7 +100,7 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
         iconGenerator.setContentView(inflatedView);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon()));
         markerOptions.alpha(0.875f);
-        markerOptions.zIndex(3);
+        markerOptions.zIndex(AppValues.liveMapMarkerZIndex);
     }
 
     @SuppressLint("SetTextI18n")
@@ -116,7 +117,7 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
         iconGenerator.setContentView(inflatedView);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon()));
         markerOptions.alpha(0.875f);
-        markerOptions.zIndex(4);
+        markerOptions.zIndex(AppValues.liveMapClusterZIndex);
     }
 
 }
