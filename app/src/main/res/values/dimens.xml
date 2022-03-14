@@ -13,6 +13,6 @@
     <dimen name="list_history_item_side_margin">8dp</dimen>
     <dimen name="list_history_item_inner_margin">8dp</dimen>
     <dimen name="list_history_item_inner_large_margin">16dp</dimen>
-    <dimen name="main_menu_max_img_height">120dp</dimen>
+    <dimen name="main_menu_max_img_height">100dp</dimen>
     <dimen name="list_map_item_height">120dp</dimen>
 </resources>
