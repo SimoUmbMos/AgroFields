@@ -5,61 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
-    android:layout_marginTop="8dp"
     android:layout_marginEnd="?android:attr/listPreferredItemPaddingEnd"
     android:layout_marginBottom="8dp"
-    app:strokeWidth="2dp"
-    app:cardElevation="@dimen/cardElevation">
+    app:cardBackgroundColor="?attr/colorSecondary"
+    app:cardElevation="@dimen/cardElevation"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tvLandName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppTheme.Title"
+            android:textColor="?attr/colorOnSecondary"
+            app:layout_constraintBottom_toTopOf="@+id/mapView"
+            app:layout_constraintEnd_toStartOf="@+id/cbSelect"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="land title" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbSelect"
+            style="@style/Widget.Material3.CompoundButton.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp"
+            app:buttonTint="?attr/colorOnSecondary"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLandName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvLandName"
+            app:layout_constraintTop_toTopOf="@+id/tvLandName" />
+
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="0dp"
             android:layout_height="@dimen/list_map_item_height"
+            android:layout_marginTop="4dp"
+            android:clickable="false"
+            android:focusable="false"
             app:cameraZoom="0"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLandName"
             app:liteMode="true"
             app:mapType="none" />
-
-        <CheckedTextView
-            android:id="@+id/ctvLandName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppTheme.Body"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mapView"
-            tools:text="land" />
-
-        <TextView
-            android:id="@+id/tvLandName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingBottom="10dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppTheme.Body"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mapView"
-            tools:text="land" />
 
         <FrameLayout
             android:id="@+id/item"
@@ -69,6 +73,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="UselessLeaf"/>
+            tools:ignore="UselessLeaf" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

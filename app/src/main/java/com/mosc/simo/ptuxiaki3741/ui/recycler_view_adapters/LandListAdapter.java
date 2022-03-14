@@ -61,14 +61,11 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         Land land = data.get(position);
         String display = land.toString();
         holder.binding.tvLandName.setText(display);
-        holder.binding.ctvLandName.setText(display);
-        holder.binding.ctvLandName.setChecked(land.isSelected());
+        holder.binding.cbSelect.setChecked(land.isSelected());
         if(showCheckMark){
-            holder.binding.tvLandName.setVisibility(View.GONE);
-            holder.binding.ctvLandName.setVisibility(View.VISIBLE);
+            holder.binding.cbSelect.setVisibility(View.VISIBLE);
         }else{
-            holder.binding.ctvLandName.setVisibility(View.GONE);
-            holder.binding.tvLandName.setVisibility(View.VISIBLE);
+            holder.binding.cbSelect.setVisibility(View.GONE);
         }
         if(onLandClick != null){
             holder.binding.item.setOnClickListener(v ->

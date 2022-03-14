@@ -69,14 +69,11 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
 
         String display = zone.toString();
         holder.binding.tvLandName.setText(display);
-        holder.binding.ctvLandName.setText(display);
-        holder.binding.ctvLandName.setChecked(zone.isSelected());
+        holder.binding.cbSelect.setChecked(zone.isSelected());
         if(showCheckMark){
-            holder.binding.tvLandName.setVisibility(View.GONE);
-            holder.binding.ctvLandName.setVisibility(View.VISIBLE);
+            holder.binding.cbSelect.setVisibility(View.VISIBLE);
         }else{
-            holder.binding.ctvLandName.setVisibility(View.GONE);
-            holder.binding.tvLandName.setVisibility(View.VISIBLE);
+            holder.binding.cbSelect.setVisibility(View.GONE);
         }
         if(onClick != null){
             holder.binding.item.setOnClickListener(v ->

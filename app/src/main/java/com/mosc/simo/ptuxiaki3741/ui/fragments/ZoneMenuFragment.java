@@ -179,24 +179,28 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     }
     private void toggleAllZone() {
         if(areAllZoneSelected()){
-            if(state == ListMenuState.MultiSelectState){
-                setState(ListMenuState.NormalState);
-            }else{
-                deselectAllZones();
-            }
+            deselectAllZones();
         }else{
             selectAllZones();
         }
-        adapter.saveData(data);
+        if(getSelectedZones().size() == 0 && state == ListMenuState.MultiSelectState){
+            setState(ListMenuState.NormalState);
+        }
     }
     private void selectAllZones() {
         for(LandZone zone:data){
-            zone.setSelected(true);
+            if(!zone.isSelected()){
+                zone.setSelected(true);
+                adapter.notifyItemChanged(data.indexOf(zone));
+            }
         }
     }
     private void deselectAllZones() {
         for(LandZone zone:data){
-            zone.setSelected(false);
+            if(zone.isSelected()){
+                zone.setSelected(false);
+                adapter.notifyItemChanged(data.indexOf(zone));
+            }
         }
     }
     private boolean areAllZoneSelected() {

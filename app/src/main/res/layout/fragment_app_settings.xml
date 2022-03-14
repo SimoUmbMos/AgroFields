@@ -73,9 +73,8 @@
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,23 +89,23 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
+                android:layout_marginHorizontal="16dp"
                 android:padding="8dp"
-                android:text="@string/settings_section_ui"
+                android:text="@string/settings_section_data"
                 android:textAppearance="@style/TextAppearance.AppTheme.Body" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilTheme"
+                android:id="@+id/tilSnapshot"
                 style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:hint="@string/select_theme_title"
-                android:labelFor="@id/tvTheme">
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="24dp"
+                android:hint="@string/select_snapshot_title"
+                android:labelFor="@id/tvSnapshot">
 
                 <AutoCompleteTextView
-                    android:id="@+id/tvTheme"
+                    android:id="@+id/tvSnapshot"
                     style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,10 +115,60 @@
                     android:ellipsize="end" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBulkEdit"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="24dp"
+                android:paddingHorizontal="16dp"
+                android:text="@string/bulk_edit_button_label"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body"
+                android:maxLines="1"
+                android:ellipsize="end"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/ic_menu_arrow_right"
+                app:iconGravity="end"
+                app:iconSize="24dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportDB"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="24dp"
+                android:paddingHorizontal="16dp"
+                android:text="@string/export_database_button_label"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body"
+                android:textAlignment="textStart"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/ic_menu_arrow_right"
+                app:iconGravity="end"
+                app:iconSize="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnImportDB"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginVertical="24dp"
+                android:paddingHorizontal="16dp"
+                android:text="@string/import_database_button_label"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body"
+                android:textAlignment="textStart"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/ic_menu_arrow_right"
+                app:iconGravity="end"
+                app:iconSize="24dp"/>
+
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="16dp"
                 android:padding="8dp"
                 android:text="@string/settings_section_feedback"
                 android:textAppearance="@style/TextAppearance.AppTheme.Body" />
@@ -129,9 +178,8 @@
                 style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="24dp"
                 android:hint="@string/owner_name_setting">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -150,9 +198,8 @@
                 style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginVertical="24dp"
                 android:hint="@string/owner_email_setting">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -160,33 +207,32 @@
                     style="@style/Widget.Material3.TextInputEditText.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
                     android:imeOptions="actionDone"
                     android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="16dp"
                 android:padding="8dp"
-                android:text="@string/settings_section_data"
+                android:text="@string/settings_section_ui"
                 android:textAppearance="@style/TextAppearance.AppTheme.Body" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilSnapshot"
+                android:id="@+id/tilTheme"
                 style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:hint="@string/select_snapshot_title"
-                android:labelFor="@id/tvSnapshot">
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginVertical="24dp"
+                android:hint="@string/select_theme_title"
+                android:labelFor="@id/tvTheme">
 
                 <AutoCompleteTextView
-                    android:id="@+id/tvSnapshot"
+                    android:id="@+id/tvTheme"
                     style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -195,37 +241,6 @@
                     android:maxLines="1"
                     android:ellipsize="end" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnExportDB"
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:padding="8dp"
-                android:text="@string/export_database_button_label"
-                android:textAppearance="@style/TextAppearance.AppTheme.Body"
-                app:icon="@drawable/ic_menu_export"
-                app:iconGravity="end"
-                app:iconSize="24dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnImportDB"
-                style="@style/Widget.Material3.Button.TonalButton.Icon"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:padding="8dp"
-                android:text="@string/import_database_button_label"
-                android:textAppearance="@style/TextAppearance.AppTheme.Body"
-                app:icon="@drawable/ic_drawer_menu_import"
-                app:iconGravity="end"
-                app:iconSize="24dp" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

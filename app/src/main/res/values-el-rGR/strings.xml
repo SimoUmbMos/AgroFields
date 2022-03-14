@@ -65,6 +65,7 @@
     <!-- Loading Fragment -->
     <string name="file_input_error">Σφάλμα κατά την ανάγνωση του αρχείου.</string>
     <!-- Main Menu Fragment -->
+    <string name="main_menu_snapshot_title">Στιγμιότυπο:</string>
     <string name="main_menu_live_map_button">Χάρτης</string>
     <string name="main_menu_calendar_button">Ημερολόγιο</string>
     <string name="main_menu_land_button">Χωράφια</string>
@@ -136,25 +137,26 @@
     <string name="iv_desc_zone_editor_center_camera">Κεντρικό κουμπί κάμερας</string>
     <!-- App Settings Fragment-->
     <string name="app_settings_title">Ρυθμίσεις</string>
-    <string name="settings_section_feedback">Ρυθμίσεις σχολίων</string>
-    <string name="owner_name_setting">Ονομα κατόχου</string>
-    <string name="owner_email_setting">Email κατόχου</string>
-    <string name="settings_section_data">Ρυθμίσεις δεδομένων</string>
-    <string name="select_snapshot_title">Στιγμιότυπο</string>
+    <string name="settings_section_feedback">Ρυθμίσεις Σχολίων</string>
+    <string name="owner_name_setting">Ονομα Κατόχου</string>
+    <string name="owner_email_setting">Email Κατόχου</string>
+    <string name="settings_section_data">Ρυθμίσεις Δεδομένων</string>
+    <string name="select_snapshot_title">Στιγμιότυπα</string>
     <string name="settings_section_ui">Ρυθμίσεις Ui</string>
-    <string name="select_theme_title">Στυλ εφαρμογής</string>
+    <string name="select_theme_title">Στυλ Εφαρμογής</string>
     <string-array name="theme_styles">
-        <item>Προεπιλογή συστήματος</item>
-        <item>Φωτεινό θέμα</item>
-        <item>Σκοτεινό θέμα</item>
+        <item>Προεπιλογή Συστήματος</item>
+        <item>Φωτεινό Θέμα</item>
+        <item>Σκοτεινό Θέμα</item>
     </string-array>
-    <string name="import_database_button_label">Εισαγωγή</string>
-    <string name="export_database_button_label">Εξαγωγή</string>
+    <string name="bulk_edit_button_label">Μαζική Επεξεργασία Δεδομένων</string>
+    <string name="import_database_button_label">Εισαγωγή Χωραφιών</string>
+    <string name="export_database_button_label">Εξαγωγή Χωραφιών</string>
     <string name="import_db_success">Τα δεδομένα ενημερώθηκαν</string>
     <string name="export_db_success">Η εξαγωγή δεδομένων ολοκληρώθηκε</string>
     <string name="import_db_failed">Αποτυχία ενημέρωσης δεδομένων</string>
     <string name="export_db_fail">Αποτυχία εξαγωγής δεδομένων</string>
-    <string name="open_xml_action_not_ended_error">Παρακαλώ περιμένετε…</string>
+    <string name="open_xml_action_not_ended_error">Παρακαλώ Περιμένετε…</string>
     <!-- File Map Fragment -->
     <string name="file_map_fragment_import_action">Κάντε κλικ σε σχήμα για εισαγωγή</string>
     <string name="file_map_fragment_loading">Φόρτωση αρχείου…</string>
