@@ -1,8 +1,11 @@
-package com.mosc.simo.ptuxiaki3741.collageviews;
-/* code taken from https://github.com/thuytrinh/android-collage-views/tree/master/libraries/collage-views/src/main/java/com/thuytrinh/android/collageviews */
+package com.thuytrinh.android.collageviews;
 
 import android.graphics.PointF;
 
+/**
+ *  code taken from <a href="https://github.com/thuytrinh/android-collage-views">thuytrinh/android collage views</a>.
+ *  @author thuytrinh
+ */
 public class Vector2D extends PointF {
 
     public Vector2D() {

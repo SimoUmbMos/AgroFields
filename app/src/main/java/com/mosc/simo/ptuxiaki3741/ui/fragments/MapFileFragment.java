@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,25 +21,29 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
+import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentFileMapBinding;
 import com.mosc.simo.ptuxiaki3741.data.enums.ImportAction;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
 import com.mosc.simo.ptuxiaki3741.ui.renderers.LandRendered;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapFileFragment extends Fragment {
+    private FragmentFileMapBinding binding;
+    private LoadingDialog loadingDialog;
     private GoogleMap mMap;
+
     private ClusterManager<ClusterLand> clusterManager;
 
     private final List<LandData> landDataList = new ArrayList<>();
-    private FragmentFileMapBinding binding;
     private LandData landData, result;
     private ImportAction action;
 
@@ -113,6 +118,7 @@ public class MapFileFragment extends Fragment {
 
     private void initActivity(){
         if(getActivity() != null){
+            loadingDialog = new LoadingDialog(getActivity());
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(this::onBackPress);
@@ -121,16 +127,6 @@ public class MapFileFragment extends Fragment {
                 }
             }
         }
-    }
-
-    private boolean onBackPress() {
-        if(landData == null) return true;
-
-        if(landDataList.size() > 1 && result != null) {
-            zoomOnLandsWithSelect();
-            return false;
-        }
-        return true;
     }
 
     private void initFragment(){
@@ -150,12 +146,11 @@ public class MapFileFragment extends Fragment {
         binding.ibSubmit.setOnClickListener(v->submitLand());
         binding.ibClose.setOnClickListener(v->goBack());
         if(landDataList.size() < 2) binding.ibZoom.setVisibility(View.GONE);
-        binding.tvLoadingLabel.setVisibility(View.VISIBLE);
-        binding.tvLoadingLabel.setText(getString(R.string.file_map_fragment_loading));
         binding.mvFileMap.getMapAsync(this::initMap);
     }
 
     private void initMap(GoogleMap googleMap){
+        if(loadingDialog != null) loadingDialog.openDialog();
         mMap = googleMap;
         mMap.setMinZoomPreference(AppValues.minZoom);
         mMap.setMaxZoomPreference(AppValues.maxZoom);
@@ -168,26 +163,23 @@ public class MapFileFragment extends Fragment {
         mMap.getUiSettings().setZoomControlsEnabled(isPreview);
         mMap.getUiSettings().setCompassEnabled(isPreview);
 
-        if(getActivity() == null) return;
+        if(getActivity() == null) {
+            if(loadingDialog != null) loadingDialog.closeDialog();
+            return;
+        }
 
-        binding.mvFileMap.setVisibility(View.INVISIBLE);
         clusterManager = new ClusterManager<>(getActivity(), mMap);
         LandRendered renderer = new LandRendered(getActivity(), mMap, clusterManager);
         renderer.setMinClusterSize(2);
+        renderer.setAnimation(false);
         clusterManager.setRenderer(renderer);
         NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
-        algorithm.setMaxDistanceBetweenClusteredItems(66);
+        algorithm.setMaxDistanceBetweenClusteredItems(60);
         clusterManager.setAlgorithm(algorithm);
-        mMap.setOnCameraIdleListener(clusterManager);
-
-        for(int i = 0; i < landDataList.size(); i++){
-            landDataList.get(i).setTitle("#"+(i+1));
-            clusterManager.addItem(new ClusterLand(landDataList.get(i)));
-        }
-        clusterManager.cluster();
+        mMap.setOnCameraIdleListener(()-> new Handler().post(clusterManager::onCameraIdle));
 
         if(isPreview) {
-            binding.ibZoom.setOnClickListener(v->zoomOnLands(true));
+            binding.ibZoom.setOnClickListener(v->zoomOnLands());
             clusterManager.setOnClusterClickListener(this::zoomOnCluster);
             clusterManager.setOnClusterItemClickListener(this::zoomOnMarker);
         }else{
@@ -198,14 +190,20 @@ public class MapFileFragment extends Fragment {
             clusterManager.setOnClusterItemClickListener(this::zoomOnMarkerWithSelect);
             updateUi();
         }
-        mMap.setOnMapLoadedCallback(()->{
-            zoomOnLands(false);
-            binding.mvFileMap.setVisibility(View.VISIBLE);
-            binding.tvLoadingLabel.setVisibility(View.GONE);
+
+        Handler handler = new Handler();
+        handler.post(()->{
+            for(int i = 0; i < landDataList.size(); i++){
+                landDataList.get(i).setTitle("#"+(i+1));
+                clusterManager.addItem(new ClusterLand(landDataList.get(i)));
+            }
+            clusterManager.cluster();
+            zoomOnLands();
+            if(loadingDialog != null) loadingDialog.closeDialog();
         });
     }
 
-    private void zoomOnLands(boolean animate){
+    private void zoomOnLands(){
         if(mMap == null) return;
 
         int size = 0;
@@ -217,12 +215,7 @@ public class MapFileFragment extends Fragment {
             }
         }
         if(size>0){
-            if(animate){
-                mMap.stopAnimation();
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
-            }else{
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
-            }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
         }
     }
 
@@ -238,8 +231,7 @@ public class MapFileFragment extends Fragment {
             }
         }
         if(size > 0){
-            mMap.stopAnimation();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
             return true;
         }
         return false;
@@ -255,8 +247,7 @@ public class MapFileFragment extends Fragment {
             builder.include(point);
         }
         if(size > 0){
-            mMap.stopAnimation();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
             return true;
         }
         return false;
@@ -278,8 +269,7 @@ public class MapFileFragment extends Fragment {
                 result = null;
                 updateUi();
             }
-            mMap.stopAnimation();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
         }
     }
 
@@ -299,8 +289,7 @@ public class MapFileFragment extends Fragment {
                 result = null;
                 updateUi();
             }
-            mMap.stopAnimation();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
             return true;
         }
         return false;
@@ -320,8 +309,7 @@ public class MapFileFragment extends Fragment {
                 result = marker.getLandData();
                 updateUi();
             }
-            mMap.stopAnimation();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
             return true;
         }
         return false;
@@ -367,6 +355,17 @@ public class MapFileFragment extends Fragment {
         }
     }
 
+
+    private boolean onBackPress() {
+        if(landData == null) return true;
+
+        if(landDataList.size() > 1 && result != null) {
+            zoomOnLandsWithSelect();
+            return false;
+        }
+        return true;
+    }
+
     private void goBack() {
         Activity activity = getActivity();
         if(activity != null) {
@@ -379,7 +378,7 @@ public class MapFileFragment extends Fragment {
             activity.runOnUiThread(()->{
                 NavController nav = UIUtil.getNavController(this,R.id.MapFileFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argImportLand, landData);
+                bundle.putParcelable(AppValues.argLand, new Land(landData));
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });

@@ -6,8 +6,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 

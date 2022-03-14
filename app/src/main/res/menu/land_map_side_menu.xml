@@ -105,12 +105,6 @@
                 android:orderInCategory="3"
                 android:title="@string/edit_img"
                 app:showAsAction="ifRoom|withText" />
-            <item
-                android:id="@+id/toolbar_action_opacity_img"
-                android:icon="@drawable/ic_drawer_menu_alpha_img"
-                android:orderInCategory="4"
-                android:title="@string/opacity_img"
-                app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
     <item android:title="@string/file_actions_group_title">

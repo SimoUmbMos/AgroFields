@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.backend.entities;
+package com.mosc.simo.ptuxiaki3741.backend.room.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -8,7 +8,6 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity(
@@ -31,13 +30,9 @@ public class Snapshot implements Serializable {
     private long recordCount;
 
     @Ignore
-    private boolean needInit;
-
-    @Ignore
     public Snapshot(long key) {
         this.key = key;
 
-        needInit = true;
         landCount = 1;
         zoneCount = 1;
         calendarCount = 1;
@@ -46,7 +41,7 @@ public class Snapshot implements Serializable {
 
     public Snapshot(long key, long landCount, long zoneCount, long calendarCount, long recordCount) {
         this.key = key;
-        needInit = false;
+
         this.landCount = landCount;
         this.zoneCount = zoneCount;
         this.calendarCount = calendarCount;
@@ -73,10 +68,6 @@ public class Snapshot implements Serializable {
         return recordCount;
     }
 
-    public boolean needsInit(){
-        return needInit;
-    }
-
     public void setKey(long key) {
         this.key = key;
     }
@@ -95,14 +86,6 @@ public class Snapshot implements Serializable {
 
     public void setRecordCount(long recordCount) {
         this.recordCount = recordCount;
-    }
-
-    public void setInit(boolean init){
-        this.needInit = init;
-    }
-
-    public static Snapshot getInstance() {
-        return new Snapshot(LocalDate.now().getYear());
     }
 
     @Override

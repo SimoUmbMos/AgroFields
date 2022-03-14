@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.ui.views.CalendarEventView;
 

@@ -22,8 +22,6 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -32,7 +30,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.enums.LocationStates;
 import com.mosc.simo.ptuxiaki3741.data.helpers.LocationHelper;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
@@ -43,6 +41,7 @@ import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
 import com.mosc.simo.ptuxiaki3741.ui.renderers.LandRendered;
 
 import java.util.ArrayList;
@@ -51,15 +50,11 @@ import java.util.List;
 import java.util.Map;
 
 public class MapMenuFragment extends Fragment{
-    //todo(?): add curr location camera
     public static final String TAG = "ContactsContainerFragment";
 
     private FragmentLiveMapBinding binding;
+    private LoadingDialog loadingDialog;
     private GoogleMap mMap;
-
-    private ClusterManager<ClusterLand> clusterManager;
-    private Map<Land, List<LandZone>> data;
-    private boolean cameraMoving, isInit, firstLandUpdate;
 
     public static final int NotificationID = 3741;
     private NotificationManager notificationManager;
@@ -67,15 +62,17 @@ public class MapMenuFragment extends Fragment{
     private String notificationTitle;
     private String notificationMsg;
 
-    private final Handler locationThread = new Handler();
-    private final Runnable locationLoop = new Runnable() {
-        @Override
-        public void run() {
-            onLoop();
-            locationThread.postDelayed(locationLoop, AppValues.myLocationLoop);
-        }
-    };
+    private ClusterManager<ClusterLand> clusterManager;
+    private Map<Land, List<LandZone>> data;
+    private boolean isInit, firstLandUpdate, firstZoneUpdate;
+
+    private boolean cameraFollow, cameraUserMovement;
+    private final Handler cameraMovingThread = new Handler();
+    private Runnable cameraMovingRunnable;
+
     private LocationHelper locationHelper;
+    private final Handler locationThread = new Handler();
+    private Runnable locationRunnable;
     private Marker myLocation;
     private LatLng userLocation;
 
@@ -129,16 +126,26 @@ public class MapMenuFragment extends Fragment{
     }
 
     @Override
+    public void onDestroy() {
+        displayNotification(null, null);
+        super.onDestroy();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         binding.mvLiveMap.onStart();
         if(locationHelper != null) locationHelper.start();
-        locationThread.postDelayed(locationLoop, AppValues.myLocationLoop);
+        if(locationRunnable != null){
+            locationThread.post(locationRunnable);
+        }
     }
 
     @Override
     public void onStop() {
-        locationThread.removeCallbacks(locationLoop);
+        if(locationRunnable != null){
+            locationThread.removeCallbacks(locationRunnable);
+        }
         if(locationHelper != null) locationHelper.stop();
         binding.mvLiveMap.onStop();
         super.onStop();
@@ -173,9 +180,12 @@ public class MapMenuFragment extends Fragment{
 
         data = new HashMap<>();
         clusterManager = null;
-        cameraMoving = false;
         isInit = false;
         firstLandUpdate = true;
+        firstZoneUpdate = true;
+
+        cameraFollow = false;
+        cameraUserMovement = false;
     }
 
     private void initActivity() {
@@ -185,12 +195,19 @@ public class MapMenuFragment extends Fragment{
                 activity.setOnBackPressed(()->true);
                 notificationManager = activity.getNotificationManager();
             }
+            loadingDialog = new LoadingDialog(getActivity());
         }
     }
 
     private void initFragment() {
         binding.ibClose.setOnClickListener(v ->goBack());
-        binding.ibZoom.setOnClickListener(v -> zoomOnLands());
+        binding.ibCameraMode.setOnClickListener(v -> {
+            cameraFollow = !cameraFollow;
+            isInit = true;
+            zoomOnLands();
+        });
+        binding.ibCenterCamera.setOnClickListener(v -> zoomOnLands());
+        if(loadingDialog != null) loadingDialog.openDialog();
         binding.mvLiveMap.getMapAsync(this::initMap);
     }
 
@@ -207,21 +224,37 @@ public class MapMenuFragment extends Fragment{
             return;
         }
 
-        binding.mvLiveMap.setVisibility(View.INVISIBLE);
         isInit = true;
 
         clusterManager = new ClusterManager<>(getActivity(), mMap);
         LandRendered renderer = new LandRendered(getActivity(),mMap,clusterManager);
         renderer.setMinClusterSize(2);
+        renderer.setAnimation(false);
         clusterManager.setRenderer(renderer);
         NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
-        algorithm.setMaxDistanceBetweenClusteredItems(66);
+        algorithm.setMaxDistanceBetweenClusteredItems(60);
         clusterManager.setAlgorithm(algorithm);
 
-        mMap.setOnCameraMoveStartedListener(reason -> cameraMoving = true);
+        mMap.setOnCameraMoveStartedListener(reason -> {
+            if(reason != GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION || cameraUserMovement){
+                cameraUserMovement = false;
+                if(cameraMovingRunnable != null){
+                    cameraMovingThread.removeCallbacks(cameraMovingRunnable);
+                    cameraMovingRunnable = null;
+                }
+                if(cameraFollow){
+                    cameraMovingRunnable = () -> {
+                        if(cameraFollow) zoomOnLands();
+                        cameraMovingRunnable = null;
+                    };
+                }
+            }
+        });
         mMap.setOnCameraIdleListener(()->{
-            cameraMoving = false;
-            clusterManager.onCameraIdle();
+            if(cameraMovingRunnable != null) {
+                cameraMovingThread.postDelayed(cameraMovingRunnable, AppValues.liveMapMillisToCameraReset);
+            }
+            new Handler().post(clusterManager::onCameraIdle);
         });
         clusterManager.setOnClusterItemClickListener(this::onClusterItemClick);
         clusterManager.setOnClusterClickListener(this::onClusterClick);
@@ -233,21 +266,21 @@ public class MapMenuFragment extends Fragment{
     }
 
     private void initLandHolder() {
-        if (getActivity() != null) {
+        if (getActivity() != null && firstLandUpdate) {
             AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             appVM.getLands().observe(getViewLifecycleOwner(), this::onLandsUpdate);
         }
     }
 
     private void initZoneHolder() {
-        if (getActivity() != null) {
+        if (getActivity() != null && firstZoneUpdate) {
             AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             appVM.getLandZones().observe(getViewLifecycleOwner(), this::onZonesUpdate);
-            initLocation();
         }
     }
 
     private void initLocation(){
+        if(loadingDialog != null) loadingDialog.closeDialog();
         if(getActivity() != null){
             locationHelper = new LocationHelper(getActivity(),this::onLocationUpdate);
             locationPermissionRequest.launch(new String[] {
@@ -255,57 +288,6 @@ public class MapMenuFragment extends Fragment{
                     Manifest.permission.ACCESS_COARSE_LOCATION
             });
         }
-    }
-
-    private void onLoop() {
-        if(mMap != null && getActivity() != null){
-            getActivity().runOnUiThread(()->{
-                if(myLocation != null){
-                    myLocation.remove();
-                    myLocation = null;
-                }
-                if(userLocation != null){
-                    myLocation = mMap.addMarker(new MarkerOptions().position(userLocation).zIndex(AppValues.liveMapMyLocationZIndex));
-                }
-            });
-        }
-
-        String title = "";
-        String msg = "";
-        if(userLocation != null && clusterManager != null){
-            for(ClusterLand item : clusterManager.getAlgorithm().getItems()){
-                if(item == null || item.getZonesData() == null) continue;
-                if(MapUtil.contains(userLocation,item.getLandData().getBorder())){
-                    boolean onHole = false;
-                    for(List<LatLng> hole : item.getLandData().getHoles()){
-                        if(hole == null) continue;
-                        if(MapUtil.contains(userLocation,hole)){
-                            onHole = true;
-                            break;
-                        }
-                    }
-                    if(onHole) continue;
-
-                    title = item.getTitle();
-                    msg = item.getSnippet();
-                    for(LandZoneData zoneData : item.getZonesData()){
-                        if(zoneData == null) continue;
-                        if(MapUtil.contains(userLocation,zoneData.getBorder())){
-                            title = zoneData.getTitle();
-                            msg = zoneData.getNote();
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        displayNotification(title, msg);
-    }
-
-    private void onLocationUpdate(Location location) {
-        if(location != null) userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        else userLocation = null;
     }
 
     private void onLandsUpdate(List<Land> lands) {
@@ -349,12 +331,85 @@ public class MapMenuFragment extends Fragment{
             }
         });
         updateMap();
+        if(firstZoneUpdate){
+            firstZoneUpdate = false;
+            initLocation();
+        }
+    }
+
+    private void onLoop(boolean moveCamera) {
+        if(mMap == null) return;
+
+        if(myLocation != null){
+            myLocation.remove();
+            myLocation = null;
+        }
+        if(userLocation != null){
+            myLocation = mMap.addMarker(new MarkerOptions().position(userLocation).zIndex(AppValues.liveMapMyLocationZIndex).draggable(false));
+            if(moveCamera){
+                mMap.stopAnimation();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation,mMap.getCameraPosition().zoom));
+            }
+        }
+
+        String title = "";
+        String msg = "";
+        if(userLocation != null && clusterManager != null){
+            for(ClusterLand item : clusterManager.getAlgorithm().getItems()){
+                if(item == null || item.getZonesData() == null) continue;
+                if(MapUtil.contains(userLocation,item.getLandData().getBorder())){
+                    boolean onHole = false;
+                    for(List<LatLng> hole : item.getLandData().getHoles()){
+                        if(hole == null) continue;
+                        if(MapUtil.contains(userLocation,hole)){
+                            onHole = true;
+                            break;
+                        }
+                    }
+                    if(onHole) continue;
+
+                    title = item.getTitle();
+                    msg = item.getSnippet();
+                    for(LandZoneData zoneData : item.getZonesData()){
+                        if(zoneData == null) continue;
+                        if(MapUtil.contains(userLocation,zoneData.getBorder())){
+                            title = zoneData.getTitle();
+                            msg = zoneData.getNote();
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        displayNotification(title, msg);
+    }
+
+    private void onLocationUpdate(Location l) {
+        if(l == null) return;
+        if(locationRunnable != null){
+            locationThread.removeCallbacks(locationRunnable);
+            locationRunnable = null;
+        }
+
+        LatLng newPos = new LatLng(l.getLatitude(), l.getLongitude());
+        locationRunnable = () -> {
+            if(userLocation == null){
+                userLocation = newPos;
+            }else if(MapUtil.distanceBetween(userLocation, newPos) > 0.001) {
+                userLocation = newPos;
+            }
+            if(userLocation.equals(newPos)) {
+                onLoop(cameraFollow && cameraMovingRunnable == null);
+            }
+            locationRunnable = null;
+        };
+        locationThread.post(locationRunnable);
     }
 
     private boolean onClusterItemClick(ClusterLand item) {
         if(mMap == null) return false;
 
-        cameraMoving = true;
         int size = 0;
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for(LatLng point : item.getLandData().getBorder()){
@@ -363,6 +418,7 @@ public class MapMenuFragment extends Fragment{
         }
         if(size > 0){
             mMap.stopAnimation();
+            cameraUserMovement = true;
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
             return true;
         }
@@ -372,7 +428,6 @@ public class MapMenuFragment extends Fragment{
     private boolean onClusterClick(Cluster<ClusterLand> cluster) {
         if(mMap == null) return false;
 
-        cameraMoving = true;
         int size = 0;
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for(ClusterLand item : cluster.getItems()){
@@ -383,6 +438,7 @@ public class MapMenuFragment extends Fragment{
         }
         if(size > 0){
             mMap.stopAnimation();
+            cameraUserMovement = true;
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
             return true;
         }
@@ -392,35 +448,50 @@ public class MapMenuFragment extends Fragment{
     private void zoomOnLands(){
         if(mMap == null) return;
 
-        cameraMoving = true;
-        int size = 0;
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for(Land land : data.keySet()){
-            for(LatLng point : land.getData().getBorder()){
-                size++;
-                builder.include(point);
-            }
-        }
-        if(size>0){
+        if(cameraFollow && userLocation != null){
             if(isInit){
+                mMap.stopAnimation();
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,AppValues.personZoom));
                 isInit = false;
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
-                binding.mvLiveMap.setVisibility(View.VISIBLE);
+            } else if(cameraMovingRunnable != null){
+                mMap.stopAnimation();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation,AppValues.personZoom), 120, null);
             }else{
                 mMap.stopAnimation();
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation,AppValues.personZoom));
+            }
+        }else{
+            int size = 0;
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for(Land land : data.keySet()){
+                for(LatLng point : land.getData().getBorder()){
+                    size++;
+                    builder.include(point);
+                }
+            }
+            if(size>0){
+                if(isInit){
+                    mMap.stopAnimation();
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
+                    isInit = false;
+                } else {
+                    mMap.stopAnimation();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),AppValues.defaultPaddingLarge));
+                }
             }
         }
+
     }
 
     private void updateMap(){
         if(clusterManager == null) return;
 
-        clusterManager.clearItems();
-        data.forEach((land,zones)-> clusterManager.addItem(new ClusterLand(land,zones)));
-        clusterManager.cluster();
-
-        zoomOnLands();
+        new Handler().post(()->{
+            clusterManager.clearItems();
+            data.forEach((land,zones)-> clusterManager.addItem(new ClusterLand(land,zones)));
+            clusterManager.cluster();
+            zoomOnLands();
+        });
     }
 
     private void displayNotification(String title, String msg){

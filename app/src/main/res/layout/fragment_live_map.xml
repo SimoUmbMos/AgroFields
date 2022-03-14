@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/ibZoom"
+        android:id="@+id/ibCameraMode"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
@@ -43,7 +43,7 @@
         android:ellipsize="end"
         android:text="@string/live_map_title"
         android:textAppearance="@style/TextAppearance.AppTheme.Headline"
-        app:layout_constraintEnd_toStartOf="@+id/ibZoom"
+        app:layout_constraintEnd_toStartOf="@+id/ibCameraMode"
         app:layout_constraintStart_toEndOf="@+id/ibClose"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,5 +67,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         app:mapType="satellite" />
+
+    <ImageButton
+        android:id="@+id/ibCenterCamera"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/bg_map_button"
+        android:contentDescription="@string/iv_desc_zone_editor_center_camera"
+        android:elevation="16dp"
+        android:padding="8dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_location"
+        app:layout_constraintEnd_toEndOf="@id/mvLiveMap"
+        app:layout_constraintTop_toTopOf="@+id/mvLiveMap"
+        app:tint="?attr/colorOnMapSurface" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

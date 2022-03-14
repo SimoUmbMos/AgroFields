@@ -1,7 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.data.models;
 
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,9 +3,9 @@ package com.mosc.simo.ptuxiaki3741.backend.repository;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.backend.entities.Snapshot;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.Snapshot;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.Map;
 
 public interface AppRepository {
 
-    void setDefaultSnapshot(Snapshot snapshot);
-    Snapshot getDefaultSnapshot();
-    Snapshot saveSnapshot(Snapshot snapshot);
-    List<Snapshot> getSnapshots();
+    void setDefaultSnapshot(long snapshot);
+    long getDefaultSnapshot();
+    Snapshot saveSnapshot(long snapshot);
+    List<Long> getSnapshots();
 
     List<String> getLandTags();
     List<Land> getLands();

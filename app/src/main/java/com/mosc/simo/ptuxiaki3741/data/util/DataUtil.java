@@ -17,7 +17,7 @@ import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.ui.broadcast_receivers.CalendarReceiver;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
 import java.io.BufferedReader;

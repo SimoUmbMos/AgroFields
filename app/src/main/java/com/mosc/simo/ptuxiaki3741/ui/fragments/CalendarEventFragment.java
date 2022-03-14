@@ -21,7 +21,7 @@ import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarNewEventBinding;
 import com.mosc.simo.ptuxiaki3741.data.enums.CalendarEventType;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.data.util.DialogUtil;

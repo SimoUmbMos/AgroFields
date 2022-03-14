@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 
 public class LandZone implements Parcelable {
     public static final Creator<LandZone> CREATOR = new Creator<LandZone>() {

@@ -289,6 +289,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/activity_main.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_day_layout.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_month_header_layout.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/dialog_loading.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_app_settings.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_event_list.xml" value="0.1" />
@@ -302,7 +303,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map_preview.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_live_map.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_loading.xml" value="0.16247379454926625" />
-        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.26876737720111216" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zone_editor.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_select.xml" value="0.2975630611372381" />

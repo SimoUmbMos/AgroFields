@@ -25,8 +25,7 @@ import android.widget.Toast;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
-import com.mosc.simo.ptuxiaki3741.backend.entities.Snapshot;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
@@ -79,10 +78,10 @@ public class AppLoadingFragment extends Fragment {
         appVM.getLandsHistory().observe(getViewLifecycleOwner(), this::onUpdate);
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        long snapshotKey = sharedPref.getLong(AppValues.argSnapshotKey, Snapshot.getInstance().getKey());
+        long snapshotKey = sharedPref.getLong(AppValues.argSnapshotKey, AppValues.defaultSnapshot);
         Log.d(TAG, "initViewModel: key = "+snapshotKey);
         AsyncTask.execute(()->{
-            appVM.setDefaultSnapshot(new Snapshot(snapshotKey));
+            appVM.setDefaultSnapshot(snapshotKey);
             Log.d(TAG, "initViewModel: setDefaultSnapshot = "+snapshotKey);
         });
     }

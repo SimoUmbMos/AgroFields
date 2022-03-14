@@ -20,7 +20,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.util.ListUtils;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;

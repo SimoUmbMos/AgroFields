@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
@@ -453,7 +453,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         switch (state){
             case MultiExportState:
                 setCheckableRecycleView(true);
-
                 binding.fabAdd.setEnabled(false);
                 binding.fabDelete.setEnabled(false);
                 binding.fabExport.setEnabled(true);
@@ -461,7 +460,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 break;
             case MultiDeleteState:
                 setCheckableRecycleView(true);
-
                 binding.fabAdd.setEnabled(false);
                 binding.fabDelete.setEnabled(true);
                 binding.fabExport.setEnabled(false);
@@ -469,7 +467,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 break;
             case MultiSelectState:
                 setCheckableRecycleView(true);
-
                 binding.fabAdd.setEnabled(false);
                 binding.fabDelete.setEnabled(true);
                 binding.fabExport.setEnabled(true);
@@ -477,7 +474,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 break;
             default:
                 setCheckableRecycleView(false);
-
                 binding.fabAdd.setEnabled(true);
                 binding.fabDelete.setEnabled(true);
                 binding.fabExport.setEnabled(true);

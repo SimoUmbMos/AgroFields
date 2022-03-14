@@ -16,7 +16,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
@@ -99,7 +99,7 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
         binding.tvMarkerTitle.setText(item.getTitle());
         iconGenerator.setContentView(inflatedView);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon()));
-        markerOptions.alpha(0.875f);
+        markerOptions.alpha(0.8f);
         markerOptions.zIndex(AppValues.liveMapMarkerZIndex);
     }
 
@@ -116,7 +116,7 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
         }
         iconGenerator.setContentView(inflatedView);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon()));
-        markerOptions.alpha(0.875f);
+        markerOptions.alpha(0.8f);
         markerOptions.zIndex(AppValues.liveMapClusterZIndex);
     }
 

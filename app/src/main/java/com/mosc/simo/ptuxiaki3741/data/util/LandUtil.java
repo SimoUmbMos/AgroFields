@@ -7,10 +7,10 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandDataRecord;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
 import java.util.ArrayList;

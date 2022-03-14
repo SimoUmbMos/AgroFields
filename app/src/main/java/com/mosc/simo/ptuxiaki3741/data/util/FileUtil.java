@@ -25,7 +25,7 @@ import com.mosc.simo.ptuxiaki3741.backend.file.wkt.WellKnownTextExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.wkt.WellKnownTextReader;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 
 import org.jdom2.Document;

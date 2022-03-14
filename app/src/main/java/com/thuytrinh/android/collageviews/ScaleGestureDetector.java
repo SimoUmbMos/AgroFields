@@ -1,10 +1,13 @@
-package com.mosc.simo.ptuxiaki3741.collageviews;
-/* code taken from https://github.com/thuytrinh/android-collage-views/tree/master/libraries/collage-views/src/main/java/com/thuytrinh/android/collageviews */
+package com.thuytrinh.android.collageviews;
 
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ *  code taken from <a href="https://github.com/thuytrinh/android-collage-views">thuytrinh/android collage views</a>.
+ *  @author thuytrinh
+ */
 public class ScaleGestureDetector {
     private static final String TAG = "ScaleGestureDetector";
 

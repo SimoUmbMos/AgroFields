@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.backend.dao;
+package com.mosc.simo.ptuxiaki3741.backend.room.dao;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 
 import java.util.List;
 

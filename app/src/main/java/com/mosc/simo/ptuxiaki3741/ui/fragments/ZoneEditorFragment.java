@@ -48,13 +48,14 @@ import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.util.DialogUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private Polygon zonePolygon;
     private List<Circle> zonePoints;
     private AlertDialog dialog;
+    private LoadingDialog loadingDialog;
 
     private AppViewModel vmLands;
     private LandZone zone;
@@ -166,6 +168,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(this);
             }
+            loadingDialog = new LoadingDialog(getActivity());
             locationHelperPoint = new LocationHelper(getActivity(),this::onLocationUpdate);
         }
     }
@@ -328,6 +331,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 isSaving = true;
                 binding.ibEditMenu.setEnabled(false);
                 AsyncTask.execute(()->{
+                    if(loadingDialog != null) loadingDialog.openDialog();
                     List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
                     border.clear();
                     border.addAll(temp);
@@ -361,13 +365,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     }else{
                         Snackbar.make(binding.getRoot(), getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG).show();
                     }
-                    if(getActivity() != null){
-                        getActivity().runOnUiThread(()->{
-                            updateMap();
-                            binding.ibEditMenu.setEnabled(true);
-                            isSaving = false;
-                        });
-                    }
+                    getActivity().runOnUiThread(()->{
+                        updateMap();
+                        binding.ibEditMenu.setEnabled(true);
+                        isSaving = false;
+                        if(loadingDialog != null) loadingDialog.closeDialog();
+                    });
                 });
             }else{
                 Snackbar.make(binding.getRoot(), getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG).show();

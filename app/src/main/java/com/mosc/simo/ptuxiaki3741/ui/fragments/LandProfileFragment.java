@@ -19,7 +19,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandInfoBinding;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;

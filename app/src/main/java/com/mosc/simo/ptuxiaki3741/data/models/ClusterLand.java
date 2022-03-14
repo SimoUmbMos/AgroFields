@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.clustering.ClusterItem;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 
 import java.util.ArrayList;
 import java.util.List;

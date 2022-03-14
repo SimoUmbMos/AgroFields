@@ -1,6 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.data.models;
 
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 
 import java.util.ArrayList;

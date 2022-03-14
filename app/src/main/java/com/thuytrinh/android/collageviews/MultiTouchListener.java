@@ -1,10 +1,13 @@
-package com.mosc.simo.ptuxiaki3741.collageviews;
+package com.thuytrinh.android.collageviews;
 
-/* code taken from https://github.com/thuytrinh/android-collage-views/tree/master/libraries/collage-views/src/main/java/com/thuytrinh/android/collageviews */
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+/**
+ *  code taken from <a href="https://github.com/thuytrinh/android-collage-views">thuytrinh/android collage views</a>.
+ *  @author thuytrinh
+ */
 public class MultiTouchListener implements OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;

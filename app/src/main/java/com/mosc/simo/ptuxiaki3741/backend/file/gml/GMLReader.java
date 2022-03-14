@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.helpers.CoordinatesHelper;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 
 import org.xmlpull.v1.XmlPullParser;

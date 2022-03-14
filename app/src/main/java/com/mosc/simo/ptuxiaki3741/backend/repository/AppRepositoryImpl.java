@@ -1,17 +1,18 @@
 package com.mosc.simo.ptuxiaki3741.backend.repository;
 
-import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneDataRecord;
-import com.mosc.simo.ptuxiaki3741.backend.entities.Snapshot;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneData;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.Snapshot;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
+import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,27 +23,32 @@ import java.util.TreeMap;
 
 public class AppRepositoryImpl implements AppRepository {
     private final RoomDatabase db;
-    private Snapshot snapshot;
+    private long snapshot;
 
     public AppRepositoryImpl(RoomDatabase db){
         this.db = db;
-        this.snapshot = Snapshot.getInstance();
+        this.snapshot = AppValues.defaultSnapshot;
     }
 
     @Override
-    public void setDefaultSnapshot(Snapshot snapshot){
-        this.snapshot = saveSnapshot(snapshot);
+    public void setDefaultSnapshot(long snapshot){
+        Snapshot temp = saveSnapshot(snapshot);
+        this.snapshot = temp.getKey();
     }
 
     @Override
-    public Snapshot getDefaultSnapshot(){
+    public long getDefaultSnapshot(){
         return snapshot;
     }
 
     @Override
-    public List<Snapshot> getSnapshots(){
-        List<Snapshot> ans = db.snapshotDao().getDataSnapshots();
-        if(ans == null) ans = new ArrayList<>();
+    public List<Long> getSnapshots(){
+        List<Snapshot> snapshots = db.snapshotDao().getDataSnapshots();
+        if(snapshots == null) snapshots = new ArrayList<>();
+        List<Long> ans = new ArrayList<>();
+        for (Snapshot snapshot : snapshots){
+            if(snapshot != null) ans.add(snapshot.getKey());
+        }
         return ans;
     }
 
@@ -50,7 +56,7 @@ public class AppRepositoryImpl implements AppRepository {
     public List<String> getLandTags(){
         List<String> ans = new ArrayList<>();
 
-        List<LandData> landsData = db.landDao().getLands(snapshot.getKey());
+        List<LandData> landsData = db.landDao().getLands(snapshot);
         if(landsData == null) return ans;
 
         for(LandData landData : landsData){
@@ -68,7 +74,7 @@ public class AppRepositoryImpl implements AppRepository {
     @Override
     public Land getLand(long id, long snapshot) {
         long snap = snapshot;
-        if(snap == -1) snap = this.snapshot.getKey();
+        if(snap == -1) snap = this.snapshot;
         LandData data = db.landDao().getLand(id, snap);
         if(data != null) return new Land(data);
         return null;
@@ -78,7 +84,7 @@ public class AppRepositoryImpl implements AppRepository {
     public List<Land> getLands() {
         List<Land> lands = new ArrayList<>();
 
-        List<LandData> landsData = db.landDao().getLands(snapshot.getKey());
+        List<LandData> landsData = db.landDao().getLands(snapshot);
         if(landsData != null){
             for(LandData landData : landsData){
                 lands.add(new Land(landData));
@@ -92,7 +98,7 @@ public class AppRepositoryImpl implements AppRepository {
         Map<Long,List<LandZone>> ans = new HashMap<>();
 
         List<LandZone> zones;
-        List<LandZoneData> zonesData = db.landZoneDao().getZones(snapshot.getKey());
+        List<LandZoneData> zonesData = db.landZoneDao().getZones(snapshot);
         if(zonesData != null){
             for(LandZoneData zoneData : zonesData){
                 zones = ans.getOrDefault(zoneData.getLid(),null);
@@ -109,7 +115,7 @@ public class AppRepositoryImpl implements AppRepository {
     @Override
     public List<LandHistoryRecord> getLandRecords() {
         List<LandHistoryRecord> ans = new ArrayList<>();
-        List<LandDataRecord> landRecords = db.landHistoryDao().getLandRecords(snapshot.getKey());
+        List<LandDataRecord> landRecords = db.landHistoryDao().getLandRecords(snapshot);
         for(LandDataRecord landRecord : landRecords){
             ans.add(new LandHistoryRecord(
                     landRecord,
@@ -126,7 +132,7 @@ public class AppRepositoryImpl implements AppRepository {
     public Map<LocalDate, List<CalendarNotification>> getNotifications() {
         Map<LocalDate, List<CalendarNotification>> ans = new TreeMap<>();
         List<CalendarNotification> calendarNotifications =
-                db.calendarNotificationDao().getNotifications(snapshot.getKey());
+                db.calendarNotificationDao().getNotifications(snapshot);
 
         List<CalendarNotification> temp;
         LocalDate localDate;
@@ -164,11 +170,10 @@ public class AppRepositoryImpl implements AppRepository {
         if(data.getId() <= 0) return ans;
 
         Snapshot snapshot;
-        if(db.snapshotDao().snapshotExist(data.getSnapshot())){
-            snapshot = db.snapshotDao().getSnapshot(data.getSnapshot());
-        }else{
-            snapshot = saveSnapshot(new Snapshot(data.getSnapshot()));
+        if(!db.snapshotDao().snapshotExist(data.getSnapshot())){
+            saveSnapshot(data.getSnapshot());
         }
+        snapshot = db.snapshotDao().getSnapshot(data.getSnapshot());
 
         List<LandZoneData> zones = db.landZoneDao().getLandZonesByLandID(data.getId(), snapshot.getKey());
         if(zones != null){
@@ -186,24 +191,15 @@ public class AppRepositoryImpl implements AppRepository {
     }
 
     @Override
-    public Snapshot saveSnapshot(Snapshot snapshot){
-        if(snapshot.getKey() <= 0){
-            snapshot.setKey(this.snapshot.getKey());
+    public Snapshot saveSnapshot(long s){
+        long snapshot = s;
+        if(snapshot <= 0){
+            snapshot = this.snapshot;
         }
-        if(snapshot.needsInit()){
-            if(db.snapshotDao().snapshotExist(snapshot.getKey())){
-                snapshot = db.snapshotDao().getSnapshot(snapshot.getKey());
-            }else{
-                snapshot.setInit(false);
-                db.snapshotDao().insert(snapshot);
-            }
-        }else{
-            if(!db.snapshotDao().snapshotExist(snapshot.getKey())){
-                snapshot.setInit(false);
-                db.snapshotDao().insert(snapshot);
-            }
+        if(!db.snapshotDao().snapshotExist(snapshot)){
+            db.snapshotDao().insert(new Snapshot(snapshot));
         }
-        return snapshot;
+        return db.snapshotDao().getSnapshot(snapshot);
     }
 
     @Override
@@ -216,7 +212,7 @@ public class AppRepositoryImpl implements AppRepository {
         if(db.snapshotDao().snapshotExist(landData.getSnapshot())){
             snapshot = db.snapshotDao().getSnapshot(landData.getSnapshot());
         }else{
-            snapshot = saveSnapshot(new Snapshot(landData.getSnapshot()));
+            snapshot = saveSnapshot(landData.getSnapshot());
         }
         landData.setSnapshot(snapshot.getKey());
 
@@ -246,7 +242,7 @@ public class AppRepositoryImpl implements AppRepository {
         if(db.snapshotDao().snapshotExist(zoneData.getSnapshot())){
             snapshot = db.snapshotDao().getSnapshot(zoneData.getSnapshot());
         }else{
-            snapshot = saveSnapshot(new Snapshot(zoneData.getSnapshot()));
+            snapshot = saveSnapshot(zoneData.getSnapshot());
         }
         zoneData.setSnapshot(snapshot.getKey());
 
@@ -277,7 +273,7 @@ public class AppRepositoryImpl implements AppRepository {
         if(db.snapshotDao().snapshotExist(landRecord.getSnapshot())){
             snapshot = db.snapshotDao().getSnapshot(landRecord.getSnapshot());
         }else{
-            snapshot = saveSnapshot(new Snapshot(landRecord.getSnapshot()));
+            snapshot = saveSnapshot(landRecord.getSnapshot());
         }
         landRecord.setSnapshot(snapshot.getKey());
 
@@ -312,7 +308,7 @@ public class AppRepositoryImpl implements AppRepository {
         if(db.snapshotDao().snapshotExist(notification.getSnapshot())){
             snapshot = db.snapshotDao().getSnapshot(notification.getSnapshot());
         }else{
-            snapshot = saveSnapshot(new Snapshot(notification.getSnapshot()));
+            snapshot = saveSnapshot(notification.getSnapshot());
         }
         notification.setSnapshot(snapshot.getKey());
 

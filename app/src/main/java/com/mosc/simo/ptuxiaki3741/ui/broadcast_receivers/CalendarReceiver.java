@@ -9,7 +9,7 @@ import android.content.Intent;
 
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
 public class CalendarReceiver extends BroadcastReceiver {

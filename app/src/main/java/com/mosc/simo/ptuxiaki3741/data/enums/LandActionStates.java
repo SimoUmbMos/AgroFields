@@ -8,6 +8,5 @@ public enum LandActionStates {
     Edit,
     Delete,
     ResetAll,
-    EditImg,
-    Alpha
+    EditImg
 }

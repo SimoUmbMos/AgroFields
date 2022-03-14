@@ -25,7 +25,7 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarEventListBinding;
 import com.mosc.simo.ptuxiaki3741.data.enums.CalendarEventType;
 import com.mosc.simo.ptuxiaki3741.data.enums.CalendarSubFilter;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;

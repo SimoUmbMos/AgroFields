@@ -9,16 +9,15 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
-import com.mosc.simo.ptuxiaki3741.backend.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandZoneDataRecord;
-import com.mosc.simo.ptuxiaki3741.backend.entities.Snapshot;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
 import com.mosc.simo.ptuxiaki3741.backend.repository.AppRepositoryImpl;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.backend.repository.AppRepository;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.MapUtil;
@@ -35,7 +34,7 @@ public class AppViewModel extends AndroidViewModel {
     public static final String TAG = "LandViewModel";
     private final AppRepository appRepository;
 
-    private final MutableLiveData<List<Snapshot>> snapshots = new MutableLiveData<>();
+    private final MutableLiveData<List<Long>> snapshots = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
     private final MutableLiveData<List<String>> landsTags = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
@@ -48,7 +47,7 @@ public class AppViewModel extends AndroidViewModel {
         appRepository = new AppRepositoryImpl(db);
     }
 
-    public LiveData<List<Snapshot>> getSnapshots(){
+    public LiveData<List<Long>> getSnapshots(){
         return snapshots;
     }
     public LiveData<List<Land>> getLands(){
@@ -67,11 +66,11 @@ public class AppViewModel extends AndroidViewModel {
         return notifications;
     }
 
-    public void setDefaultSnapshot(Snapshot snapshot){
+    public void setDefaultSnapshot(long snapshot){
         appRepository.setDefaultSnapshot(snapshot);
         populateLists();
     }
-    public Snapshot getDefaultSnapshot(){
+    public long getDefaultSnapshot(){
         return appRepository.getDefaultSnapshot();
     }
 
@@ -84,7 +83,7 @@ public class AppViewModel extends AndroidViewModel {
         populateNotifications();
     }
     private void populateDataSnapshots() {
-        List<Snapshot> snapshotsList;
+        List<Long> snapshotsList;
         if(snapshots.getValue() != null){
             snapshotsList = snapshots.getValue();
             snapshotsList.clear();

@@ -2,7 +2,7 @@ package com.mosc.simo.ptuxiaki3741.backend.file.wkt;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 
 import java.util.ArrayList;
 import java.util.List;

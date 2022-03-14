@@ -3,7 +3,7 @@ package com.mosc.simo.ptuxiaki3741.backend.file.shapefile;
 import android.content.Context;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mosc.simo.ptuxiaki3741.backend.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 
 import org.nocrala.tools.gis.data.esri.shapefile.ShapeFileReader;

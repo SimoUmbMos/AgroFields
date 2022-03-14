@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
@@ -96,7 +96,7 @@ public class AppMainFragment extends Fragment{
     private void initViewModels() {
         if(getActivity() != null){
             AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            binding.tvSnapshot.setText(vmLands.getDefaultSnapshot().toString());
+            binding.tvSnapshot.setText(String.valueOf(vmLands.getDefaultSnapshot()));
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
             vmLands.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
         }

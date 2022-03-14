@@ -73,45 +73,41 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mvLand"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle"
-            app:mapType="satellite" />
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
-        <ImageView
-            android:id="@+id/ivLandOverlay"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="false"
-            android:alpha="0.50"
-            android:clickable="false"
-            android:contentDescription="@string/land_imageView"
-            android:focusable="false"
-            android:scaleType="fitCenter"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/mvLand"
-            app:layout_constraintEnd_toEndOf="@id/mvLand"
-            app:layout_constraintStart_toStartOf="@id/mvLand"
-            app:layout_constraintTop_toTopOf="@id/mvLand"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mvLand"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mapType="satellite" />
 
-        <TextView
-            android:id="@+id/tvLoadingLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/loading_label"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/mvLand"
-            app:layout_constraintEnd_toEndOf="@id/mvLand"
-            app:layout_constraintStart_toStartOf="@id/mvLand"
-            app:layout_constraintTop_toTopOf="@id/mvLand" />
+            <ImageView
+                android:id="@+id/ivLandOverlay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:alpha="0.50"
+                android:clickable="false"
+                android:contentDescription="@string/land_imageView"
+                android:focusable="false"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/ic_menu_gallery" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clLandControls"
@@ -156,8 +152,8 @@
                 android:layout_marginEnd="32dp"
                 android:stepSize="5.0"
                 android:value="50.0"
-                android:valueFrom="15.0"
-                android:valueTo="85.0"
+                android:valueFrom="20.0"
+                android:valueTo="80.0"
                 app:labelBehavior="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ibActionReset"
