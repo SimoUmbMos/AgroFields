@@ -116,6 +116,7 @@
     <string name="land_action_updated">Updated</string>
     <string name="land_action_restored">Restored</string>
     <string name="land_action_imported">Imported</string>
+    <string name="land_action_bulk_edited">Bulk Edited</string>
     <string name="land_action_deleted">Deleted</string>
     <string name="land_action_zone_created">Zone Created</string>
     <string name="land_action_zone_updated">Zone Updated</string>
@@ -213,6 +214,12 @@
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Location permission is needed</string>
     <string name="live_map_title">Map</string>
-    <!-- Tags Common -->
-    <string name="empty_tag">Not Set</string>
+    <!-- Bulk Edit Fragment -->
+    <string name="bulk_edit_fragment_title">Bulk Edit</string>
+    <string name="bulk_edit_select_tag_title">Select Tag</string>
+    <string name="bulk_edit_add_tag">Add Tag</string>
+    <string name="bulk_edit_remove_tag">Remove Tag</string>
+    <string name="bulk_edit_change_color">Change Color</string>
+    <string name="bulk_edit_all_tag">[All Data]</string>
+    <string name="bulk_edit_empty_tag">[Without Tag]</string>
 </resources>

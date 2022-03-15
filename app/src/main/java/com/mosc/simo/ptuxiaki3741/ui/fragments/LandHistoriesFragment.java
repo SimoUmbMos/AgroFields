@@ -61,6 +61,7 @@ public class LandHistoriesFragment extends Fragment {
                 getString(R.string.land_action_updated),
                 getString(R.string.land_action_restored),
                 getString(R.string.land_action_imported),
+                getString(R.string.land_action_bulk_edited),
                 getString(R.string.land_action_deleted),
                 getString(R.string.land_action_zone_created),
                 getString(R.string.land_action_zone_updated),

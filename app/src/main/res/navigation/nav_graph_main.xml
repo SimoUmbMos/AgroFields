@@ -12,6 +12,9 @@
         tools:layout="@layout/fragment_app_settings" >
         <action android:id="@+id/toDegreeInfo"
             app:destination="@id/DegreeInfoFragment" />
+        <action
+            android:id="@+id/toBulkEditor"
+            app:destination="@id/BulkEditFragment" />
     </fragment>
     <fragment android:id="@+id/DegreeInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppInfoFragment"
@@ -160,5 +163,10 @@
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarEventFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar_new_event" />
+    <fragment
+        android:id="@+id/BulkEditFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.BulkEditFragment"
+        android:label="fragment_bulk_edit"
+        tools:layout="@layout/fragment_bulk_edit" />
 
 </navigation>

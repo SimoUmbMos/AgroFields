@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
@@ -223,6 +224,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void initFragment(){
         binding.ibInfo.setOnClickListener(v->toDegreeInfo(getActivity()));
         binding.ibReset.setOnClickListener(v->factoryReset());
+        binding.btnBulkEdit.setOnClickListener(v->toBulkEdit());
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
         binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
 
@@ -257,6 +259,11 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
         for(Long snapshot : this.snapshots){
             snapshotAdapter.add(snapshot.toString());
+        }
+        if(snapshotAdapter.getCount() > 2){
+            binding.tvSnapshot.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvSnapshot.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
@@ -541,5 +548,15 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 ).show();
             });
         }
+    }
+
+    private void toBulkEdit(){
+        FragmentActivity activity = getActivity();
+        if(activity == null) return;
+        activity.runOnUiThread(()-> {
+            NavController nav = UIUtil.getNavController(this,R.id.AppSettingsFragment);
+            if(nav != null)
+                nav.navigate(R.id.toBulkEditor);
+        });
     }
 }

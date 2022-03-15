@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandDBAction;
@@ -265,6 +266,31 @@ public class AppViewModel extends AndroidViewModel {
         }
 
         appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
+    }
+    public void bulkEditLandData(List<LandData> data){
+        if(data == null) return;
+
+        for(LandData tempData : data){
+            if(tempData == null) continue;
+
+            LandDBAction action = LandDBAction.BULK_EDITED;
+            List<LandZone> zones = appRepository.getLandZonesByLandData(tempData);
+            appRepository.saveLand(new Land(tempData));
+            LandDataRecord landRecord = new LandDataRecord(
+                    tempData,
+                    action,
+                    new Date()
+            );
+            List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
+            for(LandZone zone : zones){
+                if(zone == null) continue;
+                if(zone.getData() == null) continue;
+
+                zoneDataRecords.add(new LandZoneDataRecord(landRecord,zone.getData()));
+            }
+            appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
+        }
+        populateLists();
     }
     private boolean removeLandAction(Land land) {
         if(land == null) return false;

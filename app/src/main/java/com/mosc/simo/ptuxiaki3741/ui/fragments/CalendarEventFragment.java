@@ -304,6 +304,12 @@ public class CalendarEventFragment extends Fragment{
                 landStrings
         );
         binding.tvSelectLand.setAdapter(adapterLands);
+
+        if(adapterLands.getCount() > 2){
+            binding.tvSelectLand.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvSelectLand.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
     private void updateZoneSelect(){
@@ -334,6 +340,12 @@ public class CalendarEventFragment extends Fragment{
             binding.tilSelectZone.setVisibility(View.GONE);
         }else{
             binding.tilSelectZone.setVisibility(View.VISIBLE);
+        }
+
+        if(adapterZones.getCount() > 2){
+            binding.tvSelectZone.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvSelectZone.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 

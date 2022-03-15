@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 
+import java.util.Objects;
+
 public class ColorData implements Parcelable {
     private int red, green, blue;
     public ColorData(){
@@ -112,5 +114,18 @@ public class ColorData implements Parcelable {
         parcel.writeInt(red);
         parcel.writeInt(green);
         parcel.writeInt(blue);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ColorData colorData = (ColorData) o;
+        return red == colorData.red && green == colorData.green && blue == colorData.blue;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(red, green, blue);
     }
 }

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.BulkEditFragment">
+
+    <ImageButton
+        android:id="@+id/ibClose1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/transparent"
+        android:padding="14dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_close"
+        app:layout_constraintEnd_toStartOf="@+id/tvTitle"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="@string/bulk_edit_fragment_title"
+        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+        app:layout_constraintEnd_toStartOf="@+id/ibSave"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ibClose1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/ibSave"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:maxLines="1"
+        android:minWidth="@dimen/menu_button"
+        android:text="@string/save"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTag"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/bulk_edit_select_tag_title"
+        android:labelFor="@id/tvTag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <AutoCompleteTextView
+            android:id="@+id/tvTag"
+            style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="false"
+            android:ellipsize="end"
+            android:inputType="none"
+            android:maxLines="1"
+            android:dropDownHeight="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ScrollView
+        android:id="@+id/svControls"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilTag">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="16dp">
+
+                <CheckBox
+                    android:id="@+id/cbAddTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilAddTag"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:hint="@string/bulk_edit_add_tag"
+                    android:labelFor="@+id/etAddTag">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAddTag"
+                        style="@style/Widget.Material3.TextInputEditText.FilledBox.Dense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPersonName"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="16dp">
+
+                <CheckBox
+                    android:id="@+id/cbRemoveTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilRemoveTag"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:hint="@string/bulk_edit_remove_tag"
+                    android:labelFor="@+id/etRemoveTag">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRemoveTag"
+                        style="@style/Widget.Material3.TextInputEditText.FilledBox.Dense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPersonName"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="16dp">
+
+                <CheckBox
+                    android:id="@+id/cbChangeColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilChangeColor"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:hint="@string/bulk_edit_change_color"
+                    android:labelFor="@+id/etChangeColor">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etChangeColor"
+                        style="@style/Widget.Material3.TextInputEditText.FilledBox.Dense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="false"
+                        android:clickable="true"
+                        android:ellipsize="end"
+                        android:focusable="false"
+                        android:inputType="textNoSuggestions"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tvColorPreview"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent" />
+
+            </TableRow>
+
+        </TableLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tvFilterResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppTheme.Body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        tools:text="7 Land's" />
+
+    <LinearLayout
+        android:id="@+id/llFilterCells"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFilterResult">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="title"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="tags"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="color"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLandResults"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llFilterCells" />
+
+    <TextView
+        android:id="@+id/tvEmptyList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_list"
+        app:layout_constraintBottom_toBottomOf="@+id/rvLandResults"
+        app:layout_constraintEnd_toEndOf="@+id/rvLandResults"
+        app:layout_constraintStart_toStartOf="@+id/rvLandResults"
+        app:layout_constraintTop_toTopOf="@+id/rvLandResults" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

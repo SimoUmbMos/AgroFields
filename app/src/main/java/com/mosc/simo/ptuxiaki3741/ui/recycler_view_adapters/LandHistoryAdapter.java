@@ -112,20 +112,23 @@ public class LandHistoryAdapter extends RecyclerView.Adapter<LandHistoryAdapter.
                     case IMPORTED:
                         action = values[3];
                         break;
-                    case DELETE:
+                    case BULK_EDITED:
                         action = values[4];
                         break;
-                    case ZONE_ADDED:
+                    case DELETE:
                         action = values[5];
                         break;
-                    case ZONE_UPDATED:
+                    case ZONE_ADDED:
                         action = values[6];
                         break;
-                    case ZONE_IMPORTED:
+                    case ZONE_UPDATED:
                         action = values[7];
                         break;
-                    case ZONE_REMOVED:
+                    case ZONE_IMPORTED:
                         action = values[8];
+                        break;
+                    case ZONE_REMOVED:
+                        action = values[9];
                         break;
                     default:
                         action = "";
