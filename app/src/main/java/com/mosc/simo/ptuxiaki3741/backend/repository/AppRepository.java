@@ -27,7 +27,7 @@ public interface AppRepository {
     boolean landExist(long id, long snapshot);
     boolean zoneExist(long id, long snapshot);
     List<LandZone> getLandZonesByLandData(LandData data);
-    CalendarNotification getNotification(long id, long snapshot);
+    CalendarNotification getNotification(long id);
 
     Land getLand(long id, long snapshot);
     void saveLand(Land land);

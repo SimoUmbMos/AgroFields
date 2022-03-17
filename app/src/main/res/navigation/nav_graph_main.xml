@@ -114,14 +114,30 @@
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppMainFragment"
         android:label="fragment_menu"
         tools:layout="@layout/fragment_menu_main" >
-        <action android:id="@+id/toAppSettings"
+        <action
+            android:id="@+id/toAppSettings"
             app:destination="@id/AppSettingsFragment" />
-        <action android:id="@+id/toMenuLands"
-            app:destination="@id/MenuLandsFragment" />
-        <action android:id="@+id/toLiveMap"
-            app:destination="@id/LiveMapFragment" />
-        <action android:id="@+id/toCalendar"
-            app:destination="@id/CalendarFragment" />
+        <action
+            android:id="@+id/toMenuLands"
+            app:destination="@id/MenuLandsFragment"
+            app:enterAnim="@anim/animation_from_right"
+            app:exitAnim="@anim/animation_to_left"
+            app:popEnterAnim="@anim/animation_from_left"
+            app:popExitAnim="@anim/animation_to_right" />
+        <action
+            android:id="@+id/toLiveMap"
+            app:destination="@id/LiveMapFragment"
+            app:enterAnim="@anim/animation_from_right"
+            app:exitAnim="@anim/animation_to_left"
+            app:popEnterAnim="@anim/animation_from_left"
+            app:popExitAnim="@anim/animation_to_right" />
+        <action
+            android:id="@+id/toCalendar"
+            app:destination="@id/CalendarFragment"
+            app:enterAnim="@anim/animation_from_right"
+            app:exitAnim="@anim/animation_to_left"
+            app:popEnterAnim="@anim/animation_from_left"
+            app:popExitAnim="@anim/animation_to_right" />
     </fragment>
     <fragment android:id="@+id/ProfileLandFragment"
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandProfileFragment"

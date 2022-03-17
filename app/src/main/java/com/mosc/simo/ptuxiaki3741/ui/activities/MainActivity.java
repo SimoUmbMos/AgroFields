@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         );
         channel1.setDescription(description1);
         channel1.enableVibration(true);
+        channel1.setSound(null, null);
 
         CharSequence name2 = getString(R.string.calendar_notification_channel_name);
         String description2 = getString(R.string.calendar_notification_channel_description);

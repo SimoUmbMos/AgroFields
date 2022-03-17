@@ -7,8 +7,6 @@ import java.time.LocalDate;
 public final class AppValues {
 
     private AppValues(){}
-    /* DB VALUES */
-    public static final int DATABASE_VERSION = 1;
     /* Open XML SDK */
     public static final String sheetLandName = "Lands";
     public static final String sheetLandNameLowerCase = "lands";
@@ -33,7 +31,6 @@ public final class AppValues {
     public static final String argZones = "zones";
     public static final String argAction = "action";
     public static final String argAddress = "address";
-    public static final String argImportLand = "import_land";
     public static final String argIsHistory = "is_history";
     public static final String argDate = "calendar_date";
     public static final String argNotification = "calendar_notification";
@@ -63,6 +60,6 @@ public final class AppValues {
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";
     public static final int doubleTapBack = 2750;
-    public static final String NotificationChannelID = "In Application Notifications";
+    public static final String NotificationChannelID = "Location Notifications";
     public static final String CalendarNotificationChannelID = "Calendar Notifications";
 }

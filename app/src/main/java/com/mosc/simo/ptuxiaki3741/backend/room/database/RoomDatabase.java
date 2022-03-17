@@ -1,5 +1,6 @@
 package com.mosc.simo.ptuxiaki3741.backend.room.database;
 
+import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.TypeConverters;
 
@@ -16,16 +17,21 @@ import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.backend.room.typeconverters.DBTypesConverter;
-import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
-@Database(entities = {
-        LandData.class,
-        LandZoneData.class,
-        Snapshot.class,
-        LandDataRecord.class,
-        LandZoneDataRecord.class,
-        CalendarNotification.class
-}, version = AppValues.DATABASE_VERSION)
+@Database(
+        version = 2,
+        autoMigrations = {
+                @AutoMigration(from = 1, to = 2)
+        },
+        entities = {
+            LandData.class,
+            LandZoneData.class,
+            Snapshot.class,
+            LandDataRecord.class,
+            LandZoneDataRecord.class,
+            CalendarNotification.class
+        }
+)
 @TypeConverters({
         DBTypesConverter.class
 })

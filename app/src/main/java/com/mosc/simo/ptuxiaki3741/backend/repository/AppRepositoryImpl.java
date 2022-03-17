@@ -131,8 +131,7 @@ public class AppRepositoryImpl implements AppRepository {
     @Override
     public Map<LocalDate, List<CalendarNotification>> getNotifications() {
         Map<LocalDate, List<CalendarNotification>> ans = new TreeMap<>();
-        List<CalendarNotification> calendarNotifications =
-                db.calendarNotificationDao().getNotifications(snapshot);
+        List<CalendarNotification> calendarNotifications = db.calendarNotificationDao().getNotifications();
 
         List<CalendarNotification> temp;
         LocalDate localDate;
@@ -186,8 +185,8 @@ public class AppRepositoryImpl implements AppRepository {
     }
 
     @Override
-    public CalendarNotification getNotification(long id, long snapshot) {
-        return db.calendarNotificationDao().getNotificationById(id, snapshot);
+    public CalendarNotification getNotification(long id) {
+        return db.calendarNotificationDao().getNotificationById(id);
     }
 
     @Override

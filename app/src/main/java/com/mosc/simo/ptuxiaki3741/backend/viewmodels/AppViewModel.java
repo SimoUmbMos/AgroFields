@@ -286,6 +286,7 @@ public class AppViewModel extends AndroidViewModel {
                 if(zone == null) continue;
                 if(zone.getData() == null) continue;
 
+                appRepository.saveZone(zone);
                 zoneDataRecords.add(new LandZoneDataRecord(landRecord,zone.getData()));
             }
             appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
@@ -461,7 +462,7 @@ public class AppViewModel extends AndroidViewModel {
         if(notification.getId() != 0){
             DataUtil.removeNotificationToAlertManager(
                     getApplication().getApplicationContext(),
-                    appRepository.getNotification(notification.getId(), notification.getSnapshot())
+                    appRepository.getNotification(notification.getId())
             );
         }
         appRepository.saveNotification(notification);

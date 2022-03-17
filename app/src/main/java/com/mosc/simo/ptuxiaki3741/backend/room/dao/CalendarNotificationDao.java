@@ -14,13 +14,12 @@ import java.util.List;
 @Dao
 public interface CalendarNotificationDao {
     @Query("Select * From CalendarNotification " +
-            "WHERE CalendarNotification.Snapshot = :snapshot " +
             "ORDER BY CalendarNotification.Date ASC")
-    List<CalendarNotification> getNotifications(long snapshot);
+    List<CalendarNotification> getNotifications();
 
     @Query("Select * From CalendarNotification " +
-            "Where CalendarNotification.ID = :id AND CalendarNotification.Snapshot = :snapshot")
-    CalendarNotification getNotificationById(long id, long snapshot);
+            "Where CalendarNotification.ID = :id")
+    CalendarNotification getNotificationById(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(CalendarNotification notification);

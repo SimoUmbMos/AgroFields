@@ -116,6 +116,8 @@ public class MapMenuFragment extends Fragment{
         initData();
         initActivity();
         initFragment();
+        Handler handler = new Handler();
+        handler.postDelayed(this::lateInitFragment,240);
     }
 
     @Override
@@ -207,7 +209,13 @@ public class MapMenuFragment extends Fragment{
             zoomOnLands();
         });
         binding.ibCenterCamera.setOnClickListener(v -> zoomOnLands());
+        binding.ibCenterCamera.setVisibility(View.GONE);
+        binding.mvLiveMap.setVisibility(View.GONE);
         if(loadingDialog != null) loadingDialog.openDialog();
+    }
+
+    private void lateInitFragment() {
+        binding.mvLiveMap.setVisibility(View.VISIBLE);
         binding.mvLiveMap.getMapAsync(this::initMap);
     }
 
@@ -218,6 +226,7 @@ public class MapMenuFragment extends Fragment{
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        binding.ibCenterCamera.setVisibility(View.VISIBLE);
 
         if(getActivity() == null) {
             goBack();
@@ -229,7 +238,6 @@ public class MapMenuFragment extends Fragment{
         clusterManager = new ClusterManager<>(getActivity(), mMap);
         LandRendered renderer = new LandRendered(getActivity(),mMap,clusterManager);
         renderer.setMinClusterSize(2);
-        renderer.setAnimation(false);
         clusterManager.setRenderer(renderer);
         NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
         algorithm.setMaxDistanceBetweenClusteredItems(60);

@@ -9,6 +9,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 import com.mosc.simo.ptuxiaki3741.data.enums.CalendarEventType;
 
@@ -22,10 +23,6 @@ import java.util.Objects;
                 ),
                 @Index(
                         value = {"ZoneID", "Snapshot"}
-                ),
-                @Index(
-                        value = {"ID","Snapshot"},
-                        unique = true
                 )
         },
         foreignKeys = {
@@ -53,13 +50,10 @@ import java.util.Objects;
                         },
                         onDelete = ForeignKey.CASCADE
                 )
-        },
-        primaryKeys = {
-                "ID",
-                "Snapshot"
         }
 )
 public class CalendarNotification implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private long id;
     @ColumnInfo(name = "Snapshot")

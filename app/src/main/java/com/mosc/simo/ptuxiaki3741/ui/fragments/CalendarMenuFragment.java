@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Handler;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -85,7 +86,8 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         initData();
         initActivity();
         initFragment();
-        initViewModel();
+        Handler handler = new Handler();
+        handler.postDelayed(this::initViewModel,240);
     }
 
     @Override
@@ -148,6 +150,7 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
     }
 
     private void initFragment(){
+        binding.tvCalendarListLabel.setText(getResources().getString(R.string.loading_label));
         binding.ibClose1.setOnClickListener( view -> goBack());
         binding.ibClose2.setOnClickListener( view -> goBack());
         binding.ibGridView.setOnClickListener(v->{
@@ -449,6 +452,7 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         }
 
         if(listData.size() == 0){
+            binding.tvCalendarListLabel.setText(getResources().getString(R.string.empty_list));
             binding.tvCalendarListLabel.setVisibility(View.VISIBLE);
         }else{
             binding.tvCalendarListLabel.setVisibility(View.GONE);

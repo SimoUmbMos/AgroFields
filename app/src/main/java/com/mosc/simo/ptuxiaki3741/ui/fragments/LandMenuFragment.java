@@ -54,6 +54,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private FileType exportAction;
     private LandListAdapter adapter;
     private int dialogChecked;
+    private boolean isInit;
     private AppViewModel vmLands;
     private ListMenuState state;
 
@@ -70,7 +71,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         initData();
         initActivity();
         initFragment();
-        initViewModel();
+        Handler handler = new Handler();
+        handler.postDelayed(this::initViewModel,240);
     }
 
     @Override
@@ -145,9 +147,14 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initData(){
+        isInit = false;
         data = new ArrayList<>();
         exportLands = new ArrayList<>();
         state = ListMenuState.NormalState;
+        adapter = new LandListAdapter(
+                this::onLandClick,
+                this::onLandLongClick
+        );
     }
     private void initActivity() {
         if(getActivity() != null){
@@ -176,16 +183,14 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         );
         binding.rvLandList.setLayoutManager(layoutManager);
         binding.rvLandList.setHasFixedSize(true);
-        adapter = new LandListAdapter(
-                this::onLandClick,
-                this::onLandLongClick
-        );
         binding.rvLandList.setAdapter(adapter);
 
         updateListUi();
         updateUi();
     }
     private void initViewModel() {
+        if(isInit) return;
+        isInit = true;
         if(getActivity() != null){
             vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             Handler handler = new Handler(Looper.getMainLooper());

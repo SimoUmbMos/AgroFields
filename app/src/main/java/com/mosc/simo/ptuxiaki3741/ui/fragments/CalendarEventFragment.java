@@ -27,6 +27,7 @@ import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.data.util.DialogUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import java.util.Map;
 
 public class CalendarEventFragment extends Fragment{
     private FragmentCalendarNewEventBinding binding;
+    private LoadingDialog dialog;
 
     private static final String TAG = "CalendarNewEventFragment";
     private AppViewModel viewModel;
@@ -88,6 +90,8 @@ public class CalendarEventFragment extends Fragment{
         selectedZone = new LandZone(getString(R.string.default_zone_spinner_value));
         notificationDate = Calendar.getInstance();
         notificationDate.add(Calendar.HOUR_OF_DAY, 1);
+        notificationDate.set(Calendar.SECOND,0);
+        notificationDate.set(Calendar.MILLISECOND,0);
 
         calendarNotification = null;
         if(getArguments() != null){
@@ -98,11 +102,7 @@ public class CalendarEventFragment extends Fragment{
 
         if(calendarNotification != null){
             notificationDate.setTime(calendarNotification.getDate());
-            notificationDate.set(Calendar.SECOND,0);
-            notificationDate.set(Calendar.MILLISECOND,0);
         }else{
-            notificationDate.set(Calendar.SECOND,0);
-            notificationDate.set(Calendar.MILLISECOND,0);
             calendarNotification = new CalendarNotification(
                     0,
                     -1,
@@ -120,6 +120,7 @@ public class CalendarEventFragment extends Fragment{
 
     private void initActivity(){
         if(getActivity() != null){
+            dialog = new LoadingDialog(getActivity());
             if(getActivity().getClass() == MainActivity.class){
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.setOnBackPressed(()->true);
@@ -365,6 +366,8 @@ public class CalendarEventFragment extends Fragment{
     }
 
     private void save(){
+        if(dialog != null) dialog.openDialog();
+
         long id = calendarNotification.getId();
         long snapshot = calendarNotification.getSnapshot();
         Long lid = null;
@@ -409,11 +412,15 @@ public class CalendarEventFragment extends Fragment{
             binding.tilSelectMessage.setError(getString(R.string.notification_message_error));
             hasError = true;
         }
-        if(viewModel == null || hasError) return;
+        if(viewModel == null || hasError) {
+            if(dialog != null) dialog.closeDialog();
+            return;
+        }
 
         calendarNotification = new CalendarNotification(id, snapshot, lid, zid, title, message, type, date);
         AsyncTask.execute(()->{
             viewModel.saveNotification(calendarNotification);
+            if(dialog != null) dialog.closeDialog();
             goBack();
         });
     }
