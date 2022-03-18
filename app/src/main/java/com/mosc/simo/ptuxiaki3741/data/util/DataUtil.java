@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.ui.broadcast_receivers.CalendarReceiver;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
@@ -223,8 +224,8 @@ public final class DataUtil {
         }
         return false;
     }
-    public static boolean checkItemsTheSame(CalendarNotification not1, CalendarNotification not2) {
+    public static boolean checkItemsTheSame(CalendarEntity not1, CalendarEntity not2) {
         if(not1 == null || not2 == null) return false;
-        return not1.getId() == not2.getId() && not1.getSnapshot() == not2.getSnapshot();
+        return not1.getNotification().getId() == not2.getNotification().getId();
     }
 }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.ui.views.CalendarEventView;
 
@@ -18,19 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.ViewHolder> {
-    private final List<CalendarNotification> notifications;
-    private final String[] typesString;
-    private final Integer[] typesColor;
+    private final List<CalendarEntity> notifications;
     private final ActionResult<CalendarNotification> onClick;
 
-    public NotificationsAdapter(
-            String[] typesString,
-            Integer[] typesColor,
-            ActionResult<CalendarNotification> onClick
-    ) {
+    public NotificationsAdapter(ActionResult<CalendarNotification> onClick) {
         this.notifications = new ArrayList<>();
-        this.typesString = typesString;
-        this.typesColor = typesColor;
         this.onClick = onClick;
     }
 
@@ -45,11 +38,13 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(position < getItemCount()){
-            CalendarNotification notification = notifications.get(position);
-            Integer color = typesColor[notification.getType().ordinal()];
-            String type = typesString[notification.getType().ordinal()];
-            holder.calendarEventView.setEvent(type, color, notification.toString());
-            holder.calendarEventView.setOnClick(v->onClick.onActionResult(notification));
+            CalendarEntity entity = notifications.get(position);
+            holder.calendarEventView.setEvent(
+                    entity.getCategory().getName(),
+                    entity.getCategory().getColorData(),
+                    entity.getNotification().getTitle()
+            );
+            holder.calendarEventView.setOnClick(v->onClick.onActionResult(entity.getNotification()));
         }else{
             holder.calendarEventView.setVisibility(View.GONE);
         }
@@ -60,7 +55,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         return notifications.size();
     }
 
-    public void saveData(List<CalendarNotification> notifications){
+    public void saveData(List<CalendarEntity> notifications){
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new NotificationsDiffUtil(this.notifications, notifications));
         this.notifications.clear();
         this.notifications.addAll(notifications);
@@ -76,9 +71,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     private static class NotificationsDiffUtil extends DiffUtil.Callback {
-        private final List<CalendarNotification> oldList;
-        private final List<CalendarNotification> newList;
-        public NotificationsDiffUtil(List<CalendarNotification> oldList, List<CalendarNotification> newList) {
+        private final List<CalendarEntity> oldList;
+        private final List<CalendarEntity> newList;
+        public NotificationsDiffUtil(List<CalendarEntity> oldList, List<CalendarEntity> newList) {
             this.oldList = oldList;
             this.newList = newList;
         }
@@ -101,12 +96,14 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         @Override
         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
             try{
-                CalendarNotification not1 = oldList.get(oldItemPosition);
-                CalendarNotification not2 = newList.get(newItemPosition);
+                CalendarEntity ent1 = oldList.get(oldItemPosition);
+                CalendarEntity ent2 = newList.get(newItemPosition);
+                CalendarNotification not1 = ent1.getNotification();
+                CalendarNotification not2 = ent2.getNotification();
 
                 if(not1 == null || not2 == null)
                     return false;
-                if(not1.getType() != not2.getType())
+                if(not1.getCategoryID() != not2.getCategoryID())
                     return false;
                 if(!not1.getTitle().equals(not2.getTitle()))
                     return false;

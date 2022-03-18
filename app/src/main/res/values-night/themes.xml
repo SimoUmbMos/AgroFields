@@ -55,13 +55,6 @@
         <item name="colorOnFabVariantAccent">@color/dark_onTertiaryContainer</item>
         <item name="colorFabVariantError">@color/dark_errorContainer</item>
         <item name="colorOnFabVariantError">@color/dark_onErrorContainer</item>
-        <!-- Events Colors -->
-        <item name="colorEventSchedule">@color/dark_colorEventSchedule</item>
-        <item name="colorEventPlant">@color/dark_colorEventPlant</item>
-        <item name="colorEventCultivate">@color/dark_colorEventCultivate</item>
-        <item name="colorEventFertilize">@color/dark_colorEventFertilize</item>
-        <item name="colorEventSpray">@color/dark_colorEventSpray</item>
-        <item name="colorEventHarvest">@color/dark_colorEventHarvest</item>
         <!-- Typography -->
         <item name="textAppearanceHeadline6">@style/TextAppearance.AppTheme.Headline</item>
         <item name="textAppearanceBody2">@style/TextAppearance.AppTheme.Body</item>

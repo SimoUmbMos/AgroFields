@@ -40,13 +40,6 @@
   <color name="light_surfaceVariant">#DFE5D7</color>
   <color name="light_onSurfaceVariant">#43493F</color>
   <color name="light_outline">#73796E</color>
-  <!-- Light Events Colors -->
-  <color name="light_colorEventSchedule">#C2C6E1</color>
-  <color name="light_colorEventPlant">#D5E3C6</color>
-  <color name="light_colorEventCultivate">#B2D7D6</color>
-  <color name="light_colorEventFertilize">#F2EDC3</color>
-  <color name="light_colorEventSpray">#B2E1E9</color>
-  <color name="light_colorEventHarvest">#F2C8BC</color>
 
   <!-- DARK -->
   <!-- Dark Theme Colors -->
@@ -73,12 +66,5 @@
   <color name="dark_surfaceVariant">#43493F</color>
   <color name="dark_onSurfaceVariant">#C2C8BB</color>
   <color name="dark_outline">#8D9387</color>
-  <!-- Dark Events Colors -->
-  <color name="dark_colorEventSchedule">#2A3755</color>
-  <color name="dark_colorEventPlant">#415935</color>
-  <color name="dark_colorEventCultivate">#174C48</color>
-  <color name="dark_colorEventFertilize">#636531</color>
-  <color name="dark_colorEventSpray">#17575F</color>
-  <color name="dark_colorEventHarvest">#633929</color>
 
 </resources>

@@ -60,6 +60,7 @@
     <string name="reset_points">Επαναφορά σημείων</string>
     <string name="edit_color">Αλλαγή χρώματος</string>
     <string name="some_lands_have_zones_error">Ορισμένα χωράφια έχουν ζώνες</string>
+    <string name="calendar_default_category">Προγραμματισμένη εργασία</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
     <!-- Loading Fragment -->
@@ -173,12 +174,6 @@
     <string name="new_events_side_label">Μελλοντικά συμβάντα</string>
     <string name="event_filter_side_label">Φιλτράρισμα συμβάντων</string>
     <string name="all_filter_side_label">Προβολή Όλων</string>
-    <string name="schedule_filter_side_label">Προγραμμ. εργασίες</string>
-    <string name="plant_filter_side_label">Εργασίες φύτευσης</string>
-    <string name="cultivate_filter_side_label">Εργασίες καλλιέργ.</string>
-    <string name="fertilize_filter_side_label">Εργασίες γονιμ.</string>
-    <string name="spray_filter_side_label">Εργασίες ψεκασμού</string>
-    <string name="harvest_filter_side_label">Εργασίες συγκομ.</string>
     <!-- Calendar Event Fragment -->
     <string name="calendar_new_instance_fragment_title">Νέο συμβάν</string>
     <string name="calendar_edit_instance_fragment_title">Επεξεργασία συμβάντος</string>
@@ -193,14 +188,6 @@
     <string name="select_type_label">Τύπος εργασίας</string>
     <string name="notification_title_error">Εισαγάγετε τον τίτλο</string>
     <string name="notification_message_error">Εισαγάγετε ένα μήνυμα</string>
-    <string-array name="notification_event_types">
-        <item>Προγραμματισμένη εργασία</item>
-        <item>Εργασία φύτευσης</item>
-        <item>Εργασία καλλιέργειας</item>
-        <item>Εργασία γονιμοποίησης</item>
-        <item>Εργασία ψεκασμού</item>
-        <item>Εργασία συγκομιδής</item>
-    </string-array>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Απαιτείται άδεια τοποθεσίας</string>
     <string name="live_map_title">Χάρτης</string>

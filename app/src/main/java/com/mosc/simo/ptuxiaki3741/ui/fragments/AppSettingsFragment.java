@@ -512,21 +512,11 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         try {
             dataIsSaving = true;
             Log.d(TAG, "saveData: lands size = "+lands.size());
-            for(Land land : lands){
-                if(land.getData() == null) continue;
-                Log.d(TAG, "saveData:  land = " + land.getData().getSnapshot());
-                viewModel.importLand(land);
-            }
             Log.d(TAG, "saveData: zones size = "+zones.size());
-            for(LandZone zone : zones){
-                if(zone.getData() == null) continue;
-                Log.d(TAG, "saveData:  zone_id = " + zone.getData().getId() + ", zone_snapshot =" +zone.getData().getSnapshot());
-                viewModel.importZone(zone);
-            }
-            viewModel.refreshImportLists();
-        }catch (Exception e){
+            viewModel.importLandsAndZones(lands, zones);
+        } catch (Exception e) {
             Log.e(TAG, "saveData: ", e);
-        }finally {
+        } finally {
             dataIsSaving = false;
             Log.d(TAG, "saveData: dataIsSaving = false");
         }

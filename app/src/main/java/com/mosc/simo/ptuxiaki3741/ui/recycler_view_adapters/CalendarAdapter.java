@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderCalendarDateBinding;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
@@ -23,21 +24,15 @@ import java.util.List;
 import java.util.Locale;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
-    private final LinkedHashMap<LocalDate, List<CalendarNotification>> data;
-    private final String[] typesString;
-    private final Integer[] typesColor;
+    private final LinkedHashMap<LocalDate, List<CalendarEntity>> data;
     private final ActionResult<LocalDate> onDateClick;
     private final ActionResult<CalendarNotification> onEventClick;
 
     public CalendarAdapter(
-            String[] typesString,
-            Integer[] typesColor,
             ActionResult<LocalDate> onDateClick,
             ActionResult<CalendarNotification> onEventClick
     ){
         this.data = new LinkedHashMap<>();
-        this.typesString = typesString;
-        this.typesColor = typesColor;
         this.onDateClick = onDateClick;
         this.onEventClick = onEventClick;
     }
@@ -58,9 +53,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(position > -1 && position < data.size()){
             LocalDate date = (LocalDate) data.keySet().toArray()[position];
-            List<CalendarNotification> events = data.getOrDefault(date,null);
+            List<CalendarEntity> events = data.getOrDefault(date,null);
             if(events != null){
-                holder.show(date, typesString, typesColor, events, onDateClick, onEventClick);
+                holder.show(date, events, onDateClick, onEventClick);
             }else{
                 holder.hide();
             }
@@ -74,7 +69,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         return data.size();
     }
 
-    public void saveData(LinkedHashMap<LocalDate, List<CalendarNotification>> data){
+    public void saveData(LinkedHashMap<LocalDate, List<CalendarEntity>> data){
 
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CalendarDiffUtil(this.data, data));
         this.data.clear();
@@ -98,9 +93,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         }
         public void show(
                 LocalDate d,
-                String[] typesString,
-                Integer[] typesColor,
-                List<CalendarNotification> e,
+                List<CalendarEntity> e,
                 ActionResult<LocalDate> dc,
                 ActionResult<CalendarNotification> ec
         ) {
@@ -110,26 +103,26 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             String dateString = d.getDayOfMonth()+"/"+d.getMonthValue();
             binding.tvDayNumber.setText(dateString);
             binding.llEventsContainer.removeAllViews();
-            String type;
-            int color;
-            for(CalendarNotification event : e){
+            for(CalendarEntity event : e){
                 CalendarEventView eventView = new CalendarEventView(binding.getRoot().getContext());
-                type = typesString[event.getType().ordinal()];
-                color = typesColor[event.getType().ordinal()];
-                eventView.setEvent(type, color, event.toString());
-                eventView.setOnClick(v->ec.onActionResult(event));
+                eventView.setEvent(
+                        event.getCategory().getName(),
+                        event.getCategory().getColorData(),
+                        event.getNotification().toString()
+                );
+                eventView.setOnClick(v->ec.onActionResult(event.getNotification()));
                 binding.llEventsContainer.addView(eventView);
             }
         }
     }
 
     private static class CalendarDiffUtil extends DiffUtil.Callback {
-        private final LinkedHashMap<LocalDate, List<CalendarNotification>> oldData;
-        private final LinkedHashMap<LocalDate, List<CalendarNotification>> newData;
+        private final LinkedHashMap<LocalDate, List<CalendarEntity>> oldData;
+        private final LinkedHashMap<LocalDate, List<CalendarEntity>> newData;
 
         public CalendarDiffUtil(
-                LinkedHashMap<LocalDate, List<CalendarNotification>> oldData,
-                LinkedHashMap<LocalDate, List<CalendarNotification>> newData
+                LinkedHashMap<LocalDate, List<CalendarEntity>> oldData,
+                LinkedHashMap<LocalDate, List<CalendarEntity>> newData
         ){
             this.oldData = oldData;
             this.newData = newData;
@@ -157,8 +150,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             try{
                 LocalDate oldDataKey = new ArrayList<>(oldData.keySet()).get(oldItemPosition);
                 LocalDate newDataKey = new ArrayList<>(newData.keySet()).get(newItemPosition);
-                List<CalendarNotification> oldDataValues = oldData.get(oldDataKey);
-                List<CalendarNotification> newDataValues = newData.get(newDataKey);
+                List<CalendarEntity> oldDataValues = oldData.get(oldDataKey);
+                List<CalendarEntity> newDataValues = newData.get(newDataKey);
                 if(oldDataValues == null || newDataValues == null)
                     return false;
                 if(oldDataValues.size() != newDataValues.size())

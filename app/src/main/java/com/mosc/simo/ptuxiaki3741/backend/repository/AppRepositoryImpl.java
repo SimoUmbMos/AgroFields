@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.repository;
 
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
@@ -30,6 +31,7 @@ public class AppRepositoryImpl implements AppRepository {
         this.snapshot = AppValues.defaultSnapshot;
     }
 
+
     @Override
     public void setDefaultSnapshot(long snapshot){
         Snapshot temp = saveSnapshot(snapshot);
@@ -40,6 +42,7 @@ public class AppRepositoryImpl implements AppRepository {
     public long getDefaultSnapshot(){
         return snapshot;
     }
+
 
     @Override
     public List<Long> getSnapshots(){
@@ -53,32 +56,17 @@ public class AppRepositoryImpl implements AppRepository {
     }
 
     @Override
-    public List<String> getLandTags(){
-        List<String> ans = new ArrayList<>();
-
-        List<LandData> landsData = db.landDao().getLands(snapshot);
-        if(landsData == null) return ans;
-
-        for(LandData landData : landsData){
-            List<String> tags = LandUtil.getLandTags(landData);
-            for(String tag : tags){
-                if(!ans.contains(tag)) {
-                    ans.add(tag);
-                }
-            }
+    public Snapshot saveSnapshot(long s){
+        long snapshot = s;
+        if(snapshot <= 0){
+            snapshot = this.snapshot;
         }
-
-        return ans;
+        if(!db.snapshotDao().snapshotExist(snapshot)){
+            db.snapshotDao().insert(new Snapshot(snapshot));
+        }
+        return db.snapshotDao().getSnapshot(snapshot);
     }
 
-    @Override
-    public Land getLand(long id, long snapshot) {
-        long snap = snapshot;
-        if(snap == -1) snap = this.snapshot;
-        LandData data = db.landDao().getLand(id, snap);
-        if(data != null) return new Land(data);
-        return null;
-    }
 
     @Override
     public List<Land> getLands() {
@@ -94,111 +82,17 @@ public class AppRepositoryImpl implements AppRepository {
     }
 
     @Override
-    public Map<Long,List<LandZone>> getLandZones(){
-        Map<Long,List<LandZone>> ans = new HashMap<>();
-
-        List<LandZone> zones;
-        List<LandZoneData> zonesData = db.landZoneDao().getZones(snapshot);
-        if(zonesData != null){
-            for(LandZoneData zoneData : zonesData){
-                zones = ans.getOrDefault(zoneData.getLid(),null);
-                if(zones == null){
-                    zones = new ArrayList<>();
-                }
-                zones.add(new LandZone(zoneData));
-                ans.put(zoneData.getLid(),zones);
-            }
-        }
-        return ans;
-    }
-
-    @Override
-    public List<LandHistoryRecord> getLandRecords() {
-        List<LandHistoryRecord> ans = new ArrayList<>();
-        List<LandDataRecord> landRecords = db.landHistoryDao().getLandRecords(snapshot);
-        for(LandDataRecord landRecord : landRecords){
-            ans.add(new LandHistoryRecord(
-                    landRecord,
-                    db.landZoneHistoryDao().getZoneRecordByRecordIdAndSnapshot(
-                            landRecord.getId(),
-                            landRecord.getSnapshot()
-                    )
-            ));
-        }
-        return ans;
-    }
-
-    @Override
-    public Map<LocalDate, List<CalendarNotification>> getNotifications() {
-        Map<LocalDate, List<CalendarNotification>> ans = new TreeMap<>();
-        List<CalendarNotification> calendarNotifications = db.calendarNotificationDao().getNotifications();
-
-        List<CalendarNotification> temp;
-        LocalDate localDate;
-        if(calendarNotifications != null){
-            for(CalendarNotification calendarNotification : calendarNotifications){
-                if(calendarNotification.getDate() == null) continue;
-
-                localDate = DataUtil.dateToLocalDate(calendarNotification.getDate());
-                temp = ans.getOrDefault(localDate,null);
-                if(temp == null){
-                    temp = new ArrayList<>();
-                }
-                temp.add(calendarNotification);
-                ans.put(localDate,temp);
-            }
-        }
-
-        return ans;
-    }
-
-    @Override
     public boolean landExist(long id, long snapshot){
         return db.landDao().landExist(id, snapshot);
     }
 
     @Override
-    public boolean zoneExist(long id, long snapshot) {
-        return db.landZoneDao().zoneExist(id, snapshot);
-    }
-
-    @Override
-    public List<LandZone> getLandZonesByLandData(LandData data){
-        List<LandZone> ans = new ArrayList<>();
-        if(data == null) return ans;
-        if(data.getId() <= 0) return ans;
-
-        Snapshot snapshot;
-        if(!db.snapshotDao().snapshotExist(data.getSnapshot())){
-            saveSnapshot(data.getSnapshot());
-        }
-        snapshot = db.snapshotDao().getSnapshot(data.getSnapshot());
-
-        List<LandZoneData> zones = db.landZoneDao().getLandZonesByLandID(data.getId(), snapshot.getKey());
-        if(zones != null){
-            for(LandZoneData zone : zones){
-                if(zone == null) continue;
-                ans.add(new LandZone(zone));
-            }
-        }
-        return ans;
-    }
-
-    @Override
-    public CalendarNotification getNotification(long id) {
-        return db.calendarNotificationDao().getNotificationById(id);
-    }
-
-    @Override
-    public Snapshot saveSnapshot(long s){
-        long snapshot = s;
-        if(snapshot <= 0){
-            snapshot = this.snapshot;
-        }
-        if(!db.snapshotDao().snapshotExist(snapshot)){
-            db.snapshotDao().insert(new Snapshot(snapshot));
-        }
-        return db.snapshotDao().getSnapshot(snapshot);
+    public Land getLand(long id, long snapshot) {
+        long snap = snapshot;
+        if(snap == -1) snap = this.snapshot;
+        LandData data = db.landDao().getLand(id, snap);
+        if(data != null) return new Land(data);
+        return null;
     }
 
     @Override
@@ -232,6 +126,79 @@ public class AppRepositoryImpl implements AppRepository {
     }
 
     @Override
+    public void deleteLand(Land land) {
+        if(land.getData() != null)
+            db.landDao().delete(land.getData());
+    }
+
+
+    @Override
+    public List<String> getLandTags(){
+        List<String> ans = new ArrayList<>();
+
+        List<LandData> landsData = db.landDao().getLands(snapshot);
+        if(landsData == null) return ans;
+
+        for(LandData landData : landsData){
+            List<String> tags = LandUtil.getLandTags(landData);
+            for(String tag : tags){
+                if(!ans.contains(tag)) {
+                    ans.add(tag);
+                }
+            }
+        }
+
+        return ans;
+    }
+
+
+    @Override
+    public Map<Long,List<LandZone>> getLandZones(){
+        Map<Long,List<LandZone>> ans = new HashMap<>();
+
+        List<LandZone> zones;
+        List<LandZoneData> zonesData = db.landZoneDao().getZones(snapshot);
+        if(zonesData != null){
+            for(LandZoneData zoneData : zonesData){
+                zones = ans.getOrDefault(zoneData.getLid(),null);
+                if(zones == null){
+                    zones = new ArrayList<>();
+                }
+                zones.add(new LandZone(zoneData));
+                ans.put(zoneData.getLid(),zones);
+            }
+        }
+        return ans;
+    }
+
+    @Override
+    public boolean zoneExist(long id, long snapshot) {
+        return db.landZoneDao().zoneExist(id, snapshot);
+    }
+
+    @Override
+    public List<LandZone> getLandZonesByLandData(LandData data){
+        List<LandZone> ans = new ArrayList<>();
+        if(data == null) return ans;
+        if(data.getId() <= 0) return ans;
+
+        Snapshot snapshot;
+        if(!db.snapshotDao().snapshotExist(data.getSnapshot())){
+            saveSnapshot(data.getSnapshot());
+        }
+        snapshot = db.snapshotDao().getSnapshot(data.getSnapshot());
+
+        List<LandZoneData> zones = db.landZoneDao().getLandZonesByLandID(data.getId(), snapshot.getKey());
+        if(zones != null){
+            for(LandZoneData zone : zones){
+                if(zone == null) continue;
+                ans.add(new LandZone(zone));
+            }
+        }
+        return ans;
+    }
+
+    @Override
     public void saveZone(LandZone zone) {
         if(zone == null) return;
         if(zone.getData() == null) return;
@@ -259,6 +226,29 @@ public class AppRepositoryImpl implements AppRepository {
         }
 
         zone.setData(zoneData);
+    }
+
+    @Override
+    public void deleteZone(LandZone zone) {
+        if(zone.getData() != null)
+            db.landZoneDao().delete(zone.getData());
+    }
+
+
+    @Override
+    public List<LandHistoryRecord> getLandRecords() {
+        List<LandHistoryRecord> ans = new ArrayList<>();
+        List<LandDataRecord> landRecords = db.landHistoryDao().getLandRecords(snapshot);
+        for(LandDataRecord landRecord : landRecords){
+            ans.add(new LandHistoryRecord(
+                    landRecord,
+                    db.landZoneHistoryDao().getZoneRecordByRecordIdAndSnapshot(
+                            landRecord.getId(),
+                            landRecord.getSnapshot()
+                    )
+            ));
+        }
+        return ans;
     }
 
     @Override
@@ -299,48 +289,76 @@ public class AppRepositoryImpl implements AppRepository {
         }
     }
 
+
+    @Override
+    public Map<LocalDate, List<CalendarNotification>> getNotifications() {
+        Map<LocalDate, List<CalendarNotification>> ans = new TreeMap<>();
+        List<CalendarNotification> calendarNotifications = db.calendarNotificationDao().getNotifications();
+
+        List<CalendarNotification> temp;
+        LocalDate localDate;
+        if(calendarNotifications != null){
+            for(CalendarNotification calendarNotification : calendarNotifications){
+                if(calendarNotification.getDate() == null) continue;
+
+                localDate = DataUtil.dateToLocalDate(calendarNotification.getDate());
+                temp = ans.getOrDefault(localDate,null);
+                if(temp == null){
+                    temp = new ArrayList<>();
+                }
+                temp.add(calendarNotification);
+                ans.put(localDate,temp);
+            }
+        }
+
+        return ans;
+    }
+
+    @Override
+    public CalendarNotification getNotification(long id) {
+        return db.calendarNotificationDao().getNotificationById(id);
+    }
+
     @Override
     public void saveNotification(CalendarNotification notification) {
         if(notification == null) return;
 
-        Snapshot snapshot;
         if(db.snapshotDao().snapshotExist(notification.getSnapshot())){
-            snapshot = db.snapshotDao().getSnapshot(notification.getSnapshot());
+            Snapshot snapshot = db.snapshotDao().getSnapshot(notification.getSnapshot());
+            notification.setSnapshot(snapshot.getKey());
         }else{
-            snapshot = saveSnapshot(notification.getSnapshot());
-        }
-        notification.setSnapshot(snapshot.getKey());
-
-        if(notification.getId() > 0){
-            db.calendarNotificationDao().insert(notification);
-            if(notification.getId() >= snapshot.getCalendarCount()){
-                snapshot.setCalendarCount(notification.getId()+1);
-                db.snapshotDao().insert(snapshot);
-            }
-        }else{
-            notification.setId(snapshot.getCalendarCount());
-            snapshot.setCalendarCount(snapshot.getCalendarCount()+1);
-            db.calendarNotificationDao().insert(notification);
-            db.snapshotDao().insert(snapshot);
+            notification.setSnapshot(snapshot);
         }
 
-    }
-
-    @Override
-    public void deleteLand(Land land) {
-        if(land.getData() != null)
-            db.landDao().delete(land.getData());
-    }
-
-    @Override
-    public void deleteZone(LandZone zone) {
-        if(zone.getData() != null)
-            db.landZoneDao().delete(zone.getData());
+        long id = db.calendarNotificationDao().insert(notification);
+        notification.setId(id);
     }
 
     @Override
     public void deleteNotification(CalendarNotification notification) {
         if(notification != null)
             db.calendarNotificationDao().delete(notification);
+    }
+
+
+    @Override
+    public List<CalendarCategory> getCalendarCategories() {
+        List<CalendarCategory> categories = db.calendarCategoriesDao().getCalendarCategories();
+        if(categories == null)
+            categories = new ArrayList<>();
+        return categories;
+    }
+
+    @Override
+    public void saveCalendarCategory(CalendarCategory category) {
+        if(category == null) return;
+        long id = db.calendarCategoriesDao().insert(category);
+        category.setId(id);
+    }
+
+    @Override
+    public void deleteCalendarCategory(CalendarCategory category) {
+        if(category != null)
+            db.calendarCategoriesDao().delete(category);
     }
 }

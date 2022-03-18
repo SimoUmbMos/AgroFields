@@ -17,10 +17,10 @@ import android.widget.ArrayAdapter;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.timepicker.MaterialTimePicker;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarNewEventBinding;
-import com.mosc.simo.ptuxiaki3741.data.enums.CalendarEventType;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
@@ -47,11 +47,11 @@ public class CalendarEventFragment extends Fragment{
 
     private List<Land> lands;
     private Map<Long,List<LandZone>> zones;
+    private List<CalendarCategory> calendarCategories;
     private List<LandZone> displayZones;
 
     private CalendarNotification calendarNotification;
     private boolean landsInit, zonesInit;
-    private String[] calendarNotificationTypes;
 
     private Calendar notificationDate;
     private Land selectedLand;
@@ -82,6 +82,7 @@ public class CalendarEventFragment extends Fragment{
     private void initData(){
         lands = new ArrayList<>();
         zones = new HashMap<>();
+        calendarCategories = new ArrayList<>();
         displayZones = new ArrayList<>();
         landsInit = false;
         zonesInit = false;
@@ -105,17 +106,15 @@ public class CalendarEventFragment extends Fragment{
         }else{
             calendarNotification = new CalendarNotification(
                     0,
+                    AppValues.defaultCalendarCategoryID,
                     -1,
                     null,
                     null,
                     "",
                     "",
-                    CalendarEventType.SCHEDULE,
                     notificationDate.getTime()
             );
         }
-
-        calendarNotificationTypes = getResources().getStringArray(R.array.notification_event_types);
     }
 
     private void initActivity(){
@@ -143,14 +142,12 @@ public class CalendarEventFragment extends Fragment{
         binding.tvSelectTitle.setText(calendarNotification.getTitle());
         binding.tvSelectMessage.setText(calendarNotification.getMessage());
 
-        int type = calendarNotification.getType().ordinal();
-        String selectedType = calendarNotificationTypes[type];
-        binding.tvSelectType.setText(selectedType);
-        ArrayAdapter<String> adapterTypes = new ArrayAdapter<>(
+        binding.tvSelectType.setText("",false);
+        ArrayAdapter<String> calendarCategoriesAdapter = new ArrayAdapter<>(
                 getContext(),
                 android.R.layout.simple_list_item_1,
-                calendarNotificationTypes);
-        binding.tvSelectType.setAdapter(adapterTypes);
+                new ArrayList<>());
+        binding.tvSelectType.setAdapter(calendarCategoriesAdapter);
 
         binding.tvSelectLand.setOnItemClickListener((parent, v, pos, id) -> onSelectLand(pos));
         binding.tvSelectZone.setOnItemClickListener((parent, v, pos, id) -> onSelectZone(pos));
@@ -170,6 +167,39 @@ public class CalendarEventFragment extends Fragment{
             viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             viewModel.getLands().observe(getViewLifecycleOwner(),this::initLandSelect);
             viewModel.getLandZones().observe(getViewLifecycleOwner(),this::initZonesSelect);
+            viewModel.getCalendarCategories().observe(getViewLifecycleOwner(),this::onCategoriesUpdate);
+        }
+    }
+
+    private void onCategoriesUpdate(List<CalendarCategory> calendarCategories) {
+        this.calendarCategories.clear();
+        if(calendarCategories != null) this.calendarCategories.addAll(calendarCategories);
+        updateCalendarCategories();
+    }
+
+    private void updateCalendarCategories() {
+        String currSelected = "";
+        if(binding.tvSelectType.getText() != null) currSelected = binding.tvSelectType.getText().toString();
+        List<String> categoriesDisplay = new ArrayList<>();
+        for(CalendarCategory category : calendarCategories){
+            categoriesDisplay.add(category.getName());
+            if(category.getId() == calendarNotification.getCategoryID()) {
+                currSelected = category.getName();
+            }
+        }
+        if(currSelected.isEmpty() && calendarCategories.size() > 0){
+            currSelected = calendarCategories.get(0).getName();
+        }
+        ArrayAdapter<String> calendarCategoriesAdapter = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_list_item_1,
+                categoriesDisplay);
+        binding.tvSelectType.setText(currSelected,false);
+        binding.tvSelectType.setAdapter(calendarCategoriesAdapter);
+        if(categoriesDisplay.size() > 2){
+            binding.tvSelectType.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvSelectType.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
@@ -369,12 +399,12 @@ public class CalendarEventFragment extends Fragment{
         if(dialog != null) dialog.openDialog();
 
         long id = calendarNotification.getId();
+        long categoryID = AppValues.defaultCalendarCategoryID;
         long snapshot = calendarNotification.getSnapshot();
         Long lid = null;
         Long zid = null;
         String title = "";
         String message = "";
-        CalendarEventType type = CalendarEventType.SCHEDULE;
         Date date = notificationDate.getTime();
 
         if(binding.tvSelectTitle.getText() != null){
@@ -386,10 +416,10 @@ public class CalendarEventFragment extends Fragment{
                     .trim().replaceAll("\\s+"," ");
         }
         if(binding.tvSelectType.getText() != null){
-            String typeToSearch = binding.tvSelectType.getText().toString();
-            for( int i = 0; i < calendarNotificationTypes.length; i++ ){
-                if(calendarNotificationTypes[i].equals(typeToSearch)){
-                    type = CalendarEventType.values()[i];
+            String selectedCat = binding.tvSelectType.getText().toString();
+            for(CalendarCategory category : calendarCategories){
+                if(category.getName().equals(selectedCat)){
+                    categoryID = category.getId();
                     break;
                 }
             }
@@ -417,7 +447,7 @@ public class CalendarEventFragment extends Fragment{
             return;
         }
 
-        calendarNotification = new CalendarNotification(id, snapshot, lid, zid, title, message, type, date);
+        calendarNotification = new CalendarNotification(id, categoryID, snapshot, lid, zid, title, message, date);
         AsyncTask.execute(()->{
             viewModel.saveNotification(calendarNotification);
             if(dialog != null) dialog.closeDialog();

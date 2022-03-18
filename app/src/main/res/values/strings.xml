@@ -70,6 +70,7 @@
     <string name="reset_points">Reset All Points</string>
     <string name="edit_color">Change Color</string>
     <string name="some_lands_have_zones_error">Some Lands Have Zones</string>
+    <string name="calendar_default_category">Schedule Job</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->
@@ -183,12 +184,6 @@
     <string name="new_events_side_label">New Events</string>
     <string name="event_filter_side_label">Filter Events</string>
     <string name="all_filter_side_label">Show All</string>
-    <string name="schedule_filter_side_label">Schedule Jobs</string>
-    <string name="plant_filter_side_label">Planting Jobs</string>
-    <string name="cultivate_filter_side_label">Cultivating Jobs</string>
-    <string name="fertilize_filter_side_label">Fertilizing Jobs</string>
-    <string name="spray_filter_side_label">Spray Jobs</string>
-    <string name="harvest_filter_side_label">Harvesting Jobs</string>
     <!-- Calendar Event Fragment -->
     <string name="calendar_new_instance_fragment_title">Calendar: New Event</string>
     <string name="calendar_edit_instance_fragment_title">Calendar: Edit Event</string>
@@ -203,14 +198,6 @@
     <string name="select_type_label">Job Type</string>
     <string name="notification_title_error">Enter Title</string>
     <string name="notification_message_error">Enter a message</string>
-    <string-array name="notification_event_types">
-        <item>Schedule Job</item>
-        <item>Planting Job</item>
-        <item>Cultivating Job</item>
-        <item>Fertilizing Job</item>
-        <item>Spray Job</item>
-        <item>Harvesting Job</item>
-    </string-array>
     <!-- Live Map Fragment -->
     <string name="live_map_permission_error">Location permission is needed</string>
     <string name="live_map_title">Map</string>

@@ -1,9 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,9 +14,10 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Handler;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,13 +26,13 @@ import com.kizitonwose.calendarview.model.CalendarMonth;
 import com.kizitonwose.calendarview.model.DayOwner;
 import com.kizitonwose.calendarview.ui.DayBinder;
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.CalendarAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarBinding;
-import com.mosc.simo.ptuxiaki3741.data.enums.CalendarEventType;
 import com.mosc.simo.ptuxiaki3741.data.enums.CalendarShowFilter;
-import com.mosc.simo.ptuxiaki3741.data.enums.CalendarSubFilter;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
@@ -48,7 +47,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,20 +56,25 @@ import java.util.TreeMap;
 import kotlin.Unit;
 
 public class CalendarMenuFragment extends Fragment implements FragmentBackPress {
-    private FragmentCalendarBinding binding;
-    private YearMonth currentMonth;
-    private DayOfWeek[] daysOfWeek;
+    private static final int show_new_id = -3;
+    private static final int show_old_id = -2;
+    private static final int show_all_id = -1;
+
+    private List<CalendarCategory> categories;
+
     private TreeMap<LocalDate, List<CalendarNotification>> notifications;
     private LinkedHashMap<LocalDate, List<CalendarNotification>> beforeData;
     private LinkedHashMap<LocalDate, List<CalendarNotification>> afterData;
-    private LinkedHashMap<LocalDate, List<CalendarNotification>> listData;
+
+    private FragmentCalendarBinding binding;
+    private YearMonth currentMonth;
+    private DayOfWeek[] daysOfWeek;
     private CalendarAdapter adapter;
-    private CalendarShowFilter showFilter;
-    private CalendarSubFilter subFilter;
     private SharedPreferences sharedPref;
     private boolean listView;
-    private String[] typesString;
-    private Integer[] typesColor;
+
+    private CalendarShowFilter showFilter;
+    private CalendarCategory selectedCategory;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -106,36 +109,16 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
     }
 
     private void initData(){
+        categories = new ArrayList<>();
+        selectedCategory = null;
         showFilter = CalendarShowFilter.AFTER;
-        subFilter = CalendarSubFilter.ALL;
         beforeData = new LinkedHashMap<>();
         afterData = new LinkedHashMap<>();
-        listData = new LinkedHashMap<>();
+
         notifications = new TreeMap<>();
         currentMonth = YearMonth.now();
         daysOfWeek = daysOfWeekFromLocale();
         listView = true;
-
-        typesString = getResources().getStringArray(R.array.notification_event_types);
-        typesColor = new Integer[6];
-        if(getContext() != null){
-            TypedValue typedValue = new TypedValue();
-            Resources.Theme theme = getContext().getTheme();
-            theme.resolveAttribute(R.attr.colorEventSchedule, typedValue, true);
-            typesColor[0] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventPlant, typedValue, true);
-            typesColor[1] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventCultivate, typedValue, true);
-            typesColor[2] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventFertilize, typedValue, true);
-            typesColor[3] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventSpray, typedValue, true);
-            typesColor[4] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventHarvest, typedValue, true);
-            typesColor[5] = typedValue.data;
-        }else{
-            Arrays.fill(typesColor, null);
-        }
     }
 
     private void initActivity(){
@@ -160,13 +143,11 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         binding.ibListView.setOnClickListener(v->{
             toggleDrawer(false);
             onListViewUpdate(true);
-            setupSideMenu();
         });
         binding.ibFilters.setOnClickListener(v-> toggleShowFilter());
+        binding.fabNewEvent.setOnClickListener(v->toNewEvent());
 
         binding.navCalendarMenu.setNavigationItemSelectedListener(this::onSideMenuItemSelected);
-        setupSideMenu();
-        binding.fabNewEvent.setOnClickListener(v->toNewEvent(getActivity()));
         binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         binding.headerPreviousMonth.setOnClickListener(v->{
@@ -186,7 +167,7 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
             @Override
             public void bind(@NonNull DayViewContainer container, @NonNull CalendarDay day) {
                 container.setText(String.valueOf(day.getDate().getDayOfMonth()));
-                container.setOnClick(v->onDayClick(day.getDate()));
+                container.setOnClick(v->toEventList(day.getDate()));
                 LocalDate localDate2 = LocalDate.now();
                 container.setToday(localDate2.equals(day.getDate()));
                 if(day.getOwner() == DayOwner.THIS_MONTH){
@@ -217,10 +198,8 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         });
 
         adapter = new CalendarAdapter(
-                typesString,
-                typesColor,
-                this::onDayClick,
-                this::onEventClick
+                this::toEventList,
+                this::toEvent
         );
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
@@ -233,127 +212,62 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         updateView();
     }
 
-    private void setupSideMenu(){
-        if(binding == null) return;
-        MenuItem oldEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_old_event);
-        MenuItem newEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_new_event);
-
-        if(oldEventItem == null) return;
-        if(newEventItem == null) return;
-
-
-        if(showFilter == CalendarShowFilter.AFTER){
-            oldEventItem.setEnabled(true);
-            newEventItem.setEnabled(false);
-        }else{
-            oldEventItem.setEnabled(false);
-            newEventItem.setEnabled(true);
-        }
-
-        MenuItem allEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_all);
-        MenuItem schEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_schedule);
-        MenuItem plnEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_plant);
-        MenuItem cltEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_cultivate);
-        MenuItem frtEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_fertilize);
-        MenuItem sprEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_spray);
-        MenuItem hrvEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_harvest);
-
-        if(allEventItem == null) return;
-        if(schEventItem == null) return;
-        if(plnEventItem == null) return;
-        if(cltEventItem == null) return;
-        if(frtEventItem == null) return;
-        if(sprEventItem == null) return;
-        if(hrvEventItem == null) return;
-
-
-        allEventItem.setEnabled(true);
-        schEventItem.setEnabled(true);
-        plnEventItem.setEnabled(true);
-        cltEventItem.setEnabled(true);
-        frtEventItem.setEnabled(true);
-        sprEventItem.setEnabled(true);
-        hrvEventItem.setEnabled(true);
-
-        switch (subFilter){
-            case SCHEDULE:
-                schEventItem.setEnabled(false);
-                break;
-            case PLANT:
-                plnEventItem.setEnabled(false);
-                break;
-            case CULTIVATE:
-                cltEventItem.setEnabled(false);
-                break;
-            case FERTILIZE:
-                frtEventItem.setEnabled(false);
-                break;
-            case SPRAY:
-                sprEventItem.setEnabled(false);
-                break;
-            case HARVEST:
-                hrvEventItem.setEnabled(false);
-                break;
-            case ALL:
-            default:
-                allEventItem.setEnabled(false);
-                break;
-        }
-    }
-
     private void initViewModel(){
         if(getActivity() != null){
             AppViewModel viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            viewModel.getCalendarCategories().observe(getViewLifecycleOwner(), this::onCategoriesUpdate);
             viewModel.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
         }
     }
 
+    private void onCategoriesUpdate(List<CalendarCategory> calendarCategories) {
+        categories.clear();
+        if(calendarCategories != null) categories.addAll(calendarCategories);
+        updateSideMenu();
+        updateCalendarList();
+    }
+
     public boolean onSideMenuItemSelected(@NonNull MenuItem item) {
+        toggleDrawer(false);
         switch (item.getItemId()){
-            case (R.id.menu_item_old_event):
-                toggleDrawer(false);
-                showOldEvents();
-                return true;
-            case (R.id.menu_item_new_event):
-                toggleDrawer(false);
+            case (show_new_id):
                 showNewEvents();
                 return true;
-            case (R.id.menu_item_filter_all):
-                toggleDrawer(false);
-                showAllEvents();
+            case (show_old_id):
+                showOldEvents();
                 return true;
-            case (R.id.menu_item_filter_schedule):
-                toggleDrawer(false);
-                showScheduleEvents();
-                return true;
-            case (R.id.menu_item_filter_plant):
-                toggleDrawer(false);
-                showPlantEvents();
-                return true;
-            case (R.id.menu_item_filter_cultivate):
-                toggleDrawer(false);
-                showCultivateEvents();
-                return true;
-            case (R.id.menu_item_filter_fertilize):
-                toggleDrawer(false);
-                showFertilizeEvents();
-                return true;
-            case (R.id.menu_item_filter_spray):
-                toggleDrawer(false);
-                showSprayEvents();
-                return true;
-            case (R.id.menu_item_filter_harvest):
-                toggleDrawer(false);
-                showHarvestEvents();
+            case (show_all_id):
+                showSubCategory(null);
                 return true;
             default:
+                int id = item.getItemId();
+                if( id > -1 && id < categories.size()) {
+                    showSubCategory(categories.get(item.getItemId()));
+                    return true;
+                }
                 return false;
+        }
+    }
+
+    private void updateSideMenu(){
+        if(binding == null) return;
+        Menu sideMenu = binding.navCalendarMenu.getMenu();
+        sideMenu.clear();
+
+        SubMenu subMenu1 = sideMenu.addSubMenu(getString(R.string.date_filter_side_label));
+        subMenu1.add(Menu.NONE,show_new_id,Menu.NONE,getString(R.string.new_events_side_label));
+        subMenu1.add(Menu.NONE,show_old_id,Menu.NONE,getString(R.string.older_events_side_label));
+
+        SubMenu subMenu2 = sideMenu.addSubMenu(getString(R.string.event_filter_side_label));
+        subMenu2.add(Menu.NONE,show_all_id, Menu.NONE,getString(R.string.all_filter_side_label));
+        for(int i = 0; i < categories.size(); i++){
+            subMenu2.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
         }
     }
 
     private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> n) {
         notifications.clear();
-        notifications.putAll(n);
+        if(n != null) notifications.putAll(n);
 
         TreeMap<LocalDate, List<CalendarNotification>> tempData = new TreeMap<>();
         beforeData.clear();
@@ -372,122 +286,6 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
 
         updateCalendarList();
         updateCalendarGrid();
-    }
-
-    private void onListViewUpdate(boolean isList){
-        listView = isList;
-        if(sharedPref != null){
-            SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
-            sharedPrefEditor.putBoolean(AppValues.argListView,listView);
-            sharedPrefEditor.apply();
-        }
-        if(getActivity() != null){
-            getActivity().invalidateOptionsMenu();
-        }
-        if(listView){
-            showFilter = CalendarShowFilter.AFTER;
-            subFilter = CalendarSubFilter.ALL;
-            updateCalendarList();
-        }
-        updateView();
-    }
-
-    private void onDayClick(LocalDate date){
-        toEventList(getActivity(), date);
-    }
-
-    private void onEventClick(CalendarNotification event){
-        toEvent(getActivity(), event);
-    }
-
-    private void updateCalendarList() {
-        LinkedHashMap<LocalDate, List<CalendarNotification>> displayList = new LinkedHashMap<>();
-        if(showFilter == CalendarShowFilter.BEFORE){
-            displayList.putAll(beforeData);
-        }else{
-            displayList.putAll(afterData);
-        }
-
-        CalendarEventType type;
-        switch (subFilter){
-            case PLANT:
-                type = CalendarEventType.PLANT;
-                break;
-            case SPRAY:
-                type = CalendarEventType.SPRAY;
-                break;
-            case HARVEST:
-                type = CalendarEventType.HARVEST;
-                break;
-            case SCHEDULE:
-                type = CalendarEventType.SCHEDULE;
-                break;
-            case CULTIVATE:
-                type = CalendarEventType.CULTIVATE;
-                break;
-            case FERTILIZE:
-                type = CalendarEventType.FERTILIZE;
-                break;
-            case ALL:
-            default:
-                type = null;
-                break;
-        }
-
-        listData.clear();
-        if(type != null){
-            LinkedHashMap<LocalDate, List<CalendarNotification>> filter = new LinkedHashMap<>();
-            displayList.forEach((date, notifications)->{
-                List<CalendarNotification> temp = new ArrayList<>();
-                for(CalendarNotification notification : notifications){
-                    if(notification.getType() == type) temp.add(notification);
-                }
-                if(temp.size() > 0){
-                    filter.put(date, temp);
-                }
-            });
-            listData.putAll(filter);
-        }else{
-            listData.putAll(displayList);
-        }
-
-        if(listData.size() == 0){
-            binding.tvCalendarListLabel.setText(getResources().getString(R.string.empty_list));
-            binding.tvCalendarListLabel.setVisibility(View.VISIBLE);
-        }else{
-            binding.tvCalendarListLabel.setVisibility(View.GONE);
-        }
-        adapter.saveData(listData);
-    }
-
-    private void updateCalendarGrid() {
-        binding.tvCalendarGridLabel.setVisibility(View.VISIBLE);
-        binding.headerTextView.setText(getCurrentMonthYearTitle());
-        binding.calendarView.setupAsync(
-                currentMonth,
-                currentMonth,
-                daysOfWeek[0],
-                ()->{
-                    binding.tvCalendarGridLabel.setVisibility(View.GONE);
-                    return Unit.INSTANCE;
-                }
-        );
-    }
-
-    private void updateView() {
-        if(listView){
-            binding.clListView.setVisibility(View.VISIBLE);
-            binding.clGridView.setVisibility(View.GONE);
-        }else{
-            binding.clListView.setVisibility(View.GONE);
-            binding.clGridView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void toggleShowFilter(){
-        if(listView){
-            toggleDrawer(true);
-        }
     }
 
     private DayOfWeek[] daysOfWeekFromLocale() {
@@ -518,41 +316,14 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         return String.format(Locale.getDefault(), "%s %d", month, currentMonth.getYear());
     }
 
-    private void goBack(){
-        if(getActivity() == null) return;
-        getActivity().runOnUiThread(()->getActivity().onBackPressed());
-    }
-
-    private void toNewEvent(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toCalendarEvent);
-            });
-    }
-
-    private void toEvent(@Nullable Activity activity, CalendarNotification event) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argNotification, event);
-                if(nav != null)
-                    nav.navigate(R.id.toCalendarEvent, bundle);
-            });
-    }
-
-    private void toEventList(@Nullable Activity activity, LocalDate localDate) {
-        if(localDate == null) return;
-        if(activity != null)
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(AppValues.argDate, localDate);
-                if(nav != null)
-                    nav.navigate(R.id.toCalendarEventsList, bundle);
-            });
+    private void updateView() {
+        if(listView){
+            binding.clListView.setVisibility(View.VISIBLE);
+            binding.clGridView.setVisibility(View.GONE);
+        }else{
+            binding.clListView.setVisibility(View.GONE);
+            binding.clGridView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void toggleDrawer(boolean toggle) {
@@ -565,66 +336,128 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         }
     }
 
+    private void updateCalendarGrid() {
+        binding.tvCalendarGridLabel.setVisibility(View.VISIBLE);
+        binding.headerTextView.setText(getCurrentMonthYearTitle());
+        binding.calendarView.setupAsync(
+                currentMonth,
+                currentMonth,
+                daysOfWeek[0],
+                ()->{
+                    binding.tvCalendarGridLabel.setVisibility(View.GONE);
+                    return Unit.INSTANCE;
+                }
+        );
+    }
+
+    private void onListViewUpdate(boolean isList){
+        listView = isList;
+        if(sharedPref != null){
+            SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
+            sharedPrefEditor.putBoolean(AppValues.argListView,listView);
+            sharedPrefEditor.apply();
+        }
+        updateView();
+    }
+
+    private void toggleShowFilter(){
+        if(listView){
+            toggleDrawer(true);
+        }
+    }
+
     private void showOldEvents(){
         if(showFilter == CalendarShowFilter.BEFORE) return;
         showFilter = CalendarShowFilter.BEFORE;
         updateCalendarList();
-        setupSideMenu();
     }
 
     private void showNewEvents(){
         if(showFilter == CalendarShowFilter.AFTER) return;
         showFilter = CalendarShowFilter.AFTER;
         updateCalendarList();
-        setupSideMenu();
     }
 
-    private void showAllEvents(){
-        if(subFilter == CalendarSubFilter.ALL) return;
-        subFilter = CalendarSubFilter.ALL;
+    private void showSubCategory(CalendarCategory category){
+        if(selectedCategory == category) return;
+        selectedCategory = category;
         updateCalendarList();
-        setupSideMenu();
     }
 
-    private void showScheduleEvents(){
-        if(subFilter == CalendarSubFilter.SCHEDULE) return;
-        subFilter = CalendarSubFilter.SCHEDULE;
-        updateCalendarList();
-        setupSideMenu();
+    private void updateCalendarList() {
+        LinkedHashMap<LocalDate, List<CalendarNotification>> displayList = new LinkedHashMap<>();
+        if(showFilter == CalendarShowFilter.BEFORE){
+            displayList.putAll(beforeData);
+        }else{
+            displayList.putAll(afterData);
+        }
+
+        LinkedHashMap<LocalDate, List<CalendarEntity>> listData = new LinkedHashMap<>();
+
+        displayList.forEach((date, notifications)->{
+            List<CalendarEntity> entities = new ArrayList<>();
+            for(CalendarNotification notification : notifications){
+                if(selectedCategory == null){
+                    CalendarCategory temp = getCategory(notification.getCategoryID());
+                    if(temp != null) entities.add(new CalendarEntity(temp, notification));
+                }else if(selectedCategory.getId() == notification.getCategoryID()) {
+                    entities.add(new CalendarEntity(selectedCategory, notification));
+                }
+            }
+            if(entities.size() > 0) listData.put(date, entities);
+        });
+
+
+        if(listData.size() == 0){
+            binding.tvCalendarListLabel.setText(getResources().getString(R.string.empty_list));
+            binding.tvCalendarListLabel.setVisibility(View.VISIBLE);
+        }else{
+            binding.tvCalendarListLabel.setVisibility(View.GONE);
+        }
+        adapter.saveData(listData);
     }
 
-    private void showPlantEvents(){
-        if(subFilter == CalendarSubFilter.PLANT) return;
-        subFilter = CalendarSubFilter.PLANT;
-        updateCalendarList();
-        setupSideMenu();
+    private CalendarCategory getCategory(long categoryID) {
+        for(CalendarCategory category : categories){
+            if(category.getId() == categoryID) return category;
+        }
+        return null;
     }
 
-    private void showCultivateEvents(){
-        if(subFilter == CalendarSubFilter.CULTIVATE) return;
-        subFilter = CalendarSubFilter.CULTIVATE;
-        updateCalendarList();
-        setupSideMenu();
+    private void goBack(){
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->getActivity().onBackPressed());
     }
 
-    private void showFertilizeEvents(){
-        if(subFilter == CalendarSubFilter.FERTILIZE) return;
-        subFilter = CalendarSubFilter.FERTILIZE;
-        updateCalendarList();
-        setupSideMenu();
+    private void toNewEvent() {
+        if(getActivity() != null)
+            getActivity().runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
+                if(nav != null)
+                    nav.navigate(R.id.toCalendarEvent);
+            });
     }
 
-    private void showSprayEvents(){
-        if(subFilter == CalendarSubFilter.SPRAY) return;
-        subFilter = CalendarSubFilter.SPRAY;
-        updateCalendarList();
-        setupSideMenu();
+    private void toEvent(CalendarNotification event) {
+        if(getActivity() != null)
+            getActivity().runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppValues.argNotification, event);
+                if(nav != null)
+                    nav.navigate(R.id.toCalendarEvent, bundle);
+            });
     }
 
-    private void showHarvestEvents(){
-        if(subFilter == CalendarSubFilter.HARVEST) return;
-        subFilter = CalendarSubFilter.HARVEST;
-        updateCalendarList();
-        setupSideMenu();
+    private void toEventList(LocalDate localDate) {
+        if(localDate == null) return;
+        if(getActivity() != null)
+            getActivity().runOnUiThread(()-> {
+                NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(AppValues.argDate, localDate);
+                if(nav != null)
+                    nav.navigate(R.id.toCalendarEventsList, bundle);
+            });
     }
 }

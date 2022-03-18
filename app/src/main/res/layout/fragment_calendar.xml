@@ -270,5 +270,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
-        app:menu="@menu/calendar_side_menu"/>
+        app:menu="@menu/empty_list"/>
 </androidx.drawerlayout.widget.DrawerLayout>

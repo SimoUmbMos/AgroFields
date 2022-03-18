@@ -157,8 +157,7 @@
             android:autofillHints="false"
             android:inputType="none"
             android:maxLines="1"
-            android:ellipsize="end"
-            android:dropDownHeight="@dimen/dropDownHeight"/>
+            android:ellipsize="end"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -19,6 +19,8 @@ public final class AppValues {
     public static final int defaultPaddingLarge = 128;
     public static final int defaultStrokeAlpha = 160;
     public static final int defaultFillAlpha = 80;
+    public static final long defaultCalendarCategoryID = 0;
+    public static final ColorData defaultCalendarCategoryColor = new ColorData("#788DCD");
     public static final ColorData defaultLandColor = new ColorData("#FF9100");
     public static final ColorData defaultZoneColor = new ColorData("#76FF03");
     public static final float minZoom = 1.0f;

@@ -11,8 +11,6 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.mosc.simo.ptuxiaki3741.data.enums.CalendarEventType;
-
 import java.util.Date;
 import java.util.Objects;
 
@@ -56,6 +54,8 @@ public class CalendarNotification implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private long id;
+    @ColumnInfo(name = "CategoryID")
+    private long categoryID;
     @ColumnInfo(name = "Snapshot")
     private long snapshot;
     @ColumnInfo(name = "LandID")
@@ -66,38 +66,42 @@ public class CalendarNotification implements Parcelable {
     private String title;
     @ColumnInfo(name = "Message")
     private String message;
-    @ColumnInfo(name = "Type")
-    private CalendarEventType type;
     @ColumnInfo(name = "Date")
     private Date date;
 
     @Ignore
     public CalendarNotification(Parcel in){
         id = in.readLong();
+        categoryID = in.readLong();
         snapshot = in.readLong();
         lid = in.readLong();
         zid = in.readLong();
         title = in.readString();
         message = in.readString();
-        type = CalendarEventType.values()[in.readInt()];
         date = (Date) in.readSerializable();
 
         if(lid == 0) lid = null;
         if(zid == 0) zid = null;
     }
-    public CalendarNotification(long id, long snapshot, Long lid, Long zid, String title, String message, CalendarEventType type, Date date) {
+    public CalendarNotification(long id, long categoryID, long snapshot, Long lid, Long zid, String title, String message, Date date) {
         setId(id);
+        setCategoryID(categoryID);
         setSnapshot(snapshot);
         setLid(lid);
         setZid(zid);
         setTitle(title);
         setMessage(message);
-        setType(type);
         setDate(date);
     }
 
     public long getId() {
         return id;
+    }
+    public long getCategoryID() {
+        return categoryID;
+    }
+    public long getSnapshot() {
+        return snapshot;
     }
     public Long getLid() {
         return lid;
@@ -111,18 +115,18 @@ public class CalendarNotification implements Parcelable {
     public String getMessage() {
         return message;
     }
-    public CalendarEventType getType() {
-        return type;
-    }
     public Date getDate() {
         return date;
-    }
-    public long getSnapshot() {
-        return snapshot;
     }
 
     public void setId(long id) {
         this.id = id;
+    }
+    public void setCategoryID(long categoryID) {
+        this.categoryID = categoryID;
+    }
+    public void setSnapshot(long snapshot) {
+        this.snapshot = snapshot;
     }
     public void setLid(Long lid) {
         this.lid = lid;
@@ -136,14 +140,8 @@ public class CalendarNotification implements Parcelable {
     public void setMessage(String message) {
         this.message = message;
     }
-    public void setType(CalendarEventType type) {
-        this.type = type;
-    }
     public void setDate(Date date) {
         this.date = date;
-    }
-    public void setSnapshot(long snapshot) {
-        this.snapshot = snapshot;
     }
 
     @Override
@@ -176,6 +174,7 @@ public class CalendarNotification implements Parcelable {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeLong(id);
+        out.writeLong(categoryID);
         out.writeLong(snapshot);
         if(lid == null){
             out.writeLong(0);
@@ -189,7 +188,6 @@ public class CalendarNotification implements Parcelable {
         }
         out.writeString(title);
         out.writeString(message);
-        out.writeInt(type.ordinal());
         out.writeSerializable(date);
     }
 
@@ -199,17 +197,17 @@ public class CalendarNotification implements Parcelable {
         if (o == null || getClass() != o.getClass()) return false;
         CalendarNotification that = (CalendarNotification) o;
         return id == that.id &&
+                categoryID == that.categoryID &&
                 snapshot == that.snapshot &&
                 Objects.equals(lid, that.lid) &&
                 Objects.equals(zid, that.zid) &&
                 title.equals(that.title) &&
                 message.equals(that.message) &&
-                type == that.type &&
                 date.equals(that.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, snapshot, lid, zid, title, message, type, date);
+        return Objects.hash(id, categoryID, snapshot, lid, zid, title, message, date);
     }
 }

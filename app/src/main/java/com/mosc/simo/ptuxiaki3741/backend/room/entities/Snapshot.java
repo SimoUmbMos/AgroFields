@@ -24,8 +24,6 @@ public class Snapshot implements Serializable {
     private long landCount;
     @ColumnInfo(name = "ZoneCount")
     private long zoneCount;
-    @ColumnInfo(name = "CalendarCount")
-    private long calendarCount;
     @ColumnInfo(name = "RecordCount")
     private long recordCount;
 
@@ -35,16 +33,14 @@ public class Snapshot implements Serializable {
 
         landCount = 1;
         zoneCount = 1;
-        calendarCount = 1;
         recordCount = 1;
     }
 
-    public Snapshot(long key, long landCount, long zoneCount, long calendarCount, long recordCount) {
+    public Snapshot(long key, long landCount, long zoneCount, long recordCount) {
         this.key = key;
 
         this.landCount = landCount;
         this.zoneCount = zoneCount;
-        this.calendarCount = calendarCount;
         this.recordCount = recordCount;
     }
 
@@ -58,10 +54,6 @@ public class Snapshot implements Serializable {
 
     public long getZoneCount() {
         return zoneCount;
-    }
-
-    public long getCalendarCount() {
-        return calendarCount;
     }
 
     public long getRecordCount() {
@@ -78,10 +70,6 @@ public class Snapshot implements Serializable {
 
     public void setZoneCount(long zoneCount) {
         this.zoneCount = zoneCount;
-    }
-
-    public void setCalendarCount(long calendarCount) {
-        this.calendarCount = calendarCount;
     }
 
     public void setRecordCount(long recordCount) {

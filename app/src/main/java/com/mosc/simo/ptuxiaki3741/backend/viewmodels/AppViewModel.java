@@ -8,7 +8,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandDBAction;
@@ -40,6 +43,8 @@ public class AppViewModel extends AndroidViewModel {
     private final MutableLiveData<List<String>> landsTags = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandHistoryRecord>> landsHistory = new MutableLiveData<>();
+
+    private final MutableLiveData<List<CalendarCategory>> calendarCategories = new MutableLiveData<>();
     private final MutableLiveData<Map<LocalDate,List<CalendarNotification>>> notifications = new MutableLiveData<>();
 
     public AppViewModel(@NonNull Application application) {
@@ -63,6 +68,8 @@ public class AppViewModel extends AndroidViewModel {
     public LiveData<List<LandHistoryRecord>> getLandsHistory() {
         return landsHistory;
     }
+
+    public LiveData<List<CalendarCategory>> getCalendarCategories(){return calendarCategories;}
     public LiveData<Map<LocalDate,List<CalendarNotification>>> getNotifications() {
         return notifications;
     }
@@ -81,81 +88,63 @@ public class AppViewModel extends AndroidViewModel {
         populateLands();
         populateLandZones();
         populateLandsRecords();
+        populateCalendarCategories();
         populateNotifications();
     }
-    private void populateDataSnapshots() {
-        List<Long> snapshotsList;
-        if(snapshots.getValue() != null){
-            snapshotsList = snapshots.getValue();
-            snapshotsList.clear();
-        }else{
-            snapshotsList = new ArrayList<>();
-        }
-        snapshotsList.addAll(appRepository.getSnapshots());
-        snapshots.postValue(snapshotsList);
-    }
-    private void populateLands() {
-        List<Land> landList;
-        if(lands.getValue() != null){
-            landList = lands.getValue();
-            landList.clear();
-        }else{
-            landList = new ArrayList<>();
-        }
-        landList.addAll(appRepository.getLands());
-        lands.postValue(landList);
-    }
-    private void populateLandsTags() {
-        List<String> snapshotsList;
-        if(landsTags.getValue() != null){
-            snapshotsList = landsTags.getValue();
-            snapshotsList.clear();
-        }else{
-            snapshotsList = new ArrayList<>();
-        }
-        snapshotsList.addAll(appRepository.getLandTags());
-        landsTags.postValue(snapshotsList);
-    }
-    private void populateLandZones(){
-        Map<Long,List<LandZone>> zoneList;
-        if(landZones.getValue() != null){
-            zoneList = landZones.getValue();
-            zoneList.clear();
-        }else{
-            zoneList = new HashMap<>();
-        }
-        zoneList.putAll(appRepository.getLandZones());
-        landZones.postValue(zoneList);
-    }
-    private void populateLandsRecords() {
-        List<LandHistoryRecord> landsHistoryList;
-        if(landsHistory.getValue() != null){
-            landsHistoryList = landsHistory.getValue();
-            landsHistoryList.clear();
-        }else{
-            landsHistoryList = new ArrayList<>();
-        }
-        landsHistoryList.addAll(appRepository.getLandRecords());
-        landsHistory.postValue(landsHistoryList);
-    }
-    private void populateNotifications() {
-        Map<LocalDate,List<CalendarNotification>> notificationsList;
-        if(notifications.getValue() != null){
-            notificationsList = notifications.getValue();
-            notificationsList.clear();
-        }else{
-            notificationsList = new TreeMap<>();
-        }
-        notificationsList.putAll(appRepository.getNotifications());
-        notifications.postValue(notificationsList);
-    }
-
-    public void refreshImportLists(){
+    private void populateSnapshotLists(){
         populateDataSnapshots();
         populateLands();
         populateLandsTags();
         populateLandZones();
         populateLandsRecords();
+    }
+    private void populateDataSnapshots() {
+        List<Long> snapshotsList = appRepository.getSnapshots();
+        if(snapshotsList == null)
+            snapshotsList = new ArrayList<>();
+        snapshots.postValue(snapshotsList);
+    }
+    private void populateLands() {
+        List<Land> landList = appRepository.getLands();
+        if(landList == null)
+            landList = new ArrayList<>();
+        lands.postValue(landList);
+    }
+    private void populateLandsTags() {
+        List<String> snapshotsList = appRepository.getLandTags();
+        if(snapshotsList == null)
+            snapshotsList = new ArrayList<>();
+        landsTags.postValue(snapshotsList);
+    }
+    private void populateLandZones(){
+        Map<Long,List<LandZone>> zoneList = appRepository.getLandZones();
+        if(zoneList == null)
+            zoneList = new HashMap<>();
+        landZones.postValue(zoneList);
+    }
+    private void populateLandsRecords() {
+        List<LandHistoryRecord> landsHistoryList = appRepository.getLandRecords();
+        if(landsHistoryList == null)
+            landsHistoryList = new ArrayList<>();
+        landsHistory.postValue(landsHistoryList);
+    }
+    private void populateCalendarCategories() {
+        List<CalendarCategory> categories = appRepository.getCalendarCategories();
+        if(categories == null)
+            categories = new ArrayList<>();
+        CalendarCategory defaultCategory = new CalendarCategory(
+                AppValues.defaultCalendarCategoryID,
+                getApplication().getResources().getString(R.string.calendar_default_category),
+                AppValues.defaultCalendarCategoryColor
+        );
+        categories.add(0,defaultCategory);
+        calendarCategories.postValue(categories);
+    }
+    private void populateNotifications() {
+        Map<LocalDate,List<CalendarNotification>> notificationsList = appRepository.getNotifications();
+        if(notificationsList == null)
+            notificationsList = new TreeMap<>();
+        notifications.postValue(notificationsList);
     }
 
     public void saveLand(Land land){
@@ -214,58 +203,6 @@ public class AppViewModel extends AndroidViewModel {
 
         appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
         populateLists();
-    }
-    public void importLand(Land land){
-        if(land == null) return;
-        if(land.getData() == null) return;
-
-        LandDBAction action = LandDBAction.IMPORTED;
-
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
-
-        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
-        List<List<LatLng>> tempHoles = new ArrayList<>();
-        for(List<LatLng> hole : land.getData().getHoles()){
-            tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
-        }
-        land.getData().setBorder(tempPointList);
-        land.getData().setHoles(tempHoles);
-
-        appRepository.saveLand(land);
-        LandDataRecord landRecord = new LandDataRecord(
-                land.getData(),
-                action,
-                new Date()
-        );
-        List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
-
-        for(LandZone zone:zones){
-            if(MapUtil.contains(
-                    zone.getData().getBorder(),
-                    land.getData().getBorder()
-            )){
-                List<LatLng> tempBorders = DataUtil.removeSamePointStartEnd(
-                        MapUtil.intersection(
-                                zone.getData().getBorder(),
-                                land.getData().getBorder()
-                        )
-                );
-                for(List<LatLng> hole : land.getData().getHoles()){
-                    if(MapUtil.contains(tempBorders,hole)){
-                        List<LatLng> tempDifference = MapUtil.getBiggerAreaZoneDifference(tempBorders,hole);
-                        tempBorders.clear();
-                        tempBorders.addAll(DataUtil.removeSamePointStartEnd(tempDifference));
-                    }
-                }
-                if(tempBorders.size()>0){
-                    zone.getData().setBorder(tempBorders);
-                    appRepository.saveZone(zone);
-                    zoneDataRecords.add(new LandZoneDataRecord(landRecord,zone.getData()));
-                }
-            }
-        }
-
-        appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
     }
     public void bulkEditLandData(List<LandData> data){
         if(data == null) return;
@@ -361,32 +298,6 @@ public class AppViewModel extends AndroidViewModel {
 
         populateLists();
     }
-    public void importZone(LandZone zone) {
-        if(zone == null) return;
-        if(zone.getData() == null) return;
-
-        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
-        if(land == null) return;
-        zone.getData().setSnapshot(land.getData().getSnapshot());
-
-        LandDBAction action = LandDBAction.ZONE_IMPORTED;
-
-        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
-        zone.getData().setBorder(tempPointList);
-        appRepository.saveZone(zone);
-
-        LandDataRecord landRecord = new LandDataRecord(
-                land.getData(),
-                action,
-                new Date()
-        );
-        List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
-        for(LandZone temp : zones){
-            zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
-        }
-        appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
-    }
     private boolean removeZoneAction(LandZone zone){
         if(zone == null) return false;
         if(zone.getData() == null) return false;
@@ -481,5 +392,108 @@ public class AppViewModel extends AndroidViewModel {
         );
         appRepository.deleteNotification(notification);
         populateLists();
+    }
+
+    void saveCalendarCategory(CalendarCategory category){
+        if(category == null) return;
+        appRepository.saveCalendarCategory(category);
+    }
+    void deleteCalendarCategory(CalendarCategory category){
+        if(category == null) return;
+        appRepository.deleteCalendarCategory(category);
+    }
+
+    private void importLand(Land land){
+        if(land == null) return;
+        if(land.getData() == null) return;
+
+        LandDBAction action = LandDBAction.IMPORTED;
+
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+
+        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
+        List<List<LatLng>> tempHoles = new ArrayList<>();
+        for(List<LatLng> hole : land.getData().getHoles()){
+            tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
+        }
+        land.getData().setBorder(tempPointList);
+        land.getData().setHoles(tempHoles);
+
+        appRepository.saveLand(land);
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                action,
+                new Date()
+        );
+        List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
+
+        for(LandZone zone:zones){
+            if(MapUtil.contains(
+                    zone.getData().getBorder(),
+                    land.getData().getBorder()
+            )){
+                List<LatLng> tempBorders = DataUtil.removeSamePointStartEnd(
+                        MapUtil.intersection(
+                                zone.getData().getBorder(),
+                                land.getData().getBorder()
+                        )
+                );
+                for(List<LatLng> hole : land.getData().getHoles()){
+                    if(MapUtil.contains(tempBorders,hole)){
+                        List<LatLng> tempDifference = MapUtil.getBiggerAreaZoneDifference(tempBorders,hole);
+                        tempBorders.clear();
+                        tempBorders.addAll(DataUtil.removeSamePointStartEnd(tempDifference));
+                    }
+                }
+                if(tempBorders.size()>0){
+                    zone.getData().setBorder(tempBorders);
+                    appRepository.saveZone(zone);
+                    zoneDataRecords.add(new LandZoneDataRecord(landRecord,zone.getData()));
+                }
+            }
+        }
+
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
+    }
+    private void importZone(LandZone zone) {
+        if(zone == null) return;
+        if(zone.getData() == null) return;
+
+        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        if(land == null) return;
+        zone.getData().setSnapshot(land.getData().getSnapshot());
+
+        LandDBAction action = LandDBAction.ZONE_IMPORTED;
+
+        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
+        zone.getData().setBorder(tempPointList);
+        appRepository.saveZone(zone);
+
+        LandDataRecord landRecord = new LandDataRecord(
+                land.getData(),
+                action,
+                new Date()
+        );
+        List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        for(LandZone temp : zones){
+            zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
+        }
+        appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
+    }
+    public void importLandsAndZones(List<Land> lands, List<LandZone> zones) {
+        if(lands != null){
+            for(Land land : lands){
+                if(land.getData() == null) continue;
+                importLand(land);
+            }
+        }
+        if(zones != null){
+            for(LandZone zone : zones){
+                if(zone.getData() == null) continue;
+                importZone(zone);
+            }
+        }
+        populateSnapshotLists();
     }
 }

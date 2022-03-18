@@ -1,7 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
-import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,18 +10,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.NotificationsAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarEventListBinding;
-import com.mosc.simo.ptuxiaki3741.data.enums.CalendarEventType;
-import com.mosc.simo.ptuxiaki3741.data.enums.CalendarSubFilter;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
@@ -33,22 +31,20 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class CalendarEventListFragment extends Fragment implements FragmentBackPress {
+    private static final int show_all_id = -1;
+
     private FragmentCalendarEventListBinding binding;
     private NotificationsAdapter adapter;
+    private CalendarCategory selectedCategory;
+    private List<CalendarCategory> categories;
     private List<CalendarNotification> notifications;
-    private List<CalendarNotification> display;
-    private CalendarSubFilter subFilter;
     private LocalDate date;
-    private boolean firstStart;
-    private String[] typesString;
-    private Integer[] typesColor;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -76,37 +72,14 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
     }
 
     private boolean initData(){
-        subFilter = CalendarSubFilter.ALL;
-        firstStart = true;
+        selectedCategory = null;
+        categories = new ArrayList<>();
         notifications = new ArrayList<>();
-        display = new ArrayList<>();
         date = null;
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argDate)){
                 date = (LocalDate) getArguments().getSerializable(AppValues.argDate);
             }
-        }
-
-        typesString = getResources().getStringArray(R.array.notification_event_types);
-
-        typesColor = new Integer[6];
-        if(getContext() != null){
-            TypedValue typedValue = new TypedValue();
-            Resources.Theme theme = getContext().getTheme();
-            theme.resolveAttribute(R.attr.colorEventSchedule, typedValue, true);
-            typesColor[0] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventPlant, typedValue, true);
-            typesColor[1] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventCultivate, typedValue, true);
-            typesColor[2] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventFertilize, typedValue, true);
-            typesColor[3] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventSpray, typedValue, true);
-            typesColor[4] = typedValue.data;
-            theme.resolveAttribute(R.attr.colorEventHarvest, typedValue, true);
-            typesColor[5] = typedValue.data;
-        }else{
-            Arrays.fill(typesColor, null);
         }
 
         return date != null;
@@ -124,10 +97,9 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
     private void initFragment(){
         binding.ibClose.setOnClickListener(v->goBack());
         binding.ibFilter.setOnClickListener(v->toggleNavBar(true));
-        binding.fabNewEvent.setOnClickListener(v->toNewEvent(getActivity()));
+        binding.fabNewEvent.setOnClickListener(v->toNewEvent());
 
         binding.navCalendarMenu.setNavigationItemSelectedListener(this::onSideMenuItemSelected);
-        setupSideMenu();
 
         String title = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()) +
                 " " +
@@ -139,11 +111,7 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
         binding.tvTitle.setText(title);
 
         binding.tvNotificationsDisplay.setText(getString(R.string.loading_list));
-        adapter = new NotificationsAdapter(
-                typesString,
-                typesColor,
-                this::onNotificationClick
-        );
+        adapter = new NotificationsAdapter(this::toEvent);
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -157,33 +125,79 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
     private void initViewModel(){
         if(getActivity() != null){
             AppViewModel viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            viewModel.getCalendarCategories().observe(getViewLifecycleOwner(),this::onCategoriesUpdate);
             viewModel.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
         }
     }
 
+    private void onCategoriesUpdate(List<CalendarCategory> calendarCategories) {
+        categories.clear();
+        if(calendarCategories != null) categories.addAll(calendarCategories);
+        if(selectedCategory != null && !categories.contains(selectedCategory)) selectedCategory = null;
+        updateSideMenu();
+        updateCalendarList();
+    }
+
     private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
         this.notifications.clear();
-        List<CalendarNotification> temp = notifications.getOrDefault(date,null);
-        if(temp != null) {
-            this.notifications.addAll(temp);
+        if(notifications != null){
+            List<CalendarNotification> temp = notifications.getOrDefault(date,null);
+            if(temp != null) {
+                this.notifications.addAll(temp);
+            }
         }
         updateCalendarList();
     }
 
-    private void onNotificationClick(CalendarNotification notification) {
-        toEvent(getActivity(), notification);
+    private boolean onSideMenuItemSelected(MenuItem item) {
+        toggleNavBar(false);
+        int id = item.getItemId();
+        if(id == show_all_id){
+            showSubCategory(null);
+            return true;
+        }else if(id > -1 && id < categories.size()){
+            showSubCategory(categories.get(item.getItemId()));
+            return true;
+        }
+        return false;
     }
 
-    private void onUpdateUi() {
-        if(display.size() > 0){
-            binding.tvNotificationsDisplay.setVisibility(View.GONE);
-        }else{
-            binding.tvNotificationsDisplay.setVisibility(View.VISIBLE);
+    private void updateSideMenu() {
+        if(binding == null) return;
+        Menu sideMenu = binding.navCalendarMenu.getMenu();
+        sideMenu.clear();
+        sideMenu.add(Menu.NONE, show_all_id, Menu.NONE, getString(R.string.all_filter_side_label));
+        for(int i = 0; i < categories.size(); i++){
+            sideMenu.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
         }
-        if(firstStart){
-            firstStart = false;
+    }
+
+    private void updateCalendarList() {
+        List<CalendarEntity> entities = new ArrayList<>();
+        for(CalendarNotification notification : notifications){
+            if(selectedCategory != null){
+                if(notification.getCategoryID() == selectedCategory.getId()) {
+                    entities.add(new CalendarEntity(selectedCategory, notification));
+                }
+            }else{
+                CalendarCategory category = getCategory(notification.getCategoryID());
+                if(category != null) entities.add(new CalendarEntity(category, notification));
+            }
+        }
+        if(entities.size() == 0){
             binding.tvNotificationsDisplay.setText(getString(R.string.empty_list));
+            binding.tvNotificationsDisplay.setVisibility(View.VISIBLE);
+        }else{
+            binding.tvNotificationsDisplay.setVisibility(View.GONE);
         }
+        adapter.saveData(entities);
+    }
+
+    private CalendarCategory getCategory(long categoryID) {
+        for(CalendarCategory category : categories){
+            if(category.getId() == categoryID) return category;
+        }
+        return null;
     }
 
     private void toggleNavBar(boolean toggle) {
@@ -196,186 +210,20 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
         }
     }
 
+    private void showSubCategory(CalendarCategory category){
+        if(selectedCategory == category) return;
+        selectedCategory = category;
+        updateCalendarList();
+    }
+
     private void goBack(){
         if(getActivity() != null) getActivity().onBackPressed();
     }
 
-    private void setupSideMenu(){
-        if(binding == null) return;
-
-        MenuItem allEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_all);
-        MenuItem schEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_schedule);
-        MenuItem plnEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_plant);
-        MenuItem cltEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_cultivate);
-        MenuItem frtEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_fertilize);
-        MenuItem sprEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_spray);
-        MenuItem hrvEventItem = binding.navCalendarMenu.getMenu().findItem(R.id.menu_item_filter_harvest);
-
-        if(allEventItem == null) return;
-        if(schEventItem == null) return;
-        if(plnEventItem == null) return;
-        if(cltEventItem == null) return;
-        if(frtEventItem == null) return;
-        if(sprEventItem == null) return;
-        if(hrvEventItem == null) return;
-
-
-        allEventItem.setEnabled(true);
-        schEventItem.setEnabled(true);
-        plnEventItem.setEnabled(true);
-        cltEventItem.setEnabled(true);
-        frtEventItem.setEnabled(true);
-        sprEventItem.setEnabled(true);
-        hrvEventItem.setEnabled(true);
-
-        switch (subFilter){
-            case SCHEDULE:
-                schEventItem.setEnabled(false);
-                break;
-            case PLANT:
-                plnEventItem.setEnabled(false);
-                break;
-            case CULTIVATE:
-                cltEventItem.setEnabled(false);
-                break;
-            case FERTILIZE:
-                frtEventItem.setEnabled(false);
-                break;
-            case SPRAY:
-                sprEventItem.setEnabled(false);
-                break;
-            case HARVEST:
-                hrvEventItem.setEnabled(false);
-                break;
-            case ALL:
-            default:
-                allEventItem.setEnabled(false);
-                break;
-        }
-    }
-
-    public boolean onSideMenuItemSelected(@NonNull MenuItem item) {
-        toggleNavBar(false);
-        switch (item.getItemId()){
-            case (R.id.menu_item_filter_all):
-                showAllEvents();
-                return true;
-            case (R.id.menu_item_filter_schedule):
-                showScheduleEvents();
-                return true;
-            case (R.id.menu_item_filter_plant):
-                showPlantEvents();
-                return true;
-            case (R.id.menu_item_filter_cultivate):
-                showCultivateEvents();
-                return true;
-            case (R.id.menu_item_filter_fertilize):
-                showFertilizeEvents();
-                return true;
-            case (R.id.menu_item_filter_spray):
-                showSprayEvents();
-                return true;
-            case (R.id.menu_item_filter_harvest):
-                showHarvestEvents();
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private void updateCalendarList() {
-        this.display.clear();
-        CalendarEventType type;
-        switch (subFilter){
-            case PLANT:
-                type = CalendarEventType.PLANT;
-                break;
-            case SPRAY:
-                type = CalendarEventType.SPRAY;
-                break;
-            case HARVEST:
-                type = CalendarEventType.HARVEST;
-                break;
-            case SCHEDULE:
-                type = CalendarEventType.SCHEDULE;
-                break;
-            case CULTIVATE:
-                type = CalendarEventType.CULTIVATE;
-                break;
-            case FERTILIZE:
-                type = CalendarEventType.FERTILIZE;
-                break;
-            case ALL:
-            default:
-                type = null;
-                break;
-        }
-        if(type != null){
-            List<CalendarNotification> filter = new ArrayList<>();
-            for(CalendarNotification event : notifications){
-                if(event.getType() == type) filter.add(event);
-            }
-            display.addAll(filter);
-        }else{
-            display.addAll(notifications);
-        }
-        adapter.saveData(display);
-        onUpdateUi();
-    }
-
-    private void showAllEvents(){
-        if(subFilter == CalendarSubFilter.ALL) return;
-        subFilter = CalendarSubFilter.ALL;
-        updateCalendarList();
-        setupSideMenu();
-    }
-
-    private void showScheduleEvents(){
-        if(subFilter == CalendarSubFilter.SCHEDULE) return;
-        subFilter = CalendarSubFilter.SCHEDULE;
-        updateCalendarList();
-        setupSideMenu();
-    }
-
-    private void showPlantEvents(){
-        if(subFilter == CalendarSubFilter.PLANT) return;
-        subFilter = CalendarSubFilter.PLANT;
-        updateCalendarList();
-        setupSideMenu();
-    }
-
-    private void showCultivateEvents(){
-        if(subFilter == CalendarSubFilter.CULTIVATE) return;
-        subFilter = CalendarSubFilter.CULTIVATE;
-        updateCalendarList();
-        setupSideMenu();
-    }
-
-    private void showFertilizeEvents(){
-        if(subFilter == CalendarSubFilter.FERTILIZE) return;
-        subFilter = CalendarSubFilter.FERTILIZE;
-        updateCalendarList();
-        setupSideMenu();
-    }
-
-    private void showSprayEvents(){
-        if(subFilter == CalendarSubFilter.SPRAY) return;
-        subFilter = CalendarSubFilter.SPRAY;
-        updateCalendarList();
-        setupSideMenu();
-    }
-
-    private void showHarvestEvents(){
-        if(subFilter == CalendarSubFilter.HARVEST) return;
-        subFilter = CalendarSubFilter.HARVEST;
-        updateCalendarList();
-        setupSideMenu();
-    }
-
-    private void toEvent(@Nullable Activity activity, CalendarNotification notification) {
+    private void toEvent(CalendarNotification notification) {
         if(notification == null) return;
-        if(activity != null)
-            activity.runOnUiThread(()-> {
+        if(getActivity() != null)
+            getActivity().runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.CalendarEventListFragment);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppValues.argNotification, notification);
@@ -384,9 +232,9 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
             });
     }
 
-    private void toNewEvent(@Nullable Activity activity) {
-        if(activity != null)
-            activity.runOnUiThread(()-> {
+    private void toNewEvent() {
+        if(getActivity() != null)
+            getActivity().runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.CalendarEventListFragment);
                 Bundle bundle = new Bundle();
                 Calendar calendar = Calendar.getInstance();
@@ -396,12 +244,12 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
                         AppValues.argNotification,
                         new CalendarNotification(
                                 0,
+                                AppValues.defaultCalendarCategoryID,
                                 -1,
                                 null,
                                 null,
                                 "",
                                 "",
-                                CalendarEventType.SCHEDULE,
                                 calendar.getTime()
                         )
                 );

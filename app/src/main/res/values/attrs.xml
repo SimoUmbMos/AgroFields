@@ -31,13 +31,6 @@
     <attr name="colorOnCalendarSurfaceToday" format="color"/>
     <attr name="colorCalendarSurfaceDisable" format="color"/>
 
-    <attr name="colorEventSchedule" format="color"/>
-    <attr name="colorEventPlant" format="color"/>
-    <attr name="colorEventCultivate" format="color"/>
-    <attr name="colorEventFertilize" format="color"/>
-    <attr name="colorEventSpray" format="color"/>
-    <attr name="colorEventHarvest" format="color"/>
-
     <attr name="colorFabVariant" format="color" />
     <attr name="colorOnFabVariant" format="color" />
     <attr name="colorFabVariantAccent" format="color" />
