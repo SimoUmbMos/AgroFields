@@ -1,9 +1,13 @@
 package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -56,16 +60,38 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
 
     private AppViewModel vmLands;
 
+    private List<LandZone> exportZones;
+    private FileType exportAction;
+
+    private final ActivityResultLauncher<String> permissionWriteChecker = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::onPermissionWriteResult
+    );
+
+    private void onPermissionWriteResult(boolean permission) {
+        if(permission){
+            exportAction();
+        }else{
+            exportZones = null;
+            exportAction = null;
+        }
+    }
+
     //init relative
-    private void initData() {
+    private boolean initData() {
         data = new ArrayList<>();
         selectedLand = null;
         state = ListMenuState.NormalState;
+
+        exportZones = null;
+        exportAction = null;
+
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLand)){
                 selectedLand = getArguments().getParcelable(AppValues.argLand);
             }
         }
+        return selectedLand != null;
     }
     private void initActivity() {
         if(getActivity() != null){
@@ -76,9 +102,13 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initFragment() {
-        if(selectedLand != null){
-            binding.tvTitle.setText(selectedLand.toString());
-        }
+        adapter = new LandZonesListAdapter(
+                selectedLand,
+                this::onZoneClick,
+                this::onZoneLongClick
+        );
+
+        binding.tvTitle.setText(selectedLand.toString());
         binding.ibClose.setOnClickListener(view -> onCloseClick());
         binding.ibClose1.setOnClickListener(view -> onCloseClick());
         binding.ibSelectAll.setOnClickListener(view -> onSelectAllClick());
@@ -89,6 +119,14 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         binding.tvZonesListActionLabel.setText(getResources().getString(R.string.loading_label));
         updateUi();
 
+        binding.rvZoneList.setHasFixedSize(true);
+
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        binding.rvZoneList.setLayoutManager(gridLayoutManager);
+
+        adapter.saveData(data);
+        binding.rvZoneList.setAdapter(adapter);
+
         binding.rvZoneList.post(()->{
             int maxWidth = getResources().getDimensionPixelSize(R.dimen.max_grid_width);
             int spanCount = 1;
@@ -96,17 +134,8 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                 spanCount = Math.floorDiv(binding.rvZoneList.getWidth(), maxWidth);
                 if (spanCount == 0) spanCount = 1;
             }
-            StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
-            binding.rvZoneList.setLayoutManager(gridLayoutManager);
-            binding.rvZoneList.setHasFixedSize(true);
-            adapter = new LandZonesListAdapter(
-                    selectedLand,
-                    this::onZoneClick,
-                    this::onZoneLongClick
-            );
-            binding.rvZoneList.setAdapter(adapter);
-
-            initViewModel();
+            gridLayoutManager.setSpanCount(spanCount);
+            gridLayoutManager.invalidateSpanAssignments();
         });
     }
     private void initViewModel() {
@@ -125,12 +154,17 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         data.clear();
         if(selectedLand != null && zones != null){
             List<LandZone> temp = zones.getOrDefault(selectedLand.getData().getId(),null);
-            if(temp != null)
-                data.addAll(temp);
+            if(temp != null){
+                for(LandZone tempZone : temp){
+                    if(tempZone == null || tempZone.getData() == null) continue;
+                    data.add(tempZone);
+                }
+            }
         }
         binding.tvZonesListActionLabel.setText(getResources().getString(R.string.empty_list));
         updateListUI();
         adapter.saveData(data);
+        binding.rvZoneList.smoothScrollBy(1, 1);
     }
     private void onZoneClick(LandZone zone) {
         if(state != ListMenuState.NormalState){
@@ -328,14 +362,24 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void exportSelectedZones(FileType action){
-        List<LandZone> exportZones = new ArrayList<>(getSelectedZones());
+        exportZones = new ArrayList<>(getSelectedZones());
+        exportAction = action;
         deselectAllZones();
-        exportAction(exportZones,action);
+        if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
+            permissionWriteChecker.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }else{
+            onPermissionWriteResult(true);
+        }
     }
-    private void exportAction(List<LandZone> exportZones, FileType exportAction){
+    private void exportAction(){
+        if(exportZones == null) return;
+        if(exportAction == null) return;
+
         if(exportZones.size()>0 && exportAction != FileType.NONE){
             writeOnFile(exportZones, exportAction);
         }
+        exportZones = null;
+        exportAction = null;
     }
     private void writeOnFile(List<LandZone> zones, FileType action) {
         if(zones.size()>0){
@@ -494,9 +538,13 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
         initActivity();
-        initFragment();
+        if(initData()){
+            initFragment();
+            initViewModel();
+        }else{
+            goBack(getActivity());
+        }
     }
 
     @Override

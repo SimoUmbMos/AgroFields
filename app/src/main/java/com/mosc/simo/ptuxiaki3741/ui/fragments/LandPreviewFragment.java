@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polygon;
@@ -97,7 +98,7 @@ public class LandPreviewFragment extends Fragment {
         binding.ibRestore.setOnClickListener( v -> restoreLand() );
         binding.fabZonesMenu.setOnClickListener( v -> toZonesMenu(getActivity()) );
         binding.ibClose.setOnClickListener( v -> goBack(getActivity()) );
-        binding.mvLand.getMapAsync(this::initMap);
+        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvLand.getMapAsync(this::initMap));
     }
 
     private void initMap(GoogleMap googleMap) {

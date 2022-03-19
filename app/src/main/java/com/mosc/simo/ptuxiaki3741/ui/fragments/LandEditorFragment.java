@@ -4,14 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +32,7 @@ import androidx.navigation.NavController;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -63,9 +61,7 @@ import com.mosc.simo.ptuxiaki3741.data.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
-import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,7 +146,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             }else{
                 title = getString(R.string.file_picker_label);
             }
-            Intent intent = FileUtil.getFilePickerIntent(this, fileState, title);
+            Intent intent = FileUtil.getFilePickerIntent(fileState, title);
             switch (fileState) {
                 case Img:
                     imgFileLauncher.launch(intent);
@@ -169,17 +165,8 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             result ->{
                 Log.d(TAG, "imgFileLauncher: called");
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
-                        String filePath = result.getData().getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-                        Log.d(TAG, "imgFileLauncher: file = " + filePath);
-                        if (FileUtil.fileIsValidImg(filePath)) {
-                            Log.d(TAG, "imgFileLauncher: Img Is Valid ");
-                            addOverlayImg(new File(filePath));
-                        }
-                    }else{
-                        if (FileUtil.fileIsValidImg(getContext(), result.getData())) {
-                            addOverlayImg(result.getData().getData());
-                        }
+                    if (FileUtil.fileIsValidImg(getContext(), result.getData())) {
+                        addOverlayImg(result.getData().getData());
                     }
                 }
             }
@@ -189,56 +176,28 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             result ->{
                 Log.d(TAG, "fileLauncher: called");
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
-                        String filePath = result.getData().getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-                        Log.d(TAG, "fileLauncher: file = " + filePath);
-                        new Thread(() -> {
-                            ArrayList<LandData> data = FileUtil.handleFile(
-                                    getContext(),
-                                    filePath
+                    new Thread(() -> {
+                        ArrayList<LandData> data = FileUtil.handleFile(
+                                getContext(),
+                                result.getData()
+                        );
+                        if (data.size() > 0) {
+                            Bundle args = new Bundle();
+                            args.putParcelableArrayList(
+                                    AppValues.argLands,
+                                    data
                             );
-                            Log.d(TAG, "fileLauncher: data read = "+data.size());
-                            if (data.size() > 0) {
-                                Bundle args = new Bundle();
-                                args.putParcelableArrayList(
-                                        AppValues.argLands,
-                                        data
-                                );
-                                args.putParcelable(
-                                        AppValues.argLand,
-                                        currLand.getData()
-                                );
-                                args.putSerializable(
-                                        AppValues.argAction,
-                                        importAction
-                                );
-                                toImport(getActivity(), args);
-                            }
-                        }).start();
-                    }else{
-                        new Thread(() -> {
-                            ArrayList<LandData> data = FileUtil.handleFile(
-                                    getContext(),
-                                    result.getData()
+                            args.putParcelable(
+                                    AppValues.argLand,
+                                    currLand.getData()
                             );
-                            if (data.size() > 0) {
-                                Bundle args = new Bundle();
-                                args.putParcelableArrayList(
-                                        AppValues.argLands,
-                                        data
-                                );
-                                args.putParcelable(
-                                        AppValues.argLand,
-                                        currLand.getData()
-                                );
-                                args.putSerializable(
-                                        AppValues.argAction,
-                                        importAction
-                                );
-                                toImport(getActivity(), args);
-                            }
-                        }).start();
-                    }
+                            args.putSerializable(
+                                    AppValues.argAction,
+                                    importAction
+                            );
+                            toImport(getActivity(), args);
+                        }
+                    }).start();
                 }
             }
     );
@@ -333,7 +292,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         binding.ibActionReset.setOnClickListener(v->undo());
         binding.slAlphaSlider.addOnChangeListener((range,value,user) -> onSliderUpdate(value));
 
-        binding.mvLand.getMapAsync(this::initMap);
+        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvLand.getMapAsync(this::initMap));
     }
     @SuppressLint("PotentialBehaviorOverride")
     private void initMap(GoogleMap googleMap) {
@@ -952,24 +911,6 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         binding.ivLandOverlay.setVisibility(View.VISIBLE);
         Log.d(TAG, "ivLandOverlay: VISIBLE");
         binding.ivLandOverlay.setImageURI(data);
-        binding.ivLandOverlay.animate()
-                .alpha(0.5f)
-                .rotation(0)
-                .scaleX(1f)
-                .scaleY(1f)
-                .translationX(0)
-                .translationY(0)
-                .setDuration(0).start();
-        setupSideMenu();
-    }
-    private void addOverlayImg(File data) {
-        if(data == null) return;
-        if(!data.exists()) return;
-        Bitmap bitmap = BitmapFactory.decodeFile(data.getAbsolutePath());
-        binding.slAlphaSlider.setValue(50.0f);
-        binding.ivLandOverlay.setVisibility(View.VISIBLE);
-        Log.d(TAG, "ivLandOverlay: VISIBLE");
-        binding.ivLandOverlay.setImageBitmap(bitmap);
         binding.ivLandOverlay.animate()
                 .alpha(0.5f)
                 .rotation(0)

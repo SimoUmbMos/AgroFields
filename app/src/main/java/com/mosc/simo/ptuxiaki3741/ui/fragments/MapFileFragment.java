@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.clustering.Cluster;
@@ -146,7 +147,7 @@ public class MapFileFragment extends Fragment {
         binding.ibSubmit.setOnClickListener(v->submitLand());
         binding.ibClose.setOnClickListener(v->goBack());
         if(landDataList.size() < 2) binding.ibZoom.setVisibility(View.GONE);
-        binding.mvFileMap.getMapAsync(this::initMap);
+        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvFileMap.getMapAsync(this::initMap));
     }
 
     private void initMap(GoogleMap googleMap){

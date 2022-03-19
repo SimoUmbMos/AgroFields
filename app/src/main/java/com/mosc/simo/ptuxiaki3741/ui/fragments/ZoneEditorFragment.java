@@ -27,6 +27,7 @@ import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -184,7 +185,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.ibToggleNote.setOnClickListener(v->toggleNote());
         updateUI();
-        binding.mvZonePreview.getMapAsync(this::initMap);
+        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvZonePreview.getMapAsync(this::initMap));
     }
 
     private void initViewModel(){

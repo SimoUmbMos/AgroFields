@@ -41,10 +41,7 @@ import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
-import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -65,6 +62,12 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private ArrayAdapter<String> themeAdapter;
     private ArrayAdapter<String> snapshotAdapter;
     private int dialogChecked;
+
+
+    private final ActivityResultLauncher<String> permissionWriteChecker = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::onPermissionWriteResult
+    );
 
     private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
@@ -313,10 +316,10 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
                     .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
                     .setPositiveButton(getString(R.string.accept), (d, w) -> {
-                        if(dialogChecked == 0){
-                            onExportDBActionXLS();
+                        if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
+                            permissionWriteChecker.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
                         }else{
-                            onExportDBActionXLSX();
+                            onPermissionWriteResult(true);
                         }
                     })
                     .create();
@@ -448,7 +451,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void onImportDBAction(boolean permission){
         if(permission){
             String title = getString(R.string.file_backup_picker_label);
-            Intent intent = FileUtil.getFilePickerIntent(this, title);
+            Intent intent = FileUtil.getFilePickerIntent(title);
             fileLauncher.launch(intent);
         }
     }
@@ -460,15 +463,8 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
 
         InputStream is;
         try {
-            if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
-                String filePath = result.getData().getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-                File file = new File(filePath);
-                if(!file.exists()) return;
-                is = new FileInputStream(file);
-            }else{
-                if(getActivity() != null) is = getActivity().getContentResolver().openInputStream(intent.getData());
-                else is = null;
-            }
+            if(getActivity() != null) is = getActivity().getContentResolver().openInputStream(intent.getData());
+            else is = null;
         }catch (Exception e){
             Log.e(TAG, "onFileResult: ", e);
             is = null;
@@ -496,6 +492,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             Snackbar s = Snackbar.make(binding.clSnackBarContainer, R.string.open_xml_action_not_ended_error, Snackbar.LENGTH_SHORT);
             s.setAction(getString(R.string.okey),view -> {});
             s.show();
+        }
+    }
+
+    private void onPermissionWriteResult(boolean permission) {
+        if(permission){
+            if(dialogChecked == 0){
+                onExportDBActionXLS();
+            }else{
+                onExportDBActionXLSX();
+            }
         }
     }
 

@@ -15,7 +15,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -61,6 +60,12 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         return holder;
     }
 
+    @Override
+    public void onViewRecycled(@NonNull LandItem holder) {
+        mMapViews.remove(holder.binding.mapView);
+        super.onViewRecycled(holder);
+    }
+
     @Override public void onBindViewHolder(@NonNull LandItem holder, int position) {
         Land land = data.get(position);
         if(onLandClick != null){
@@ -100,21 +105,35 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
         diffResult.dispatchUpdatesTo(this);
     }
 
-    protected static class LandItem extends RecyclerView.ViewHolder implements OnMapReadyCallback {
+    protected static class LandItem extends RecyclerView.ViewHolder{
         public final  ViewHolderLandWithTagsBinding binding;
-        private final Context parentContext;
+        private LandData landData;
+        private GoogleMap googleMap;
 
         public LandItem(View view, Context parentContext) {
             super(view);
             binding = ViewHolderLandWithTagsBinding.bind(itemView);
-            this.parentContext = parentContext;
 
-            binding.mapView.setTag(null);
-            binding.getRoot().setTag(null);
+            landData = null;
+            googleMap = null;
 
             binding.mapView.setClickable(false);
             binding.mapView.onCreate(null);
-            binding.mapView.getMapAsync(this);
+
+            MapsInitializer.initialize(
+                    parentContext,
+                    MapsInitializer.Renderer.LATEST,
+                    r -> binding.mapView.getMapAsync(this::setMap)
+            );
+        }
+
+        public void setMap(GoogleMap gMap) {
+            googleMap = gMap;
+            if(googleMap == null) return;
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
+            draw();
+            googleMap.setOnMapLoadedCallback(this::draw);
         }
 
         public void setLand(Land land, boolean showCheckMark){
@@ -168,43 +187,22 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
                 binding.tvTagsContainer.setVisibility(View.VISIBLE);
             }
 
-            binding.getRoot().setTag(land.getData());
-            initMap();
+            landData = land.getData();
+            draw();
         }
 
-        private void initMap(){
-            if(binding.mapView.getTag() == null) return;
-            if(binding.getRoot().getTag() == null) return;
-
-            GoogleMap googleMap = (GoogleMap) binding.mapView.getTag();
-
+        public void draw(){
+            if(googleMap == null) return;
             googleMap.clear();
-            if(googleMap.getMapType() != GoogleMap.MAP_TYPE_NONE){
-                googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-            }
-
-            LandData data = (LandData) binding.getRoot().getTag();
-            if(data.getBorder().size() > 0){
-                googleMap.addPolygon(LandUtil.getPolygonOptions(data,false));
-
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                for(LatLng point : data.getBorder()){
-                    builder.include(point);
+            if(landData != null && landData.getBorder().size() > 0){
+                LatLngBounds.Builder bounds = new LatLngBounds.Builder();
+                for(LatLng point : landData.getBorder()){
+                    bounds.include(point);
                 }
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                        builder.build(),
-                        AppValues.defaultPaddingLite
-                ));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),AppValues.defaultPaddingLite));
+                googleMap.addPolygon(LandUtil.getPolygonOptions(landData,false));
                 googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             }
-        }
-
-        @Override
-        public void onMapReady(@NonNull GoogleMap googleMap) {
-            MapsInitializer.initialize(parentContext);
-            googleMap.getUiSettings().setMapToolbarEnabled(false);
-            binding.mapView.setTag(googleMap);
-            initMap();
         }
     }
 

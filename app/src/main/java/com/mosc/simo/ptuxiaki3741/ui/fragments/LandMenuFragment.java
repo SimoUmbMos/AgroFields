@@ -1,9 +1,13 @@
 package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -53,9 +57,22 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private FileType exportAction;
     private LandListAdapter adapter;
     private int dialogChecked;
-    private boolean isInit;
     private AppViewModel vmLands;
     private ListMenuState state;
+
+    private final ActivityResultLauncher<String> permissionWriteChecker = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::onPermissionWriteResult
+    );
+
+    private void onPermissionWriteResult(boolean permission) {
+        if(permission){
+            writeOnFile();
+        }else{
+            exportAction = FileType.NONE;
+            exportLands.clear();
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -70,6 +87,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         initData();
         initActivity();
         initFragment();
+        Handler handler = new Handler();
+        handler.postDelayed(this::initViewModel,240);
     }
 
     @Override
@@ -144,7 +163,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initData(){
-        isInit = false;
         data = new ArrayList<>();
         exportLands = new ArrayList<>();
         state = ListMenuState.NormalState;
@@ -173,6 +191,14 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
         binding.tvLandListActionLabel.setText(getResources().getString(R.string.loading_label));
 
+        binding.rvLandList.setHasFixedSize(true);
+
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
+        binding.rvLandList.setLayoutManager(staggeredGridLayoutManager);
+
+        adapter.saveData(data);
+        binding.rvLandList.setAdapter(adapter);
+
         updateListUi();
         updateUi();
 
@@ -183,18 +209,11 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 spanCount = Math.floorDiv(binding.rvLandList.getWidth(), maxWidth);
                 if (spanCount == 0) spanCount = 1;
             }
-            StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
-            binding.rvLandList.setLayoutManager(gridLayoutManager);
-            binding.rvLandList.setHasFixedSize(true);
-            binding.rvLandList.setAdapter(adapter);
-
-            Handler handler = new Handler();
-            handler.postDelayed(this::initViewModel,240);
+            staggeredGridLayoutManager.setSpanCount(spanCount);
+            staggeredGridLayoutManager.invalidateSpanAssignments();
         });
     }
     private void initViewModel() {
-        if(isInit) return;
-        isInit = true;
         if(getActivity() != null){
             vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             Handler handler = new Handler(Looper.getMainLooper());
@@ -217,6 +236,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
         updateListUi();
         adapter.saveData(data);
+        binding.rvLandList.smoothScrollBy(1, 1);
     }
     private void onLandClick(Land land) {
         if(state != ListMenuState.NormalState) {
@@ -382,17 +402,22 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
     private void exportAction(){
         if(exportLands.size()>0 && exportAction != FileType.NONE){
-            writeOnFile(exportLands, exportAction);
+            if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
+                permissionWriteChecker.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }else{
+                onPermissionWriteResult(true);
+            }
+        }else{
+            exportAction = FileType.NONE;
+            exportLands.clear();
         }
-        exportAction = FileType.NONE;
-        exportLands.clear();
     }
-    private void writeOnFile(List<Land> lands, FileType action) {
-        if(lands.size()>0){
+    private void writeOnFile() {
+        if(exportLands.size()>0){
             File path = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS
             );
-            String fileName = (System.currentTimeMillis()/1000)+"_"+lands.size();
+            String fileName = (System.currentTimeMillis()/1000)+"_"+exportLands.size();
             try{
                 boolean isPathCreated = false, pathExist = path.exists();
                 if (!pathExist) {
@@ -401,21 +426,21 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 }
                 if( pathExist || isPathCreated ){
                     String output="";
-                    switch(action){
+                    switch(exportAction){
                         case KML:
-                            output = FileUtil.landsToKmlString(lands,fileName);
+                            output = FileUtil.landsToKmlString(exportLands,fileName);
                             fileName = fileName+".kml";
                             break;
                         case GEOJSON:
-                            output = FileUtil.landsToGeoJsonString(lands);
+                            output = FileUtil.landsToGeoJsonString(exportLands);
                             fileName = fileName+".json";
                             break;
                         case GML:
-                            output = FileUtil.landsToGmlString(lands);
+                            output = FileUtil.landsToGmlString(exportLands);
                             fileName = fileName+".gml";
                             break;
                         case WKT:
-                            output = FileUtil.landsToWKTString(lands);
+                            output = FileUtil.landsToWKTString(exportLands);
                             fileName = fileName+".txt";
                             break;
                     }
@@ -437,6 +462,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 Log.e(TAG, "writeOnFile: ", e);
             }
         }
+        exportAction = FileType.NONE;
+        exportLands.clear();
     }
 
     //ui

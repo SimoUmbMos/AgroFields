@@ -15,7 +15,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -83,6 +82,12 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
         holder.setData(zone, showCheckMark);
     }
 
+    @Override
+    public void onViewRecycled(@NonNull LandZoneItem holder) {
+        mMapViews.remove(holder.binding.mapView);
+        super.onViewRecycled(holder);
+    }
+
     @Override public int getItemCount() {
         return data.size();
     }
@@ -116,34 +121,40 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
         diffResult.dispatchUpdatesTo(this);
     }
 
-    protected static class LandZoneItem extends RecyclerView.ViewHolder implements OnMapReadyCallback {
+    protected static class LandZoneItem extends RecyclerView.ViewHolder{
         public final  ViewHolderLandBinding binding;
-        private final Context parentContext;
 
         private final LandData land;
+        private GoogleMap googleMap;
         private LandZoneData zone;
 
         public LandZoneItem(View view, Context parentContext, LandData land)  {
             super(view);
-            this.parentContext = parentContext;
+            binding = ViewHolderLandBinding.bind(itemView);
 
             this.land = land;
             zone = null;
-
-            binding = ViewHolderLandBinding.bind(itemView);
-            binding.mapView.setTag(null);
+            googleMap = null;
 
             binding.mapView.setClickable(false);
             binding.mapView.onCreate(null);
-            binding.mapView.getMapAsync(this);
+
+            MapsInitializer.initialize(
+                    parentContext,
+                    MapsInitializer.Renderer.LATEST,
+                    r -> binding.mapView.getMapAsync(this::setMap)
+            );
         }
-        @Override
-        public void onMapReady(@NonNull GoogleMap googleMap) {
-            MapsInitializer.initialize(parentContext);
+
+        public void setMap(GoogleMap gMap) {
+            googleMap = gMap;
+            if(googleMap == null) return;
             googleMap.getUiSettings().setMapToolbarEnabled(false);
-            binding.mapView.setTag(googleMap);
-            initMap();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
+            draw();
+            googleMap.setOnMapLoadedCallback(this::draw);
         }
+
 
         public void setData(LandZone zone, boolean showCheckMark){
             if(zone == null) return;
@@ -176,27 +187,13 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 }
             }
             this.zone = zone.getData();
-            initMap();
+            draw();
         }
 
-        private void initMap(){
-            if(binding.mapView.getTag() == null) return;
-            if(zone == null) return;
-
-            GoogleMap googleMap = (GoogleMap) binding.mapView.getTag();
-
+        public void draw(){
+            if(googleMap == null) return;
             googleMap.clear();
-            if(googleMap.getMapType() != GoogleMap.MAP_TYPE_NONE){
-                googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-            }
-
             if(land != null && land.getBorder().size() > 0){
-                googleMap.addPolygon(LandUtil.getPolygonOptions(land,false).zIndex(1));
-
-                if(zone.getBorder().size() > 0){
-                    googleMap.addPolygon(LandUtil.getPolygonOptions(zone,false).zIndex(2));
-                }
-
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(LatLng point : land.getBorder()){
                     builder.include(point);
@@ -205,12 +202,12 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                         builder.build(),
                         AppValues.defaultPaddingLite
                 ));
-
+                googleMap.addPolygon(LandUtil.getPolygonOptions(land,false).zIndex(1));
+                if(zone != null && zone.getBorder().size() > 0){
+                    googleMap.addPolygon(LandUtil.getPolygonOptions(zone,false).zIndex(2));
+                }
                 googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-            }else if(zone.getBorder().size() > 0){
-
-                googleMap.addPolygon(LandUtil.getPolygonOptions(zone,false).zIndex(2));
-
+            }else if(zone != null && zone.getBorder().size() > 0){
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for(LatLng point : zone.getBorder()){
                     builder.include(point);
@@ -219,7 +216,7 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                         builder.build(),
                         AppValues.defaultPaddingLite
                 ));
-
+                googleMap.addPolygon(LandUtil.getPolygonOptions(zone,false).zIndex(2));
                 googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             }
         }

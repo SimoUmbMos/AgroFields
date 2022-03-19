@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -216,7 +217,7 @@ public class MapMenuFragment extends Fragment{
 
     private void lateInitFragment() {
         binding.mvLiveMap.setVisibility(View.VISIBLE);
-        binding.mvLiveMap.getMapAsync(this::initMap);
+        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvLiveMap.getMapAsync(this::initMap));
     }
 
     private void initMap(GoogleMap googleMap) {
