@@ -41,9 +41,11 @@ public final class DialogUtil {
     }
 
     public static MaterialAlertDialogBuilder getColorPickerDialog(Context context){
-        return new MaterialAlertDialogBuilder(context, R.style.MaterialAlertDialog)
-                .setTitle(context.getString(R.string.pick_color))
-                .setView(R.layout.view_color_picker);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context, R.style.MaterialAlertDialog);
+        builder.setIcon(R.drawable.ic_menu_color_palette);
+        builder.setTitle(context.getString(R.string.pick_color));
+        builder.setView(R.layout.view_color_picker);
+        return builder;
     }
 
     public static void setupColorDialog(AlertDialog dialog, ColorData tempColor) {

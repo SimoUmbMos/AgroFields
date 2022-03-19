@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.os.Environment;
 import android.os.Handler;
@@ -87,22 +87,27 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         binding.fabExport.setOnClickListener(view -> onExportClick());
 
         binding.tvZonesListActionLabel.setText(getResources().getString(R.string.loading_label));
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(
-                getContext(),
-                LinearLayoutManager.VERTICAL,
-                false
-        );
-        binding.rvZoneList.setLayoutManager(layoutManager);
-        binding.rvZoneList.setHasFixedSize(true);
-        adapter = new LandZonesListAdapter(
-                selectedLand,
-                this::onZoneClick,
-                this::onZoneLongClick
-        );
-        binding.rvZoneList.setAdapter(adapter);
-
         updateUi();
+
+        binding.rvZoneList.post(()->{
+            int maxWidth = getResources().getDimensionPixelSize(R.dimen.max_grid_width);
+            int spanCount = 1;
+            if(maxWidth != 0) {
+                spanCount = Math.floorDiv(binding.rvZoneList.getWidth(), maxWidth);
+                if (spanCount == 0) spanCount = 1;
+            }
+            StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
+            binding.rvZoneList.setLayoutManager(gridLayoutManager);
+            binding.rvZoneList.setHasFixedSize(true);
+            adapter = new LandZonesListAdapter(
+                    selectedLand,
+                    this::onZoneClick,
+                    this::onZoneLongClick
+            );
+            binding.rvZoneList.setAdapter(adapter);
+
+            initViewModel();
+        });
     }
     private void initViewModel() {
         if(getActivity() != null){
@@ -241,6 +246,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                 dialog = null;
             }
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
+                    .setIcon(R.drawable.ic_menu_delete)
                     .setTitle(getString(R.string.delete_lands_title))
                     .setMessage(getString(R.string.delete_lands_text))
                     .setOnDismissListener(dialog -> setState(ListMenuState.NormalState))
@@ -293,6 +299,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             dialogChecked = 0;
             String[] dataTypes = {"KML","GeoJson","GML","Well Known Text"};
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setIcon(R.drawable.ic_menu_export)
                     .setTitle(getString(R.string.file_type_select_title))
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
                     .setOnDismissListener(dialog -> setState(ListMenuState.NormalState))
@@ -490,7 +497,6 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         initData();
         initActivity();
         initFragment();
-        initViewModel();
     }
 
     @Override

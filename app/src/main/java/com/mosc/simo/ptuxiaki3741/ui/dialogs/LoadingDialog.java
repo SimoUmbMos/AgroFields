@@ -1,11 +1,11 @@
 package com.mosc.simo.ptuxiaki3741.ui.dialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.R;
 
 public class LoadingDialog {
@@ -14,8 +14,8 @@ public class LoadingDialog {
 
     public LoadingDialog(@NonNull Activity activity){
         this.activity = activity;
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setView(View.inflate(activity, R.layout.dialog_loading, null));
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this.activity, R.style.MaterialAlertDialog);
+        builder.setView(R.layout.dialog_loading);
         builder.setCancelable(false);
         dialog = builder.create();
     }

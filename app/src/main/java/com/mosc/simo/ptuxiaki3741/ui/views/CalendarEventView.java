@@ -28,8 +28,7 @@ public class CalendarEventView extends ConstraintLayout {
         binding.tvEventTitle.setText(title);
         if(color != null){
             binding.mcvRoot.setCardBackgroundColor(color.getColor());
-            double luminance = UIUtil.getColorLuminance(color);
-            if(luminance > 0.179){
+            if(UIUtil.showBlackText(color)){
                 binding.tvEventType.setTextColor(Color.BLACK);
                 binding.tvEventTitle.setTextColor(Color.BLACK);
             }else{

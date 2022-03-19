@@ -308,6 +308,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             dialogChecked = 0;
             String[] dataTypes = {"XLS","XLSX"};
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setIcon(R.drawable.ic_menu_export)
                     .setTitle(getString(R.string.file_type_select_title))
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
                     .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())

@@ -1,5 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.data.util;
 
+import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 
 import androidx.navigation.NavController;
@@ -20,8 +22,8 @@ public final class UIUtil {
         return null;
     }
 
-    public static double getColorLuminance(ColorData color) {
-        if(color == null) return 0;
+    public static boolean showBlackText(final ColorData color) {
+        if(color == null) return true;
         double[] cp = new double[3];
         cp[0] = color.getRed() / 255.0;
         cp[1] = color.getGreen() / 255.0;
@@ -33,6 +35,11 @@ public final class UIUtil {
                 cp[i] = Math.pow( (cp[i]+0.055) / 1.055 , 2.4 );
             }
         }
-        return 0.2126 * cp[0] + 0.7152 * cp[1] + 0.0722 * cp[2];
+        double luminance = 0.2126 * cp[0] + 0.7152 * cp[1] + 0.0722 * cp[2];
+        return luminance > 0.179;
+    }
+
+    public static int dpToPx(final Context context, final float dp) {
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
     }
 }

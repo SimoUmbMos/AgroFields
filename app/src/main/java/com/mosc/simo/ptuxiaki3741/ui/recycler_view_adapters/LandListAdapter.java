@@ -1,6 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +19,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.util.ListUtils;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
+import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandWithTagsBinding;
 
@@ -59,14 +63,6 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
 
     @Override public void onBindViewHolder(@NonNull LandItem holder, int position) {
         Land land = data.get(position);
-        String display = land.toString();
-        holder.binding.tvLandName.setText(display);
-        holder.binding.cbSelect.setChecked(land.isSelected());
-        if(showCheckMark){
-            holder.binding.cbSelect.setVisibility(View.VISIBLE);
-        }else{
-            holder.binding.cbSelect.setVisibility(View.GONE);
-        }
         if(onLandClick != null){
             holder.binding.item.setOnClickListener(v ->
                 onLandClick.onActionResult(land)
@@ -79,7 +75,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             });
         }
 
-        holder.setLand(land);
+        holder.setLand(land,showCheckMark);
     }
 
     @Override public int getItemCount() {
@@ -121,10 +117,11 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
             binding.mapView.getMapAsync(this);
         }
 
-        public void setLand(Land land){
+        public void setLand(Land land, boolean showCheckMark){
             if(land == null) return;
             if(land.getData() == null) return;
 
+            String titleDisplay = land.toString();
             List<String> tags = LandUtil.getLandTags(land.getData());
             StringBuilder builder = new StringBuilder();
             for(int i = 0; i < tags.size(); i++){
@@ -134,9 +131,38 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
                 if(i != (tags.size()-1))
                     builder.append(" ");
             }
-            String display = builder.toString();
-            binding.tvTagsContainer.setText(display);
-            if(display.isEmpty()){
+            String tagsDisplay = builder.toString();
+
+            binding.tvLandName.setText(titleDisplay);
+            binding.tvLandName.setSelected(true);
+            binding.cbSelect.setChecked(land.isSelected());
+            if(showCheckMark){
+                binding.cbSelect.setVisibility(View.VISIBLE);
+                if(land.isSelected()){
+                    binding.getRoot().setStrokeWidth(UIUtil.dpToPx(binding.getRoot().getContext(), 2));
+                }else{
+                    binding.getRoot().setStrokeWidth(0);
+                }
+            }else{
+                binding.cbSelect.setVisibility(View.GONE);
+                binding.getRoot().setStrokeWidth(0);
+            }
+            ColorData color = land.getData().getColor();
+            if(color != null){
+                binding.getRoot().setCardBackgroundColor(color.getColor());
+                if(UIUtil.showBlackText(color)){
+                    binding.tvLandName.setTextColor(Color.BLACK);
+                    binding.tvTagsContainer.setTextColor(Color.BLACK);
+                    binding.cbSelect.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+                }else{
+                    binding.tvLandName.setTextColor(Color.WHITE);
+                    binding.tvTagsContainer.setTextColor(Color.WHITE);
+                    binding.cbSelect.setButtonTintList(ColorStateList.valueOf(Color.WHITE));
+                }
+            }
+            binding.tvTagsContainer.setText(tagsDisplay);
+            binding.tvTagsContainer.setSelected(true);
+            if(tagsDisplay.isEmpty()){
                 binding.tvTagsContainer.setVisibility(View.GONE);
             }else{
                 binding.tvTagsContainer.setVisibility(View.VISIBLE);

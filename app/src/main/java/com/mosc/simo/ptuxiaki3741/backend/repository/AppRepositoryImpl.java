@@ -183,10 +183,11 @@ public class AppRepositoryImpl implements AppRepository {
         if(data.getId() <= 0) return ans;
 
         Snapshot snapshot;
-        if(!db.snapshotDao().snapshotExist(data.getSnapshot())){
-            saveSnapshot(data.getSnapshot());
+        if(db.snapshotDao().snapshotExist(data.getSnapshot())){
+            snapshot = db.snapshotDao().getSnapshot(data.getSnapshot());
+        }else{
+            snapshot = saveSnapshot(data.getSnapshot());
         }
-        snapshot = db.snapshotDao().getSnapshot(data.getSnapshot());
 
         List<LandZoneData> zones = db.landZoneDao().getLandZonesByLandID(data.getId(), snapshot.getKey());
         if(zones != null){

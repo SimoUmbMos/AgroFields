@@ -17,4 +17,5 @@
     <dimen name="list_map_item_height">120dp</dimen>
     <!-- Drop Down Menu metrics -->
     <dimen name="dropDownHeight">160dp</dimen>
+    <dimen name="max_grid_width">192dp</dimen>
 </resources>

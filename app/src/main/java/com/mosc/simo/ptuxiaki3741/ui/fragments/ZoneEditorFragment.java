@@ -448,6 +448,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 dialog = null;
             }
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setIcon(R.drawable.ic_menu_edit)
                     .setTitle(getString(R.string.zone_title_label))
                     .setView(R.layout.view_edit_text)
                     .setPositiveButton(getString(R.string.submit),null)
@@ -500,6 +501,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 dialog = null;
             }
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setIcon(R.drawable.ic_menu_edit)
                     .setTitle(getString(R.string.zone_note_label))
                     .setView(R.layout.view_text_area)
                     .setPositiveButton(getString(R.string.submit),null)

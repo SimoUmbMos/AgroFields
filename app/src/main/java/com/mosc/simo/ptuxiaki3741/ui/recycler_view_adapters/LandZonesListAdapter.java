@@ -1,6 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.util.ListUtils;
+import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
@@ -65,16 +69,6 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
 
     @Override public void onBindViewHolder(@NonNull LandZoneItem holder, int position) {
         LandZone zone = data.get(position);
-        holder.itemView.setTag(zone);
-
-        String display = zone.toString();
-        holder.binding.tvLandName.setText(display);
-        holder.binding.cbSelect.setChecked(zone.isSelected());
-        if(showCheckMark){
-            holder.binding.cbSelect.setVisibility(View.VISIBLE);
-        }else{
-            holder.binding.cbSelect.setVisibility(View.GONE);
-        }
         if(onClick != null){
             holder.binding.item.setOnClickListener(v ->
                     onClick.onActionResult(zone)
@@ -86,7 +80,7 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 return true;
             });
         }
-        holder.setData(zone);
+        holder.setData(zone, showCheckMark);
     }
 
     @Override public int getItemCount() {
@@ -151,10 +145,36 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
             initMap();
         }
 
-        public void setData(LandZone zone){
+        public void setData(LandZone zone, boolean showCheckMark){
             if(zone == null) return;
             if(zone.getData() == null) return;
 
+            String display = zone.toString();
+            binding.tvLandName.setText(display);
+            binding.tvLandName.setSelected(true);
+            binding.cbSelect.setChecked(zone.isSelected());
+            if(showCheckMark){
+                binding.cbSelect.setVisibility(View.VISIBLE);
+                if(zone.isSelected()){
+                    binding.getRoot().setStrokeWidth(UIUtil.dpToPx(binding.getRoot().getContext(), 2));
+                }else{
+                    binding.getRoot().setStrokeWidth(0);
+                }
+            }else{
+                binding.cbSelect.setVisibility(View.GONE);
+                binding.getRoot().setStrokeWidth(0);
+            }
+            ColorData color = zone.getData().getColor();
+            if(color != null){
+                binding.getRoot().setCardBackgroundColor(color.getColor());
+                if(UIUtil.showBlackText(color)){
+                    binding.tvLandName.setTextColor(Color.BLACK);
+                    binding.cbSelect.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+                }else{
+                    binding.tvLandName.setTextColor(Color.WHITE);
+                    binding.cbSelect.setButtonTintList(ColorStateList.valueOf(Color.WHITE));
+                }
+            }
             this.zone = zone.getData();
             initMap();
         }
