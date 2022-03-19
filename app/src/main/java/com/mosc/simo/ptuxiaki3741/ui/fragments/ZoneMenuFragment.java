@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -256,15 +255,22 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             List<LandZone> selectedZones = getSelectedZones();
             if(selectedZones.size()>0){
                 if(vmLands != null){
-                    vmLands.removeZones(selectedZones);
+                    String display;
+                    if(vmLands.removeZones(selectedZones)){
+                        display = getString(R.string.zone_delete);
+                    }else{
+                        display = getString(R.string.zone_delete_error);
+                    }
                     if(getActivity() != null)
-                        getActivity().runOnUiThread(()->
-                                Snackbar.make(
-                                        binding.getRoot(),
-                                        R.string.zone_delete,
-                                        Snackbar.LENGTH_SHORT
-                                ).show()
-                        );
+                        getActivity().runOnUiThread(()-> {
+                            Snackbar snackbar = Snackbar.make(
+                                    binding.clSnackBarContainer,
+                                    display,
+                                    Snackbar.LENGTH_LONG
+                            );
+                            snackbar.setAction(getString(R.string.okey),v->{});
+                            snackbar.show();
+                        });
                 }
             }
             if(getActivity() != null)
@@ -322,7 +328,6 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     private void exportAction(List<LandZone> exportZones, FileType exportAction){
         if(exportZones.size()>0 && exportAction != FileType.NONE){
             writeOnFile(exportZones, exportAction);
-            Snackbar.make(binding.getRoot(), R.string.zone_export, Snackbar.LENGTH_SHORT).show();
         }
     }
     private void writeOnFile(List<LandZone> zones, FileType action) {
@@ -360,11 +365,19 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                             fileName = fileName+".txt";
                             break;
                     }
+                    String display;
                     if(FileUtil.createFile(output, fileName, path)){
-                        Toast.makeText(getContext(), getString(R.string.file_created), Toast.LENGTH_SHORT).show();
+                        display = getString(R.string.zone_export);
                     }else{
-                        Toast.makeText(getContext(), getString(R.string.file_not_created), Toast.LENGTH_SHORT).show();
+                        display = getString(R.string.file_not_created);
                     }
+                    Snackbar snackbar = Snackbar.make(
+                            binding.clSnackBarContainer,
+                            display,
+                            Snackbar.LENGTH_LONG
+                    );
+                    snackbar.setAction(getString(R.string.okey),v->{});
+                    snackbar.show();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "writeOnFile: ", e);

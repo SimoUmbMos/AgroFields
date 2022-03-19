@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -166,9 +167,10 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
         if(binding == null) return;
         Menu sideMenu = binding.navCalendarMenu.getMenu();
         sideMenu.clear();
-        sideMenu.add(Menu.NONE, show_all_id, Menu.NONE, getString(R.string.all_filter_side_label));
+        SubMenu subMenu = sideMenu.addSubMenu(getString(R.string.event_filter_side_label));
+        subMenu.add(Menu.NONE, show_all_id, Menu.NONE, getString(R.string.all_filter_side_label));
         for(int i = 0; i < categories.size(); i++){
-            sideMenu.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
+            subMenu.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
         }
     }
 

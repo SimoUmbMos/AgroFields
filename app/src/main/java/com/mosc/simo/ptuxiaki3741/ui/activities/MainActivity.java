@@ -13,8 +13,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
@@ -23,6 +23,7 @@ import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
+    private ActivityMainBinding binding;
     private NavHostFragment navHostFragment;
     private NotificationManager notificationManager;
     private FragmentBackPress fragmentBackPress;
@@ -36,11 +37,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         init();
         navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nhfMainNav);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 
     @Override
@@ -60,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             doubleBackToExit = true;
             new Handler().postDelayed(() -> doubleBackToExit=false, AppValues.doubleTapBack);
-            showToast(getResources().getText(R.string.double_tap_exit));
+            showSnackBar(getResources().getText(R.string.double_tap_exit));
         }
     }
 
@@ -113,8 +120,9 @@ public class MainActivity extends AppCompatActivity {
         return notificationManager;
     }
 
-    public void showToast(CharSequence text) {
-        Toast.makeText(this,text.toString(),Toast.LENGTH_SHORT).show();
+    public void showSnackBar(CharSequence text) {
+        Snackbar snackbar = Snackbar.make(binding.clSnackBarContainer,text,Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     public void setOverrideDoubleBack(boolean overrideDoubleBack){

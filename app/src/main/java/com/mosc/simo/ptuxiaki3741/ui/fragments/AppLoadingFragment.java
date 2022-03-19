@@ -17,11 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoadingBinding;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppLoadingFragment extends Fragment {
+    private FragmentLoadingBinding binding;
     public static final String TAG = "LoadingFragment";
     private Intent intent;
 
@@ -43,9 +43,8 @@ public class AppLoadingFragment extends Fragment {
             this::handleFileAction
     );
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_loading,container,false);
+    public AppLoadingFragment(){
+        super(R.layout.fragment_loading);
     }
 
     @Override
@@ -107,17 +106,14 @@ public class AppLoadingFragment extends Fragment {
                     toMapPreview(activity,data);
                 }else{
                     if(getActivity() != null){
-                        if(getActivity().getClass() == MainActivity.class){
-                            MainActivity mainActivity = (MainActivity) getActivity();
-                            mainActivity.runOnUiThread(()->{
-                                Toast.makeText(
-                                        mainActivity,
-                                        getText(R.string.file_input_error),
-                                        Toast.LENGTH_SHORT
-                                ).show();
-                                mainActivity.finish();
-                            });
-                        }
+                        getActivity().runOnUiThread(()->{
+                            Toast.makeText(
+                                    getActivity(),
+                                    getText(R.string.file_input_error),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            getActivity().finish();
+                        });
                     }
                 }
             }).start();

@@ -10,6 +10,7 @@
     <string name="degree_info_par4" translatable="false">Παραδοτέο το βιβλίο της πτυχιακής</string>
     <string name="degree_info_par5" translatable="false">Απαιτούμενος εξοπλισμός : Java, Eclipse, Android Studio, MySQL</string>
     <string name="degree_info_sign" translatable="false">Δρ. Θεόδωρος Λάντζος</string>
+    <string name="okey" translatable="false">OK</string>
     <!-- translatable -->
     <!-- Common -->
     <string name="land_history">Lands History</string>
@@ -69,7 +70,6 @@
     <string name="clear_points">Delete All Points</string>
     <string name="reset_points">Reset All Points</string>
     <string name="edit_color">Change Color</string>
-    <string name="some_lands_have_zones_error">Some Lands Have Zones</string>
     <string name="calendar_default_category">Schedule Job</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
@@ -83,6 +83,9 @@
     <!-- Land Menu Fragment -->
     <string name="delete_lands_title">Delete Lands</string>
     <string name="delete_lands_text">Are you sure you want to delete the selected lands?</string>
+    <string name="land_delete_successful">Lands Deleted</string>
+    <string name="some_lands_have_zones_error">Some Lands Have Zones</string>
+    <string name="land_export">Lands Exported</string>
     <!-- Land Info Fragment -->
     <string name="land_info_title">Land Info</string>
     <string name="land_name">Land Name</string>
@@ -125,6 +128,7 @@
     <string name="land_action_zone_deleted">Zone Deleted</string>
     <!-- Zone Land Selected Fragment -->
     <string name="zone_delete">Zones Deleted Successfully</string>
+    <string name="zone_delete_error">Some zones did not delete</string>
     <string name="zone_export">Zones Exported Successfully</string>
     <!-- Zone Preview Fragment -->
     <string name="new_zone_bar_label">New Zone</string>

@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -324,18 +323,22 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
         if(deleteLands.size()>0){
             AsyncTask.execute(()-> {
-                if(!vmLands.removeLands(deleteLands)){
-                    if(getActivity() != null){
-                        getActivity().runOnUiThread(()-> {
-                            Snackbar snackbar = Snackbar.make(
-                                    binding.getRoot(),
-                                    getString(R.string.some_lands_have_zones_error),
-                                    Snackbar.LENGTH_SHORT
-                            );
-                            snackbar.setAnchorView(binding.rvLandList);
-                            snackbar.show();
-                        });
-                    }
+                String display;
+                if(vmLands.removeLands(deleteLands)){
+                    display = getString(R.string.land_delete_successful);
+                }else{
+                    display = getString(R.string.some_lands_have_zones_error);
+                }
+                if(getActivity() != null){
+                    getActivity().runOnUiThread(()-> {
+                        Snackbar snackbar = Snackbar.make(
+                                binding.clSnackBarContainer,
+                                display,
+                                Snackbar.LENGTH_LONG
+                        );
+                        snackbar.setAction(getString(R.string.okey),v->{});
+                        snackbar.show();
+                    });
                 }
             });
         }
@@ -365,9 +368,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
 
     //data
-    private void deleteSelectedLands(){
-        removeSelectedLands();
-    }
     private void exportSelectedLands(FileType action){
         exportAction = action;
         exportLands.clear();
@@ -414,11 +414,19 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                             fileName = fileName+".txt";
                             break;
                     }
+                    String display;
                     if(FileUtil.createFile(output, fileName, path)){
-                        Toast.makeText(getContext(), getString(R.string.file_created), Toast.LENGTH_SHORT).show();
+                        display = getString(R.string.land_export);
                     }else{
-                        Toast.makeText(getContext(), getString(R.string.file_not_created), Toast.LENGTH_SHORT).show();
+                        display = getString(R.string.file_not_created);
                     }
+                    Snackbar snackbar = Snackbar.make(
+                            binding.clSnackBarContainer,
+                            display,
+                            Snackbar.LENGTH_LONG
+                    );
+                    snackbar.setAction(R.string.okey,v->{});
+                    snackbar.show();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "writeOnFile: ", e);
@@ -542,7 +550,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                     .setMessage(getString(R.string.delete_lands_text))
                     .setOnDismissListener(dialog -> setState(ListMenuState.NormalState))
                     .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
-                    .setPositiveButton(getString(R.string.accept), (d, w) -> deleteSelectedLands())
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> new Handler().post(this::removeSelectedLands))
                     .create();
             dialog.show();
         }

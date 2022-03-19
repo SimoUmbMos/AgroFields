@@ -61,7 +61,7 @@ public final class AppValues {
     /* Main Activity Values */
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";
-    public static final int doubleTapBack = 2750;
+    public static final int doubleTapBack = 3000;
     public static final String NotificationChannelID = "Location Notifications";
     public static final String CalendarNotificationChannelID = "Calendar Notifications";
 }

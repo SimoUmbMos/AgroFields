@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -325,6 +324,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private void saveZone(){
+        Snackbar sb = null;
         toggleDrawer(false);
         if(needSave()){
             if(isValidSave() && getActivity() != null){
@@ -346,6 +346,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                         border.clear();
                         border.addAll(tempBorder);
                     }
+                    Snackbar snackbar;
                     if(isValidSave()){
                             if(zone != null){
                                 zone.getData().setTitle(title);
@@ -357,14 +358,16 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             }
                             try{
                                 vmLands.saveZone(zone);
-                                Snackbar.make(binding.getRoot(), getString(R.string.zone_saved), Snackbar.LENGTH_LONG).show();
+                                snackbar = Snackbar.make(binding.clSnackBarContainer, getString(R.string.zone_saved), Snackbar.LENGTH_LONG);
                             }catch (Exception e){
                                 Log.e(TAG, "saveZone: ", e);
-                                Snackbar.make(binding.getRoot(), getString(R.string.zone_null_error), Snackbar.LENGTH_LONG).show();
+                                snackbar = Snackbar.make(binding.clSnackBarContainer, getString(R.string.zone_null_error), Snackbar.LENGTH_LONG);
                             }
                     }else{
-                        Snackbar.make(binding.getRoot(), getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG).show();
+                        snackbar = Snackbar.make(binding.clSnackBarContainer, getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG);
                     }
+                    snackbar.setAction(getString(R.string.okey),v->{});
+                    snackbar.show();
                     getActivity().runOnUiThread(()->{
                         updateMap();
                         binding.ibEditMenu.setEnabled(true);
@@ -373,10 +376,14 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     });
                 });
             }else{
-                Snackbar.make(binding.getRoot(), getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG).show();
+                sb = Snackbar.make(binding.clSnackBarContainer, getString(R.string.zone_no_valid), Snackbar.LENGTH_LONG);
             }
         }else{
-            Snackbar.make(binding.getRoot(), getString(R.string.zone_no_need_save), Snackbar.LENGTH_LONG).show();
+            sb = Snackbar.make(binding.clSnackBarContainer, getString(R.string.zone_no_need_save), Snackbar.LENGTH_LONG);
+        }
+        if(sb != null){
+            sb.setAction(getString(R.string.okey),view -> {});
+            sb.show();
         }
     }
 
@@ -419,7 +426,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
 
         if(error != null){
-            Snackbar.make(binding.getRoot(), error, Snackbar.LENGTH_LONG).show();
+            Snackbar snackbar = Snackbar.make(binding.clSnackBarContainer, error, Snackbar.LENGTH_LONG);
+            snackbar.setAction(getString(R.string.okey),view -> {});
+            snackbar.show();
             return false;
         }else{
             return true;
@@ -467,11 +476,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             dialog.dismiss();
                         }else{
                             if(getContext() != null){
-                                Toast.makeText(
-                                        getContext(),
-                                        getString(R.string.title_empty_error),
-                                        Toast.LENGTH_SHORT
-                                ).show();
+                                Snackbar snackbar = Snackbar.make(binding.clSnackBarContainer,R.string.title_empty_error,Snackbar.LENGTH_LONG);
+                                snackbar.setAction(R.string.okey,view->{});
+                                snackbar.show();
                             }else{
                                 dialog.dismiss();
                             }
@@ -511,24 +518,21 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                                 .trim()
                                 .replaceAll(" +", " ")
                                 .replaceAll("\n+", "\n");
+                        Snackbar bar = null;
                         if(DataUtil.lineCount(note)<=2){
                             if(note.length()<=100){
                                 this.note = note;
                                 updateUI();
                                 dialog.dismiss();
                             }else{
-                                Toast.makeText(
-                                        getContext(),
-                                        getString(R.string.note_max_char_error),
-                                        Toast.LENGTH_SHORT
-                                ).show();
+                                bar = Snackbar.make(binding.clSnackBarContainer,getString(R.string.note_max_char_error),Snackbar.LENGTH_LONG);
                             }
                         }else{
-                            Toast.makeText(
-                                    getContext(),
-                                    getString(R.string.note_max_line_error),
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            bar = Snackbar.make(binding.clSnackBarContainer,getString(R.string.note_max_line_error),Snackbar.LENGTH_LONG);
+                        }
+                        if(bar != null){
+                            bar.setAction(getString(R.string.okey),view->{});
+                            bar.show();
                         }
                     }
                 }else{
@@ -1085,8 +1089,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }else{
                 display = getText(R.string.zone_need_save_new);
             }
-            Snackbar.make(binding.getRoot(), display, Snackbar.LENGTH_SHORT)
-                    .show();
+            Snackbar snackbar = Snackbar.make(binding.clSnackBarContainer, display, Snackbar.LENGTH_SHORT);
+            snackbar.setAction(getString(R.string.okey),v->{});
+            snackbar.show();
             return false;
         }
         if(dialog != null){
