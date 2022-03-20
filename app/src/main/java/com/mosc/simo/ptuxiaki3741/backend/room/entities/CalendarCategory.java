@@ -2,7 +2,6 @@ package com.mosc.simo.ptuxiaki3741.backend.room.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;

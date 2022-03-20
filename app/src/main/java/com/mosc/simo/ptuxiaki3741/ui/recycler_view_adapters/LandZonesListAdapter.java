@@ -41,7 +41,7 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
     private final ActionResult<LandZone> onClick;
     private final ActionResult<LandZone> onLongClick;
     private boolean showCheckMark;
-    protected HashSet<MapView> mMapViews = new HashSet<>();
+    protected final HashSet<MapView> mMapViews = new HashSet<>();
 
     public LandZonesListAdapter(
             Land land,

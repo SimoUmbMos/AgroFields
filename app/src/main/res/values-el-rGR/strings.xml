@@ -204,4 +204,7 @@
     <string name="bulk_edit_change_color">Change Color</string>
     <string name="bulk_edit_all_tag">[All Data]</string>
     <string name="bulk_edit_empty_tag">[Without Tag]</string>
+    <string name="land_title_label_bulk_edit">title</string>
+    <string name="land_tags_label_bulk_edit">tags</string>
+    <string name="land_color_label_bulk_edit">color</string>
 </resources>

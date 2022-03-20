@@ -239,7 +239,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="title"
+            android:text="@string/land_title_label_bulk_edit"
             android:textAppearance="@style/TextAppearance.AppTheme.Body"
             android:textStyle="bold" />
 
@@ -253,7 +253,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="tags"
+            android:text="@string/land_tags_label_bulk_edit"
             android:textAppearance="@style/TextAppearance.AppTheme.Body"
             android:textStyle="bold" />
 
@@ -266,7 +266,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="color"
+            android:text="@string/land_color_label_bulk_edit"
             android:textAppearance="@style/TextAppearance.AppTheme.Body"
             android:textStyle="bold" />
     </LinearLayout>

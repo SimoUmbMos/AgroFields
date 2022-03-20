@@ -38,7 +38,7 @@ public class LandListAdapter extends RecyclerView.Adapter<LandListAdapter.LandIt
     private final ActionResult<Land> onLandClick;
     private final ActionResult<Land> onLandLongClick;
     private boolean showCheckMark;
-    protected HashSet<MapView> mMapViews = new HashSet<>();
+    protected final HashSet<MapView> mMapViews = new HashSet<>();
 
     public LandListAdapter(
             ActionResult<Land> onLandClick,
