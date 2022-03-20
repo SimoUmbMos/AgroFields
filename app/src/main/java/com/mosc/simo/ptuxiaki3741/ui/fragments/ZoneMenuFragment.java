@@ -56,6 +56,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     private Land selectedLand;
     private List<LandZone> data;
     private AlertDialog dialog;
+    private boolean doDialogUpdate;
     private int dialogChecked;
 
     private AppViewModel vmLands;
@@ -175,7 +176,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     }
     private void onZoneLongClick(LandZone zone) {
         if(state == ListMenuState.NormalState){
-            setState(ListMenuState.MultiSelectState);
+            setState(ListMenuState.MultiSelectState, true);
         }
         toggleZone(zone);
     }
@@ -196,14 +197,14 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         if(state == ListMenuState.MultiDeleteState || state == ListMenuState.MultiSelectState){
             showDeleteDialog();
         }else{
-            setState(ListMenuState.MultiDeleteState);
+            setState(ListMenuState.MultiDeleteState, true);
         }
     }
     private void onExportClick() {
         if(state == ListMenuState.MultiExportState || state == ListMenuState.MultiSelectState){
             showExportDialog();
         }else{
-            setState(ListMenuState.MultiExportState);
+            setState(ListMenuState.MultiExportState, true);
         }
     }
 
@@ -212,7 +213,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         zone.setSelected(!zone.isSelected());
         adapter.notifyItemChanged(data.indexOf(zone));
         if(state == ListMenuState.MultiSelectState && areNonZoneSelected()){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
         }
     }
     private void toggleAllZone() {
@@ -222,7 +223,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             selectAllZones();
         }
         if(getSelectedZones().size() == 0 && state == ListMenuState.MultiSelectState){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
         }
     }
     private void selectAllZones() {
@@ -270,7 +271,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     //actions relative
     private void showDeleteDialog(){
         if(getSelectedZones().size() == 0 ){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
             return;
         }
         if(getContext() != null){
@@ -279,13 +280,22 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                     dialog.dismiss();
                 dialog = null;
             }
+            doDialogUpdate = true;
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
                     .setIcon(R.drawable.ic_menu_delete)
                     .setTitle(getString(R.string.delete_lands_title))
                     .setMessage(getString(R.string.delete_lands_text))
-                    .setOnDismissListener(dialog -> setState(ListMenuState.NormalState))
-                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
-                    .setPositiveButton(getString(R.string.accept), (d, w) -> deleteAction())
+                    .setOnDismissListener(dialog -> {
+                        if(doDialogUpdate) setState(ListMenuState.NormalState, true);
+                    })
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> {
+                        doDialogUpdate = true;
+                        d.cancel();
+                    })
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> {
+                        doDialogUpdate = false;
+                        deleteAction();
+                    })
                     .create();
             dialog.show();
         }
@@ -302,26 +312,18 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                         display = getString(R.string.zone_delete_error);
                     }
                     if(getActivity() != null)
-                        getActivity().runOnUiThread(()-> {
-                            Snackbar snackbar = Snackbar.make(
-                                    binding.clSnackBarContainer,
-                                    display,
-                                    Snackbar.LENGTH_LONG
-                            );
-                            snackbar.setAction(getString(R.string.okey),v->{});
-                            snackbar.show();
-                        });
+                        getActivity().runOnUiThread(()-> showSnackBar(display));
                 }
             }
             if(getActivity() != null)
                 getActivity().runOnUiThread(()->
-                        setState(ListMenuState.NormalState)
+                        setState(ListMenuState.NormalState, false)
                 );
         });
     }
     private void showExportDialog(){
         if(getSelectedZones().size() == 0 ){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
             return;
         }
         if(getContext() != null){
@@ -330,15 +332,22 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                     dialog.dismiss();
                 dialog = null;
             }
+            doDialogUpdate = true;
             dialogChecked = 0;
             String[] dataTypes = {"KML","GeoJson","GML","Well Known Text"};
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setIcon(R.drawable.ic_menu_export)
                     .setTitle(getString(R.string.file_type_select_title))
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
-                    .setOnDismissListener(dialog -> setState(ListMenuState.NormalState))
-                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setOnDismissListener(dialog -> {
+                        if(doDialogUpdate) setState(ListMenuState.NormalState, true);
+                    })
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> {
+                        doDialogUpdate = true;
+                        d.cancel();
+                    })
                     .setPositiveButton(getString(R.string.accept), (d, w) -> {
+                        doDialogUpdate = false;
                         switch (dialogChecked) {
                             case 0:
                                 exportSelectedZones(FileType.KML);
@@ -365,10 +374,15 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         exportZones = new ArrayList<>(getSelectedZones());
         exportAction = action;
         deselectAllZones();
-        if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
-            permissionWriteChecker.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        setState(ListMenuState.NormalState, false);
+        if(exportZones.size()>0 && exportAction != FileType.NONE){
+            if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
+                permissionWriteChecker.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }else{
+                onPermissionWriteResult(true);
+            }
         }else{
-            onPermissionWriteResult(true);
+            onPermissionWriteResult(false);
         }
     }
     private void exportAction(){
@@ -390,6 +404,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             landTitle = landTitle.replaceAll("\\s{2,}", " ").trim();
             landTitle = landTitle.replaceAll(" ","_");
             String fileName = landTitle+"_"+(System.currentTimeMillis()/1000)+"_"+zones.size();
+            String display;
             try{
                 boolean isPathCreated = false, pathExist = path.exists();
                 if (!pathExist) {
@@ -416,23 +431,19 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                             fileName = fileName+".txt";
                             break;
                     }
-                    String display;
                     if(FileUtil.createFile(output, fileName, path)){
                         display = getString(R.string.zone_export);
                     }else{
                         display = getString(R.string.file_not_created);
                     }
-                    Snackbar snackbar = Snackbar.make(
-                            binding.clSnackBarContainer,
-                            display,
-                            Snackbar.LENGTH_LONG
-                    );
-                    snackbar.setAction(getString(R.string.okey),v->{});
-                    snackbar.show();
+                }else{
+                    display = getString(R.string.file_path_not_created);
                 }
             } catch (IOException e) {
                 Log.e(TAG, "writeOnFile: ", e);
+                display = getString(R.string.file_something_did_not_run);
             }
+            showSnackBar(display);
         }
     }
 
@@ -446,13 +457,13 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         }
         adapter.saveData(data,show);
     }
-    public void setState(ListMenuState state) {
+    public void setState(ListMenuState state, boolean doUpdate) {
         if(this.state == state) return;
 
         this.state = state;
         if(state == ListMenuState.NormalState){
             deselectAllZones();
-            binding.getRoot().transitionToStart();
+            if(doUpdate) binding.getRoot().transitionToStart();
             binding.ibClose.setVisibility(View.GONE);
             binding.ibClose1.setVisibility(View.VISIBLE);
         }else{
@@ -504,6 +515,16 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             binding.tvZonesListActionLabel.setVisibility(View.VISIBLE);
         }
     }
+    private void showSnackBar(String string) {
+        Log.d(TAG, "showSnackBar: "+string);
+        Snackbar snackbar = Snackbar.make(
+                binding.clSnackBarContainer,
+                string,
+                Snackbar.LENGTH_LONG
+        );
+        snackbar.setAction(getString(R.string.okey),v->{});
+        snackbar.show();
+    }
 
     //navigator relative
     private void toZoneSelected(@Nullable Activity activity, LandZone z) {
@@ -550,7 +571,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     @Override
     public boolean onBackPressed() {
         if(state != ListMenuState.NormalState){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
             return false;
         }
         return true;

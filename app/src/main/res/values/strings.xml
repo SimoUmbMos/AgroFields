@@ -46,6 +46,8 @@
     <string name="my_zones_label">My Zone\'s</string>
     <string name="file_created">File created</string>
     <string name="file_not_created">File not created</string>
+    <string name="file_path_not_created">File path not created</string>
+    <string name="file_something_did_not_run">Something has goes wrong, try again.</string>
     <string name="saving_label">Saving…</string>
     <string name="loading_label">Loading…</string>
     <string name="add">Add</string>

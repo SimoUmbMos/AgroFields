@@ -51,6 +51,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     private FragmentMenuLandBinding binding;
     private AlertDialog dialog;
+    private boolean doDialogUpdate;
 
     private List<Land> data = new ArrayList<>();
     private List<Land> exportLands;
@@ -155,7 +156,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     @Override
     public boolean onBackPressed() {
         if(state != ListMenuState.NormalState){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
             return false;
         }
         return true;
@@ -247,7 +248,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
     private void onLandLongClick(Land land) {
         if (state == ListMenuState.NormalState){
-            setState(ListMenuState.MultiSelectState);
+            setState(ListMenuState.MultiSelectState, true);
         }
         toggleSelectOnPosition(data.indexOf(land));
     }
@@ -260,14 +261,14 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(state == ListMenuState.MultiExportState || state == ListMenuState.MultiSelectState){
             actionExport();
         }else{
-            setState(ListMenuState.MultiExportState);
+            setState(ListMenuState.MultiExportState, true);
         }
     }
     private void onDeleteButtonClick(){
         if(state == ListMenuState.MultiDeleteState || state == ListMenuState.MultiSelectState){
             actionDelete();
         }else{
-            setState(ListMenuState.MultiDeleteState);
+            setState(ListMenuState.MultiDeleteState, true);
         }
     }
     private void onSelectAllButtonClick(){
@@ -282,7 +283,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     }
     private void onCloseButtonClick(){
         if(state != ListMenuState.NormalState){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
         }else{
             goBack();
         }
@@ -295,7 +296,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             adapter.notifyItemChanged(position);
         }
         if(returnSelectedLands().size() == 0 && state == ListMenuState.MultiSelectState){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
         }
     }
     private void toggleSelectAll(){
@@ -305,7 +306,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             selectAllLands();
         }
         if(returnSelectedLands().size() == 0 && state == ListMenuState.MultiSelectState){
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
         }
     }
     private boolean isAllSelected() {
@@ -340,12 +341,18 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         return result;
     }
     private void removeSelectedLands() {
+        if(getActivity() == null) {
+            setState(ListMenuState.NormalState, true);
+            return;
+        }
+        Activity activity = getActivity();
         List<Land> deleteLands = new ArrayList<>();
         for (Land land : data) {
             if (land.isSelected()) {
                 deleteLands.add(land);
             }
         }
+        setState(ListMenuState.NormalState, false);
         if(deleteLands.size()>0){
             AsyncTask.execute(()-> {
                 String display;
@@ -354,24 +361,16 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 }else{
                     display = getString(R.string.some_lands_have_zones_error);
                 }
-                if(getActivity() != null){
-                    getActivity().runOnUiThread(()-> {
-                        Snackbar snackbar = Snackbar.make(
-                                binding.clSnackBarContainer,
-                                display,
-                                Snackbar.LENGTH_LONG
-                        );
-                        snackbar.setAction(getString(R.string.okey),v->{});
-                        snackbar.show();
-                    });
-                }
+                activity.runOnUiThread(()-> showSnackBar(display));
             });
+        }else{
+            showSnackBar(getString(R.string.some_lands_have_zones_error));
         }
     }
 
     //action methods
     private void actionCreate(){
-        setState(ListMenuState.NormalState);
+        setState(ListMenuState.NormalState, true);
         toLandAdd(getActivity());
     }
     private void actionSelectAll(){
@@ -381,14 +380,14 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(returnSelectedLands().size() > 0){
             showExportDialog();
         }else{
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
         }
     }
     private void actionDelete(){
         if(returnSelectedLands().size() > 0){
             showDeleteDialog();
         }else{
-            setState(ListMenuState.NormalState);
+            setState(ListMenuState.NormalState, true);
         }
     }
 
@@ -401,6 +400,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         exportAction();
     }
     private void exportAction(){
+        setState(ListMenuState.NormalState, false);
         if(exportLands.size()>0 && exportAction != FileType.NONE){
             if(android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
                 permissionWriteChecker.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -418,6 +418,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                     Environment.DIRECTORY_DOCUMENTS
             );
             String fileName = (System.currentTimeMillis()/1000)+"_"+exportLands.size();
+            String display;
             try{
                 boolean isPathCreated = false, pathExist = path.exists();
                 if (!pathExist) {
@@ -444,23 +445,19 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                             fileName = fileName+".txt";
                             break;
                     }
-                    String display;
                     if(FileUtil.createFile(output, fileName, path)){
                         display = getString(R.string.land_export);
                     }else{
                         display = getString(R.string.file_not_created);
                     }
-                    Snackbar snackbar = Snackbar.make(
-                            binding.clSnackBarContainer,
-                            display,
-                            Snackbar.LENGTH_LONG
-                    );
-                    snackbar.setAction(R.string.okey,v->{});
-                    snackbar.show();
+                }else{
+                    display = getString(R.string.file_path_not_created);
                 }
             } catch (IOException e) {
                 Log.e(TAG, "writeOnFile: ", e);
+                display = getString(R.string.file_something_did_not_run);
             }
+            showSnackBar(display);
         }
         exportAction = FileType.NONE;
         exportLands.clear();
@@ -479,13 +476,13 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
         adapter.saveData(data,showCheckBox);
     }
-    private void setState(ListMenuState state) {
+    private void setState(ListMenuState state, boolean doUpdate) {
         if(this.state == state) return;
 
         this.state = state;
         if(state == ListMenuState.NormalState) {
             deselectAllLands();
-            binding.getRoot().transitionToStart();
+            if(doUpdate) binding.getRoot().transitionToStart();
             binding.ibClose.setVisibility(View.GONE);
             binding.ibClose1.setVisibility(View.VISIBLE);
         }else{
@@ -540,15 +537,22 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                     dialog.dismiss();
                 dialog = null;
             }
+            doDialogUpdate = true;
             dialogChecked = 0;
             String[] dataTypes = {"KML","GeoJson","GML","Well Known Text"};
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setIcon(R.drawable.ic_menu_export)
                     .setTitle(getString(R.string.file_type_select_title))
                     .setSingleChoiceItems(dataTypes, dialogChecked, (d, w) -> dialogChecked = w)
-                    .setOnDismissListener(dialog -> setState(ListMenuState.NormalState))
-                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setOnDismissListener(dialog -> {
+                        if(doDialogUpdate) setState(ListMenuState.NormalState, true);
+                    })
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> {
+                        doDialogUpdate = true;
+                        d.cancel();
+                    })
                     .setPositiveButton(getString(R.string.accept), (d, w) -> {
+                        doDialogUpdate = false;
                         switch (dialogChecked) {
                             case 0:
                                 exportSelectedLands(FileType.KML);
@@ -578,16 +582,37 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                     dialog.dismiss();
                 dialog = null;
             }
+            doDialogUpdate = true;
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
                     .setIcon(R.drawable.ic_menu_delete)
                     .setTitle(getString(R.string.delete_lands_title))
                     .setMessage(getString(R.string.delete_lands_text))
-                    .setOnDismissListener(dialog -> setState(ListMenuState.NormalState))
-                    .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
-                    .setPositiveButton(getString(R.string.accept), (d, w) -> new Handler().post(this::removeSelectedLands))
+                    .setOnDismissListener(dialog -> {
+                        if(doDialogUpdate){
+                            setState(ListMenuState.NormalState, true);
+                        }
+                    })
+                    .setNeutralButton(getString(R.string.cancel), (d, w) -> {
+                        doDialogUpdate = true;
+                        d.cancel();
+                    })
+                    .setPositiveButton(getString(R.string.accept), (d, w) -> {
+                        doDialogUpdate = false;
+                        removeSelectedLands();
+                    })
                     .create();
             dialog.show();
         }
+    }
+    private void showSnackBar(String string) {
+        Log.d(TAG, "showSnackBar: "+string);
+        Snackbar snackbar = Snackbar.make(
+                binding.clSnackBarContainer,
+                string,
+                Snackbar.LENGTH_LONG
+        );
+        snackbar.setAction(getString(R.string.okey),v->{});
+        snackbar.show();
     }
 
     //navigate

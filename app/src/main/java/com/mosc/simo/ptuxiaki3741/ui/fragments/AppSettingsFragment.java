@@ -181,9 +181,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
 
     @Override public boolean onBackPressed() {
         if(dataIsSaving || backThread != null){
-            Snackbar s = Snackbar.make(binding.clSnackBarContainer, R.string.open_xml_action_not_ended_error, Snackbar.LENGTH_SHORT);
-            s.setAction(getString(R.string.okey),v->{});
-            s.show();
+            showSnackBar(getString(R.string.open_xml_action_not_ended_error));
             return false;
         }
         return true;
@@ -361,9 +359,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             });
             backThread.start();
         }else{
-            Snackbar s = Snackbar.make(binding.clSnackBarContainer, R.string.open_xml_action_not_ended_error, Snackbar.LENGTH_SHORT);
-            s.setAction(getString(R.string.okey),v->{});
-            s.show();
+            showSnackBar(getString(R.string.open_xml_action_not_ended_error));
         }
     }
 
@@ -396,9 +392,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             });
             backThread.start();
         }else{
-            Snackbar s = Snackbar.make(binding.clSnackBarContainer, R.string.open_xml_action_not_ended_error, Snackbar.LENGTH_SHORT);
-            s.setAction(getString(R.string.okey),v->{});
-            s.show();
+            showSnackBar(getString(R.string.open_xml_action_not_ended_error));
         }
     }
 
@@ -411,9 +405,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 }else{
                     text = getString(R.string.export_db_fail);
                 }
-                Snackbar s = Snackbar.make(binding.clSnackBarContainer, text, Snackbar.LENGTH_LONG);
-                s.setAction(getString(R.string.okey),v->{});
-                s.show();
+                showSnackBar(text);
             });
         }
     }
@@ -489,9 +481,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             });
             backThread.start();
         }else{
-            Snackbar s = Snackbar.make(binding.clSnackBarContainer, R.string.open_xml_action_not_ended_error, Snackbar.LENGTH_SHORT);
-            s.setAction(getString(R.string.okey),view -> {});
-            s.show();
+            showSnackBar(getString(R.string.open_xml_action_not_ended_error));
         }
     }
 
@@ -528,11 +518,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 }else{
                     text = getString(R.string.import_db_failed);
                 }
-                Snackbar s = Snackbar.make(binding.clSnackBarContainer, text, Snackbar.LENGTH_LONG);
-                s.setAction(getString(R.string.okey),view -> {});
-                s.show();
+                showSnackBar(text);
             });
         }
+    }
+
+    private void showSnackBar(String text){
+        Log.d(TAG, "showSnackBar: "+text);
+        Snackbar s = Snackbar.make(binding.clSnackBarContainer, text, Snackbar.LENGTH_LONG);
+        s.setAction(getString(R.string.okey),view -> {});
+        s.show();
     }
 
     private void toBulkEdit(){
