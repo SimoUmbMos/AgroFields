@@ -47,7 +47,7 @@
         <item name="colorOnCalendarSurface">@color/dark_onSurface</item>
         <item name="colorCalendarSurfaceToday">@color/dark_secondaryContainer</item>
         <item name="colorOnCalendarSurfaceToday">@color/dark_onSecondaryContainer</item>
-        <item name="colorCalendarSurfaceDisable">@color/dark_onSurfaceVariant</item>
+        <item name="colorCalendarSurfaceDisable">@color/dark_surface</item>
         <!-- Fab Colors -->
         <item name="colorFabVariant">@color/dark_secondaryContainer</item>
         <item name="colorOnFabVariant">@color/dark_onSecondaryContainer</item>
