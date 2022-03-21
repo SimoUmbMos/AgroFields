@@ -175,29 +175,41 @@ public final class MapUtil {
         }
         return false;
     }
-    public static boolean contains(List<LatLng> p1,List<LatLng> p2){
-        if(p1 != null && p2 !=null){
-            for(LatLng p:p1){
-                if(contains(p,p2))
-                    return true;
-            }
-            if(p1.size()>1){
-                List<LatLng> line = new ArrayList<>();
-                for(int i = 0;i<p1.size();i++){
-                    line.clear();
-                    if(i < (p1.size()-1)){
-                        line.add(p1.get(i));
-                        line.add(p1.get(i+1));
-                    }else{
-                        line.add(p1.get(i));
-                        line.add(p1.get(0));
-                    }
-                    if(intersects(line,p2))
-                        return true;
+    public static boolean contains(List<LatLng> list1,List<LatLng> list2){
+        List<LatLng> p1;
+        if(list1 != null) p1 = new ArrayList<>(list1);
+        else p1 = new ArrayList<>();
+
+        List<LatLng> p2;
+        if(list2 != null) p2 = new ArrayList<>(list2);
+        else p2 = new ArrayList<>();
+
+        for(LatLng p:p1){
+            if(contains(p,p2))
+                return true;
+        }
+        if(p1.size()>1){
+            List<LatLng> line = new ArrayList<>();
+            for(int i = 0;i<p1.size();i++){
+                line.clear();
+                if(i < (p1.size()-1)){
+                    line.add(p1.get(i));
+                    line.add(p1.get(i+1));
+                }else{
+                    line.add(p1.get(i));
+                    line.add(p1.get(0));
                 }
+                if(intersects(line,p2))
+                    return true;
             }
         }
         return false;
+    }
+
+    public static boolean containsAll(List<LatLng> list1, List<LatLng> list2) {
+        if(disjoint(list1,list2)) return false;
+        List<LatLng> union = union(list1,list2);
+        return ListUtils.arraysMatch(union,list1);
     }
 
     public static boolean disjoint(List<LatLng> p1, List<LatLng> p2) {
@@ -360,6 +372,10 @@ public final class MapUtil {
     public static List<LatLng> getBiggerAreaZoneDifference(List<LatLng> p1, List<LatLng> p2){
         List<LatLng> ans = new ArrayList<>(p1);
         if(!MapUtil.contains(p1,p2)){
+            return ans;
+        }
+        if(containsAll(p2,p1)){
+            ans.clear();
             return ans;
         }
         List<List<LatLng>> tempBorders = MapUtil.difference(p1,p2);

@@ -336,16 +336,32 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
                     border.clear();
                     border.addAll(temp);
-                    for(LandZone zone : otherZones){
-                        temp.clear();
-                        temp.addAll(MapUtil.getBiggerAreaZoneDifference(border,zone.getData().getBorder()));
-                        border.clear();
-                        border.addAll(temp);
+                    if(border.size() != 0){
+                        for(LandZone zone : otherZones){
+                            if(zone == null || zone.getData() == null || zone.getData().getBorder() == null) continue;
+                            if(MapUtil.containsAll(border,zone.getData().getBorder())){
+                                border.clear();
+                                break;
+                            }
+                            temp.clear();
+                            temp.addAll(MapUtil.getBiggerAreaZoneDifference(border,zone.getData().getBorder()));
+                            border.clear();
+                            border.addAll(temp);
+                            if(border.size() == 0) break;
+                        }
                     }
-                    for(List<LatLng> hole : land.getData().getHoles()){
-                        List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
-                        border.clear();
-                        border.addAll(tempBorder);
+                    if(border.size() != 0){
+                        for(List<LatLng> hole : land.getData().getHoles()){
+                            if(hole == null) continue;
+                            if(MapUtil.containsAll(border,hole)){
+                                border.clear();
+                                break;
+                            }
+                            List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
+                            border.clear();
+                            border.addAll(tempBorder);
+                            if(border.size() == 0) break;
+                        }
                     }
                     String snackDisplay;
                     if(isValidSave()){
