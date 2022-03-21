@@ -224,6 +224,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         binding.ibInfo.setOnClickListener(v->toDegreeInfo(getActivity()));
         binding.ibReset.setOnClickListener(v->factoryReset());
         binding.btnBulkEdit.setOnClickListener(v->toBulkEdit());
+        binding.btnCalendarCategories.setOnClickListener(v->toCalendarCategories());
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
         binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
 
@@ -528,6 +529,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         Snackbar s = Snackbar.make(binding.clSnackBarContainer, text, Snackbar.LENGTH_LONG);
         s.setAction(getString(R.string.okey),view -> {});
         s.show();
+    }
+
+    private void toCalendarCategories(){
+        FragmentActivity activity = getActivity();
+        if(activity == null) return;
+        activity.runOnUiThread(()-> {
+            NavController nav = UIUtil.getNavController(this,R.id.AppSettingsFragment);
+            if(nav != null)
+                nav.navigate(R.id.toCalendarCategories);
+        });
     }
 
     private void toBulkEdit(){

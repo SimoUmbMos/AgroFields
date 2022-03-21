@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/fragment_calendar_categories_scene"
+    tools:context=".ui.fragments.CalendarCategoriesFragment">
+
+    <ImageButton
+        android:id="@+id/ibClose"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:padding="14dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="@string/notification_categories_fragment_title"
+        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+        app:layout_constraintEnd_toStartOf="@+id/ibSelectAll"
+        app:layout_constraintStart_toEndOf="@+id/ibClose"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/ibSelectAll"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:padding="14dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_select_all"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvTitle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCalendarCategories"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        tools:listitem="@layout/view_holder_notification_category" />
+
+    <TextView
+        android:id="@+id/tvCategoriesListActionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_list"
+        app:layout_constraintBottom_toBottomOf="@+id/rvCalendarCategories"
+        app:layout_constraintEnd_toEndOf="@+id/rvCalendarCategories"
+        app:layout_constraintStart_toStartOf="@+id/rvCalendarCategories"
+        app:layout_constraintTop_toTopOf="@+id/rvCalendarCategories" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:clickable="true"
+        android:src="@drawable/ic_menu_add"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/fabToggleMenu"
+        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+        app:theme="@style/FabVariant" />
+
+    <TextView
+        android:id="@+id/tvAddLabel"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:alpha="0"
+        android:background="@drawable/bg_round"
+        android:backgroundTint="?attr/colorFabVariant"
+        android:elevation="6dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:text="@string/add"
+        android:textColor="?attr/colorOnFabVariant"
+        app:layout_constraintBottom_toBottomOf="@id/fabAdd"
+        app:layout_constraintEnd_toStartOf="@id/fabAdd"
+        app:layout_constraintTop_toTopOf="@id/fabAdd" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:alpha="0"
+        android:clickable="true"
+        android:src="@drawable/ic_drawer_menu_delete"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/fabAdd"
+        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+        app:theme="@style/FabVariantError" />
+
+    <TextView
+        android:id="@+id/tvDeleteLabel"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:alpha="0"
+        android:background="@drawable/bg_round"
+        android:backgroundTint="?attr/colorFabVariantError"
+        android:elevation="6dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:text="@string/delete"
+        android:textColor="?attr/colorOnFabVariantError"
+        app:layout_constraintBottom_toBottomOf="@id/fabDelete"
+        app:layout_constraintEnd_toStartOf="@id/fabDelete"
+        app:layout_constraintTop_toTopOf="@id/fabDelete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabToggleMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_menu_menu"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/clSnackBarContainer"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/clSnackBarContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

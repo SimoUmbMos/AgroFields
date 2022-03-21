@@ -394,13 +394,28 @@ public class AppViewModel extends AndroidViewModel {
         populateLists();
     }
 
-    void saveCalendarCategory(CalendarCategory category){
+    public void saveCalendarCategory(CalendarCategory category){
         if(category == null) return;
         appRepository.saveCalendarCategory(category);
+        populateLists();
     }
-    void deleteCalendarCategory(CalendarCategory category){
+    public void removeCalendarCategory(CalendarCategory category){
         if(category == null) return;
         appRepository.deleteCalendarCategory(category);
+        populateLists();
+    }
+    public void removeCalendarCategories(List<CalendarCategory> categories) {
+        if(categories == null) return;
+        for(CalendarCategory category : categories){
+            if(category == null) continue;
+            if(!appRepository.calendarCategoryHasNotifications(category.getId())) appRepository.deleteCalendarCategory(category);
+        }
+        populateLists();
+    }
+
+    public boolean calendarCategoryHasNotifications(CalendarCategory category) {
+        if(category == null) return false;
+        return appRepository.calendarCategoryHasNotifications(category.getId());
     }
 
     private void importLand(Land land){

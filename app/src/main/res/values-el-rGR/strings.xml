@@ -118,6 +118,8 @@
     <string name="land_action_zone_imported">Εισαγωγή Ζώνης</string>
     <string name="land_action_zone_deleted">Διαγράφη Ζώνης</string>
     <!-- Zone Land Selected Fragment -->
+    <string name="delete_zone_dialog_title">Delete Zone\'s</string>
+    <string name="delete_zone_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
     <string name="zone_delete">Οι περιοχές διαγράφηκαν με επιτυχία</string>
     <string name="zone_delete_error">Some zones did not delete</string>
     <string name="zone_export">Οι περιοχές εξήχθησαν με επιτυχία</string>
@@ -157,6 +159,7 @@
         <item>Σκοτεινό Θέμα</item>
     </string-array>
     <string name="bulk_edit_button_label">Μαζική Επεξεργασία Δεδομένων</string>
+    <string name="calendar_categories_button_label">Calendar Categories</string>
     <string name="import_database_button_label">Εισαγωγή Χωραφιών</string>
     <string name="export_database_button_label">Εξαγωγή Χωραφιών</string>
     <string name="import_db_success">Τα δεδομένα ενημερώθηκαν</string>
@@ -207,4 +210,11 @@
     <string name="land_title_label_bulk_edit">title</string>
     <string name="land_tags_label_bulk_edit">tags</string>
     <string name="land_color_label_bulk_edit">color</string>
+    <!-- Categories List Fragment -->
+    <string name="notification_categories_fragment_title">Notification Categories</string>
+    <string name="removed_all_categories">Removed all the selected categories</string>
+    <string name="removed_some_categories">Some selected categories have notifications</string>
+    <string name="removed_none_categories">All selected categories have notifications</string>
+    <string name="delete_calendar_categories_title">Delete Category</string>
+    <string name="delete_calendar_categories_text">Are you sure you want to delete the selected categories?</string>
 </resources>

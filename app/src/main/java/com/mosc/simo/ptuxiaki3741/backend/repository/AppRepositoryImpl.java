@@ -362,4 +362,11 @@ public class AppRepositoryImpl implements AppRepository {
         if(category != null)
             db.calendarCategoriesDao().delete(category);
     }
+
+    @Override
+    public boolean calendarCategoryHasNotifications(long categoryID) {
+        List<CalendarNotification> notifications = db.calendarNotificationDao().getNotificationsByCategory(categoryID);
+        if(notifications == null) return false;
+        return notifications.size() > 0;
+    }
 }

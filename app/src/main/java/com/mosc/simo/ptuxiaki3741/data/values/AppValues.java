@@ -36,6 +36,7 @@ public final class AppValues {
     public static final String argIsHistory = "is_history";
     public static final String argDate = "calendar_date";
     public static final String argNotification = "calendar_notification";
+    public static final String argCalendarCategory = "calendar_category";
     public static final String argListView = "calendar_list_view";
     /* Land Map Editor Fragment Values */
     public static final double distanceToMapActionKM = 100;

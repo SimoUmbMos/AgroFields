@@ -21,6 +21,10 @@ public interface CalendarNotificationDao {
             "Where CalendarNotification.ID = :id")
     CalendarNotification getNotificationById(long id);
 
+    @Query("Select * From CalendarNotification " +
+            "Where CalendarNotification.CategoryID = :categoryID")
+    List<CalendarNotification> getNotificationsByCategory(long categoryID);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(CalendarNotification notification);
 

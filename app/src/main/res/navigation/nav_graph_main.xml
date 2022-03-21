@@ -15,6 +15,9 @@
         <action
             android:id="@+id/toBulkEditor"
             app:destination="@id/BulkEditFragment" />
+        <action
+            android:id="@+id/toCalendarCategories"
+            app:destination="@id/CalendarCategoriesMenu" />
     </fragment>
     <fragment android:id="@+id/DegreeInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppInfoFragment"
@@ -184,5 +187,10 @@
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.BulkEditFragment"
         android:label="fragment_bulk_edit"
         tools:layout="@layout/fragment_bulk_edit" />
+    <fragment
+        android:id="@+id/CalendarCategoriesMenu"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarCategoriesFragment"
+        android:label="fragment_calendar_categories"
+        tools:layout="@layout/fragment_calendar_categories" />
 
 </navigation>

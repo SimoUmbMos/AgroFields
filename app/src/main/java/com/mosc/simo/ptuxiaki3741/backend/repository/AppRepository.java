@@ -44,4 +44,6 @@ public interface AppRepository {
     List<CalendarCategory> getCalendarCategories();
     void saveCalendarCategory(CalendarCategory category);
     void deleteCalendarCategory(CalendarCategory category);
+
+    boolean calendarCategoryHasNotifications(long categoryID);
 }

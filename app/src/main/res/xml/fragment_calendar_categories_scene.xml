@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="240">
+        <KeyFrameSet>
+            <KeyAttribute
+                motion:motionTarget="@id/fabAdd"
+                motion:framePosition="30"
+                android:alpha="0.0" />
+            <KeyAttribute
+                motion:motionTarget="@id/tvAddLabel"
+                motion:framePosition="80"
+                android:alpha="0.0"
+                android:scaleX="0.0"
+                android:scaleY="0.0"/>
+            <KeyAttribute
+                motion:motionTarget="@id/tvDeleteLabel"
+                motion:framePosition="80"
+                android:alpha="0.0"
+                android:scaleX="0.0"
+                android:scaleY="0.0"/>
+        </KeyFrameSet>
+        <OnClick motion:targetId="@+id/fabToggleMenu" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint android:id="@id/ibSelectAll">
+            <PropertySet
+                motion:applyMotionScene="false"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@id/tvCategoriesListActionLabel">
+            <PropertySet
+                motion:applyMotionScene="false"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint android:id="@id/ibSelectAll">
+            <PropertySet
+                motion:applyMotionScene="false"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@id/tvCategoriesListActionLabel">
+            <PropertySet
+                motion:applyMotionScene="false"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:alpha="1"
+            android:clickable="true"
+            motion:layout_constraintEnd_toEndOf="@id/fabToggleMenu"
+            motion:layout_constraintBottom_toTopOf="@id/fabToggleMenu" />
+        <Constraint android:id="@+id/tvAddLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:alpha="1"
+            motion:layout_constraintBottom_toBottomOf="@id/fabAdd"
+            motion:layout_constraintEnd_toStartOf="@id/fabAdd"
+            motion:layout_constraintTop_toTopOf="@id/fabAdd"/>
+
+        <Constraint android:id="@+id/fabDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:alpha="1"
+            android:clickable="true"
+            motion:layout_constraintEnd_toEndOf="@id/fabToggleMenu"
+            motion:layout_constraintBottom_toTopOf="@id/fabAdd" />
+        <Constraint android:id="@+id/tvDeleteLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:alpha="1"
+            motion:layout_constraintBottom_toBottomOf="@id/fabDelete"
+            motion:layout_constraintEnd_toStartOf="@id/fabDelete"
+            motion:layout_constraintTop_toTopOf="@id/fabDelete"/>
+    </ConstraintSet>
+</MotionScene>
