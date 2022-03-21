@@ -126,7 +126,7 @@ public class CalendarCategoriesFragment extends Fragment implements FragmentBack
         data.clear();
         if(categories != null){
             for(CalendarCategory category : categories){
-                if(category == null || category.getId() <= 0) continue;
+                if(category == null || category.getId() == AppValues.defaultCalendarCategoryID) continue;
                 data.add(new CalendarCategoryEntity(category));
             }
         }

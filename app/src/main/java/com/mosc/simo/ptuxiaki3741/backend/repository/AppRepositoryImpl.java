@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.backend.repository;
 
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
@@ -292,24 +293,38 @@ public class AppRepositoryImpl implements AppRepository {
 
 
     @Override
-    public Map<LocalDate, List<CalendarNotification>> getNotifications() {
-        Map<LocalDate, List<CalendarNotification>> ans = new TreeMap<>();
+    public Map<LocalDate, List<CalendarEntity>> getNotifications() {
         List<CalendarNotification> calendarNotifications = db.calendarNotificationDao().getNotifications();
+        if(calendarNotifications == null){
+            calendarNotifications = new ArrayList<>();
+        }
+        List<CalendarCategory> categories = db.calendarCategoriesDao().getCalendarCategories();
+        if(categories == null){
+            categories = new ArrayList<>();
+        }
 
-        List<CalendarNotification> temp;
+        List<CalendarEntity> temp;
+        CalendarCategory tempCategory;
         LocalDate localDate;
-        if(calendarNotifications != null){
-            for(CalendarNotification calendarNotification : calendarNotifications){
-                if(calendarNotification.getDate() == null) continue;
 
-                localDate = DataUtil.dateToLocalDate(calendarNotification.getDate());
-                temp = ans.getOrDefault(localDate,null);
-                if(temp == null){
-                    temp = new ArrayList<>();
-                }
-                temp.add(calendarNotification);
-                ans.put(localDate,temp);
+        Map<LocalDate, List<CalendarEntity>> ans = new TreeMap<>();
+        for(CalendarNotification calendarNotification : calendarNotifications){
+            if(calendarNotification.getDate() == null) continue;
+
+            localDate = DataUtil.dateToLocalDate(calendarNotification.getDate());
+            temp = ans.getOrDefault(localDate,null);
+            if(temp == null){
+                temp = new ArrayList<>();
             }
+            tempCategory = null;
+            for(CalendarCategory category : categories){
+                if(category.getId() == calendarNotification.getCategoryID()){
+                    tempCategory = category;
+                    break;
+                }
+            }
+            temp.add(new CalendarEntity(tempCategory,calendarNotification));
+            ans.put(localDate,temp);
         }
 
         return ans;

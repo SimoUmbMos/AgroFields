@@ -18,13 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.NotificationsAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarEventListBinding;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
@@ -44,7 +44,7 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
     private NotificationsAdapter adapter;
     private CalendarCategory selectedCategory;
     private List<CalendarCategory> categories;
-    private List<CalendarNotification> notifications;
+    private List<CalendarEntity> notifications;
     private LocalDate date;
 
     @Override
@@ -139,10 +139,10 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
         updateCalendarList();
     }
 
-    private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
+    private void onNotificationsUpdate(Map<LocalDate, List<CalendarEntity>> notifications) {
         this.notifications.clear();
         if(notifications != null){
-            List<CalendarNotification> temp = notifications.getOrDefault(date,null);
+            List<CalendarEntity> temp = notifications.getOrDefault(date,null);
             if(temp != null) {
                 this.notifications.addAll(temp);
             }
@@ -176,15 +176,12 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
 
     private void updateCalendarList() {
         List<CalendarEntity> entities = new ArrayList<>();
-        for(CalendarNotification notification : notifications){
-            if(selectedCategory != null){
-                if(notification.getCategoryID() == selectedCategory.getId()) {
-                    entities.add(new CalendarEntity(selectedCategory, notification));
-                }
-            }else{
-                CalendarCategory category = getCategory(notification.getCategoryID());
-                if(category != null) entities.add(new CalendarEntity(category, notification));
+        if(selectedCategory != null){
+            for(CalendarEntity notification : notifications){
+                if(notification.getCategory().equals(selectedCategory)) entities.add(notification);
             }
+        }else{
+            entities.addAll(notifications);
         }
         if(entities.size() == 0){
             binding.tvNotificationsDisplay.setText(getString(R.string.empty_list));
@@ -193,13 +190,6 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
             binding.tvNotificationsDisplay.setVisibility(View.GONE);
         }
         adapter.saveData(entities);
-    }
-
-    private CalendarCategory getCategory(long categoryID) {
-        for(CalendarCategory category : categories){
-            if(category.getId() == categoryID) return category;
-        }
-        return null;
     }
 
     private void toggleNavBar(boolean toggle) {

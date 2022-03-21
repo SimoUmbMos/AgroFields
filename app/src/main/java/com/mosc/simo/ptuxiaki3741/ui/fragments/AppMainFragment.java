@@ -17,10 +17,10 @@ import android.view.ViewGroup;
 
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 
@@ -122,10 +122,10 @@ public class AppMainFragment extends Fragment{
         binding.tvLandsNumber.setText(descLands);
     }
 
-    private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> notifications) {
+    private void onNotificationsUpdate(Map<LocalDate, List<CalendarEntity>> notifications) {
         int todayEventsNumber = 0;
         if(notifications != null){
-            List<CalendarNotification> todayEvents = notifications.getOrDefault(LocalDate.now(),null);
+            List<CalendarEntity> todayEvents = notifications.getOrDefault(LocalDate.now(),null);
             if(todayEvents != null){
                 todayEventsNumber = todayEvents.size();
             }

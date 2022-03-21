@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.backend.repository;
 
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
@@ -36,7 +37,7 @@ public interface AppRepository {
     List<LandHistoryRecord> getLandRecords();
     void saveLandRecord(LandHistoryRecord record);
 
-    Map<LocalDate,List<CalendarNotification>> getNotifications();
+    Map<LocalDate,List<CalendarEntity>> getNotifications();
     CalendarNotification getNotification(long id);
     void saveNotification(CalendarNotification notification);
     void deleteNotification(CalendarNotification notification);

@@ -27,6 +27,7 @@ import com.kizitonwose.calendarview.model.DayOwner;
 import com.kizitonwose.calendarview.ui.DayBinder;
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -34,7 +35,6 @@ import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.CalendarAdapter;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentCalendarBinding;
 import com.mosc.simo.ptuxiaki3741.data.enums.CalendarShowFilter;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
@@ -62,9 +62,9 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
 
     private List<CalendarCategory> categories;
 
-    private TreeMap<LocalDate, List<CalendarNotification>> notifications;
-    private LinkedHashMap<LocalDate, List<CalendarNotification>> beforeData;
-    private LinkedHashMap<LocalDate, List<CalendarNotification>> afterData;
+    private TreeMap<LocalDate, List<CalendarEntity>> notifications;
+    private LinkedHashMap<LocalDate, List<CalendarEntity>> beforeData;
+    private LinkedHashMap<LocalDate, List<CalendarEntity>> afterData;
 
     private FragmentCalendarBinding binding;
     private YearMonth currentMonth;
@@ -172,7 +172,7 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
                 container.setToday(localDate2.equals(day.getDate()));
                 if(day.getOwner() == DayOwner.THIS_MONTH){
                     container.setEnable(true);
-                    List<CalendarNotification> temp =
+                    List<CalendarEntity> temp =
                             notifications.getOrDefault(day.getDate(),null);
                     if(temp != null){
                         container.setBadgeCount(temp.size());
@@ -265,11 +265,11 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         }
     }
 
-    private void onNotificationsUpdate(Map<LocalDate, List<CalendarNotification>> n) {
+    private void onNotificationsUpdate(Map<LocalDate, List<CalendarEntity>> n) {
         notifications.clear();
         if(n != null) notifications.putAll(n);
 
-        TreeMap<LocalDate, List<CalendarNotification>> tempData = new TreeMap<>();
+        TreeMap<LocalDate, List<CalendarEntity>> tempData = new TreeMap<>();
         beforeData.clear();
         for(LocalDate key : notifications.descendingKeySet()){
             if(key.isBefore(LocalDate.now())){
@@ -385,7 +385,7 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
     }
 
     private void updateCalendarList() {
-        LinkedHashMap<LocalDate, List<CalendarNotification>> displayList = new LinkedHashMap<>();
+        LinkedHashMap<LocalDate, List<CalendarEntity>> displayList = new LinkedHashMap<>();
         if(showFilter == CalendarShowFilter.BEFORE){
             displayList.putAll(beforeData);
         }else{
@@ -396,13 +396,12 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
 
         displayList.forEach((date, notifications)->{
             List<CalendarEntity> entities = new ArrayList<>();
-            for(CalendarNotification notification : notifications){
-                if(selectedCategory == null){
-                    CalendarCategory temp = getCategory(notification.getCategoryID());
-                    if(temp != null) entities.add(new CalendarEntity(temp, notification));
-                }else if(selectedCategory.getId() == notification.getCategoryID()) {
-                    entities.add(new CalendarEntity(selectedCategory, notification));
+            if(selectedCategory != null){
+                for(CalendarEntity notification : notifications){
+                    if(notification.getCategory().equals(selectedCategory)) entities.add(notification);
                 }
+            }else{
+                entities.addAll(notifications);
             }
             if(entities.size() > 0) listData.put(date, entities);
         });
@@ -415,13 +414,6 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
             binding.tvCalendarListLabel.setVisibility(View.GONE);
         }
         adapter.saveData(listData);
-    }
-
-    private CalendarCategory getCategory(long categoryID) {
-        for(CalendarCategory category : categories){
-            if(category.getId() == categoryID) return category;
-        }
-        return null;
     }
 
     private void goBack(){

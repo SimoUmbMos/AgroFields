@@ -10,18 +10,19 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandDBAction;
+import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
 import com.mosc.simo.ptuxiaki3741.backend.repository.AppRepositoryImpl;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.backend.repository.AppRepository;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.MapUtil;
@@ -45,7 +46,7 @@ public class AppViewModel extends AndroidViewModel {
     private final MutableLiveData<List<LandHistoryRecord>> landsHistory = new MutableLiveData<>();
 
     private final MutableLiveData<List<CalendarCategory>> calendarCategories = new MutableLiveData<>();
-    private final MutableLiveData<Map<LocalDate,List<CalendarNotification>>> notifications = new MutableLiveData<>();
+    private final MutableLiveData<Map<LocalDate,List<CalendarEntity>>> notifications = new MutableLiveData<>();
 
     public AppViewModel(@NonNull Application application) {
         super(application);
@@ -70,7 +71,7 @@ public class AppViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<CalendarCategory>> getCalendarCategories(){return calendarCategories;}
-    public LiveData<Map<LocalDate,List<CalendarNotification>>> getNotifications() {
+    public LiveData<Map<LocalDate,List<CalendarEntity>>> getNotifications() {
         return notifications;
     }
 
@@ -132,18 +133,21 @@ public class AppViewModel extends AndroidViewModel {
         List<CalendarCategory> categories = appRepository.getCalendarCategories();
         if(categories == null)
             categories = new ArrayList<>();
-        CalendarCategory defaultCategory = new CalendarCategory(
-                AppValues.defaultCalendarCategoryID,
-                getApplication().getResources().getString(R.string.calendar_default_category),
-                AppValues.defaultCalendarCategoryColor
-        );
-        categories.add(0,defaultCategory);
+        categories.add(0,getDefaultCategory());
         calendarCategories.postValue(categories);
     }
     private void populateNotifications() {
-        Map<LocalDate,List<CalendarNotification>> notificationsList = appRepository.getNotifications();
+        Map<LocalDate,List<CalendarEntity>> notificationsList = appRepository.getNotifications();
         if(notificationsList == null)
             notificationsList = new TreeMap<>();
+        CalendarCategory defaultCategory = getDefaultCategory();
+        notificationsList.forEach((date,notifications)->{
+            for(CalendarEntity entity : notifications){
+                if(entity.getCategory() != null) continue;
+                entity.setCategory(defaultCategory);
+                entity.getNotification().setCategoryID(defaultCategory.getId());
+            }
+        });
         notifications.postValue(notificationsList);
     }
 
@@ -394,6 +398,13 @@ public class AppViewModel extends AndroidViewModel {
         populateLists();
     }
 
+    public CalendarCategory getDefaultCategory(){
+        return new CalendarCategory(
+                AppValues.defaultCalendarCategoryID,
+                getApplication().getResources().getString(R.string.calendar_default_category),
+                AppValues.defaultCalendarCategoryColor
+        );
+    }
     public void saveCalendarCategory(CalendarCategory category){
         if(category == null) return;
         appRepository.saveCalendarCategory(category);
