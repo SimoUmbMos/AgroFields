@@ -106,12 +106,16 @@ public class CalendarCategoriesFragment extends Fragment implements FragmentBack
 
         updateUi();
 
+        final int maxColumnNumber = getResources().getInteger(R.integer.screenMaxColumnNumber);
         binding.rvCalendarCategories.post(()->{
             int maxWidth = getResources().getDimensionPixelSize(R.dimen.max_grid_width);
             int spanCount = 1;
             if(maxWidth != 0) {
                 spanCount = Math.floorDiv(binding.rvCalendarCategories.getWidth(), maxWidth);
                 if (spanCount == 0) spanCount = 1;
+            }
+            if(spanCount > maxColumnNumber){
+                spanCount = maxColumnNumber;
             }
             staggeredGridLayoutManager.setSpanCount(spanCount);
             staggeredGridLayoutManager.invalidateSpanAssignments();

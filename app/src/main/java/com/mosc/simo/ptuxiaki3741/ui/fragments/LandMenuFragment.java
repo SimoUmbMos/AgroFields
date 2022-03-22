@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
@@ -203,12 +202,16 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         updateListUi();
         updateUi();
 
+        final int maxColumnNumber = getResources().getInteger(R.integer.screenMaxColumnNumber);
         binding.rvLandList.post(()->{
             int maxWidth = getResources().getDimensionPixelSize(R.dimen.max_grid_width);
             int spanCount = 1;
             if(maxWidth != 0) {
                 spanCount = Math.floorDiv(binding.rvLandList.getWidth(), maxWidth);
                 if (spanCount == 0) spanCount = 1;
+            }
+            if(spanCount > maxColumnNumber){
+                spanCount = maxColumnNumber;
             }
             staggeredGridLayoutManager.setSpanCount(spanCount);
             staggeredGridLayoutManager.invalidateSpanAssignments();

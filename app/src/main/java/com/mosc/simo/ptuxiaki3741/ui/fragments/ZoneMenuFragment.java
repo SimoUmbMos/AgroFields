@@ -128,12 +128,16 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         adapter.saveData(data);
         binding.rvZoneList.setAdapter(adapter);
 
+        final int maxColumnNumber = getResources().getInteger(R.integer.screenMaxColumnNumber);
         binding.rvZoneList.post(()->{
             int maxWidth = getResources().getDimensionPixelSize(R.dimen.max_grid_width);
             int spanCount = 1;
             if(maxWidth != 0) {
                 spanCount = Math.floorDiv(binding.rvZoneList.getWidth(), maxWidth);
                 if (spanCount == 0) spanCount = 1;
+            }
+            if(spanCount > maxColumnNumber){
+                spanCount = maxColumnNumber;
             }
             gridLayoutManager.setSpanCount(spanCount);
             gridLayoutManager.invalidateSpanAssignments();
