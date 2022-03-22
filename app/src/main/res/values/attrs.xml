@@ -37,6 +37,4 @@
     <attr name="colorOnFabVariantAccent" format="color" />
     <attr name="colorFabVariantError" format="color" />
     <attr name="colorOnFabVariantError" format="color" />
-    <!-- Responsive metrics -->
-    <integer name="screenMaxColumnNumber">2</integer>
 </resources>
