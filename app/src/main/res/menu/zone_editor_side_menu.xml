@@ -23,6 +23,11 @@
                 android:orderInCategory="4"
                 android:icon="@drawable/ic_menu_save"
                 app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_delete_zone"
+                android:title="@string/delete_zone"
+                android:orderInCategory="5"
+                android:icon="@drawable/ic_menu_delete"
+                app:showAsAction="ifRoom|withText" />
         </menu>
     </item>
     <item android:title="@string/zone_border_actions_group_title">

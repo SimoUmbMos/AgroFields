@@ -137,6 +137,7 @@
     <!-- Zone Preview Fragment -->
     <string name="new_zone_bar_label">New Zone</string>
     <string name="save_zone">Save Zone</string>
+    <string name="delete_zone">Delete Zone</string>
     <string name="zone_actions_group_title">Zone Actions</string>
     <string name="edit_zone_title">Change Zone Title</string>
     <string name="zone_border_actions_group_title">Zone Border Actions</string>

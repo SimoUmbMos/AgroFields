@@ -126,6 +126,7 @@
     <!-- Zone Preview Fragment -->
     <string name="new_zone_bar_label">Νέα περιοχή</string>
     <string name="save_zone">Αποθήκευση περιοχής</string>
+    <string name="delete_zone">Delete Zone</string>
     <string name="zone_actions_group_title">Ενέργειες περιοχής</string>
     <string name="edit_zone_title">Αλλαγή τίτλου περιοχής</string>
     <string name="zone_border_actions_group_title">Ενέργειες σχήματος</string>

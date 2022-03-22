@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -184,6 +185,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         binding.btnClearState.setOnClickListener(v-> onStateUpdate(ZoneEditorState.NormalState));
         binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.ibToggleNote.setOnClickListener(v->toggleNote());
+        setupSideMenu();
         updateUI();
         MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvZonePreview.getMapAsync(this::initMap));
     }
@@ -324,6 +326,24 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
 
+    private void deleteZone(){
+        toggleDrawer(false);
+        if(vmLands == null) return;
+        if(loadingDialog != null) loadingDialog.openDialog();
+        if(zone != null && zone.getData() != null && zone.getData().getId() > 0){
+            AsyncTask.execute(()->{
+                if(vmLands.removeZone(zone)) {
+                    if(loadingDialog != null) loadingDialog.closeDialog();
+                    goBack();
+                }else{
+                    if(loadingDialog != null) loadingDialog.closeDialog();
+                }
+            });
+        }else{
+            if(loadingDialog != null) loadingDialog.closeDialog();
+        }
+    }
+
     private void saveZone(){
         String sb = null;
         toggleDrawer(false);
@@ -363,7 +383,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             if(border.size() == 0) break;
                         }
                     }
-                    String snackDisplay;
+                    String snackDisplay = getString(R.string.zone_null_error);
                     if(isValidSave()){
                             if(zone != null){
                                 zone.getData().setTitle(title);
@@ -375,21 +395,26 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             }
                             try{
                                 vmLands.saveZone(zone);
-                                snackDisplay = getString(R.string.zone_saved);
+                                snackDisplay = null;
                             }catch (Exception e){
                                 Log.e(TAG, "saveZone: ", e);
-                                snackDisplay = getString(R.string.zone_null_error);
                             }
                     }else{
                         snackDisplay = getString(R.string.zone_no_valid);
                     }
-                    showSnackBar(snackDisplay);
-                    getActivity().runOnUiThread(()->{
-                        updateMap();
-                        binding.ibEditMenu.setEnabled(true);
+                    if(snackDisplay != null){
+                        showSnackBar(snackDisplay);
+                        getActivity().runOnUiThread(()->{
+                            updateMap();
+                            binding.ibEditMenu.setEnabled(true);
+                            isSaving = false;
+                            if(loadingDialog != null) loadingDialog.closeDialog();
+                        });
+                    }else{
                         isSaving = false;
                         if(loadingDialog != null) loadingDialog.closeDialog();
-                    });
+                        goBack();
+                    }
                 });
             }else{
                 sb =  getString(R.string.zone_no_valid);
@@ -586,6 +611,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             case (R.id.toolbar_action_save_zone):
                 saveZone();
                 return true;
+            case (R.id.toolbar_action_delete_zone):
+                deleteZone();
+                return true;
             case (R.id.toolbar_action_change_zone_name):
                 showTitleDialog();
                 return true;
@@ -656,6 +684,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             border.addAll(zone.getData().getBorder());
         }
         initDrawMap();
+        setupSideMenu();
         updateUI();
     }
 
@@ -873,6 +902,18 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
 
+    private void setupSideMenu(){
+        Menu menu = binding.navZoneMenu.getMenu();
+        try{
+            MenuItem delete = menu.findItem(R.id.toolbar_action_delete_zone);
+            if(zone == null || zone.getData() == null){
+                delete.setEnabled(false);
+            }else{
+                delete.setEnabled(zone.getData().getId() > 0);
+            }
+        }catch (Exception ignore){}
+    }
+
     private void updateUI() {
         updateUIBasedOnState();
         if(note.isEmpty()){
@@ -1034,9 +1075,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private void goBack(){
-        forceBack = true;
-        if(getActivity() != null)
+        if(getActivity() == null) return;
+        getActivity().runOnUiThread(()->{
+            toggleDrawer(false);
+            forceBack = true;
             getActivity().onBackPressed();
+        });
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

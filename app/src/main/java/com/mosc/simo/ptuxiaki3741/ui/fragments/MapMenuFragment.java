@@ -101,6 +101,7 @@ public class MapMenuFragment extends Fragment{
         locationHelper.setLocationPermission(locationPermission);
         locationHelper.getLastKnownLocation();
         locationHelper.start();
+        if(locationPermission != LocationStates.DISABLE) binding.ibCameraMode.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -204,13 +205,13 @@ public class MapMenuFragment extends Fragment{
 
     private void initFragment() {
         binding.ibClose.setOnClickListener(v ->goBack());
+        binding.ibCameraReset.setOnClickListener(v -> zoomOnLands());
         binding.ibCameraMode.setOnClickListener(v -> {
             cameraFollow = !cameraFollow;
             isInit = true;
             zoomOnLands();
         });
-        binding.ibCenterCamera.setOnClickListener(v -> zoomOnLands());
-        binding.ibCenterCamera.setVisibility(View.GONE);
+        binding.ibCameraMode.setVisibility(View.GONE);
         binding.mvLiveMap.setVisibility(View.GONE);
         if(loadingDialog != null) loadingDialog.openDialog();
     }
@@ -227,7 +228,6 @@ public class MapMenuFragment extends Fragment{
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.075368, 23.553767),16));
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        binding.ibCenterCamera.setVisibility(View.VISIBLE);
 
         if(getActivity() == null) {
             goBack();
