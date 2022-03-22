@@ -83,6 +83,17 @@ public class CalendarNotification implements Parcelable {
         if(lid == 0) lid = null;
         if(zid == 0) zid = null;
     }
+    @Ignore
+    public CalendarNotification(CalendarNotification that) {
+        this.id = that.id;
+        this.categoryID = that.categoryID;
+        this.snapshot = that.snapshot;
+        this.lid = that.lid;
+        this.zid = that.zid;
+        this.title = that.title;
+        this.message = that.message;
+        this.date = that.date;
+    }
     public CalendarNotification(long id, long categoryID, long snapshot, Long lid, Long zid, String title, String message, Date date) {
         setId(id);
         setCategoryID(categoryID);

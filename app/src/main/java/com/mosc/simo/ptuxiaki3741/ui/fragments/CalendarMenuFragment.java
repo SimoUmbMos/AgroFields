@@ -435,7 +435,7 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
             getActivity().runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.CalendarFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argNotification, event);
+                bundle.putParcelable(AppValues.argNotification, new CalendarNotification(event));
                 if(nav != null)
                     nav.navigate(R.id.toCalendarEvent, bundle);
             });

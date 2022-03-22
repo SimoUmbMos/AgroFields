@@ -410,10 +410,13 @@ public class AppViewModel extends AndroidViewModel {
         appRepository.saveCalendarCategory(category);
         populateLists();
     }
-    public void removeCalendarCategory(CalendarCategory category){
-        if(category == null) return;
-        appRepository.deleteCalendarCategory(category);
-        populateLists();
+    public boolean removeCalendarCategory(CalendarCategory category){
+        if(category != null && !appRepository.calendarCategoryHasNotifications(category.getId())) {
+            appRepository.deleteCalendarCategory(category);
+            populateLists();
+            return true;
+        }
+        return false;
     }
     public void removeCalendarCategories(List<CalendarCategory> categories) {
         if(categories == null) return;

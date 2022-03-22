@@ -331,23 +331,17 @@ public class CalendarCategoriesFragment extends Fragment implements FragmentBack
         getActivity().runOnUiThread(()->{
             NavController nav = UIUtil.getNavController(this,R.id.CalendarCategoriesMenu);
             Bundle bundle = new Bundle();
-            bundle.putParcelable(AppValues.argCalendarCategory, item);
-            /*
-            todo: remove comment
+            bundle.putParcelable(AppValues.argCalendarCategory, new CalendarCategory(item));
             if(nav != null)
                 nav.navigate(R.id.toCalendarCategoryEditor, bundle);
-            */
         });
     }
     private void toCategoryCreator(){
         if(getActivity() == null) return;
         getActivity().runOnUiThread(()->{
             NavController nav = UIUtil.getNavController(this,R.id.CalendarCategoriesMenu);
-            /*
-            todo: remove comment
             if(nav != null)
                 nav.navigate(R.id.toCalendarCategoryEditor);
-            */
         });
     }
 }

@@ -33,6 +33,11 @@ public class Land implements Parcelable {
         selected = in.readByte() != 0;
         tag = in.readString();
     }
+    public Land(Land that) {
+        this.data = new LandData(that.data);
+        this.selected = that.selected;
+        this.tag = that.tag;
+    }
     public Land(String tag){
         this.data = null;
         this.selected=false;

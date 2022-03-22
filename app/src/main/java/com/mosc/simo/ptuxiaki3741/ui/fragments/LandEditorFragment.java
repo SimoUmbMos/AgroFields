@@ -1108,7 +1108,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MapLandEditorFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,currLand);
+                bundle.putParcelable(AppValues.argLand,new Land(currLand));
                 if(nav != null)
                     nav.navigate(R.id.toProfileLand,bundle);
             });

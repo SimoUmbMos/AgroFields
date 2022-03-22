@@ -379,7 +379,7 @@ public class MapFileFragment extends Fragment {
             activity.runOnUiThread(()->{
                 NavController nav = UIUtil.getNavController(this,R.id.MapFileFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand, new Land(landData));
+                bundle.putParcelable(AppValues.argLand, new Land(new LandData(landData)));
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });

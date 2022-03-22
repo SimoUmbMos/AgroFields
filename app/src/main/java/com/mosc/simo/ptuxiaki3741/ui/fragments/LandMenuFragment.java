@@ -627,7 +627,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MenuLandsFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,new Land(new LandData(land.getData())));
+                bundle.putParcelable(AppValues.argLand,new Land(land));
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);
             });

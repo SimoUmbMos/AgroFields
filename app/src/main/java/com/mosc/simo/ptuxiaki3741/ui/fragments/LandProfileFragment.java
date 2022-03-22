@@ -181,7 +181,7 @@ public class LandProfileFragment extends Fragment {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ProfileLandFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,land);
+                bundle.putParcelable(AppValues.argLand,new Land(land));
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });
@@ -192,7 +192,7 @@ public class LandProfileFragment extends Fragment {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ProfileLandFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,land);
+                bundle.putParcelable(AppValues.argLand,new Land(land));
                 bundle.putString(AppValues.argAddress,address);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);

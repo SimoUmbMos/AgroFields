@@ -248,7 +248,7 @@ public class LandPreviewFragment extends Fragment {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MapLandPreviewFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,currLand);
+                bundle.putParcelable(AppValues.argLand,new Land(currLand));
                 if(nav != null)
                     nav.navigate(R.id.toMapLandEditor,bundle);
             });
@@ -260,7 +260,7 @@ public class LandPreviewFragment extends Fragment {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this, R.id.MapLandPreviewFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand, currLand);
+                bundle.putParcelable(AppValues.argLand, new Land(currLand));
                 if(nav != null){
                     nav.navigate(R.id.toZonesLandSelected,bundle);
                 }
@@ -272,7 +272,7 @@ public class LandPreviewFragment extends Fragment {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.MapLandPreviewFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,currLand);
+                bundle.putParcelable(AppValues.argLand,new Land(currLand));
                 if(nav != null)
                     nav.navigate(R.id.toLandHistory,bundle);
             });

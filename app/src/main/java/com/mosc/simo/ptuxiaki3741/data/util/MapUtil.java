@@ -207,9 +207,22 @@ public final class MapUtil {
     }
 
     public static boolean containsAll(List<LatLng> list1, List<LatLng> list2) {
-        if(disjoint(list1,list2)) return false;
-        List<LatLng> union = union(list1,list2);
-        return ListUtils.arraysMatch(union,list1);
+        List<LatLng> p1 = new ArrayList<>();
+        if(list1 != null) p1.addAll(list1);
+        List<LatLng> p2 = new ArrayList<>();
+        if(list2 != null) p2.addAll(list2);
+
+        if(disjoint(p1,p2)) return false;
+
+        double areaDiff = area(p1);
+        double lengthDiff = length(p1);
+        List<LatLng> union = union(p1,p2);
+        List<LatLng> temp = DataUtil.removeSamePointStartEnd(union);
+        if(ListUtils.arraysMatch(temp,list1)) return true;
+
+        areaDiff = Math.abs(areaDiff - area(temp));
+        lengthDiff = Math.abs(lengthDiff - length(temp));
+        return areaDiff < 0.1 && lengthDiff < 0.1;
     }
 
     public static boolean disjoint(List<LatLng> p1, List<LatLng> p2) {
@@ -359,19 +372,27 @@ public final class MapUtil {
 
     public static List<LatLng> getBiggerAreaZoneIntersections(List<LatLng> p1, List<LatLng> p2){
         List<LatLng> ans = new ArrayList<>();
-        if(!MapUtil.contains(p1,p2)){
-            Log.d(TAG, "getBiggerAreaZoneIntersections: don't contains");
+        if(disjoint(p1,p2)){
             return ans;
         }
-        List<LatLng> tempBorders = MapUtil.intersection(p1,p2);
-        if(tempBorders.size()>0){
-            ans.addAll(tempBorders);
+        List<List<LatLng>> tempBorders = MapUtil.intersections(p1,p2);
+        double maxValue = 0;
+        int indexValue = -1;
+        for (int i = 0;i < tempBorders.size(); i++){
+            double tempValue = area(tempBorders.get(i));
+            if(tempValue > maxValue){
+                maxValue = tempValue;
+                indexValue = i;
+            }
+        }
+        if(indexValue >= 0 && indexValue < tempBorders.size()){
+            ans.addAll(tempBorders.get(indexValue));
         }
         return ans;
     }
     public static List<LatLng> getBiggerAreaZoneDifference(List<LatLng> p1, List<LatLng> p2){
         List<LatLng> ans = new ArrayList<>(p1);
-        if(!MapUtil.contains(p1,p2)){
+        if(disjoint(p1,p2)){
             return ans;
         }
         if(containsAll(p2,p1)){

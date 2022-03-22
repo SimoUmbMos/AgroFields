@@ -191,6 +191,15 @@
         android:id="@+id/CalendarCategoriesMenu"
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarCategoriesFragment"
         android:label="fragment_calendar_categories"
-        tools:layout="@layout/fragment_calendar_categories" />
+        tools:layout="@layout/fragment_calendar_categories" >
+        <action
+            android:id="@+id/toCalendarCategoryEditor"
+            app:destination="@id/CalendarCategoryEditor" />
+    </fragment>
+    <fragment
+        android:id="@+id/CalendarCategoryEditor"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarCategoryEditorFragment"
+        android:label="fragment_calendar_category_editor"
+        tools:layout="@layout/fragment_calendar_category_editor" />
 
 </navigation>

@@ -90,6 +90,13 @@ public final class DataUtil {
         ).trim();
         return ans.replaceAll(" +", " ");
     }
+    public static String removeSpecialCharactersWithoutSpaces(String string) {
+        String ans = string.replaceAll(
+                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
+                " "
+        ).trim();
+        return ans.replaceAll(" +", "_");
+    }
     public static String removeSpecialCharactersCSV(String string){
         String ans = string
                 .replaceAll("[@#€&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>.]", " ")
@@ -176,7 +183,7 @@ public final class DataUtil {
         AlarmManager am = (AlarmManager) ctx.getSystemService(Activity.ALARM_SERVICE);
 
         Intent intent = new Intent(ctx, CalendarReceiver.class);
-        intent.putExtra(AppValues.argNotification,n);
+        intent.putExtra(AppValues.argNotification,new CalendarNotification(n));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 ctx,
                 (int) n.getId(),
@@ -194,7 +201,7 @@ public final class DataUtil {
         AlarmManager am = (AlarmManager) ctx.getSystemService(Activity.ALARM_SERVICE);
 
         Intent intent = new Intent(ctx, CalendarReceiver.class);
-        intent.putExtra(AppValues.argNotification,n);
+        intent.putExtra(AppValues.argNotification,new CalendarNotification(n));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 ctx,
                 (int) n.getId(),

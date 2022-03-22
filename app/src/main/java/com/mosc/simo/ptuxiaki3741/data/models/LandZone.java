@@ -40,6 +40,12 @@ public class LandZone implements Parcelable {
         this.tag = "";
     }
 
+    public LandZone(LandZone that) {
+        this.data = new LandZoneData(that.data);
+        this.selected = that.selected;
+        this.tag = that.tag;
+    }
+
     public void setData(LandZoneData data) {
         this.data = data;
     }

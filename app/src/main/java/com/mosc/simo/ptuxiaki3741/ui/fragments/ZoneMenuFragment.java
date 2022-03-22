@@ -533,9 +533,9 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             activity.runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.ZonesLandSelectedFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argLand,selectedLand);
+                bundle.putParcelable(AppValues.argLand,new Land(selectedLand));
                 if(z != null){
-                    bundle.putParcelable(AppValues.argZone,z);
+                    bundle.putParcelable(AppValues.argZone,new LandZone(z));
                 }
                 if(nav != null){
                     nav.navigate(R.id.toLandPreview,bundle);

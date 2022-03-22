@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.mosc.simo.ptuxiaki3741.databinding.FragmentLoadingBinding;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppLoadingFragment extends Fragment {
-    private FragmentLoadingBinding binding;
     public static final String TAG = "LoadingFragment";
     private Intent intent;
 
@@ -130,15 +128,14 @@ public class AppLoadingFragment extends Fragment {
     }
 
     private void toMapPreview(Activity activity, ArrayList<LandData> data) {
-        if(activity != null){
-            Bundle args = new Bundle();
-            args.putParcelableArrayList(AppValues.argLands,data);
-            activity.runOnUiThread(()-> {
-                NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
-                if(nav != null)
-                    nav.navigate(R.id.toMapFile,args);
-            });
-        }
+        if(activity == null) return;
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(AppValues.argLands,data);
+        activity.runOnUiThread(()-> {
+            NavController nav = UIUtil.getNavController(this,R.id.LoadingFragment);
+            if(nav != null)
+                nav.navigate(R.id.toMapFile,args);
+        });
     }
 
 }

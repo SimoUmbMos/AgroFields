@@ -218,7 +218,7 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
             getActivity().runOnUiThread(()-> {
                 NavController nav = UIUtil.getNavController(this,R.id.CalendarEventListFragment);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AppValues.argNotification, notification);
+                bundle.putParcelable(AppValues.argNotification, new CalendarNotification(notification));
                 if(nav != null)
                     nav.navigate(R.id.toCalendarEvent, bundle);
             });

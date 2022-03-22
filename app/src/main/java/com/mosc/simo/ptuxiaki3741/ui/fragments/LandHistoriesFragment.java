@@ -175,7 +175,7 @@ public class LandHistoriesFragment extends Fragment {
                 NavController nav = UIUtil.getNavController(this,R.id.LandHistoryDeletedFragment);
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(AppValues.argIsHistory,true);
-                bundle.putParcelable(AppValues.argLand, land);
+                bundle.putParcelable(AppValues.argLand, new Land(land));
                 if(zones != null) bundle.putParcelableArrayList(AppValues.argZones, zones);
                 if(nav != null)
                     nav.navigate(R.id.toMapLandPreview,bundle);

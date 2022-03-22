@@ -217,4 +217,9 @@
     <string name="removed_none_categories">All selected categories have notifications</string>
     <string name="delete_calendar_categories_title">Delete Category</string>
     <string name="delete_calendar_categories_text">Are you sure you want to delete the selected categories?</string>
+    <!-- Categories Editor Fragment -->
+    <string name="calendar_category_editor_title_new">New Category</string>
+    <string name="calendar_category_editor_title_edit">Edit Category</string>
+    <string name="calendar_category_editor_edit_title">Category Name</string>
+    <string name="calendar_category_editor_edit_color">Category Color</string>
 </resources>
