@@ -112,10 +112,10 @@ public class AppViewModel extends AndroidViewModel {
         lands.postValue(landList);
     }
     private void populateLandsTags() {
-        List<String> snapshotsList = appRepository.getLandTags();
-        if(snapshotsList == null)
-            snapshotsList = new ArrayList<>();
-        landsTags.postValue(snapshotsList);
+        List<String> tagsList = appRepository.getLandTags();
+        if(tagsList == null)
+            tagsList = new ArrayList<>();
+        landsTags.postValue(tagsList);
     }
     private void populateLandZones(){
         Map<Long,List<LandZone>> zoneList = appRepository.getLandZones();

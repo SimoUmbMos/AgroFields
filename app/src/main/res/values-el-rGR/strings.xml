@@ -72,6 +72,9 @@
     <string name="main_menu_calendar_button">Ημερολόγιο</string>
     <string name="main_menu_land_button">Χωράφια</string>
     <!-- Land Menu Fragment -->
+    <string name="land_filter_title">Land Filter</string>
+    <string name="filter_lands_all_tag">[All Lands]</string>
+    <string name="filter_lands_empty_tag">[Empty tag]</string>
     <string name="delete_lands_title">Διαγραφή χωράφιων</string>
     <string name="delete_lands_text">Επιθυμείτε να διαγράψετε τα επιλεγμένα χωράφια;</string>
     <string name="land_delete_successful">Lands Deleted</string>
@@ -212,7 +215,7 @@
     <string name="land_tags_label_bulk_edit">tags</string>
     <string name="land_color_label_bulk_edit">color</string>
     <!-- Categories List Fragment -->
-    <string name="notification_categories_fragment_title">Notification Categories</string>
+    <string name="notification_categories_fragment_title">Calendar Categories</string>
     <string name="removed_all_categories">Removed all the selected categories</string>
     <string name="removed_some_categories">Some selected categories have notifications</string>
     <string name="removed_none_categories">All selected categories have notifications</string>

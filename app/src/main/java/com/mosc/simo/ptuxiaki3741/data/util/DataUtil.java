@@ -74,13 +74,11 @@ public final class DataUtil {
         String[] tags = in.split(",");
         for(String tag : tags){
             String comp = tag;
-            if(comp == null || comp.isEmpty()) comp = null;
-            if(comp != null) {
-                comp = comp.trim();
-            }
+            if(comp == null || comp.isEmpty()) continue;
+            comp = comp.trim();
             if(!ans.contains(comp)) ans.add(comp);
         }
-
+        if(ans.size() == 0) ans.add(null);
         return ans;
     }
     public static String removeSpecialCharacters(String string){

@@ -154,12 +154,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
         }
         if(zone != null && zone.getData() != null){
-            LandZoneData data = new LandZoneData(zone.getData());
-            zone = new LandZone(data);
+            zone = new LandZone(zone);
             title = zone.getData().getTitle();
             note = zone.getData().getNote();
-            color = zone.getData().getColor();
-            border.addAll(zone.getData().getBorder());
+            color = new ColorData(zone.getData().getColor().toString());
+            if(zone.getData().getBorder() != null) border.addAll(zone.getData().getBorder());
         }
     }
 
@@ -352,6 +351,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 isSaving = true;
                 binding.ibEditMenu.setEnabled(false);
                 AsyncTask.execute(()->{
+                    boolean doReset = false;
                     if(loadingDialog != null) loadingDialog.openDialog();
                     List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
                     border.clear();
@@ -361,6 +361,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             if(zone == null || zone.getData() == null || zone.getData().getBorder() == null) continue;
                             if(MapUtil.containsAll(border,zone.getData().getBorder())){
                                 border.clear();
+                                doReset = true;
                                 break;
                             }
                             temp.clear();
@@ -375,6 +376,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             if(hole == null) continue;
                             if(MapUtil.containsAll(border,hole)){
                                 border.clear();
+                                doReset = true;
                                 break;
                             }
                             List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
@@ -404,6 +406,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     }
                     if(snackDisplay != null){
                         showSnackBar(snackDisplay);
+                        if(doReset){
+                            border.clear();
+                            if(zone != null && zone.getData() != null && zone.getData().getBorder() != null){
+                                border.addAll(zone.getData().getBorder());
+                            }
+                        }
                         getActivity().runOnUiThread(()->{
                             updateMap();
                             binding.ibEditMenu.setEnabled(true);
@@ -986,40 +994,39 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private void updateMap(){
-        if(mMap != null){
-            if(zonePolygon != null){
-                zonePolygon.remove();
-                zonePolygon=null;
-                for(Circle p:zonePoints){
-                    p.remove();
-                }
-                zonePoints.clear();
+        if(mMap == null) return;
+        if(zonePolygon != null){
+            zonePolygon.remove();
+            zonePolygon=null;
+            for(Circle p:zonePoints){
+                p.remove();
             }
-            if(border.size()>0){
-                int strokeColor = Color.argb(
-                        AppValues.defaultStrokeAlpha,
-                        color.getRed(),
-                        color.getGreen(),
-                        color.getBlue()
-                );
-                int fillColor = Color.argb(
-                        AppValues.defaultFillAlpha,
-                        color.getRed(),
-                        color.getGreen(),
-                        color.getBlue()
-                );
+            zonePoints.clear();
+        }
+        if(border.size()>0){
+            int strokeColor = Color.argb(
+                    AppValues.defaultStrokeAlpha,
+                    color.getRed(),
+                    color.getGreen(),
+                    color.getBlue()
+            );
+            int fillColor = Color.argb(
+                    AppValues.defaultFillAlpha,
+                    color.getRed(),
+                    color.getGreen(),
+                    color.getBlue()
+            );
 
-                zonePolygon = mMap.addPolygon(new PolygonOptions().addAll(border).clickable(false).strokeColor(strokeColor).fillColor(fillColor).zIndex(3));
-                for(LatLng point : border){
-                    zonePoints.add(mMap.addCircle(new CircleOptions()
-                            .center(point)
-                            .radius(10)
-                            .fillColor(strokeColor)
-                            .strokeColor(strokeColor)
-                            .clickable(false)
-                            .zIndex(4)
-                    ));
-                }
+            zonePolygon = mMap.addPolygon(new PolygonOptions().addAll(border).clickable(false).strokeColor(strokeColor).fillColor(fillColor).zIndex(3));
+            for(LatLng point : border){
+                zonePoints.add(mMap.addCircle(new CircleOptions()
+                        .center(point)
+                        .radius(10)
+                        .fillColor(strokeColor)
+                        .strokeColor(strokeColor)
+                        .clickable(false)
+                        .zIndex(4)
+                ));
             }
         }
     }

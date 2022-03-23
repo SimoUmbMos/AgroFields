@@ -11,6 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -21,12 +23,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
@@ -52,7 +58,10 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private AlertDialog dialog;
     private boolean doDialogUpdate;
 
-    private List<Land> data = new ArrayList<>();
+    private final List<Land> data = new ArrayList<>();
+    private final List<Land> displayData = new ArrayList<>();
+    private final List<String> tags = new ArrayList<>();
+    private String selectedTag;
     private List<Land> exportLands;
     private FileType exportAction;
     private LandListAdapter adapter;
@@ -154,6 +163,10 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     @Override
     public boolean onBackPressed() {
+        if(binding != null && binding.getRoot().isDrawerOpen(GravityCompat.END)) {
+            toggleMenu(false);
+            return false;
+        }
         if(state != ListMenuState.NormalState){
             setState(ListMenuState.NormalState, true);
             return false;
@@ -163,7 +176,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initData(){
-        data = new ArrayList<>();
+        selectedTag = null;
         exportLands = new ArrayList<>();
         state = ListMenuState.NormalState;
         adapter = new LandListAdapter(
@@ -180,6 +193,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void initFragment() {
+        binding.ibMenuButton.setOnClickListener(v -> toggleMenu(true));
         binding.ibSelectAll.setOnClickListener( v -> onSelectAllButtonClick() );
         binding.ibHistory.setOnClickListener( v -> onHistoryButtonClick() );
         binding.ibClose.setOnClickListener( v -> onCloseButtonClick() );
@@ -189,17 +203,17 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         binding.fabExport.setOnClickListener( v -> onExportButtonClick() );
         binding.fabDelete.setOnClickListener( v -> onDeleteButtonClick() );
 
+        binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        binding.navLandFilterMenu.setNavigationItemSelectedListener(this::onFilterClick);
+
         binding.tvLandListActionLabel.setText(getResources().getString(R.string.loading_label));
 
         binding.rvLandList.setHasFixedSize(true);
 
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
-        binding.rvLandList.setLayoutManager(staggeredGridLayoutManager);
-
-        adapter.saveData(data);
         binding.rvLandList.setAdapter(adapter);
 
-        updateListUi();
+        updateList();
+        setupSideMenu();
         updateUi();
 
         final int maxColumnNumber = getResources().getInteger(R.integer.screenMaxColumnNumber);
@@ -213,14 +227,19 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             if(spanCount > maxColumnNumber){
                 spanCount = maxColumnNumber;
             }
-            staggeredGridLayoutManager.setSpanCount(spanCount);
-            staggeredGridLayoutManager.invalidateSpanAssignments();
+            StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount,StaggeredGridLayoutManager.VERTICAL);
+            binding.rvLandList.setLayoutManager(staggeredGridLayoutManager);
         });
     }
+
     private void initViewModel() {
         if(getActivity() != null){
             vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> vmLands.getLandsTags().observe(
+                    getViewLifecycleOwner(),
+                    this::onLandsTagsChange
+            ));
             handler.post(() -> vmLands.getLands().observe(
                     getViewLifecycleOwner(),
                     this::onLandsChange
@@ -238,13 +257,26 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             }
         }
         binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
-        updateListUi();
-        adapter.saveData(data);
-        binding.rvLandList.smoothScrollBy(1, 1);
+        updateList();
+    }
+    private void onLandsTagsChange(List<String> landTags) {
+        String emptyTag = getString(R.string.filter_lands_empty_tag);
+        tags.clear();
+        tags.add(getString(R.string.filter_lands_all_tag));
+        if(landTags != null){
+            for(String tag : landTags){
+                String tempTag = tag;
+                if(tempTag == null) tempTag = emptyTag;
+                if(tags.contains(tempTag)) continue;
+                if(tempTag.equals(emptyTag)) tags.add(1,tempTag);
+                else tags.add(tempTag);
+            }
+        }
+        setupSideMenu();
     }
     private void onLandClick(Land land) {
         if(state != ListMenuState.NormalState) {
-            toggleSelectOnPosition(data.indexOf(land));
+            toggleSelectOnPosition(displayData.indexOf(land));
         }else{
             toLandPreview(getActivity(),land);
         }
@@ -253,7 +285,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if (state == ListMenuState.NormalState){
             setState(ListMenuState.MultiSelectState, true);
         }
-        toggleSelectOnPosition(data.indexOf(land));
+        toggleSelectOnPosition(displayData.indexOf(land));
     }
     private void onAddButtonClick(){
         if(state == ListMenuState.NormalState){
@@ -291,11 +323,23 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             goBack();
         }
     }
+    private boolean onFilterClick(MenuItem item) {
+        int i = item.getItemId();
+        if(i < 0 || i >= tags.size()) return false;
+        String tag = tags.get(i);
+        if(tag.equals(getString(R.string.filter_lands_all_tag))){
+            selectedTag = null;
+        }else{
+            selectedTag = tag;
+        }
+        updateList();
+        return true;
+    }
 
     //select methods
     private void toggleSelectOnPosition(int position){
-        if(position >= 0 && position < data.size()){
-            data.get(position).setSelected(!data.get(position).isSelected());
+        if(position >= 0 && position < displayData.size()){
+            displayData.get(position).setSelected(!displayData.get(position).isSelected());
             adapter.notifyItemChanged(position);
         }
         if(returnSelectedLands().size() == 0 && state == ListMenuState.MultiSelectState){
@@ -313,31 +357,31 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private boolean isAllSelected() {
-        for (Land land:data){
+        for (Land land:displayData){
             if(!land.isSelected())
                 return false;
         }
         return true;
     }
     private void selectAllLands() {
-        for (Land land:data){
+        for (Land land:displayData){
             if(!land.isSelected()){
                 land.setSelected(true);
-                adapter.notifyItemChanged(data.indexOf(land));
+                adapter.notifyItemChanged(displayData.indexOf(land));
             }
         }
     }
     private void deselectAllLands() {
-        for (Land land:data){
+        for (Land land:displayData){
             if(land.isSelected()){
                 land.setSelected(false);
-                adapter.notifyItemChanged(data.indexOf(land));
+                adapter.notifyItemChanged(displayData.indexOf(land));
             }
         }
     }
     private List<Land> returnSelectedLands(){
         List<Land> result = new ArrayList<>();
-        for(Land land:data){
+        for(Land land:displayData){
             if(land.isSelected())
                 result.add(land);
         }
@@ -349,12 +393,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             return;
         }
         Activity activity = getActivity();
-        List<Land> deleteLands = new ArrayList<>();
-        for (Land land : data) {
-            if (land.isSelected()) {
-                deleteLands.add(land);
-            }
-        }
+        List<Land> deleteLands = returnSelectedLands();
         setState(ListMenuState.NormalState, false);
         if(deleteLands.size()>0){
             AsyncTask.execute(()-> {
@@ -469,23 +508,26 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     //ui
     private void setCheckableRecycleView(boolean showCheckBox){
         binding.ibHistory.setEnabled(!showCheckBox);
+        binding.ibMenuButton.setEnabled(!showCheckBox);
         binding.ibSelectAll.setEnabled(showCheckBox);
         if(showCheckBox){
             binding.ibHistory.setVisibility(View.GONE);
+            binding.ibMenuButton.setVisibility(View.GONE);
             binding.ibSelectAll.setVisibility(View.VISIBLE);
         }else{
             binding.ibHistory.setVisibility(View.VISIBLE);
+            binding.ibMenuButton.setVisibility(View.VISIBLE);
             binding.ibSelectAll.setVisibility(View.GONE);
         }
-        adapter.saveData(data,showCheckBox);
+        updateList(showCheckBox);
     }
     private void setState(ListMenuState state, boolean doUpdate) {
         if(this.state == state) return;
-
+        toggleMenu(false);
         this.state = state;
         if(state == ListMenuState.NormalState) {
             deselectAllLands();
-            if(doUpdate) binding.getRoot().transitionToStart();
+            if(doUpdate) binding.mlRoot.transitionToStart();
             binding.ibClose.setVisibility(View.GONE);
             binding.ibClose1.setVisibility(View.VISIBLE);
         }else{
@@ -526,11 +568,66 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 break;
         }
     }
-    private void updateListUi() {
-        if(data.size()>0){
+    private void updateList() {
+        displayData.clear();
+        if(selectedTag == null){
+            displayData.addAll(data);
+        }else{
+            if(selectedTag.equals(getString(R.string.filter_lands_empty_tag))){
+                for(Land land : data){
+                    if(land == null || land.getData() == null) continue;
+                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+                    if(landTags.contains(null)) displayData.add(land);
+                }
+            }else{
+                for(Land land : data){
+                    if(land == null || land.getData() == null) continue;
+                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+                    if(landTags.contains(selectedTag)) displayData.add(land);
+                }
+            }
+        }
+        if(displayData.size()>0){
             binding.tvLandListActionLabel.setVisibility(View.GONE);
         }else{
             binding.tvLandListActionLabel.setVisibility(View.VISIBLE);
+        }
+        adapter.saveData(displayData);
+        binding.rvLandList.smoothScrollBy(0, 1);
+    }
+    private void updateList(boolean showCheckBox) {
+        displayData.clear();
+        if(selectedTag == null){
+            displayData.addAll(data);
+        }else{
+            if(selectedTag.equals(getString(R.string.filter_lands_empty_tag))){
+                for(Land land : data){
+                    if(land == null || land.getData() == null) continue;
+                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+                    if(landTags.contains(null)) displayData.add(land);
+                }
+            }else{
+                for(Land land : data){
+                    if(land == null || land.getData() == null) continue;
+                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+                    if(landTags.contains(selectedTag)) displayData.add(land);
+                }
+            }
+        }
+        if(displayData.size()>0){
+            binding.tvLandListActionLabel.setVisibility(View.GONE);
+        }else{
+            binding.tvLandListActionLabel.setVisibility(View.VISIBLE);
+        }
+        adapter.saveData(displayData,showCheckBox);
+        binding.rvLandList.smoothScrollBy(0, 1);
+    }
+    private void setupSideMenu(){
+        Menu menu = binding.navLandFilterMenu.getMenu();
+        menu.clear();
+        SubMenu subMenu = menu.addSubMenu(Menu.NONE,-1,Menu.NONE,getString(R.string.land_filter_title));
+        for(int i = 0; i < tags.size(); i++){
+            subMenu.add(Menu.NONE,i,Menu.NONE,tags.get(i));
         }
     }
     private void showExportDialog(){
@@ -616,6 +713,14 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         );
         snackbar.setAction(getString(R.string.okey),v->{});
         snackbar.show();
+    }
+    private void toggleMenu(boolean open){
+        if(binding == null) return;
+        if(open){
+            binding.getRoot().openDrawer(GravityCompat.END, true);
+        }else{
+            binding.getRoot().closeDrawer(GravityCompat.END, false);
+        }
     }
 
     //navigate
