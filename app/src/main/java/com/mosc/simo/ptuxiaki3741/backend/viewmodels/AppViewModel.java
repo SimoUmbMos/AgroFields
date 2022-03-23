@@ -15,7 +15,6 @@ import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
-import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandDBAction;
 import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
@@ -26,6 +25,7 @@ import com.mosc.simo.ptuxiaki3741.backend.repository.AppRepositoryImpl;
 import com.mosc.simo.ptuxiaki3741.backend.repository.AppRepository;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.MapUtil;
+import com.mosc.simo.ptuxiaki3741.ui.applications.MainApplication;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class AppViewModel extends AndroidViewModel {
 
     public AppViewModel(@NonNull Application application) {
         super(application);
-        RoomDatabase db = MainActivity.getRoomDb(application);
+        RoomDatabase db = MainApplication.getRoomDb(application);
         appRepository = new AppRepositoryImpl(db);
     }
 

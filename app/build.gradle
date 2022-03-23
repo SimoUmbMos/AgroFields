@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'org.jetbrains.dokka'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -68,7 +70,6 @@ dokkaJavadoc.configure {
 }
 
 dependencies {
-
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -83,6 +84,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.google.maps.android:android-maps-utils:2.3.0'
+
+    implementation 'com.google.firebase:firebase-analytics:20.1.1'
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.9'
+
     implementation 'commons-validator:commons-validator:1.7'
     implementation 'org.jetbrains:annotations:23.0.0'
     implementation 'com.github.kizitonwose:CalendarView:1.0.4'

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.room.Room;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -16,7 +15,6 @@ import android.os.Handler;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
@@ -28,11 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private NotificationManager notificationManager;
     private FragmentBackPress fragmentBackPress;
     private boolean overrideDoubleBack = false, doubleBackToExit = false;
-
-    public static RoomDatabase getRoomDb(Context context){
-        return Room.databaseBuilder(context, RoomDatabase.class, "Main_db")
-                .fallbackToDestructiveMigration().build();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
