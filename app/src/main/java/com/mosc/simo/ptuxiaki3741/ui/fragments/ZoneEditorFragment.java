@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
+    //todo: add zones tags
     private static final String TAG = "ZoneEditorFragment";
     private FragmentZoneEditorBinding binding;
     private GoogleMap mMap;
@@ -84,7 +85,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private Marker positionMarker;
     private boolean locationPointWasRunning;
 
-    private String title, note;
+    private String title, note, tags;
     private ColorData color,tempColor;
     private List<LatLng> border;
     private boolean forceBack, showNote, mapLoaded, doubleBackToExit, isSaving;
@@ -131,6 +132,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
         title = "";
         note = "";
+        tags = "";
         color = AppValues.defaultZoneColor;
         border = new ArrayList<>();
         zonePoints = new ArrayList<>();
@@ -157,6 +159,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             zone = new LandZone(zone);
             title = zone.getData().getTitle();
             note = zone.getData().getNote();
+            tags = zone.getData().getTags();
             color = new ColorData(zone.getData().getColor().toString());
             if(zone.getData().getBorder() != null) border.addAll(zone.getData().getBorder());
         }
@@ -390,10 +393,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                             if(zone != null){
                                 zone.getData().setTitle(title);
                                 zone.getData().setNote(note);
+                                zone.getData().setTags(tags);
                                 zone.getData().setColor(color);
                                 zone.getData().setBorder(border);
                             }else{
-                                zone = new LandZone(new LandZoneData(land.getData().getSnapshot(),land.getData().getId(),title,note,color,border));
+                                zone = new LandZone(new LandZoneData(land.getData().getSnapshot(),land.getData().getId(),title,note,tags,color,border));
                             }
                             try{
                                 vmLands.saveZone(zone);

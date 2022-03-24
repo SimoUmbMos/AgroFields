@@ -120,6 +120,9 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(zone.getData().getNote());
 
             cell = row.createCell(colNum++);
+            cell.setCellValue(zone.getData().getTags());
+
+            cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getColor().toString());
 
             cell = row.createCell(colNum);
@@ -228,6 +231,9 @@ public final class OpenXmlDataBaseOutput {
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getNote());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(zone.getData().getTags());
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getColor().toString());

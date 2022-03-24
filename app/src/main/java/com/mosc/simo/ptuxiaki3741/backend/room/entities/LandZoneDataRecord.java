@@ -55,6 +55,8 @@ public class LandZoneDataRecord {
     private String zoneTitle;
     @ColumnInfo(name = "ZoneNote")
     private String zoneNote;
+    @ColumnInfo(name = "ZoneTags")
+    private String zoneTags;
     @ColumnInfo(name = "ZoneColor")
     private ColorData zoneColor;
     @ColumnInfo(name = "ZoneBorder")
@@ -67,13 +69,14 @@ public class LandZoneDataRecord {
         this.zoneID = zone.getId();
         this.zoneTitle = zone.getTitle();
         this.zoneNote = zone.getNote();
+        this.zoneTags = zone.getTags();
         this.zoneColor = new ColorData(zone.getColor().toString());
         this.zoneBorder = new ArrayList<>(zone.getBorder());
     }
 
     public LandZoneDataRecord(
             long id, long recordID, long recordSnapshot,
-            long zoneID, String zoneTitle, String zoneNote, ColorData zoneColor, List<LatLng> zoneBorder
+            long zoneID, String zoneTitle, String zoneNote, String zoneTags, ColorData zoneColor, List<LatLng> zoneBorder
     ) {
         this.id = id;
         this.recordID = recordID;
@@ -81,6 +84,7 @@ public class LandZoneDataRecord {
         this.zoneID = zoneID;
         this.zoneTitle = zoneTitle;
         this.zoneNote = zoneNote;
+        this.zoneTags = zoneTags;
         this.zoneColor = zoneColor;
         this.zoneBorder = zoneBorder;
     }
@@ -102,6 +106,9 @@ public class LandZoneDataRecord {
     }
     public String getZoneNote() {
         return zoneNote;
+    }
+    public String getZoneTags() {
+        return zoneTags;
     }
     public ColorData getZoneColor() {
         return zoneColor;
@@ -128,6 +135,9 @@ public class LandZoneDataRecord {
     public void setZoneNote(String zoneNote) {
         this.zoneNote = zoneNote;
     }
+    public void setZoneTags(String zoneTags) {
+        this.zoneTags = zoneTags;
+    }
     public void setZoneColor(ColorData zoneColor) {
         this.zoneColor = zoneColor;
     }
@@ -149,6 +159,7 @@ public class LandZoneDataRecord {
                 zoneID == that.zoneID &&
                 zoneTitle.equals(that.zoneTitle) &&
                 zoneNote.equals(that.zoneNote) &&
+                zoneTags.equals(that.zoneTags) &&
                 zoneColor.equals(that.zoneColor) &&
                 ListUtils.arraysMatch(zoneBorder,that.zoneBorder);
     }

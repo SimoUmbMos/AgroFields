@@ -104,13 +104,14 @@
                 android:hint="@string/select_snapshot_title"
                 android:labelFor="@id/tvSnapshot">
 
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/tvSnapshot"
                     style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints="false"
                     android:inputType="none"
+                    android:singleLine="true"
                     android:maxLines="1"
                     android:ellipsize="end" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -249,12 +250,13 @@
                 android:hint="@string/select_theme_title"
                 android:labelFor="@id/tvTheme">
 
-                <AutoCompleteTextView
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/tvTheme"
                     style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints="false"
+                    android:singleLine="true"
                     android:inputType="none"
                     android:maxLines="1"
                     android:ellipsize="end" />

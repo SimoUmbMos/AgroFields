@@ -41,8 +41,10 @@ public class AppViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Long>> snapshots = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
+    private final MutableLiveData<List<Land>> snapshotLands = new MutableLiveData<>();
     private final MutableLiveData<List<String>> landsTags = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
+    private final MutableLiveData<Map<Long,List<LandZone>>> snapshotLandZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandHistoryRecord>> landsHistory = new MutableLiveData<>();
 
     private final MutableLiveData<List<CalendarCategory>> calendarCategories = new MutableLiveData<>();
@@ -60,11 +62,17 @@ public class AppViewModel extends AndroidViewModel {
     public LiveData<List<Land>> getLands(){
         return lands;
     }
+    public LiveData<List<Land>> getTempSnapshotLands(){
+        return snapshotLands;
+    }
     public LiveData<List<String>> getLandsTags(){
         return landsTags;
     }
     public LiveData<Map<Long,List<LandZone>>> getLandZones(){
         return landZones;
+    }
+    public LiveData<Map<Long,List<LandZone>>> getTempSnapshotLandZones(){
+        return snapshotLandZones;
     }
     public LiveData<List<LandHistoryRecord>> getLandsHistory() {
         return landsHistory;
@@ -268,6 +276,9 @@ public class AppViewModel extends AndroidViewModel {
         return ans;
     }
 
+    public Map<Long,List<LandZone>> getZones(long snapshot){
+        return appRepository.getLandZones(snapshot);
+    }
     public void saveZone(LandZone zone) {
         if(zone == null) return;
         if(zone.getData() == null) return;
@@ -524,5 +535,17 @@ public class AppViewModel extends AndroidViewModel {
             }
         }
         populateSnapshotLists();
+    }
+
+    public long setTempSnapshot(long snapshot){
+        if(snapshot < 0){
+            snapshotLands.postValue(appRepository.getLands(getDefaultSnapshot()));
+            snapshotLandZones.postValue(appRepository.getLandZones(getDefaultSnapshot()));
+            return getDefaultSnapshot();
+        }else{
+            snapshotLands.postValue(appRepository.getLands(snapshot));
+            snapshotLandZones.postValue(appRepository.getLandZones(snapshot));
+            return snapshot;
+        }
     }
 }

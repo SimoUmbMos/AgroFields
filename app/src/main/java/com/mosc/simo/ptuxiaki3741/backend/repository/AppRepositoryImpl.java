@@ -83,6 +83,20 @@ public class AppRepositoryImpl implements AppRepository {
     }
 
     @Override
+    public List<Land> getLands(long snapshot) {
+        List<Land> lands = new ArrayList<>();
+
+        List<LandData> landsData = db.landDao().getLands(snapshot);
+        if(landsData != null){
+            for(LandData landData : landsData){
+                lands.add(new Land(landData));
+            }
+        }
+
+        return lands;
+    }
+
+    @Override
     public boolean landExist(long id, long snapshot){
         return db.landDao().landExist(id, snapshot);
     }
@@ -167,6 +181,26 @@ public class AppRepositoryImpl implements AppRepository {
                 }
                 zones.add(new LandZone(zoneData));
                 ans.put(zoneData.getLid(),zones);
+            }
+        }
+        return ans;
+    }
+
+    @Override
+    public Map<Long,List<LandZone>> getLandZones(long snapshot){
+        Map<Long,List<LandZone>> ans = new HashMap<>();
+
+        List<LandZone> zones;
+        List<LandZoneData> zonesData = db.landZoneDao().getZones(snapshot);
+        if(zonesData != null){
+            for(LandZoneData zoneData : zonesData){
+                if(zoneData == null) continue;
+                zones = ans.getOrDefault(zoneData.getLid(),null);
+                if(zones == null){
+                    zones = new ArrayList<>();
+                    ans.put(zoneData.getLid(),zones);
+                }
+                zones.add(new LandZone(zoneData));
             }
         }
         return ans;

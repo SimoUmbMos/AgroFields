@@ -37,7 +37,6 @@
         app:layout_constraintStart_toEndOf="@+id/ibClose1"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/ibSave"
         android:layout_width="wrap_content"
@@ -55,6 +54,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:checkedButton="@+id/radio_button_1"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_button_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="radio_button_1" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_button_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="radio_button_2" />
+    </RadioGroup>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilTag"
         style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
@@ -66,18 +98,19 @@
         android:labelFor="@id/tvTag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+        app:layout_constraintTop_toBottomOf="@id/radioGroup">
 
-        <AutoCompleteTextView
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/tvTag"
             style="@style/Widget.Material3.AutoCompleteTextView.FilledBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints="false"
+            android:dropDownHeight="wrap_content"
             android:ellipsize="end"
             android:inputType="none"
             android:maxLines="1"
-            android:dropDownHeight="wrap_content"/>
+            android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ScrollView

@@ -147,6 +147,7 @@ public final class LandUtil {
                     r.getLandData().getLandID(),
                     zoneRecord.getZoneTitle(),
                     zoneRecord.getZoneNote(),
+                    zoneRecord.getZoneTags(),
                     zoneRecord.getZoneColor(),
                     zoneRecord.getZoneBorder()
             );

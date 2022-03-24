@@ -193,6 +193,7 @@
     <string name="default_zone_spinner_value">Όλο το χωράφι</string>
     <string name="calendar_pop_up_date_title">Επιλέξτε ημερομηνία</string>
     <string name="calendar_pop_up_time_title">Επιλέξτε ώρα</string>
+    <string name="select_snapshot_label">Select Snapshot</string>
     <string name="select_date_label">Ημερομηνία</string>
     <string name="select_time_label">Ώρα</string>
     <string name="select_title_label">Τίτλος</string>

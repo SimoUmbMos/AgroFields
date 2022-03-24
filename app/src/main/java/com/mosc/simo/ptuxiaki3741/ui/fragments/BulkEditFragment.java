@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BulkEditFragment extends Fragment {
+    //todo: switch for `bulk edit lands` or `bulk edit zones`
     private FragmentBulkEditBinding binding;
     private LoadingDialog loadingDialog;
     private AlertDialog dialog;

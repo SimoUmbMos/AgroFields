@@ -22,10 +22,11 @@ import com.mosc.simo.ptuxiaki3741.backend.room.migrator.RoomMigrator;
 import com.mosc.simo.ptuxiaki3741.backend.room.typeconverters.DBTypesConverter;
 
 @Database(
-        version = 3,
+        version = 4,
         autoMigrations = {
                 @AutoMigration(from = 1, to = 2),
-                @AutoMigration(from = 2, to = 3, spec = RoomMigrator.toVersion3.class)
+                @AutoMigration(from = 2, to = 3, spec = RoomMigrator.toVersion3.class),
+                @AutoMigration(from = 3, to = 4)
         },
         entities = {
             LandData.class,

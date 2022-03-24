@@ -39,6 +39,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class CalendarEventFragment extends Fragment{
+    //todo: add snapshot field that on update, update lands and zone
     private FragmentCalendarNewEventBinding binding;
     private LoadingDialog dialog;
 
@@ -47,11 +48,13 @@ public class CalendarEventFragment extends Fragment{
 
     private List<Land> lands;
     private Map<Long,List<LandZone>> zones;
+    private List<Long> snapshots;
     private List<CalendarCategory> calendarCategories;
     private List<LandZone> displayZones;
 
     private CalendarNotification calendarNotification;
     private boolean landsInit, zonesInit;
+    private long snapshot;
 
     private Calendar notificationDate;
     private Land selectedLand;
@@ -82,6 +85,7 @@ public class CalendarEventFragment extends Fragment{
     private void initData(){
         lands = new ArrayList<>();
         zones = new HashMap<>();
+        snapshots = new ArrayList<>();
         calendarCategories = new ArrayList<>();
         displayZones = new ArrayList<>();
         landsInit = false;
@@ -115,6 +119,7 @@ public class CalendarEventFragment extends Fragment{
                     notificationDate.getTime()
             );
         }
+        snapshot = calendarNotification.getSnapshot();
     }
 
     private void initActivity(){
@@ -149,6 +154,8 @@ public class CalendarEventFragment extends Fragment{
                 new ArrayList<>());
         binding.tvSelectType.setAdapter(calendarCategoriesAdapter);
 
+        binding.tvSelectType.setOnItemClickListener((parent, v, pos, id) -> onSelectType(pos));
+        binding.tvSelectSnapshot.setOnItemClickListener((parent, v, pos, id) -> onSelectSnapshot(pos));
         binding.tvSelectLand.setOnItemClickListener((parent, v, pos, id) -> onSelectLand(pos));
         binding.tvSelectZone.setOnItemClickListener((parent, v, pos, id) -> onSelectZone(pos));
 
@@ -163,12 +170,17 @@ public class CalendarEventFragment extends Fragment{
     }
 
     private void initViewModel(){
-        if(getActivity() != null){
-            viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            viewModel.getLands().observe(getViewLifecycleOwner(),this::initLandSelect);
-            viewModel.getLandZones().observe(getViewLifecycleOwner(),this::initZonesSelect);
-            viewModel.getCalendarCategories().observe(getViewLifecycleOwner(),this::onCategoriesUpdate);
-        }
+        if(getActivity() == null) return;
+        viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+        AsyncTask.execute(()->{
+            snapshot = viewModel.setTempSnapshot(snapshot);
+            getActivity().runOnUiThread(()->{
+                viewModel.getSnapshots().observe(getViewLifecycleOwner(),this::onSnapshotsUpdate);
+                viewModel.getCalendarCategories().observe(getViewLifecycleOwner(),this::onCategoriesUpdate);
+                viewModel.getTempSnapshotLands().observe(getViewLifecycleOwner(),this::onLandsUpdate);
+                viewModel.getTempSnapshotLandZones().observe(getViewLifecycleOwner(),this::onZonesUpdate);
+            });
+        });
     }
 
     private void onCategoriesUpdate(List<CalendarCategory> calendarCategories) {
@@ -177,33 +189,19 @@ public class CalendarEventFragment extends Fragment{
         updateCalendarCategories();
     }
 
-    private void updateCalendarCategories() {
-        String currSelected = "";
-        if(binding.tvSelectType.getText() != null) currSelected = binding.tvSelectType.getText().toString();
-        List<String> categoriesDisplay = new ArrayList<>();
-        for(CalendarCategory category : calendarCategories){
-            categoriesDisplay.add(category.getName());
-            if(category.getId() == calendarNotification.getCategoryID()) {
-                currSelected = category.getName();
+    private void onSnapshotsUpdate(List<Long> snapshots) {
+        this.snapshots.clear();
+        this.snapshots.add(snapshot);
+        if(snapshots != null){
+            for(Long snapshot : snapshots){
+                if(snapshot == null) continue;
+                if(!this.snapshots.contains(snapshot)) this.snapshots.add(snapshot);
             }
         }
-        if(currSelected.isEmpty() && calendarCategories.size() > 0){
-            currSelected = calendarCategories.get(0).getName();
-        }
-        ArrayAdapter<String> calendarCategoriesAdapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_list_item_1,
-                categoriesDisplay);
-        binding.tvSelectType.setText(currSelected,false);
-        binding.tvSelectType.setAdapter(calendarCategoriesAdapter);
-        if(categoriesDisplay.size() > 2){
-            binding.tvSelectType.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
-        }else{
-            binding.tvSelectType.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
+        updateSnapshots();
     }
 
-    private void initLandSelect(List<Land> lands) {
+    private void onLandsUpdate(List<Land> lands) {
         landsInit = true;
         this.lands.clear();
         this.lands.add(new Land(getString(R.string.default_land_spinner_value)));
@@ -219,7 +217,7 @@ public class CalendarEventFragment extends Fragment{
         }
     }
 
-    private void initZonesSelect(Map<Long, List<LandZone>> zones) {
+    private void onZonesUpdate(Map<Long, List<LandZone>> zones) {
         zonesInit = true;
         this.zones.clear();
         if(zones != null){
@@ -274,6 +272,24 @@ public class CalendarEventFragment extends Fragment{
         updateTimeLabel();
     }
 
+    private void onSelectType(int position) {
+        if(position < 0 || position >= calendarCategories.size() ) return;
+        binding.tvSelectType.setText(calendarCategories.get(position).getName(),false);
+    }
+
+    private void onSelectSnapshot(int position) {
+        if(position < 0 || position >= snapshots.size() ) return;
+        if(snapshot == snapshots.get(position)) return;
+        if(dialog != null) dialog.openDialog();
+        snapshot = snapshots.get(position);
+        binding.tvSelectSnapshot.setText(String.valueOf(snapshot),false);
+        onSelectLand(0);
+        AsyncTask.execute(()->{
+            snapshot = viewModel.setTempSnapshot(snapshot);
+            if(dialog != null) dialog.closeDialog();
+        });
+    }
+
     private void onSelectLand(int position) {
         if(position < lands.size()){
             if(lands.get(position) != selectedLand){
@@ -319,6 +335,50 @@ public class CalendarEventFragment extends Fragment{
         picker.addOnPositiveButtonClickListener(v->onTimeUpdate(picker));
         if(getActivity() != null){
             picker.show(getActivity().getSupportFragmentManager(), picker.toString());
+        }
+    }
+
+    private void updateCalendarCategories() {
+        String currSelected = "";
+        if(binding.tvSelectType.getText() != null) currSelected = binding.tvSelectType.getText().toString();
+        List<String> categoriesDisplay = new ArrayList<>();
+        for(CalendarCategory category : calendarCategories){
+            categoriesDisplay.add(category.getName());
+            if(category.getId() == calendarNotification.getCategoryID()) {
+                currSelected = category.getName();
+            }
+        }
+        if(currSelected.isEmpty() && calendarCategories.size() > 0){
+            currSelected = calendarCategories.get(0).getName();
+        }
+        ArrayAdapter<String> calendarCategoriesAdapter = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_list_item_1,
+                categoriesDisplay);
+        binding.tvSelectType.setText(currSelected,false);
+        binding.tvSelectType.setAdapter(calendarCategoriesAdapter);
+        if(categoriesDisplay.size() > 2){
+            binding.tvSelectType.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvSelectType.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
+    private void updateSnapshots() {
+        List<String> snapshots = new ArrayList<>();
+        for(long snapshot : this.snapshots){
+            snapshots.add(String.valueOf(snapshot));
+        }
+        ArrayAdapter<String> snapshotAdapter = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_list_item_1,
+                snapshots);
+        binding.tvSelectSnapshot.setText(String.valueOf(snapshot),false);
+        binding.tvSelectSnapshot.setAdapter(snapshotAdapter);
+        if(snapshots.size() > 2){
+            binding.tvSelectSnapshot.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvSelectSnapshot.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
 
@@ -400,7 +460,6 @@ public class CalendarEventFragment extends Fragment{
 
         long id = calendarNotification.getId();
         long categoryID = AppValues.defaultCalendarCategoryID;
-        long snapshot = calendarNotification.getSnapshot();
         Long lid = null;
         Long zid = null;
         String title = "";
@@ -424,9 +483,10 @@ public class CalendarEventFragment extends Fragment{
                 }
             }
         }
-        if(selectedLand.getData() != null){
+        if( selectedLand != null && selectedLand.getData() != null){
             lid = selectedLand.getData().getId();
-            if(selectedZone.getData() != null){
+            snapshot = selectedLand.getData().getSnapshot();
+            if( selectedZone != null && selectedZone.getData() != null && selectedZone.getData().getLid() == lid){
                 zid = selectedZone.getData().getId();
             }
         }

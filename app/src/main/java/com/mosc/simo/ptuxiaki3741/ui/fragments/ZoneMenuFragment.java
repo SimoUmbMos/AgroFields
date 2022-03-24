@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
+    //todo: filter zones tags
     private static final String TAG = "ZonesLandSelectedFragment";
     private FragmentZonesMenuBinding binding;
 
@@ -122,9 +123,6 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
 
         binding.rvZoneList.setHasFixedSize(true);
 
-        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
-        binding.rvZoneList.setLayoutManager(gridLayoutManager);
-
         adapter.saveData(data);
         binding.rvZoneList.setAdapter(adapter);
 
@@ -139,8 +137,8 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             if(spanCount > maxColumnNumber){
                 spanCount = maxColumnNumber;
             }
-            gridLayoutManager.setSpanCount(spanCount);
-            gridLayoutManager.invalidateSpanAssignments();
+            StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
+            binding.rvZoneList.setLayoutManager(gridLayoutManager);
         });
     }
     private void initViewModel() {

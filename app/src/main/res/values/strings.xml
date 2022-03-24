@@ -204,6 +204,7 @@
     <string name="default_zone_spinner_value">All Zones</string>
     <string name="calendar_pop_up_date_title">Select date</string>
     <string name="calendar_pop_up_time_title">Select time</string>
+    <string name="select_snapshot_label">Select Snapshot</string>
     <string name="select_date_label">Date</string>
     <string name="select_time_label">Time</string>
     <string name="select_title_label">Title</string>

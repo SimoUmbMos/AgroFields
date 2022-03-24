@@ -189,7 +189,7 @@ public final class OpenXmlDataBaseInput {
     private static void getLandZoneData(Sheet sheet, List<LandZone> zones) {
         long id, lid;
         long snapshot;
-        String title, note;
+        String title, note, tags;
         ColorData color;
         List<LatLng> border;
         for (Row row : sheet) {
@@ -197,6 +197,7 @@ public final class OpenXmlDataBaseInput {
             lid = -1;
             title = "";
             note = "";
+            tags = "";
             color = null;
             snapshot = -1;
             border = new ArrayList<>();
@@ -242,9 +243,12 @@ public final class OpenXmlDataBaseInput {
                         note = cell.getStringCellValue().trim();
                         break;
                     case 5:
-                        color = new ColorData(cell.getStringCellValue().trim());
+                        tags = cell.getStringCellValue().trim();
                         break;
                     case 6:
+                        color = new ColorData(cell.getStringCellValue().trim());
+                        break;
+                    case 7:
                         fillListsFromPointsString(
                                 border,
                                 new ArrayList<>(),
@@ -257,7 +261,7 @@ public final class OpenXmlDataBaseInput {
                 continue;
             }
 
-            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,color,border)));
+            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,tags,color,border)));
         }
     }
 
@@ -364,7 +368,7 @@ public final class OpenXmlDataBaseInput {
                 new XSSFSheetXMLHandler.SheetContentsHandler() {
                     private long id, lid;
                     private long snapshot;
-                    private String title,note,color;
+                    private String title,note,tags,color;
                     private List<LatLng> border;
                     @Override
                     public void startRow(int rowNum) {
@@ -372,6 +376,7 @@ public final class OpenXmlDataBaseInput {
                         lid = -1;
                         title = "";
                         note = "";
+                        tags = "";
                         color = "";
                         snapshot = -1;
                         border = new ArrayList<>();
@@ -380,7 +385,7 @@ public final class OpenXmlDataBaseInput {
                     @Override
                     public void endRow(int rowNum) {
                         if(lid != -1 && !title.isEmpty() && border.size() != 0){
-                            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,new ColorData(color),border)));
+                            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,tags,new ColorData(color),border)));
                         }
                     }
 
@@ -426,9 +431,12 @@ public final class OpenXmlDataBaseInput {
                                 note = value;
                                 break;
                             case "F":
-                                color = value;
+                                tags = value;
                                 break;
                             case "G":
+                                color = value;
+                                break;
+                            case "H":
                                 fillListsFromPointsString(
                                         border,
                                         new ArrayList<>(),

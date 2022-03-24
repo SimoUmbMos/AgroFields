@@ -55,6 +55,8 @@ public class LandZoneData implements Parcelable {
     private String title;
     @ColumnInfo(name = "Note")
     private String note;
+    @ColumnInfo(name = "Tags")
+    private String tags;
     @ColumnInfo(name = "Color")
     private ColorData color;
     @ColumnInfo(name = "Border")
@@ -62,14 +64,7 @@ public class LandZoneData implements Parcelable {
 
     @Ignore
     public LandZoneData(LandZoneData in) {
-        id = in.id;
-        snapshot = in.snapshot;
-        lid = in.lid;
-        title = in.title;
-        note = in.note;
-        color = new ColorData(in.color.toString());
-        border = new ArrayList<>();
-        setBorder(in.border);
+        this(in.id,in.snapshot, in.lid, in.title, in.note, in.tags, new ColorData(in.color.toString()), in.border);
     }
 
     @Ignore
@@ -79,28 +74,31 @@ public class LandZoneData implements Parcelable {
         lid = in.readLong();
         title = in.readString();
         note = in.readString();
+        tags = in.readString();
         color = in.readParcelable(ColorData.class.getClassLoader());
         border = in.createTypedArrayList(LatLng.CREATOR);
     }
 
     @Ignore
-    public LandZoneData(long snapshot, long lid, String title, String note, ColorData color, List<LatLng> border) {
+    public LandZoneData(long snapshot, long lid, String title, String note, String tags, ColorData color, List<LatLng> border) {
         this.id = 0;
         this.snapshot = snapshot;
         this.lid = lid;
         this.title = title;
         this.note = note;
+        this.tags = tags;
         this.color = color;
         this.border = new ArrayList<>();
         setBorder(border);
     }
 
-    public LandZoneData(long id, long snapshot, long lid, String title, String note, ColorData color, List<LatLng> border) {
+    public LandZoneData(long id, long snapshot, long lid, String title, String note, String tags, ColorData color, List<LatLng> border) {
         this.id = id;
         this.snapshot = snapshot;
         this.lid = lid;
         this.title = title;
         this.note = note;
+        this.tags = tags;
         this.color = color;
         this.border = border;
     }
@@ -116,6 +114,9 @@ public class LandZoneData implements Parcelable {
     }
     public String getNote() {
         return note;
+    }
+    public String getTags() {
+        return tags;
     }
     public ColorData getColor(){
         return color;
@@ -136,6 +137,9 @@ public class LandZoneData implements Parcelable {
     public void setNote(String note) {
         this.note = note;
     }
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
     public void setColor(ColorData color) {
         this.color = color;
     }
@@ -153,6 +157,7 @@ public class LandZoneData implements Parcelable {
         dest.writeLong(lid);
         dest.writeString(title);
         dest.writeString(note);
+        dest.writeString(tags);
         dest.writeParcelable(color,flags);
         dest.writeTypedList(border);
     }

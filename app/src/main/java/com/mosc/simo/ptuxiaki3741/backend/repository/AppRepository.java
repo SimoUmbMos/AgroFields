@@ -21,6 +21,7 @@ public interface AppRepository {
     Snapshot saveSnapshot(long snapshot);
 
     List<Land> getLands();
+    List<Land> getLands(long snapshot);
     boolean landExist(long id, long snapshot);
     Land getLand(long id, long snapshot);
     void saveLand(Land land);
@@ -29,6 +30,7 @@ public interface AppRepository {
     List<String> getLandTags();
 
     Map<Long,List<LandZone>> getLandZones();
+    Map<Long,List<LandZone>> getLandZones(long snapshot);
     boolean zoneExist(long id, long snapshot);
     List<LandZone> getLandZonesByLandData(LandData data);
     void saveZone(LandZone zone);

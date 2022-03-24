@@ -98,9 +98,6 @@ public class CalendarCategoriesFragment extends Fragment implements FragmentBack
 
         binding.rvCalendarCategories.setHasFixedSize(true);
 
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
-        binding.rvCalendarCategories.setLayoutManager(staggeredGridLayoutManager);
-
         adapter.saveData(data);
         binding.rvCalendarCategories.setAdapter(adapter);
 
@@ -117,8 +114,8 @@ public class CalendarCategoriesFragment extends Fragment implements FragmentBack
             if(spanCount > maxColumnNumber){
                 spanCount = maxColumnNumber;
             }
-            staggeredGridLayoutManager.setSpanCount(spanCount);
-            staggeredGridLayoutManager.invalidateSpanAssignments();
+            StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount,StaggeredGridLayoutManager.VERTICAL);
+            binding.rvCalendarCategories.setLayoutManager(staggeredGridLayoutManager);
         });
     }
     private void initViewModel(){
