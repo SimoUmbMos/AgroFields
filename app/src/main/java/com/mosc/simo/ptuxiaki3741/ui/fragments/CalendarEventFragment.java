@@ -39,7 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class CalendarEventFragment extends Fragment{
-    //todo: add snapshot field that on update, update lands and zone
     private FragmentCalendarNewEventBinding binding;
     private LoadingDialog dialog;
 
