@@ -483,7 +483,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     private boolean isValidSave() {
         String error = null;
         if(title.trim().isEmpty()){
-            showTitleDialog();
+            showTitleDialog(false);
             error = getString(R.string.title_empty_error);
         }else if(land == null){
             error = getString(R.string.zone_null_error);
@@ -506,7 +506,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     @SuppressLint("CutPasteId")
-    private void showTitleDialog(){
+    private void showTitleDialog(boolean cancelable){
         if(getContext() != null){
             if(dialog != null){
                 if(dialog.isShowing())
@@ -517,9 +517,10 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     .setIcon(R.drawable.ic_menu_edit)
                     .setTitle(getString(R.string.zone_title_label))
                     .setView(R.layout.view_edit_text)
+                    .setCancelable(cancelable)
                     .setPositiveButton(getString(R.string.submit),null)
                     .setNegativeButton(getString(R.string.cancel),(d, w)-> {
-                        d.cancel();
+                        d.dismiss();
                         if(zone == null && title.isEmpty()){
                             forceBack = true;
                             goBack();
@@ -641,7 +642,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 showDeleteDialog();
                 return true;
             case (R.id.toolbar_action_change_zone_name):
-                showTitleDialog();
+                showTitleDialog(true);
                 return true;
             case (R.id.toolbar_action_change_zone_note):
                 showNoteDialog();
@@ -956,7 +957,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             updateMap();
         }
         if( zone == null && title.isEmpty() && mapLoaded ){
-            showTitleDialog();
+            showTitleDialog(false);
         }
         if( state == ZoneEditorState.NormalState){
             binding.clControl.setVisibility(View.GONE);

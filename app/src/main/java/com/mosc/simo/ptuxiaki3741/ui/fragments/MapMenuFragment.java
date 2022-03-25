@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -62,13 +63,16 @@ public class MapMenuFragment extends Fragment{
     private LoadingDialog loadingDialog;
     private GoogleMap mMap;
 
-    public static final int NotificationID = 3741;
+    private AppViewModel appVM;
+
+    private static final int NotificationID = 3741;
     private NotificationManager notificationManager;
     private Notification notification;
     private String notificationTitle;
     private String notificationMsg;
 
     private ClusterManager<ClusterLand> clusterManager;
+    private long snapshot;
     private Map<Land, List<LandZone>> data;
     private boolean isInit, firstLandUpdate, firstZoneUpdate;
 
@@ -195,10 +199,17 @@ public class MapMenuFragment extends Fragment{
 
         cameraFollow = false;
         cameraUserMovement = false;
+
+        if(getArguments() != null && getArguments().containsKey(AppValues.argSnapshotKey)) {
+            snapshot = getArguments().getLong(AppValues.argSnapshotKey, -1);
+        }else {
+            snapshot = -1;
+        }
     }
 
     private void initActivity() {
         if (getActivity() != null) {
+            appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             if (getActivity().getClass() == MainActivity.class) {
                 MainActivity activity = (MainActivity) getActivity();
                 activity.setOnBackPressed(()->true);
@@ -282,23 +293,26 @@ public class MapMenuFragment extends Fragment{
         clusterManager.setOnClusterItemClickListener(this::onClusterItemClick);
         clusterManager.setOnClusterClickListener(this::onClusterClick);
         if(firstLandUpdate){
-            initLandHolder();
+            if(appVM != null){
+                AsyncTask.execute(()->{
+                    snapshot = appVM.setTempSnapshot(snapshot);
+                    if(getActivity() != null) getActivity().runOnUiThread(this::initLandHolder);
+                });
+            }
         }else{
             updateMap();
         }
     }
 
     private void initLandHolder() {
-        if (getActivity() != null && firstLandUpdate) {
-            AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            appVM.getLands().observe(getViewLifecycleOwner(), this::onLandsUpdate);
+        if (appVM != null && firstLandUpdate) {
+            appVM.getTempSnapshotLands().observe(getViewLifecycleOwner(), this::onLandsUpdate);
         }
     }
 
     private void initZoneHolder() {
-        if (getActivity() != null && firstZoneUpdate) {
-            AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            appVM.getLandZones().observe(getViewLifecycleOwner(), this::onZonesUpdate);
+        if (appVM != null && firstZoneUpdate) {
+            appVM.getTempSnapshotLandZones().observe(getViewLifecycleOwner(), this::onZonesUpdate);
         }
     }
 

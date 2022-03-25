@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AppSettingsFragment extends Fragment implements FragmentBackPress{
+    //todo: copy lands, zones and add history from one snapshot to another
     private static final String TAG = "AppSettingsFragment";
     private FragmentAppSettingsBinding binding;
     private LoadingDialog loadingDialog;
