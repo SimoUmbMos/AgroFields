@@ -28,16 +28,34 @@
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:gravity="center_vertical"
+            android:singleLine="true"
             android:maxLines="1"
-            android:ellipsize="end"
             android:text="@string/new_zone_bar_label"
             android:textAppearance="@style/TextAppearance.AppTheme.Headline"
-            app:layout_constraintEnd_toStartOf="@+id/ibEditMenu"
+            app:layout_constraintEnd_toStartOf="@+id/ibSave"
             app:layout_constraintStart_toEndOf="@+id/ibClose"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ibSave"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/menu_button"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:gravity="bottom|center_horizontal"
+            android:maxWidth="@dimen/max_width_menu_button"
+            android:maxLines="1"
+            android:minWidth="@dimen/menu_button"
+            android:text="@string/save"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            app:drawableTopCompat="@drawable/ic_menu_save"
+            app:layout_constraintEnd_toStartOf="@+id/ibEditMenu"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

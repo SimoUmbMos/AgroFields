@@ -37,10 +37,10 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:ellipsize="end"
         android:text="@string/live_map_title"
         android:textAppearance="@style/TextAppearance.AppTheme.Headline"
         app:layout_constraintEnd_toStartOf="@+id/ibCameraReset"
@@ -80,7 +80,7 @@
         android:padding="8dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_menu_location"
-        app:layout_constraintEnd_toEndOf="@id/mvLiveMap"
+        app:layout_constraintEnd_toEndOf="@+id/mvLiveMap"
         app:layout_constraintTop_toTopOf="@+id/mvLiveMap"
         app:tint="?attr/colorOnMapSurface" />
 

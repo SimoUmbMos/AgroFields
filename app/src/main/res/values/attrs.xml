@@ -22,6 +22,9 @@
     <attr name="colorPicker7" format="color" />
     <attr name="colorPicker8" format="color" />
 
+    <attr name="colorMyLocation" format="color" />
+    <attr name="colorOnMyLocation" format="color" />
+
     <attr name="colorMapSurface" format="color" />
     <attr name="colorOnMapSurface" format="color" />
 

@@ -178,6 +178,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private void initFragment(){
         binding.ibClose.setOnClickListener( v -> goBack());
+        binding.ibSave.setOnClickListener( v-> saveZone());
         binding.ibEditMenu.setOnClickListener(v->{
             onStateUpdate(ZoneEditorState.NormalState);
             toggleDrawer(true);
@@ -328,8 +329,23 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
 
+    private void showDeleteDialog(){
+        if(dialog != null){
+            if(dialog.isShowing())
+                dialog.dismiss();
+            dialog = null;
+        }
+        dialog = new MaterialAlertDialogBuilder(binding.getRoot().getContext(), R.style.ErrorMaterialAlertDialog)
+                .setIcon(R.drawable.ic_menu_delete)
+                .setTitle(getString(R.string.delete_zone_dialog_title))
+                .setMessage(getString(R.string.delete_zone_dialog_text))
+                .setNeutralButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                .setPositiveButton(getString(R.string.accept), (d, w) -> deleteZone())
+                .create();
+        dialog.show();
+    }
+
     private void deleteZone(){
-        toggleDrawer(false);
         if(vmLands == null) return;
         if(loadingDialog != null) loadingDialog.openDialog();
         if(zone != null && zone.getData() != null && zone.getData().getId() > 0){
@@ -618,13 +634,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private boolean onMenuClick(MenuItem item) {
+        toggleDrawer(false);
         if( !mapLoaded ) return false;
         switch (item.getItemId()){
-            case (R.id.toolbar_action_save_zone):
-                saveZone();
-                return true;
             case (R.id.toolbar_action_delete_zone):
-                deleteZone();
+                showDeleteDialog();
                 return true;
             case (R.id.toolbar_action_change_zone_name):
                 showTitleDialog();
@@ -1068,12 +1082,14 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private void setToolbarTitle(String title){
         binding.tvTitle.setText(title);
+        binding.tvTitle.setSelected(true);
         binding.tvNote.setVisibility(View.GONE);
         binding.tvNote.setText("");
     }
 
     private void setToolbarTitle(String title, String subTitle){
         binding.tvTitle.setText(title);
+        binding.tvTitle.setSelected(true);
         binding.tvNote.setVisibility(View.VISIBLE);
         binding.tvNote.setText(subTitle);
     }

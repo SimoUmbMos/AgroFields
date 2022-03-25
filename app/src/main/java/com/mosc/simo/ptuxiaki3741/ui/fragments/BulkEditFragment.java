@@ -47,7 +47,7 @@ public class BulkEditFragment extends Fragment {
     private List<Land> filteredLands;
     private List<Land> lands;
     private String selectedTag;
-    private boolean isSaving;
+    private boolean isSaving, isShowingLands;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -73,6 +73,7 @@ public class BulkEditFragment extends Fragment {
 
     private void initData() {
         isSaving = false;
+        isShowingLands = true;
         selectedTag = getString(R.string.bulk_edit_all_tag);
         lands = new ArrayList<>();
         filteredLands = new ArrayList<>();
@@ -96,7 +97,7 @@ public class BulkEditFragment extends Fragment {
 
     private void initFragment() {
         binding.ibClose1.setOnClickListener(v-> goBack());
-        binding.ibSave.setOnClickListener(v->saveData());
+        binding.ibSave.setOnClickListener(v->onSaveClick());
 
         binding.tvTag.setAdapter(tags);
         binding.tvTag.setOnItemClickListener((parent, view, position, id) -> {
@@ -115,15 +116,18 @@ public class BulkEditFragment extends Fragment {
         binding.tvColorPreview.setOnClickListener(v->displayColorDialog());
         binding.etChangeColor.setOnClickListener(v->displayColorDialog());
 
+        binding.rgDataOption.setOnCheckedChangeListener((radioGroup,id) -> showLands(id != R.id.rbZones));
+
         adapter = new BulkEditorAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false
         );
-        binding.rvLandResults.setHasFixedSize(true);
-        binding.rvLandResults.setLayoutManager(layoutManager);
-        binding.rvLandResults.setAdapter(adapter);
+        binding.rvLandsResults.setHasFixedSize(true);
+        binding.rvLandsResults.setLayoutManager(layoutManager);
+        binding.rvLandsResults.setAdapter(adapter);
+        showLands(true);
     }
 
     private void displayColorDialog() {
@@ -224,18 +228,24 @@ public class BulkEditFragment extends Fragment {
             }
         }
         adapter.saveData(filteredLands);
-        if(filteredLands.size() == 0) binding.tvEmptyList.setVisibility(View.VISIBLE);
-        else binding.tvEmptyList.setVisibility(View.GONE);
+        if(filteredLands.size() == 0) binding.tvLandsEmptyList.setVisibility(View.VISIBLE);
+        else binding.tvLandsEmptyList.setVisibility(View.GONE);
         String display = filteredLands.size() + " ";
         if(filteredLands.size() == 1){
             display += getString(R.string.singular_land_label);
         }else{
             display += getString(R.string.plural_land_label);
         }
-        binding.tvFilterResult.setText(display);
+        binding.tvLandsFilterResult.setText(display);
     }
 
-    private void saveData(){
+    private void onSaveClick() {
+        if(isShowingLands){
+            saveLandsData();
+        }
+    }
+
+    private void saveLandsData(){
         if(filteredLands.size() == 0) return;
 
         final String addTags = getTagsToAdd();
@@ -255,6 +265,7 @@ public class BulkEditFragment extends Fragment {
             if(land.getData() == null) continue;
             boolean needSave = false;
             LandData data = new LandData(land.getData());
+            //todo: add `add tags` & `remove tags` methods
             if(newColor != null) {
                 data.setColor(newColor);
                 needSave = true;
@@ -270,38 +281,43 @@ public class BulkEditFragment extends Fragment {
         });
     }
 
+    private void showLands(boolean enable){
+        if(enable){
+            binding.clLandsBulkEdit.setVisibility(View.VISIBLE);
+        }else{
+            binding.clLandsBulkEdit.setVisibility(View.GONE);
+        }
+        isShowingLands = enable;
+    }
+
     private String getTagsToAdd(){
         String temp;
-        if(binding.cbAddTag.isChecked()){
-            if(binding.etAddTag.getText() != null) {
-                temp = binding.etAddTag.getText().toString();
-                temp = DataUtil.removeSpecialCharactersCSV(temp);
-                List<String> removeTagsList = DataUtil.splitTags(temp);
-                StringBuilder builder = new StringBuilder();
-                for(int i = 0; i < removeTagsList.size(); i++){
-                    builder.append(removeTagsList.get(i));
-                    if(i != (removeTagsList.size() - 1)) builder.append(", ");
-                }
-                if(removeTagsList.size() > 0) return builder.toString();
+        if(binding.cbAddTag.isChecked() && binding.etAddTag.getText() != null){
+            temp = binding.etAddTag.getText().toString();
+            temp = DataUtil.removeSpecialCharactersCSV(temp);
+            List<String> addTagsList = DataUtil.splitTags(temp);
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < addTagsList.size(); i++){
+                builder.append(addTagsList.get(i));
+                if(i != (addTagsList.size() - 1)) builder.append(", ");
             }
+            if(addTagsList.size() > 0) return builder.toString();
         }
         return null;
     }
 
     private String getTagsToRemove(){
         String temp;
-        if(binding.cbRemoveTag.isChecked()){
-            if(binding.etRemoveTag.getText() != null) {
-                temp = binding.etRemoveTag.getText().toString();
-                temp = DataUtil.removeSpecialCharactersCSV(temp);
-                List<String> removeTagsList = DataUtil.splitTags(temp);
-                StringBuilder builder = new StringBuilder();
-                for(int i = 0; i < removeTagsList.size(); i++){
-                    builder.append(removeTagsList.get(i));
-                    if(i != (removeTagsList.size() - 1)) builder.append(", ");
-                }
-                if(removeTagsList.size() > 0) return builder.toString();
+        if(binding.cbRemoveTag.isChecked() && binding.etRemoveTag.getText() != null){
+            temp = binding.etRemoveTag.getText().toString();
+            temp = DataUtil.removeSpecialCharactersCSV(temp);
+            List<String> removeTagsList = DataUtil.splitTags(temp);
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < removeTagsList.size(); i++){
+                builder.append(removeTagsList.get(i));
+                if(i != (removeTagsList.size() - 1)) builder.append(", ");
             }
+            if(removeTagsList.size() > 0) return builder.toString();
         }
         return null;
     }

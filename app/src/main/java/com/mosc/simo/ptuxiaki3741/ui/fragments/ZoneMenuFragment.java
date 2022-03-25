@@ -285,8 +285,8 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             doDialogUpdate = true;
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
                     .setIcon(R.drawable.ic_menu_delete)
-                    .setTitle(getString(R.string.delete_zone_dialog_title))
-                    .setMessage(getString(R.string.delete_zone_dialog_text))
+                    .setTitle(getString(R.string.delete_zones_dialog_title))
+                    .setMessage(getString(R.string.delete_zones_dialog_text))
                     .setOnDismissListener(dialog -> {
                         if(doDialogUpdate) setState(ListMenuState.NormalState, true);
                     })

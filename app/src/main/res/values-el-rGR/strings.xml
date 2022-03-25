@@ -121,12 +121,14 @@
     <string name="land_action_zone_imported">Εισαγωγή Ζώνης</string>
     <string name="land_action_zone_deleted">Διαγράφη Ζώνης</string>
     <!-- Zone Land Selected Fragment -->
-    <string name="delete_zone_dialog_title">Delete Zone\'s</string>
-    <string name="delete_zone_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
+    <string name="delete_zones_dialog_title">Delete Zone\'s</string>
+    <string name="delete_zones_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
     <string name="zone_delete">Οι περιοχές διαγράφηκαν με επιτυχία</string>
     <string name="zone_delete_error">Some zones did not delete</string>
     <string name="zone_export">Οι περιοχές εξήχθησαν με επιτυχία</string>
     <!-- Zone Preview Fragment -->
+    <string name="delete_zone_dialog_title">Delete Zone</string>
+    <string name="delete_zone_dialog_text">Are you sure you want to delete the current zone?</string>
     <string name="new_zone_bar_label">Νέα περιοχή</string>
     <string name="save_zone">Αποθήκευση περιοχής</string>
     <string name="delete_zone">Delete Zone</string>

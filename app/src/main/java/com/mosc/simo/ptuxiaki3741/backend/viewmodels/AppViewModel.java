@@ -276,9 +276,6 @@ public class AppViewModel extends AndroidViewModel {
         return ans;
     }
 
-    public Map<Long,List<LandZone>> getZones(long snapshot){
-        return appRepository.getLandZones(snapshot);
-    }
     public void saveZone(LandZone zone) {
         if(zone == null) return;
         if(zone.getData() == null) return;

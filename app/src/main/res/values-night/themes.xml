@@ -15,6 +15,8 @@
         <item name="colorPicker6">@color/common_colorPicker6</item>
         <item name="colorPicker7">@color/common_colorPicker7</item>
         <item name="colorPicker8">@color/common_colorPicker8</item>
+        <item name="colorMyLocation">@color/common_my_location</item>
+        <item name="colorOnMyLocation">@color/common_on_my_location</item>
         <!-- Theme Colors -->
         <item name="colorPrimary">@color/dark_primary</item>
         <item name="colorOnPrimary">@color/dark_onPrimary</item>

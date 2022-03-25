@@ -132,12 +132,14 @@
     <string name="land_action_zone_imported">Zone Imported</string>
     <string name="land_action_zone_deleted">Zone Deleted</string>
     <!-- Zone Land Selected Fragment -->
-    <string name="delete_zone_dialog_title">Delete Zone\'s</string>
-    <string name="delete_zone_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
+    <string name="delete_zones_dialog_title">Delete Zone\'s</string>
+    <string name="delete_zones_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
     <string name="zone_delete">Zones Deleted Successfully</string>
     <string name="zone_delete_error">Some zones did not delete</string>
     <string name="zone_export">Zones Exported Successfully</string>
     <!-- Zone Preview Fragment -->
+    <string name="delete_zone_dialog_title">Delete Zone\'s</string>
+    <string name="delete_zone_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
     <string name="new_zone_bar_label">New Zone</string>
     <string name="save_zone">Save Zone</string>
     <string name="delete_zone">Delete Zone</string>
