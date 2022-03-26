@@ -118,15 +118,13 @@ public class MapFileFragment extends Fragment {
     }
 
     private void initActivity(){
-        if(getActivity() != null){
-            loadingDialog = new LoadingDialog(getActivity());
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this::onBackPress);
-                if(action == ImportAction.NONE){
-                    mainActivity.setOverrideDoubleBack(true);
-                }
-            }
+        if(getActivity() == null) return;
+        if(getActivity().getClass() != MainActivity.class) return;
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setOnBackPressed(this::onBackPress);
+        loadingDialog = mainActivity.getLoadingDialog();
+        if(action == ImportAction.NONE){
+            mainActivity.setOverrideDoubleBack(true);
         }
     }
 

@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
-import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.data.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
@@ -72,7 +71,7 @@ public class AppLoadingFragment extends Fragment {
         if(getActivity() == null) return;
 
         AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-        appVM.getLandsHistory().observe(getViewLifecycleOwner(), this::onUpdate);
+        appVM.getSnapshots().observe(getViewLifecycleOwner(), this::onUpdate);
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         long snapshotKey = sharedPref.getLong(AppValues.argSnapshotKey, AppValues.defaultSnapshot);
@@ -83,9 +82,10 @@ public class AppLoadingFragment extends Fragment {
         });
     }
 
-    private void onUpdate(List<LandHistoryRecord> records) {
+    private void onUpdate(List<Long> snapshots) {
+        //todo: check if new year is on snapshots and if snapshots > 1 show dialog import to new year and set default snapshot
         Log.d(TAG, "onUpdate:  called");
-        if(records != null) {
+        if(snapshots != null) {
             toMenu(getActivity());
         }
     }

@@ -82,6 +82,7 @@ public final class DataUtil {
         return ans;
     }
     public static String removeSpecialCharacters(String string){
+        if(string == null) return "";
         String ans = string.replaceAll(
                 "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
                 " "
@@ -89,6 +90,7 @@ public final class DataUtil {
         return ans.replaceAll(" +", " ");
     }
     public static String removeSpecialCharactersWithoutSpaces(String string) {
+        if(string == null) return "";
         String ans = string.replaceAll(
                 "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
                 " "
@@ -96,6 +98,7 @@ public final class DataUtil {
         return ans.replaceAll(" +", "_");
     }
     public static String removeSpecialCharactersCSV(String string){
+        if(string == null) return "";
         String ans = string
                 .replaceAll("[@#€&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>.]", " ")
                 .replaceAll("_+", " ")
@@ -104,6 +107,7 @@ public final class DataUtil {
         return ans.replaceAll(" +", "_");
     }
     public static boolean isColor(String string){
+        if(string == null) return false;
         String colorRegex = "^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
         return string.matches(colorRegex);
     }

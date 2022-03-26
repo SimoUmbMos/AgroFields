@@ -415,6 +415,16 @@ public class AppViewModel extends AndroidViewModel {
     }
     public void saveCalendarCategory(CalendarCategory category){
         if(category == null) return;
+        if(category.getId() <= 0){
+            List<CalendarCategory> categories = appRepository.getCalendarCategories();
+            for(CalendarCategory temp :categories){
+                if(temp == null) continue;
+                if(temp.getName().equals(category.getName())){
+                    category.setId(temp.getId());
+                    break;
+                }
+            }
+        }
         appRepository.saveCalendarCategory(category);
         populateLists();
     }
@@ -530,6 +540,53 @@ public class AppViewModel extends AndroidViewModel {
                 if(zone.getData() == null) continue;
                 importZone(zone);
             }
+        }
+        populateSnapshotLists();
+    }
+    public void importFromSnapshotToAnotherSnapshot(long snapshotFrom, long snapshotTo){
+        long from;
+        if(snapshotFrom <= 0){
+            from = appRepository.getDefaultSnapshot();
+        }else{
+            from = snapshotFrom;
+        }
+        long to;
+        if(snapshotTo <= 0){
+            to = appRepository.getDefaultSnapshot();
+        }else{
+            to = snapshotTo;
+        }
+        if(from == to) return;
+        List<Land> lands = appRepository.getLands(from);
+        if(lands.size() == 0) return;
+
+        Map<Long,List<LandZone>> zones = appRepository.getLandZones(from);
+        for(Land land : lands){
+            if(land == null || land.getData() == null) continue;
+
+            long oldID = land.getData().getId();
+
+            land.getData().setId(0);
+            land.getData().setSnapshot(to);
+            appRepository.saveLand(land);
+            LandDataRecord landRecord = new LandDataRecord(
+                    land.getData(),
+                    LandDBAction.CREATE,
+                    new Date()
+            );
+
+            List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
+            List<LandZone> landZones = zones.getOrDefault(oldID, null);
+            if(landZones == null) landZones = new ArrayList<>();
+            for(LandZone landZone : landZones){
+                if(landZone == null || landZone.getData() == null) continue;
+                landZone.getData().setId(0);
+                landZone.getData().setSnapshot(to);
+                appRepository.saveZone(landZone);
+                zoneDataRecords.add(new LandZoneDataRecord(landRecord,landZone.getData()));
+            }
+
+            appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
         }
         populateSnapshotLists();
     }

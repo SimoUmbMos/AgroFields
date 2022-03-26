@@ -88,11 +88,10 @@ public class BulkEditFragment extends Fragment {
 
     private void initActivity() {
         if(getActivity() == null) return;
-        loadingDialog = new LoadingDialog(getActivity());
-
         if(getActivity().getClass() != MainActivity.class) return;
-        MainActivity activity = (MainActivity) getActivity();
-        activity.setOnBackPressed(()->!isSaving);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setOnBackPressed(()->!isSaving);
+        loadingDialog = mainActivity.getLoadingDialog();
     }
 
     private void initFragment() {

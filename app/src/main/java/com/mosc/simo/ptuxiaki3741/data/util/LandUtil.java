@@ -24,6 +24,11 @@ public final class LandUtil {
         return DataUtil.splitTags(landData.getTags());
     }
 
+    public static List<String> getLandTags(LandZoneData zoneData){
+        if(zoneData == null) return new ArrayList<>();
+        return DataUtil.splitTags(zoneData.getTags());
+    }
+
     public static LandData uniteLandData(LandData currLandData, LandData landDataToAdd){
         List<LatLng> newBorder = new ArrayList<>(currLandData.getBorder());
         List<List<LatLng>> holes = new ArrayList<>(currLandData.getHoles());

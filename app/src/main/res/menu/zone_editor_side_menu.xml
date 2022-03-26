@@ -13,9 +13,14 @@
                 android:orderInCategory="2"
                 android:icon="@drawable/ic_menu_edit"
                 app:showAsAction="ifRoom|withText" />
+            <item android:id="@+id/toolbar_action_change_zone_tags"
+                android:title="@string/edit_zone_tags"
+                android:orderInCategory="3"
+                android:icon="@drawable/ic_menu_edit"
+                app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_change_zone_color"
                 android:title="@string/edit_color"
-                android:orderInCategory="3"
+                android:orderInCategory="4"
                 android:icon="@drawable/ic_menu_color_palette"
                 app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_delete_zone"

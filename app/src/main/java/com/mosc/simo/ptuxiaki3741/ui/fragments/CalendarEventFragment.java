@@ -122,13 +122,11 @@ public class CalendarEventFragment extends Fragment{
     }
 
     private void initActivity(){
-        if(getActivity() != null){
-            dialog = new LoadingDialog(getActivity());
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(()->true);
-            }
-        }
+        if(getActivity() == null) return;
+        if(getActivity().getClass() != MainActivity.class) return;
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setOnBackPressed(()->true);
+        dialog = mainActivity.getLoadingDialog();
     }
 
     private void initFragment(){

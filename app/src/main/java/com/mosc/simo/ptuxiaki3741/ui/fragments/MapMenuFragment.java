@@ -208,15 +208,13 @@ public class MapMenuFragment extends Fragment{
     }
 
     private void initActivity() {
-        if (getActivity() != null) {
-            appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            if (getActivity().getClass() == MainActivity.class) {
-                MainActivity activity = (MainActivity) getActivity();
-                activity.setOnBackPressed(()->true);
-                notificationManager = activity.getNotificationManager();
-            }
-            loadingDialog = new LoadingDialog(getActivity());
-        }
+        if (getActivity() == null) return;
+        if (getActivity().getClass() != MainActivity.class) return;
+        MainActivity activity = (MainActivity) getActivity();
+        appVM = new ViewModelProvider(activity).get(AppViewModel.class);
+        activity.setOnBackPressed(()->true);
+        notificationManager = activity.getNotificationManager();
+        loadingDialog = activity.getLoadingDialog();
     }
 
     private void initFragment() {

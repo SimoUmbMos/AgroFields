@@ -63,7 +63,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
-    //todo: add zones tags
     private static final String TAG = "ZoneEditorFragment";
     private FragmentZoneEditorBinding binding;
     private GoogleMap mMap;
@@ -166,14 +165,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private void initActivity(){
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity activity = (MainActivity) getActivity();
-                activity.setOnBackPressed(this);
-            }
-            loadingDialog = new LoadingDialog(getActivity());
-            locationHelperPoint = new LocationHelper(getActivity(),this::onLocationUpdate);
-        }
+        if(getActivity() == null) return;
+        if(getActivity().getClass() != MainActivity.class) return;
+        MainActivity activity = (MainActivity) getActivity();
+        activity.setOnBackPressed(this);
+        loadingDialog = activity.getLoadingDialog();
+        locationHelperPoint = new LocationHelper(activity,this::onLocationUpdate);
     }
 
     private void initFragment(){
@@ -463,6 +460,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             if(!zone.getData().getNote().equals(note)){
                 return true;
             }
+            if(!zone.getData().getTags().equals(tags)){
+                return true;
+            }
             if(!zone.getData().getColor().toString().equals(color.toString())){
                 return true;
             }
@@ -608,6 +608,50 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         }
     }
 
+    @SuppressLint("CutPasteId")
+    private void showTagsDialog(){
+        if(getContext() != null){
+            if(dialog != null){
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                dialog = null;
+            }
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
+                    .setIcon(R.drawable.ic_menu_edit)
+                    .setTitle(getString(R.string.zone_note_label))
+                    .setView(R.layout.view_text_area)
+                    .setNegativeButton(getString(R.string.cancel), (d, w) -> d.cancel())
+                    .setPositiveButton(getString(R.string.submit), (d, w) -> {
+                        EditText noteView = dialog.findViewById(R.id.etZoneNote);
+                        if(noteView != null && noteView.getText() != null){
+                            String tagsInput = noteView.getText().toString();
+
+                            tagsInput = DataUtil.removeSpecialCharactersCSV(tagsInput);
+                            List<String> tags = DataUtil.splitTags(tagsInput);
+                            List<String> temp = new ArrayList<>();
+                            for(int i = 0; i < tags.size(); i++){
+                                if(tags.get(i) == null || tags.get(i).isEmpty()) continue;
+                                if(!temp.contains(tags.get(i))) temp.add(tags.get(i));
+                            }
+                            tags.clear();
+                            tags.addAll(temp);
+                            StringBuilder builder = new StringBuilder();
+                            for(int i = 0; i < tags.size(); i++){
+                                builder.append(tags.get(i));
+                                if(i != (tags.size() - 1)) builder.append(", ");
+                            }
+                            this.tags = builder.toString();
+                        }
+                    })
+                    .create();
+            dialog.show();
+            EditText noteV = dialog.findViewById(R.id.etZoneNote);
+            if(noteV != null){
+                noteV.setText(tags);
+            }
+        }
+    }
+
     private void showColorDialog(){
         if(getContext() != null){
             if(dialog != null){
@@ -646,6 +690,9 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 return true;
             case (R.id.toolbar_action_change_zone_note):
                 showNoteDialog();
+                return true;
+            case (R.id.toolbar_action_change_zone_tags):
+                showTagsDialog();
                 return true;
             case (R.id.toolbar_action_change_zone_color):
                 showColorDialog();

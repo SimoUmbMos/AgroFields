@@ -18,6 +18,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.ActivityMainBinding;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private NotificationManager notificationManager;
     private FragmentBackPress fragmentBackPress;
     private boolean overrideDoubleBack = false, doubleBackToExit = false;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,5 +140,10 @@ public class MainActivity extends AppCompatActivity {
         }else{
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
+    }
+
+    public LoadingDialog getLoadingDialog() {
+        if(loadingDialog == null) loadingDialog = new LoadingDialog(this);
+        return loadingDialog;
     }
 }

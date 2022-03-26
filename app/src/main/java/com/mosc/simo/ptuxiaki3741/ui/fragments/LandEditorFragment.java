@@ -256,15 +256,13 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         return true;
     }
     private void initActivity() {
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
-            }
-            loadingDialog = new LoadingDialog(getActivity());
-            locationHelperCamera = new LocationHelper(getActivity(),this::moveCameraOnLocation);
-            locationHelperPoint = new LocationHelper(getActivity(), this::onLocationUpdate);
-        }
+        if(getActivity() == null) return;
+        if(getActivity().getClass() != MainActivity.class) return;
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setOnBackPressed(this);
+        loadingDialog = mainActivity.getLoadingDialog();
+        locationHelperCamera = new LocationHelper(getActivity(),this::moveCameraOnLocation);
+        locationHelperPoint = new LocationHelper(getActivity(), this::onLocationUpdate);
     }
     private void initViews() {
         clearFlags();

@@ -212,13 +212,11 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void initActivity(){
-        if(getActivity() != null){
-            loadingDialog = new LoadingDialog(getActivity());
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(this);
-            }
-        }
+        if(getActivity() == null) return;
+        if(getActivity().getClass() != MainActivity.class) return;
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setOnBackPressed(this);
+        loadingDialog = mainActivity.getLoadingDialog();
     }
 
     private void initFragment(){

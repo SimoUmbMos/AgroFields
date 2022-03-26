@@ -1,6 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters;
 
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -17,11 +16,9 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.util.ListUtils;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
-import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandBinding;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
@@ -30,6 +27,7 @@ import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
+import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandWithTagsBinding;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,10 +58,11 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
     }
 
     @NonNull @Override public LandZoneItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_land,parent,false);
-        LandZoneItem holder = new LandZoneItem(view, parent.getContext(), land);
-        mMapViews.add(holder.binding.mapView);
-        return holder;
+        return LandZoneItem.getInstance(
+                LayoutInflater.from(parent.getContext()),
+                parent,
+                land
+        );
     }
 
     @Override public void onBindViewHolder(@NonNull LandZoneItem holder, int position) {
@@ -122,15 +121,15 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
     }
 
     protected static class LandZoneItem extends RecyclerView.ViewHolder{
-        public final  ViewHolderLandBinding binding;
+        public final ViewHolderLandWithTagsBinding binding;
 
         private final LandData land;
         private GoogleMap googleMap;
         private LandZoneData zone;
 
-        public LandZoneItem(View view, Context parentContext, LandData land)  {
+        public LandZoneItem(View view, LandData land)  {
             super(view);
-            binding = ViewHolderLandBinding.bind(itemView);
+            binding = ViewHolderLandWithTagsBinding.bind(itemView);
 
             this.land = land;
             zone = null;
@@ -140,7 +139,7 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
             binding.mapView.onCreate(null);
 
             MapsInitializer.initialize(
-                    parentContext,
+                    binding.getRoot().getContext(),
                     MapsInitializer.Renderer.LATEST,
                     r -> binding.mapView.getMapAsync(this::setMap)
             );
@@ -155,10 +154,20 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
             googleMap.setOnMapLoadedCallback(this::draw);
         }
 
-
         public void setData(LandZone zone, boolean showCheckMark){
             if(zone == null) return;
             if(zone.getData() == null) return;
+
+            List<String> tags = LandUtil.getLandTags(zone.getData());
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < tags.size(); i++){
+                if( tags.get(i) == null ) continue;
+                builder.append("#");
+                builder.append(tags.get(i));
+                if(i != (tags.size()-1))
+                    builder.append(" ");
+            }
+            String tagsDisplay = builder.toString();
 
             String display = zone.toString();
             binding.tvLandName.setText(display);
@@ -180,11 +189,20 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 binding.getRoot().setCardBackgroundColor(color.getColor());
                 if(UIUtil.showBlackText(color)){
                     binding.tvLandName.setTextColor(Color.BLACK);
+                    binding.tvTagsContainer.setTextColor(Color.BLACK);
                     binding.cbSelect.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
                 }else{
                     binding.tvLandName.setTextColor(Color.WHITE);
+                    binding.tvTagsContainer.setTextColor(Color.WHITE);
                     binding.cbSelect.setButtonTintList(ColorStateList.valueOf(Color.WHITE));
                 }
+            }
+            binding.tvTagsContainer.setText(tagsDisplay);
+            binding.tvTagsContainer.setSelected(true);
+            if(tagsDisplay.isEmpty()){
+                binding.tvTagsContainer.setVisibility(View.GONE);
+            }else{
+                binding.tvTagsContainer.setVisibility(View.VISIBLE);
             }
             this.zone = zone.getData();
             draw();
@@ -219,6 +237,12 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
                 googleMap.addPolygon(LandUtil.getPolygonOptions(zone,false).zIndex(2));
                 googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             }
+        }
+
+
+        public static LandZoneItem getInstance(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent, LandData land){
+            ViewHolderLandWithTagsBinding binding = ViewHolderLandWithTagsBinding.inflate(inflater, parent, false);
+            return new LandZoneItem( binding.getRoot(), land );
         }
     }
 

@@ -140,6 +140,7 @@
     <string name="zone_note_hint">Σημείωση</string>
     <string name="zone_note_label">Επεξεργασία σημείωσης περιοχής</string>
     <string name="edit_zone_note">Αλλαγή σημείωσης περιοχής</string>
+    <string name="edit_zone_tags">Change Zone Tags</string>
     <string name="note_max_line_error">Μέγιστος αριθμός γραμμών σημείωσης: 2</string>
     <string name="note_max_char_error">Μέγιστος αριθμός χαρακτήρων σημείωσης: 100</string>
     <string name="zone_border_error">Η περιοχή πρέπει να έχει τουλάχιστον 3 σημεία</string>
