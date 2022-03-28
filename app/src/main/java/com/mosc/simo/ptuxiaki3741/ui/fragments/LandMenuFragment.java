@@ -215,17 +215,15 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         setupSideMenu();
         updateUi();
 
-        final int maxColumnNumber = getResources().getInteger(R.integer.screenMaxColumnNumber);
         binding.rvLandList.post(()->{
+            final int maxColumnNumber = getResources().getInteger(R.integer.screenMaxColumnNumber);
             int maxWidth = getResources().getDimensionPixelSize(R.dimen.max_grid_width);
             int spanCount = 1;
             if(maxWidth != 0) {
                 spanCount = Math.floorDiv(binding.rvLandList.getWidth(), maxWidth);
                 if (spanCount == 0) spanCount = 1;
             }
-            if(spanCount > maxColumnNumber){
-                spanCount = maxColumnNumber;
-            }
+            spanCount = Math.min(spanCount,maxColumnNumber);
             StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount,StaggeredGridLayoutManager.VERTICAL);
             binding.rvLandList.setLayoutManager(staggeredGridLayoutManager);
         });
