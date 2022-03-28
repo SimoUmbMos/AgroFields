@@ -1,0 +1,558 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "bd1d5c51711f104e2c83c50e9ff8acaf",
+    "entities": [
+      {
+        "tableName": "LandData",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER NOT NULL, `Snapshot` INTEGER NOT NULL, `Title` TEXT, `Tags` TEXT, `Color` TEXT, `Border` TEXT, `Holes` TEXT, PRIMARY KEY(`ID`, `Snapshot`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "snapshot",
+            "columnName": "Snapshot",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "Title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tags",
+            "columnName": "Tags",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "Color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "border",
+            "columnName": "Border",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "holes",
+            "columnName": "Holes",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID",
+            "Snapshot"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_LandData_ID_Snapshot",
+            "unique": true,
+            "columnNames": [
+              "ID",
+              "Snapshot"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandData_ID_Snapshot` ON `${TABLE_NAME}` (`ID`, `Snapshot`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LandZoneData",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER NOT NULL, `Snapshot` INTEGER NOT NULL, `LandID` INTEGER NOT NULL, `Title` TEXT, `Note` TEXT, `Tags` TEXT, `Color` TEXT, `Border` TEXT, PRIMARY KEY(`ID`, `Snapshot`), FOREIGN KEY(`LandID`, `Snapshot`) REFERENCES `LandData`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "snapshot",
+            "columnName": "Snapshot",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lid",
+            "columnName": "LandID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "Title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "Note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tags",
+            "columnName": "Tags",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "Color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "border",
+            "columnName": "Border",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID",
+            "Snapshot"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_LandZoneData_LandID_Snapshot",
+            "unique": false,
+            "columnNames": [
+              "LandID",
+              "Snapshot"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LandZoneData_LandID_Snapshot` ON `${TABLE_NAME}` (`LandID`, `Snapshot`)"
+          },
+          {
+            "name": "index_LandZoneData_ID_Snapshot",
+            "unique": true,
+            "columnNames": [
+              "ID",
+              "Snapshot"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandZoneData_ID_Snapshot` ON `${TABLE_NAME}` (`ID`, `Snapshot`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "LandData",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "LandID",
+              "Snapshot"
+            ],
+            "referencedColumns": [
+              "ID",
+              "Snapshot"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Snapshot",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Key` INTEGER NOT NULL, `LandCount` INTEGER NOT NULL, `ZoneCount` INTEGER NOT NULL, `RecordCount` INTEGER NOT NULL, PRIMARY KEY(`Key`))",
+        "fields": [
+          {
+            "fieldPath": "key",
+            "columnName": "Key",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "landCount",
+            "columnName": "LandCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zoneCount",
+            "columnName": "ZoneCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordCount",
+            "columnName": "RecordCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "Key"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Snapshot_Key",
+            "unique": false,
+            "columnNames": [
+              "Key"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Snapshot_Key` ON `${TABLE_NAME}` (`Key`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LandDataRecord",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER NOT NULL, `Snapshot` INTEGER NOT NULL, `LandID` INTEGER NOT NULL, `LandTitle` TEXT, `LandTags` TEXT, `LandColor` TEXT, `ActionID` INTEGER, `Date` INTEGER, `LandBorder` TEXT, `LandHoles` TEXT, PRIMARY KEY(`ID`, `Snapshot`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "snapshot",
+            "columnName": "Snapshot",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "landID",
+            "columnName": "LandID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "landTitle",
+            "columnName": "LandTitle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "landTags",
+            "columnName": "LandTags",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "landColor",
+            "columnName": "LandColor",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actionID",
+            "columnName": "ActionID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "Date",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "border",
+            "columnName": "LandBorder",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "holes",
+            "columnName": "LandHoles",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID",
+            "Snapshot"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_LandDataRecord_ID_Snapshot",
+            "unique": true,
+            "columnNames": [
+              "ID",
+              "Snapshot"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandDataRecord_ID_Snapshot` ON `${TABLE_NAME}` (`ID`, `Snapshot`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LandZoneDataRecord",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `RecordID` INTEGER NOT NULL, `RecordSnapshot` INTEGER NOT NULL, `ZoneID` INTEGER NOT NULL, `ZoneTitle` TEXT, `ZoneNote` TEXT, `ZoneTags` TEXT, `ZoneColor` TEXT, `ZoneBorder` TEXT, FOREIGN KEY(`RecordID`, `RecordSnapshot`) REFERENCES `LandDataRecord`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordID",
+            "columnName": "RecordID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordSnapshot",
+            "columnName": "RecordSnapshot",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zoneID",
+            "columnName": "ZoneID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "zoneTitle",
+            "columnName": "ZoneTitle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "zoneNote",
+            "columnName": "ZoneNote",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "zoneTags",
+            "columnName": "ZoneTags",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "zoneColor",
+            "columnName": "ZoneColor",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "zoneBorder",
+            "columnName": "ZoneBorder",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_LandZoneDataRecord_RecordID_RecordSnapshot",
+            "unique": false,
+            "columnNames": [
+              "RecordID",
+              "RecordSnapshot"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LandZoneDataRecord_RecordID_RecordSnapshot` ON `${TABLE_NAME}` (`RecordID`, `RecordSnapshot`)"
+          },
+          {
+            "name": "index_LandZoneDataRecord_ID",
+            "unique": true,
+            "columnNames": [
+              "ID"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandZoneDataRecord_ID` ON `${TABLE_NAME}` (`ID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "LandDataRecord",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "RecordID",
+              "RecordSnapshot"
+            ],
+            "referencedColumns": [
+              "ID",
+              "Snapshot"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "CalendarCategory",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `NAME` TEXT, `COLOR` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "NAME",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "colorData",
+            "columnName": "COLOR",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CalendarNotification",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `CategoryID` INTEGER NOT NULL, `Snapshot` INTEGER NOT NULL, `LandID` INTEGER, `ZoneID` INTEGER, `Title` TEXT, `Message` TEXT, `Date` INTEGER, FOREIGN KEY(`LandID`, `Snapshot`) REFERENCES `LandData`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`ZoneID`, `Snapshot`) REFERENCES `LandZoneData`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryID",
+            "columnName": "CategoryID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "snapshot",
+            "columnName": "Snapshot",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lid",
+            "columnName": "LandID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "zid",
+            "columnName": "ZoneID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "Title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "Message",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "Date",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_CalendarNotification_LandID_Snapshot",
+            "unique": false,
+            "columnNames": [
+              "LandID",
+              "Snapshot"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CalendarNotification_LandID_Snapshot` ON `${TABLE_NAME}` (`LandID`, `Snapshot`)"
+          },
+          {
+            "name": "index_CalendarNotification_ZoneID_Snapshot",
+            "unique": false,
+            "columnNames": [
+              "ZoneID",
+              "Snapshot"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CalendarNotification_ZoneID_Snapshot` ON `${TABLE_NAME}` (`ZoneID`, `Snapshot`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "LandData",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "LandID",
+              "Snapshot"
+            ],
+            "referencedColumns": [
+              "ID",
+              "Snapshot"
+            ]
+          },
+          {
+            "table": "LandZoneData",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "ZoneID",
+              "Snapshot"
+            ],
+            "referencedColumns": [
+              "ID",
+              "Snapshot"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bd1d5c51711f104e2c83c50e9ff8acaf')"
+    ]
+  }
+}
