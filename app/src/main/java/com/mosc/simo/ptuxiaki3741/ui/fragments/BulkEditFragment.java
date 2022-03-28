@@ -154,13 +154,13 @@ public class BulkEditFragment extends Fragment {
     private void initViewModel() {
         if(getActivity() == null) return;
         viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-        viewModel.getLandsTags().observe(getViewLifecycleOwner(),this::onLandTagsUpdate);
         viewModel.getLands().observe(getViewLifecycleOwner(),this::onLandsUpdate);
     }
 
     private void onLandsUpdate(List<Land> lands) {
         this.lands.clear();
         if(lands != null) this.lands.addAll(lands);
+        onLandTagsUpdate(LandUtil.getLandsTags(this.lands));
         updateLands(this.lands);
     }
 

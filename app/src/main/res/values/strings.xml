@@ -137,6 +137,9 @@
     <string name="zone_delete">Zones Deleted Successfully</string>
     <string name="zone_delete_error">Some zones did not delete</string>
     <string name="zone_export">Zones Exported Successfully</string>
+    <string name="land_zones_filter_title">land_zones_filter_title</string>
+    <string name="filter_land_zones_all_tag">[filter_land_zones_all_tag]</string>
+    <string name="filter_land_zones_empty_tag">[filter_land_zones_empty_tag]</string>
     <!-- Zone Preview Fragment -->
     <string name="delete_zone_dialog_title">Delete Zone\'s</string>
     <string name="delete_zone_dialog_text">Are you sure you want to delete the selected zone\'s?</string>

@@ -126,6 +126,9 @@
     <string name="zone_delete">Οι περιοχές διαγράφηκαν με επιτυχία</string>
     <string name="zone_delete_error">Some zones did not delete</string>
     <string name="zone_export">Οι περιοχές εξήχθησαν με επιτυχία</string>
+    <string name="land_zones_filter_title">land_zones_filter_title</string>
+    <string name="filter_land_zones_all_tag">[filter_land_zones_all_tag]</string>
+    <string name="filter_land_zones_empty_tag">[filter_land_zones_empty_tag]</string>
     <!-- Zone Preview Fragment -->
     <string name="delete_zone_dialog_title">Delete Zone</string>
     <string name="delete_zone_dialog_text">Are you sure you want to delete the current zone?</string>

@@ -52,6 +52,12 @@
                 motion:visibilityMode="ignore" />
         </Constraint>
 
+        <Constraint android:id="@id/ibMenuButton">
+            <PropertySet
+                motion:applyMotionScene="false"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
         <Constraint android:id="@id/ibSelectAll">
             <PropertySet
                 motion:applyMotionScene="false"
@@ -81,6 +87,12 @@
         </Constraint>
 
         <Constraint android:id="@id/ibSelectAll">
+            <PropertySet
+                motion:applyMotionScene="false"
+                motion:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@id/ibMenuButton">
             <PropertySet
                 motion:applyMotionScene="false"
                 motion:visibilityMode="ignore" />

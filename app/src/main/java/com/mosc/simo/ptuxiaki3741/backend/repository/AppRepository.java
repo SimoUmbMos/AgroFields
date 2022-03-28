@@ -27,8 +27,6 @@ public interface AppRepository {
     void saveLand(Land land);
     void deleteLand(Land land);
 
-    List<String> getLandTags();
-
     Map<Long,List<LandZone>> getLandZones();
     Map<Long,List<LandZone>> getLandZones(long snapshot);
     boolean zoneExist(long id, long snapshot);

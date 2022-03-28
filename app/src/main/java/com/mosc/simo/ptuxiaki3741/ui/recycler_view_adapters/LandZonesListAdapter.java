@@ -158,7 +158,7 @@ public class LandZonesListAdapter extends RecyclerView.Adapter<LandZonesListAdap
             if(zone == null) return;
             if(zone.getData() == null) return;
 
-            List<String> tags = LandUtil.getLandTags(zone.getData());
+            List<String> tags = LandUtil.getLandZoneTags(zone.getData());
             StringBuilder builder = new StringBuilder();
             for(int i = 0; i < tags.size(); i++){
                 if( tags.get(i) == null ) continue;

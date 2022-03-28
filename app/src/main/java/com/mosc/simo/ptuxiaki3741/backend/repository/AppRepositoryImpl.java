@@ -13,7 +13,6 @@ import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
-import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
 import java.time.LocalDate;
@@ -144,26 +143,6 @@ public class AppRepositoryImpl implements AppRepository {
     public void deleteLand(Land land) {
         if(land.getData() != null)
             db.landDao().delete(land.getData());
-    }
-
-
-    @Override
-    public List<String> getLandTags(){
-        List<String> ans = new ArrayList<>();
-
-        List<LandData> landsData = db.landDao().getLands(snapshot);
-        if(landsData == null) return ans;
-
-        for(LandData landData : landsData){
-            List<String> tags = LandUtil.getLandTags(landData);
-            for(String tag : tags){
-                if(!ans.contains(tag)) {
-                    ans.add(tag);
-                }
-            }
-        }
-
-        return ans;
     }
 
 

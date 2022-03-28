@@ -42,7 +42,6 @@ public class AppViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Long>> snapshots = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> snapshotLands = new MutableLiveData<>();
-    private final MutableLiveData<List<String>> landsTags = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> landZones = new MutableLiveData<>();
     private final MutableLiveData<Map<Long,List<LandZone>>> snapshotLandZones = new MutableLiveData<>();
     private final MutableLiveData<List<LandHistoryRecord>> landsHistory = new MutableLiveData<>();
@@ -64,9 +63,6 @@ public class AppViewModel extends AndroidViewModel {
     }
     public LiveData<List<Land>> getTempSnapshotLands(){
         return snapshotLands;
-    }
-    public LiveData<List<String>> getLandsTags(){
-        return landsTags;
     }
     public LiveData<Map<Long,List<LandZone>>> getLandZones(){
         return landZones;
@@ -93,7 +89,6 @@ public class AppViewModel extends AndroidViewModel {
 
     private void populateLists() {
         populateDataSnapshots();
-        populateLandsTags();
         populateLands();
         populateLandZones();
         populateLandsRecords();
@@ -103,7 +98,6 @@ public class AppViewModel extends AndroidViewModel {
     private void populateSnapshotLists(){
         populateDataSnapshots();
         populateLands();
-        populateLandsTags();
         populateLandZones();
         populateLandsRecords();
     }
@@ -118,12 +112,6 @@ public class AppViewModel extends AndroidViewModel {
         if(landList == null)
             landList = new ArrayList<>();
         lands.postValue(landList);
-    }
-    private void populateLandsTags() {
-        List<String> tagsList = appRepository.getLandTags();
-        if(tagsList == null)
-            tagsList = new ArrayList<>();
-        landsTags.postValue(tagsList);
     }
     private void populateLandZones(){
         Map<Long,List<LandZone>> zoneList = appRepository.getLandZones();

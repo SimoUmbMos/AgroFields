@@ -41,9 +41,11 @@ import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.YearPickerDialog;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,15 +55,15 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private static final String TAG = "AppSettingsFragment";
     private FragmentAppSettingsBinding binding;
     private LoadingDialog loadingDialog;
+    private YearPickerDialog yearPicker;
     private SharedPreferences sharedPref;
     private AppViewModel viewModel;
     private Thread backThread;
-    private List<Long> snapshots;
     private boolean dataIsSaving;
     private AlertDialog dialog;
     private int themeId;
+    private Long snapshot;
     private ArrayAdapter<String> themeAdapter;
-    private ArrayAdapter<String> snapshotAdapter;
     private int dialogChecked;
 
 
@@ -91,18 +93,10 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         initData();
         initActivity();
         initFragment();
-        initViewModel();
     }
 
     @Override
     public void onStop() {
-        Long snapshot = null;
-        for(Long s : snapshots){
-            if(s.toString().equals(binding.tvSnapshot.getText().toString())){
-                snapshot = s;
-                break;
-            }
-        }
         if(sharedPref != null){
             SharedPreferences.Editor editor = sharedPref.edit();
 
@@ -120,8 +114,13 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 editor.remove(AppValues.ownerName);
             }
 
-            if (binding.etOwnerEmail.getText() != null && binding.etOwnerEmail.getText().toString().trim().length() > 0) {
-                editor.putString(AppValues.ownerEmail, binding.etOwnerEmail.getText().toString().trim());
+            if (binding.etOwnerEmail.getText() != null) {
+                String email = binding.etOwnerEmail.getText().toString().trim();
+                if(!email.isEmpty()){
+                    editor.putString(AppValues.ownerEmail, email);
+                }else{
+                    editor.remove(AppValues.ownerEmail);
+                }
             }else{
                 editor.remove(AppValues.ownerEmail);
             }
@@ -136,10 +135,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
 
         if(viewModel != null && snapshot != null){
-            if (snapshot != viewModel.getDefaultSnapshot()) {
-                final Long finalSnapshot = snapshot;
-                AsyncTask.execute(()-> viewModel.setDefaultSnapshot(finalSnapshot));
-            }
+            AsyncTask.execute(()-> viewModel.setDefaultSnapshot(snapshot));
         }
 
         super.onStop();
@@ -150,7 +146,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         super.onStart();
 
         themeId=0;
-
         if(sharedPref != null){
             if(sharedPref.getBoolean(AppValues.isForceKey, false)){
                 if(!sharedPref.getBoolean(AppValues.isDarkKey, false)){
@@ -159,16 +154,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                     themeId=2;
                 }
             }
-
-            String ownerName = sharedPref.getString(AppValues.ownerName, null);
-            String ownerEmail = sharedPref.getString(AppValues.ownerEmail, null);
-            if(ownerName != null) binding.etOwnerName.setText(ownerName);
-            if(ownerEmail != null) binding.etOwnerEmail.setText(ownerEmail);
         }
-
-        if(viewModel != null) binding.tvSnapshot.setText(String.valueOf(viewModel.getDefaultSnapshot()),false);
-        binding.tvSnapshot.setSelection(binding.tvSnapshot.getText().length());
-        binding.tvSnapshot.setAdapter(snapshotAdapter);
 
         binding.tvTheme.setText(themeAdapter.getItem(themeId), false);
         binding.tvTheme.setSelection(binding.tvTheme.getText().length());
@@ -189,30 +175,25 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void initData(){
-        binding.ibClose.setOnClickListener( v -> goBack());
-        if(getActivity() != null){
-            sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        }else{
-            sharedPref = null;
-        }
+        snapshot = (long) LocalDate.now().getYear();
+        sharedPref = null;
         themeId = 0;
         themeAdapter = new ArrayAdapter<>(
                 getContext(),
                 android.R.layout.simple_list_item_1,
                 getResources().getStringArray(R.array.theme_styles)
         );
-        snapshotAdapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>()
-        );
         backThread = null;
         dataIsSaving = false;
-        snapshots = new ArrayList<>();
     }
 
     private void initActivity(){
         if(getActivity() == null) return;
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        yearPicker = new YearPickerDialog(getActivity(), this::onSnapshotUpdate);
+        viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+        this.snapshot = viewModel.getDefaultSnapshot();
+
         if(getActivity().getClass() != MainActivity.class) return;
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setOnBackPressed(this);
@@ -220,12 +201,23 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void initFragment(){
+        binding.ibClose.setOnClickListener( v -> goBack());
         binding.ibInfo.setOnClickListener(v->toDegreeInfo(getActivity()));
         binding.ibReset.setOnClickListener(v->factoryReset());
         binding.btnBulkEdit.setOnClickListener(v->toBulkEdit());
         binding.btnCalendarCategories.setOnClickListener(v->toCalendarCategories());
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
         binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
+
+        if(sharedPref != null){
+            String ownerName = sharedPref.getString(AppValues.ownerName, null);
+            String ownerEmail = sharedPref.getString(AppValues.ownerEmail, null);
+            if(ownerName != null) binding.etOwnerName.setText(ownerName);
+            if(ownerEmail != null) binding.etOwnerEmail.setText(ownerEmail);
+        }
+
+        binding.etSnapshot.setOnClickListener(v->onOpenSnapshotPicker());
+        binding.etSnapshot.setText(String.valueOf(snapshot));
 
         binding.tvTheme.setOnItemClickListener((adapterView, view, position, id) -> {
             binding.tvTheme.clearFocus();
@@ -236,34 +228,22 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         });
     }
 
-    private void initViewModel(){
-        if(getActivity() != null){
-            viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            viewModel.getSnapshots().observe(getViewLifecycleOwner(),this::onSnapshotsUpdate);
+    private void onSnapshotUpdate(Long snapshot) {
+        String display;
+        if(snapshot != null) {
+            display = String.valueOf(snapshot);
+        }else if(viewModel != null){
+            display = String.valueOf(viewModel.getDefaultSnapshot());
+        }else{
+            display = String.valueOf(LocalDate.now().getYear());
         }
+        binding.etSnapshot.setText(display);
+        this.snapshot = snapshot;
     }
 
-    private void onSnapshotsUpdate(List<Long> snapshots) {
-        this.snapshots.clear();
-        snapshotAdapter.clear();
-        long defaultSnapshot = viewModel.getDefaultSnapshot();
-        this.snapshots.add(defaultSnapshot);
-        Long year = AppValues.defaultSnapshot;
-        if(!this.snapshots.contains(year)) this.snapshots.add(year);
-
-        if(snapshots != null) {
-            for(Long snapshot : snapshots){
-                if(snapshot != null && !this.snapshots.contains(snapshot)) this.snapshots.add(snapshot);
-            }
-        }
-        for(Long snapshot : this.snapshots){
-            snapshotAdapter.add(snapshot.toString());
-        }
-        if(snapshotAdapter.getCount() > 2){
-            binding.tvSnapshot.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
-        }else{
-            binding.tvSnapshot.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
+    private void onOpenSnapshotPicker() {
+        if(yearPicker == null) return;
+        yearPicker.openDialog(snapshot);
     }
 
     private void onThemeSpinnerItemSelect(){

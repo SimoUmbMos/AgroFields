@@ -1,205 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutDescription="@xml/fragment_zones_land_selected_scene"
     tools:context=".ui.fragments.ZoneMenuFragment">
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/mlRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/fragment_zones_land_selected_scene">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="1"
-        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
-        app:layout_constraintEnd_toStartOf="@id/ibSelectAll"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/my_zones_label" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+            app:layout_constraintEnd_toStartOf="@id/ibSelectAll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/my_zones_label" />
 
-    <ImageButton
-        android:id="@+id/ibClose"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:padding="14dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_close"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@+id/ibClose"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:padding="14dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_menu_close"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/ibClose1"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:padding="14dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_menu_back_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@+id/ibClose1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:padding="14dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_menu_back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/ibSelectAll"
+        <TextView
+            android:id="@+id/ibSelectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/menu_button"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:gravity="bottom|center_horizontal"
+            android:maxWidth="@dimen/max_width_menu_button"
+            android:maxLines="1"
+            android:minWidth="@dimen/menu_button"
+            android:text="@string/select_all"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            app:drawableTopCompat="@drawable/ic_menu_select_all"
+            app:layout_constraintEnd_toStartOf="@+id/ibMenuButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/ibMenuButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_menu_filter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvZoneList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:padding="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            tools:listitem="@layout/view_holder_land" />
+
+        <TextView
+            android:id="@+id/tvZonesListActionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_list"
+            app:layout_constraintBottom_toBottomOf="@id/rvZoneList"
+            app:layout_constraintEnd_toEndOf="@id/rvZoneList"
+            app:layout_constraintStart_toStartOf="@id/rvZoneList"
+            app:layout_constraintTop_toTopOf="@id/rvZoneList" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0"
+            android:clickable="true"
+            android:src="@drawable/ic_menu_add"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="@+id/fabToggleMenu"
+            app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+            app:theme="@style/FabVariant" />
+
+        <TextView
+            android:id="@+id/tvAddLabel"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:alpha="0"
+            android:background="@drawable/bg_round"
+            android:backgroundTint="?attr/colorFabVariant"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:text="@string/add"
+            android:textColor="?attr/colorOnFabVariant"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/fabAdd"
+            app:layout_constraintEnd_toStartOf="@id/fabAdd"
+            app:layout_constraintTop_toTopOf="@id/fabAdd" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:alpha="0"
+            android:clickable="true"
+            android:src="@drawable/ic_drawer_menu_delete"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="@+id/fabAdd"
+            app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+            app:theme="@style/FabVariantError" />
+
+        <TextView
+            android:id="@+id/tvDeleteLabel"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:alpha="0"
+            android:background="@drawable/bg_round"
+            android:backgroundTint="?attr/colorFabVariantError"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:text="@string/delete"
+            android:textColor="?attr/colorOnFabVariantError"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/fabDelete"
+            app:layout_constraintEnd_toStartOf="@id/fabDelete"
+            app:layout_constraintTop_toTopOf="@id/fabDelete" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabExport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:alpha="0"
+            android:clickable="true"
+            android:src="@drawable/ic_menu_export"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="@+id/fabDelete"
+            app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
+            app:theme="@style/FabVariantAccent" />
+
+        <TextView
+            android:id="@+id/tvExportLabel"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:alpha="0"
+            android:background="@drawable/bg_round"
+            android:backgroundTint="?attr/colorFabVariantAccent"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:text="@string/export"
+            android:textColor="?attr/colorOnFabVariantAccent"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/fabExport"
+            app:layout_constraintEnd_toStartOf="@id/fabExport"
+            app:layout_constraintTop_toTopOf="@id/fabExport" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabToggleMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:src="@drawable/ic_menu_menu"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toTopOf="@+id/clSnackBarContainer"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/clSnackBarContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navLandZoneFilterMenu"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/menu_button"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:ellipsize="end"
-        android:gravity="bottom|center_horizontal"
-        android:maxWidth="@dimen/max_width_menu_button"
-        android:maxLines="1"
-        android:minWidth="@dimen/menu_button"
-        android:text="@string/select_all"
-        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
-        app:drawableTopCompat="@drawable/ic_menu_select_all"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvZoneList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:overScrollMode="never"
-        android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        tools:listitem="@layout/view_holder_land" />
-
-    <TextView
-        android:id="@+id/tvZonesListActionLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/loading_list"
-        app:layout_constraintBottom_toBottomOf="@id/rvZoneList"
-        app:layout_constraintEnd_toEndOf="@id/rvZoneList"
-        app:layout_constraintStart_toStartOf="@id/rvZoneList"
-        app:layout_constraintTop_toTopOf="@id/rvZoneList" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha="0"
-        android:clickable="true"
-        android:src="@drawable/ic_menu_add"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@+id/fabToggleMenu"
-        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
-        app:theme="@style/FabVariant" />
-
-    <TextView
-        android:id="@+id/tvAddLabel"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:alpha="0"
-        android:background="@drawable/bg_round"
-        android:backgroundTint="?attr/colorFabVariant"
-        android:paddingStart="8dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
-        android:text="@string/add"
-        android:textColor="?attr/colorOnFabVariant"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="@id/fabAdd"
-        app:layout_constraintEnd_toStartOf="@id/fabAdd"
-        app:layout_constraintTop_toTopOf="@id/fabAdd" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:alpha="0"
-        android:clickable="true"
-        android:src="@drawable/ic_drawer_menu_delete"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@+id/fabAdd"
-        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
-        app:theme="@style/FabVariantError" />
-
-    <TextView
-        android:id="@+id/tvDeleteLabel"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:alpha="0"
-        android:background="@drawable/bg_round"
-        android:backgroundTint="?attr/colorFabVariantError"
-        android:paddingStart="8dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
-        android:text="@string/delete"
-        android:textColor="?attr/colorOnFabVariantError"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="@id/fabDelete"
-        app:layout_constraintEnd_toStartOf="@id/fabDelete"
-        app:layout_constraintTop_toTopOf="@id/fabDelete" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabExport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:alpha="0"
-        android:clickable="true"
-        android:src="@drawable/ic_menu_export"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@+id/fabDelete"
-        app:layout_constraintEnd_toEndOf="@+id/fabToggleMenu"
-        app:theme="@style/FabVariantAccent" />
-
-    <TextView
-        android:id="@+id/tvExportLabel"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:alpha="0"
-        android:background="@drawable/bg_round"
-        android:backgroundTint="?attr/colorFabVariantAccent"
-        android:paddingStart="8dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="4dp"
-        android:text="@string/export"
-        android:textColor="?attr/colorOnFabVariantAccent"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="@id/fabExport"
-        app:layout_constraintEnd_toStartOf="@id/fabExport"
-        app:layout_constraintTop_toTopOf="@id/fabExport" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabToggleMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:src="@drawable/ic_menu_menu"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@+id/clSnackBarContainer"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/clSnackBarContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.motion.widget.MotionLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/empty_list"/>
+</androidx.drawerlayout.widget.DrawerLayout>

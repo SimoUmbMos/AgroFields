@@ -32,7 +32,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
+import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
@@ -212,7 +212,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
         binding.rvLandList.setAdapter(adapter);
 
-        updateList();
         setupSideMenu();
         updateUi();
 
@@ -236,10 +235,6 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(getActivity() != null){
             vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
             Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(() -> vmLands.getLandsTags().observe(
-                    getViewLifecycleOwner(),
-                    this::onLandsTagsChange
-            ));
             handler.post(() -> vmLands.getLands().observe(
                     getViewLifecycleOwner(),
                     this::onLandsChange
@@ -257,6 +252,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
             }
         }
         binding.tvLandListActionLabel.setText(getResources().getString(R.string.empty_list));
+        onLandsTagsChange(LandUtil.getLandsTags(data));
         updateList();
     }
     private void onLandsTagsChange(List<String> landTags) {
@@ -332,7 +328,8 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         }else{
             selectedTag = tag;
         }
-        updateList();
+        toggleMenu(false);
+        new Handler().post(this::updateList);
         return true;
     }
 
@@ -573,16 +570,13 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(selectedTag == null){
             displayData.addAll(data);
         }else{
-            if(selectedTag.equals(getString(R.string.filter_lands_empty_tag))){
-                for(Land land : data){
-                    if(land == null || land.getData() == null) continue;
-                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+            boolean isEmpty = selectedTag.equals(getString(R.string.filter_lands_empty_tag));
+            for(Land land : data){
+                if(land == null || land.getData() == null) continue;
+                List<String> landTags = LandUtil.getLandTags(land.getData());
+                if(isEmpty){
                     if(landTags.contains(null)) displayData.add(land);
-                }
-            }else{
-                for(Land land : data){
-                    if(land == null || land.getData() == null) continue;
-                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+                }else{
                     if(landTags.contains(selectedTag)) displayData.add(land);
                 }
             }
@@ -600,16 +594,13 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(selectedTag == null){
             displayData.addAll(data);
         }else{
-            if(selectedTag.equals(getString(R.string.filter_lands_empty_tag))){
-                for(Land land : data){
-                    if(land == null || land.getData() == null) continue;
-                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+            boolean isEmpty = selectedTag.equals(getString(R.string.filter_lands_empty_tag));
+            for(Land land : data){
+                if(land == null || land.getData() == null) continue;
+                List<String> landTags = LandUtil.getLandTags(land.getData());
+                if(isEmpty){
                     if(landTags.contains(null)) displayData.add(land);
-                }
-            }else{
-                for(Land land : data){
-                    if(land == null || land.getData() == null) continue;
-                    List<String> landTags = DataUtil.splitTags(land.getData().getTags());
+                }else{
                     if(landTags.contains(selectedTag)) displayData.add(land);
                 }
             }

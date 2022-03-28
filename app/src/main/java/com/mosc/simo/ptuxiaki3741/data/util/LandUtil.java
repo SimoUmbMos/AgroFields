@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistory;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
@@ -24,9 +25,35 @@ public final class LandUtil {
         return DataUtil.splitTags(landData.getTags());
     }
 
-    public static List<String> getLandTags(LandZoneData zoneData){
+    public static List<String> getLandsTags(List<Land> lands){
+        if(lands == null) return new ArrayList<>();
+        List<String> ans = new ArrayList<>();
+        for(Land land : lands){
+            if(land == null || land.getData() == null) continue;
+            List<String> landTags = getLandTags(land.getData());
+            for(String landTag : landTags){
+                if(!ans.contains(landTag)) ans.add(landTag);
+            }
+        }
+        return ans;
+    }
+
+    public static List<String> getLandZoneTags(LandZoneData zoneData){
         if(zoneData == null) return new ArrayList<>();
         return DataUtil.splitTags(zoneData.getTags());
+    }
+
+    public static List<String> getLandZonesTags(List<LandZone> zones){
+        if(zones == null) return new ArrayList<>();
+        List<String> ans = new ArrayList<>();
+        for(LandZone zone : zones){
+            if(zone == null || zone.getData() == null) continue;
+            List<String> landTags = getLandZoneTags(zone.getData());
+            for(String landTag : landTags){
+                if(!ans.contains(landTag)) ans.add(landTag);
+            }
+        }
+        return ans;
     }
 
     public static LandData uniteLandData(LandData currLandData, LandData landDataToAdd){

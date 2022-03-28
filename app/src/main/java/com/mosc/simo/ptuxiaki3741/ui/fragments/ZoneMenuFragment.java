@@ -11,6 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -21,12 +23,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.MapView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.LandZonesListAdapter;
@@ -48,14 +54,16 @@ import java.util.List;
 import java.util.Map;
 
 public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
-    //todo: filter zones tags
     private static final String TAG = "ZonesLandSelectedFragment";
     private FragmentZonesMenuBinding binding;
 
     private ListMenuState state;
     private LandZonesListAdapter adapter;
     private Land selectedLand;
-    private List<LandZone> data;
+    private final List<LandZone> data = new ArrayList<>();
+    private final List<LandZone> displayData = new ArrayList<>();
+    private final List<String> tags = new ArrayList<>();
+    private String selectedTag;
     private AlertDialog dialog;
     private boolean doDialogUpdate;
     private int dialogChecked;
@@ -81,8 +89,8 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
 
     //init relative
     private boolean initData() {
-        data = new ArrayList<>();
         selectedLand = null;
+        selectedTag = null;
         state = ListMenuState.NormalState;
 
         exportZones = null;
@@ -113,18 +121,21 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         binding.tvTitle.setText(selectedLand.toString());
         binding.ibClose.setOnClickListener(view -> onCloseClick());
         binding.ibClose1.setOnClickListener(view -> onCloseClick());
+        binding.ibMenuButton.setOnClickListener(v -> toggleMenu(true));
         binding.ibSelectAll.setOnClickListener(view -> onSelectAllClick());
         binding.fabAdd.setOnClickListener(view -> onAddClick());
         binding.fabDelete.setOnClickListener(view -> onDeleteClick());
         binding.fabExport.setOnClickListener(view -> onExportClick());
 
+        binding.getRoot().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        binding.navLandZoneFilterMenu.setNavigationItemSelectedListener(this::onFilterClick);
+
         binding.tvZonesListActionLabel.setText(getResources().getString(R.string.loading_label));
-        updateUi();
-
         binding.rvZoneList.setHasFixedSize(true);
-
-        adapter.saveData(data);
         binding.rvZoneList.setAdapter(adapter);
+
+        setupSideMenu();
+        updateUi();
 
         final int maxColumnNumber = getResources().getInteger(R.integer.screenMaxColumnNumber);
         binding.rvZoneList.post(()->{
@@ -165,9 +176,23 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             }
         }
         binding.tvZonesListActionLabel.setText(getResources().getString(R.string.empty_list));
-        updateListUI();
-        adapter.saveData(data);
-        binding.rvZoneList.smoothScrollBy(1, 1);
+        onLandZonesTagsChange(LandUtil.getLandZonesTags(data));
+        updateList();
+    }
+    private void onLandZonesTagsChange(List<String> landZonesTags) {
+        String emptyTag = getString(R.string.filter_land_zones_empty_tag);
+        tags.clear();
+        tags.add(getString(R.string.filter_land_zones_all_tag));
+        if(landZonesTags != null){
+            for(String tag : landZonesTags){
+                String tempTag = tag;
+                if(tempTag == null) tempTag = emptyTag;
+                if(tags.contains(tempTag)) continue;
+                if(tempTag.equals(emptyTag)) tags.add(1,tempTag);
+                else tags.add(tempTag);
+            }
+        }
+        setupSideMenu();
     }
     private void onZoneClick(LandZone zone) {
         if(state != ListMenuState.NormalState){
@@ -209,11 +234,24 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             setState(ListMenuState.MultiExportState, true);
         }
     }
+    private boolean onFilterClick(MenuItem item) {
+        int i = item.getItemId();
+        if(i < 0 || i >= tags.size()) return false;
+        String tag = tags.get(i);
+        if(tag.equals(getString(R.string.filter_land_zones_all_tag))){
+            selectedTag = null;
+        }else{
+            selectedTag = tag;
+        }
+        toggleMenu(false);
+        new Handler().post(this::updateList);
+        return true;
+    }
 
     //zone selector relative
     private void toggleZone(LandZone zone) {
         zone.setSelected(!zone.isSelected());
-        adapter.notifyItemChanged(data.indexOf(zone));
+        adapter.notifyItemChanged(displayData.indexOf(zone));
         if(state == ListMenuState.MultiSelectState && areNonZoneSelected()){
             setState(ListMenuState.NormalState, true);
         }
@@ -229,23 +267,23 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         }
     }
     private void selectAllZones() {
-        for(LandZone zone:data){
+        for(LandZone zone:displayData){
             if(!zone.isSelected()){
                 zone.setSelected(true);
-                adapter.notifyItemChanged(data.indexOf(zone));
+                adapter.notifyItemChanged(displayData.indexOf(zone));
             }
         }
     }
     private void deselectAllZones() {
-        for(LandZone zone:data){
+        for(LandZone zone:displayData){
             if(zone.isSelected()){
                 zone.setSelected(false);
-                adapter.notifyItemChanged(data.indexOf(zone));
+                adapter.notifyItemChanged(displayData.indexOf(zone));
             }
         }
     }
     private boolean areAllZoneSelected() {
-        for(LandZone zone:data){
+        for(LandZone zone:displayData){
             if(!zone.isSelected()){
                 return false;
             }
@@ -253,7 +291,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         return true;
     }
     private boolean areNonZoneSelected() {
-        for(LandZone zone:data){
+        for(LandZone zone:displayData){
             if(zone.isSelected()){
                 return false;
             }
@@ -262,7 +300,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     }
     private List<LandZone> getSelectedZones() {
         List<LandZone> ans = new ArrayList<>();
-        for(LandZone zone:data){
+        for(LandZone zone:displayData){
             if(zone.isSelected()){
                 ans.add(zone);
             }
@@ -452,12 +490,15 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
     //ui relative
     private void setCheckableRecycleView(boolean show) {
         binding.ibSelectAll.setEnabled(show);
+        binding.ibMenuButton.setEnabled(!show);
         if(show){
             binding.ibSelectAll.setVisibility(View.VISIBLE);
+            binding.ibMenuButton.setVisibility(View.GONE);
         }else{
             binding.ibSelectAll.setVisibility(View.GONE);
+            binding.ibMenuButton.setVisibility(View.VISIBLE);
         }
-        adapter.saveData(data,show);
+        updateList(show);
     }
     public void setState(ListMenuState state, boolean doUpdate) {
         if(this.state == state) return;
@@ -465,7 +506,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         this.state = state;
         if(state == ListMenuState.NormalState){
             deselectAllZones();
-            if(doUpdate) binding.getRoot().transitionToStart();
+            if(doUpdate) binding.mlRoot.transitionToStart();
             binding.ibClose.setVisibility(View.GONE);
             binding.ibClose1.setVisibility(View.VISIBLE);
         }else{
@@ -473,6 +514,14 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             binding.ibClose1.setVisibility(View.GONE);
         }
         updateUi();
+    }
+    private void setupSideMenu() {
+        Menu menu = binding.navLandZoneFilterMenu.getMenu();
+        menu.clear();
+        SubMenu subMenu = menu.addSubMenu(Menu.NONE,-1,Menu.NONE,getString(R.string.land_zones_filter_title));
+        for(int i = 0; i < tags.size(); i++){
+            subMenu.add(Menu.NONE,i,Menu.NONE,tags.get(i));
+        }
     }
     private void updateUi(){
         switch (state){
@@ -510,12 +559,53 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                 break;
         }
     }
-    private void updateListUI() {
-        if(data.size()>0){
+    private void updateList() {
+        displayData.clear();
+        if(selectedTag == null){
+            displayData.addAll(data);
+        }else{
+            boolean isEmpty = selectedTag.equals(getString(R.string.filter_land_zones_empty_tag));
+            for(LandZone zone : data){
+                if(zone == null || zone.getData() == null) continue;
+                List<String> landZoneTags = LandUtil.getLandZoneTags(zone.getData());
+                if(isEmpty){
+                    if(landZoneTags.contains(null)) displayData.add(zone);
+                }else{
+                    if(landZoneTags.contains(selectedTag)) displayData.add(zone);
+                }
+            }
+        }
+        if(displayData.size()>0){
             binding.tvZonesListActionLabel.setVisibility(View.GONE);
         }else{
             binding.tvZonesListActionLabel.setVisibility(View.VISIBLE);
         }
+        adapter.saveData(displayData);
+        binding.rvZoneList.smoothScrollBy(1, 1);
+    }
+    private void updateList(boolean show) {
+        displayData.clear();
+        if(selectedTag == null){
+            displayData.addAll(data);
+        }else{
+            boolean isEmpty = selectedTag.equals(getString(R.string.filter_land_zones_empty_tag));
+            for(LandZone zone : data){
+                if(zone == null || zone.getData() == null) continue;
+                List<String> landZoneTags = LandUtil.getLandZoneTags(zone.getData());
+                if(isEmpty){
+                    if(landZoneTags.contains(null)) displayData.add(zone);
+                }else{
+                    if(landZoneTags.contains(selectedTag)) displayData.add(zone);
+                }
+            }
+        }
+        if(displayData.size()>0){
+            binding.tvZonesListActionLabel.setVisibility(View.GONE);
+        }else{
+            binding.tvZonesListActionLabel.setVisibility(View.VISIBLE);
+        }
+        adapter.saveData(displayData, show);
+        binding.rvZoneList.smoothScrollBy(1, 1);
     }
     private void showSnackBar(String string) {
         Log.d(TAG, "showSnackBar: "+string);
@@ -526,6 +616,14 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         );
         snackbar.setAction(getString(R.string.okey),v->{});
         snackbar.show();
+    }
+    private void toggleMenu(boolean open){
+        if(binding == null) return;
+        if(open){
+            binding.getRoot().openDrawer(GravityCompat.END, true);
+        }else{
+            binding.getRoot().closeDrawer(GravityCompat.END, false);
+        }
     }
 
     //navigator relative
@@ -572,6 +670,10 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
 
     @Override
     public boolean onBackPressed() {
+        if(binding != null && binding.getRoot().isDrawerOpen(GravityCompat.END)) {
+            toggleMenu(false);
+            return false;
+        }
         if(state != ListMenuState.NormalState){
             setState(ListMenuState.NormalState, true);
             return false;
