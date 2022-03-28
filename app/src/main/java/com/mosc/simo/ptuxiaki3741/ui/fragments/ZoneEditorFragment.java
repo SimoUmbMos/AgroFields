@@ -404,11 +404,13 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     String snackDisplay = getString(R.string.zone_null_error);
                     if(isValidSave()){
                             if(zone != null){
-                                zone.getData().setTitle(title);
-                                zone.getData().setNote(note);
-                                zone.getData().setTags(tags);
-                                zone.getData().setColor(color);
-                                zone.getData().setBorder(border);
+                                LandZoneData tempData = new LandZoneData(zone.getData());
+                                tempData.setTitle(title);
+                                tempData.setNote(note);
+                                tempData.setTags(tags);
+                                tempData.setColor(color);
+                                tempData.setBorder(border);
+                                zone = new LandZone(tempData);
                             }else{
                                 zone = new LandZone(new LandZoneData(land.getData().getSnapshot(),land.getData().getId(),title,note,tags,color,border));
                             }
@@ -581,25 +583,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 EditText noteView = dialog.findViewById(R.id.etZoneNote);
                 if(noteView != null){
                     if(noteView.getText() != null){
-                        String note = noteView.getText().toString()
-                                .trim()
+                        this.note = noteView.getText().toString()
+                                .replaceAll("\n+", " ")
                                 .replaceAll(" +", " ")
-                                .replaceAll("\n+", "\n");
-                        String bar = null;
-                        if(DataUtil.lineCount(note)<=2){
-                            if(note.length()<=100){
-                                this.note = note;
-                                updateUI();
-                                dialog.dismiss();
-                            }else{
-                                bar = getString(R.string.note_max_char_error);
-                            }
-                        }else{
-                            bar = getString(R.string.note_max_line_error);
-                        }
-                        if(bar != null){
-                            showSnackBar(bar);
-                        }
+                                .trim();
+                        updateUI();
+                        dialog.dismiss();
                     }
                 }else{
                     dialog.dismiss();
@@ -618,7 +607,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             }
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setIcon(R.drawable.ic_menu_edit)
-                    .setTitle(getString(R.string.zone_note_label))
+                    .setTitle(getString(R.string.edit_zone_tags))
                     .setView(R.layout.view_text_area)
                     .setNegativeButton(getString(R.string.cancel), (d, w) -> d.cancel())
                     .setPositiveButton(getString(R.string.submit), (d, w) -> {
@@ -647,6 +636,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             dialog.show();
             EditText noteV = dialog.findViewById(R.id.etZoneNote);
             if(noteV != null){
+                noteV.setHint(R.string.zone_tags);
                 noteV.setText(tags);
             }
         }
@@ -1133,6 +1123,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         binding.tvTitle.setSelected(true);
         binding.tvNote.setVisibility(View.GONE);
         binding.tvNote.setText("");
+        binding.tvNote.setSelected(true);
     }
 
     private void setToolbarTitle(String title, String subTitle){
@@ -1140,6 +1131,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
         binding.tvTitle.setSelected(true);
         binding.tvNote.setVisibility(View.VISIBLE);
         binding.tvNote.setText(subTitle);
+        binding.tvNote.setSelected(true);
     }
 
     private void showSnackBar(String text){

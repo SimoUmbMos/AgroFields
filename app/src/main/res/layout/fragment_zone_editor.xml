@@ -87,6 +87,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:mapType="satellite" />
 
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/clSnackBarContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/clControl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <ImageButton
             android:id="@+id/ibCenterCamera"
             android:layout_width="38dp"
@@ -100,7 +108,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_menu_location"
             app:layout_constraintEnd_toEndOf="@id/mvZonePreview"
-            app:layout_constraintTop_toBottomOf="@+id/clControl"
+            app:layout_constraintTop_toBottomOf="@+id/clSnackBarContainer"
             app:tint="?attr/colorOnMapSurface" />
 
         <ImageButton
@@ -116,7 +124,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_menu_menu"
             app:layout_constraintStart_toStartOf="@id/mvZonePreview"
-            app:layout_constraintTop_toBottomOf="@+id/clControl"
+            app:layout_constraintTop_toBottomOf="@+id/clSnackBarContainer"
             app:tint="?attr/colorOnMapSurface" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -124,6 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorSurface"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/mvZonePreview"
             app:layout_constraintStart_toStartOf="@id/mvZonePreview"
             app:layout_constraintTop_toTopOf="@+id/mvZonePreview">
@@ -169,18 +178,14 @@
             android:background="?attr/colorSurface"
             android:padding="16dp"
             android:textAppearance="@style/TextAppearance.AppTheme.Body"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Note" />
-
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/clSnackBarContainer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView

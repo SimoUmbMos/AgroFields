@@ -68,6 +68,14 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         app:mapType="satellite" />
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/llNotificationSnackBarContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/mvLiveMap"
+        app:layout_constraintEnd_toEndOf="@+id/mvLiveMap"
+        app:layout_constraintStart_toStartOf="@+id/mvLiveMap" />
+
     <ImageButton
         android:id="@+id/ibCameraMode"
         android:layout_width="38dp"
@@ -81,7 +89,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/ic_menu_location"
         app:layout_constraintEnd_toEndOf="@+id/mvLiveMap"
-        app:layout_constraintTop_toTopOf="@+id/mvLiveMap"
+        app:layout_constraintTop_toBottomOf="@+id/llNotificationSnackBarContainer"
         app:tint="?attr/colorOnMapSurface" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

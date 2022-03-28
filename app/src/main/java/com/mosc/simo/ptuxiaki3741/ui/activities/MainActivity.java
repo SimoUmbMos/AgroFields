@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
     private NavHostFragment navHostFragment;
-    private NotificationManager notificationManager;
     private FragmentBackPress fragmentBackPress;
     private boolean overrideDoubleBack = false, doubleBackToExit = false;
     private LoadingDialog loadingDialog;
@@ -75,30 +74,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initNotificationChannel() {
-        CharSequence name1 = getString(R.string.notification_channel_name);
-        String description1 = getString(R.string.notification_channel_description);
-
-        NotificationChannel channel1 = new NotificationChannel(
-                AppValues.NotificationChannelID,
-                name1,
-                NotificationManager.IMPORTANCE_HIGH
-        );
-        channel1.setDescription(description1);
-        channel1.enableVibration(true);
-        channel1.setSound(null, null);
-
-        CharSequence name2 = getString(R.string.calendar_notification_channel_name);
-        String description2 = getString(R.string.calendar_notification_channel_description);
-        NotificationChannel channel2 = new NotificationChannel(
+        CharSequence name = getString(R.string.calendar_notification_channel_name);
+        String description = getString(R.string.calendar_notification_channel_description);
+        NotificationChannel channel = new NotificationChannel(
                 AppValues.CalendarNotificationChannelID,
-                name2,
+                name,
                 NotificationManager.IMPORTANCE_HIGH
         );
-        channel2.setDescription(description2);
+        channel.setDescription(description);
 
-        notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel1);
-        notificationManager.createNotificationChannel(channel2);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 
     public Intent getIntentIfCalledByFile(){
@@ -108,11 +94,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return null;
-    }
-
-    public NotificationManager getNotificationManager(){
-        if(notificationManager == null) initNotificationChannel();
-        return notificationManager;
     }
 
     public void showSnackBar(CharSequence text) {

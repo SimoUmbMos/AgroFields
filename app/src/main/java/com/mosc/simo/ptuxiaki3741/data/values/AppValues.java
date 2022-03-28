@@ -44,6 +44,7 @@ public final class AppValues {
     public static final float cityZoom = 13.0f;
     public static final float streetZoom = 16.0f;
     /* Live Map Fragment Values */
+    public static final float notificationAlpha = 0.90f;
     public static final int liveMapMillisToCameraReset = 5000;
     public static final int liveMapLandZIndex = 1;
     public static final int liveMapZoneZIndex = 2;
@@ -65,6 +66,5 @@ public final class AppValues {
     public static final String isForceKey = "is_force_theme";
     public static final String isDarkKey = "is_dark_theme";
     public static final int doubleTapBack = 3000;
-    public static final String NotificationChannelID = "Location Notifications";
     public static final String CalendarNotificationChannelID = "Calendar Notifications";
 }

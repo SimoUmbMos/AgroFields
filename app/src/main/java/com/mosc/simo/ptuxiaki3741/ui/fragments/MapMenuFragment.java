@@ -2,9 +2,10 @@ package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -19,6 +21,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +37,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
@@ -39,6 +45,7 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.enums.LocationStates;
 import com.mosc.simo.ptuxiaki3741.data.helpers.LocationHelper;
+import com.mosc.simo.ptuxiaki3741.data.helpers.SnackBarHelper;
 import com.mosc.simo.ptuxiaki3741.data.models.ClusterLand;
 import com.mosc.simo.ptuxiaki3741.data.util.MapUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
@@ -65,9 +72,8 @@ public class MapMenuFragment extends Fragment{
 
     private AppViewModel appVM;
 
-    private static final int NotificationID = 3741;
-    private NotificationManager notificationManager;
-    private Notification notification;
+    private Vibrator vibrator;
+    private Snackbar notificationSnackBar;
     private String notificationTitle;
     private String notificationMsg;
 
@@ -80,6 +86,7 @@ public class MapMenuFragment extends Fragment{
     private final Handler cameraMovingThread = new Handler();
     private Runnable cameraMovingRunnable;
 
+
     private LocationHelper locationHelper;
     private final Handler locationThread = new Handler();
     private Runnable locationRunnable;
@@ -89,10 +96,15 @@ public class MapMenuFragment extends Fragment{
     @SuppressLint("MissingPermission")
     private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
-            this::onPermissionResult
+            this::onLocationPermissionResult
     );
 
-    public void onPermissionResult(Map<String, Boolean> results){
+    private final ActivityResultLauncher<String> vibratorPermissionRequest = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            this::onVibratorPermissionResult
+    );
+
+    public void onLocationPermissionResult(Map<String, Boolean> results){
         Boolean fineLocationGranted = results.getOrDefault(
                 Manifest.permission.ACCESS_FINE_LOCATION, false);
         Boolean coarseLocationGranted = results.getOrDefault(
@@ -110,7 +122,16 @@ public class MapMenuFragment extends Fragment{
         locationHelper.setLocationPermission(locationPermission);
         locationHelper.getLastKnownLocation();
         locationHelper.start();
-        if(locationPermission != LocationStates.DISABLE) binding.ibCameraMode.setVisibility(View.VISIBLE);
+        if(locationPermission != LocationStates.DISABLE) {
+            binding.ibCameraMode.setVisibility(View.VISIBLE);
+            vibratorPermissionRequest.launch(Manifest.permission.VIBRATE);
+        }
+    }
+
+    public void onVibratorPermissionResult(boolean result){
+        if(result && getActivity() != null){
+            vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        }
     }
 
     @Override
@@ -133,15 +154,10 @@ public class MapMenuFragment extends Fragment{
 
     @Override
     public void onDestroyView() {
+        displayNotification(null, null);
         binding.mvLiveMap.onDestroy();
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void onDestroy() {
-        displayNotification(null, null);
-        super.onDestroy();
     }
 
     @Override
@@ -186,8 +202,9 @@ public class MapMenuFragment extends Fragment{
         myLocation = null;
         userLocation = null;
         locationHelper = null;
+        vibrator = null;
+        notificationSnackBar = null;
 
-        notification = null;
         notificationTitle = "";
         notificationMsg = "";
 
@@ -213,7 +230,6 @@ public class MapMenuFragment extends Fragment{
         MainActivity activity = (MainActivity) getActivity();
         appVM = new ViewModelProvider(activity).get(AppViewModel.class);
         activity.setOnBackPressed(()->true);
-        notificationManager = activity.getNotificationManager();
         loadingDialog = activity.getLoadingDialog();
     }
 
@@ -569,34 +585,52 @@ public class MapMenuFragment extends Fragment{
     }
 
     private void displayNotification(String title, String msg){
-        if(notificationManager == null || getContext() == null) return;
+        if(binding == null) return;
 
         if(title == null || title.isEmpty()){
-            if(notification == null) return;
-
             notificationTitle = "";
             notificationMsg = "";
-            notification = null;
-            notificationManager.cancel(NotificationID);
-            return;
-        }
-
-        if(notificationNeedUpdate(title,msg)) {
-            if (notification != null) notificationManager.cancel(NotificationID);
-
+            if(notificationSnackBar != null) {
+                if(notificationSnackBar.isShown()) notificationSnackBar.dismiss();
+                notificationSnackBar = null;
+            }
+        }else if(notificationNeedUpdate(title,msg)) {
+            StringBuilder builder = new StringBuilder();
             notificationTitle = title;
-            Notification.Builder builder = new Notification
-                    .Builder(getContext(), AppValues.NotificationChannelID)
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setContentTitle(notificationTitle);
+            builder.append(title);
             if (msg == null || msg.isEmpty()) {
                 notificationMsg = "";
             } else {
                 notificationMsg = msg;
-                builder.setContentText(notificationMsg);
+                builder.append("\n");
+                builder.append(msg);
             }
-            notification = builder.build();
-            notificationManager.notify(NotificationID, notification);
+            if(notificationSnackBar != null){
+                notificationSnackBar.dismiss();
+            }
+
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = binding.getRoot().getContext().getTheme();
+            theme.resolveAttribute(R.attr.colorSurface, typedValue, true);
+            @ColorInt int colorSurface = typedValue.data;
+            Color color = Color.valueOf(colorSurface);
+            colorSurface = Color.argb(AppValues.notificationAlpha,color.red(),color.green(),color.blue());
+            theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true);
+            @ColorInt int colorOnSurface = typedValue.data;
+            theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            @ColorInt int colorPrimary = typedValue.data;
+
+            notificationSnackBar = Snackbar.make(binding.llNotificationSnackBarContainer,builder.toString(),Snackbar.LENGTH_INDEFINITE);
+            notificationSnackBar.setBehavior(SnackBarHelper.SnackBarNoSwipeBehavior());
+            notificationSnackBar.setAction(R.string.okey,view -> {
+                if(notificationSnackBar.isShown()) notificationSnackBar.dismiss();
+                notificationSnackBar = null;
+            });
+            notificationSnackBar.setBackgroundTint(colorSurface);
+            notificationSnackBar.setTextColor(colorOnSurface);
+            notificationSnackBar.setActionTextColor(colorPrimary);
+            notificationSnackBar.show();
+            vibrate();
         }
     }
 
@@ -606,6 +640,11 @@ public class MapMenuFragment extends Fragment{
         if(title == null) title = "";
         if(msg == null) msg = "";
         return !(title.equals(notificationTitle) && msg.equals(notificationMsg));
+    }
+
+    private void vibrate(){
+        if(vibrator == null) return;
+        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
     }
 
     private void goBack(){

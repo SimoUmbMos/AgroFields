@@ -11,8 +11,10 @@
         android:hint="@string/zone_note_hint"
         android:textAppearance="@style/TextAppearance.AppTheme.Body"
         android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        android:lines="2"
-        android:maxLines="2"
-        android:scrollbars="vertical" />
+        android:imeOptions="actionDone"
+        android:inputType="textShortMessage"
+        android:maxLines="1"
+        android:maxLength="100"
+        android:singleLine="true"
+        android:ellipsize="none"/>
 </LinearLayout>

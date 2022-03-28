@@ -155,9 +155,8 @@
     <string name="zone_note_label">Edit Zone Note</string>
     <string name="zone_note_hint">Note</string>
     <string name="edit_zone_note">Change Zone Note</string>
+    <string name="zone_tags">Land Tags</string>
     <string name="edit_zone_tags">Change Zone Tags</string>
-    <string name="note_max_line_error">Note Max Line: 2</string>
-    <string name="note_max_char_error">Note Max Characters: 100</string>
     <string name="zone_border_error">Zone must be 3 points minimum</string>
     <string name="zone_saved">Zone saved</string>
     <string name="zone_need_save_new">The new zone is not saved. \nDouble Tap to exit.</string>
