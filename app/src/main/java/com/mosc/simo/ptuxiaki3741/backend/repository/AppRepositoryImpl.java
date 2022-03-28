@@ -50,7 +50,9 @@ public class AppRepositoryImpl implements AppRepository {
         if(snapshots == null) snapshots = new ArrayList<>();
         List<Long> ans = new ArrayList<>();
         for (Snapshot snapshot : snapshots){
-            if(snapshot != null) ans.add(snapshot.getKey());
+            if(snapshot == null) continue;
+            List<LandData> lands = db.landDao().getLands(snapshot.getKey());
+            if(lands != null && lands.size() > 0) ans.add(snapshot.getKey());
         }
         return ans;
     }

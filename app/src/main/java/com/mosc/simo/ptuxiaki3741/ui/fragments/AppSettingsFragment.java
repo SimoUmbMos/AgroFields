@@ -56,11 +56,12 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private FragmentAppSettingsBinding binding;
     private LoadingDialog loadingDialog;
     private YearPickerDialog yearPicker;
+    private AlertDialog dialog;
+
     private SharedPreferences sharedPref;
     private AppViewModel viewModel;
     private Thread backThread;
     private boolean dataIsSaving;
-    private AlertDialog dialog;
     private int themeId;
     private Long snapshot;
     private ArrayAdapter<String> themeAdapter;
@@ -204,6 +205,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         binding.ibClose.setOnClickListener( v -> goBack());
         binding.ibInfo.setOnClickListener(v->toDegreeInfo(getActivity()));
         binding.ibReset.setOnClickListener(v->factoryReset());
+        binding.btnCopyDataToOtherSnapshot.setOnClickListener(v->showYearSelectForCopy());
         binding.btnBulkEdit.setOnClickListener(v->toBulkEdit());
         binding.btnCalendarCategories.setOnClickListener(v->toCalendarCategories());
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
@@ -243,7 +245,41 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
 
     private void onOpenSnapshotPicker() {
         if(yearPicker == null) return;
+        if(dialog != null){
+            if(dialog.isShowing())
+                dialog.dismiss();
+            dialog = null;
+        }
+        dialog = yearPicker.getDialog();
         yearPicker.openDialog(snapshot);
+    }
+
+    private void showYearSelectForCopy() {
+        if(getActivity() == null) return;
+        if(dialog != null){
+            if(dialog.isShowing())
+                dialog.dismiss();
+            dialog = null;
+        }
+        YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), this::startCopyToOtherSnapshot);
+        ypDialog.openDialog(getString(R.string.select_snapshot_to_copy),snapshot);
+        dialog = ypDialog.getDialog();
+    }
+
+    private void startCopyToOtherSnapshot(Long to) {
+        if(loadingDialog == null || viewModel == null || to == null) return;
+        if(dialog != null){
+            if(dialog.isShowing())
+                dialog.dismiss();
+            dialog = null;
+        }
+        dataIsSaving = true;
+        loadingDialog.openDialog();
+        AsyncTask.execute(()->{
+            viewModel.importFromSnapshotToAnotherSnapshot(snapshot, to);
+            loadingDialog.closeDialog();
+            dataIsSaving = false;
+        });
     }
 
     private void onThemeSpinnerItemSelect(){

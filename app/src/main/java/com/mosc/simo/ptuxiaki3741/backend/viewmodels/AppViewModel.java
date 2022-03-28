@@ -532,27 +532,24 @@ public class AppViewModel extends AndroidViewModel {
         populateSnapshotLists();
     }
     public void importFromSnapshotToAnotherSnapshot(long snapshotFrom, long snapshotTo){
-        long from;
-        if(snapshotFrom <= 0){
-            from = appRepository.getDefaultSnapshot();
-        }else{
-            from = snapshotFrom;
-        }
-        long to;
-        if(snapshotTo <= 0){
-            to = appRepository.getDefaultSnapshot();
-        }else{
-            to = snapshotTo;
-        }
-        if(from == to) return;
-        List<Land> lands = appRepository.getLands(from);
-        if(lands.size() == 0) return;
+        long from = snapshotFrom;
+        long to = snapshotTo;
 
-        Map<Long,List<LandZone>> zones = appRepository.getLandZones(from);
+        from = Math.max(from, AppValues.minSnapshot);
+        to = Math.max(to, AppValues.minSnapshot);
+
+        from = Math.min(from, AppValues.maxSnapshot);
+        to = Math.min(to, AppValues.maxSnapshot);
+
+        if(from == to) return;
+
+        List<Land> lands = appRepository.getLands(from);
+        if(lands == null) lands = new ArrayList<>();
+
         for(Land land : lands){
             if(land == null || land.getData() == null) continue;
 
-            long oldID = land.getData().getId();
+            List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
 
             land.getData().setId(0);
             land.getData().setSnapshot(to);
@@ -564,9 +561,8 @@ public class AppViewModel extends AndroidViewModel {
             );
 
             List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
-            List<LandZone> landZones = zones.getOrDefault(oldID, null);
-            if(landZones == null) landZones = new ArrayList<>();
-            for(LandZone landZone : landZones){
+            if(zones == null) zones = new ArrayList<>();
+            for(LandZone landZone : zones){
                 if(landZone == null || landZone.getData() == null) continue;
                 landZone.getData().setId(0);
                 landZone.getData().setSnapshot(to);

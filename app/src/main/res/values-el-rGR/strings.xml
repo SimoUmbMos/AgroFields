@@ -62,6 +62,7 @@
     <string name="reset_points">Επαναφορά σημείων</string>
     <string name="edit_color">Αλλαγή χρώματος</string>
     <string name="calendar_default_category">Προγραμματισμένη εργασία</string>
+    <string name="default_year_picker_title">Pick A Year</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
     <!-- Loading Fragment -->
@@ -177,6 +178,8 @@
     <string name="import_db_failed">Αποτυχία ενημέρωσης δεδομένων</string>
     <string name="export_db_fail">Αποτυχία εξαγωγής δεδομένων</string>
     <string name="open_xml_action_not_ended_error">Παρακαλώ Περιμένετε…</string>
+    <string name="copy_to_other_snapshot_button_label">Clone Data To Other Snapshot</string>
+    <string name="select_snapshot_to_copy">Select Snapshot To Copy</string>
     <!-- File Map Fragment -->
     <string name="file_map_fragment_import_action">Κάντε κλικ σε σχήμα για εισαγωγή</string>
     <string name="file_map_fragment_loading">Φόρτωση αρχείου…</string>

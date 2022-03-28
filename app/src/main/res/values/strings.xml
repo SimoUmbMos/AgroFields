@@ -73,6 +73,7 @@
     <string name="reset_points">Reset All Points</string>
     <string name="edit_color">Change Color</string>
     <string name="calendar_default_category">Schedule Job</string>
+    <string name="default_year_picker_title">Pick A Year</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->
@@ -188,6 +189,8 @@
     <string name="import_db_failed">Failed Data Update</string>
     <string name="export_db_fail">Failed Data Export</string>
     <string name="open_xml_action_not_ended_error">Please Wait…</string>
+    <string name="copy_to_other_snapshot_button_label">Clone Data To Other Snapshot</string>
+    <string name="select_snapshot_to_copy">Select Snapshot To Copy</string>
     <!-- File Map Fragment -->
     <string name="file_map_fragment_import_action">Click Shape To Import</string>
     <string name="file_map_fragment_loading">Loading File…</string>
