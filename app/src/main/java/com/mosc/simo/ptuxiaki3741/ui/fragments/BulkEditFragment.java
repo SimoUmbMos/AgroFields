@@ -136,9 +136,6 @@ public class BulkEditFragment extends Fragment {
         binding.cbChangeColor.setOnCheckedChangeListener((button, checked) -> binding.tilChangeColor.setEnabled(checked));
         binding.cbAddTag.setOnCheckedChangeListener((button, checked) -> binding.tilAddTag.setEnabled(checked));
         binding.cbRemoveTag.setOnCheckedChangeListener((button, checked) -> binding.tilRemoveTag.setEnabled(checked));
-        ColorData color = AppValues.defaultLandColor;
-        binding.tvColorPreview.setBackgroundColor(color.getColor());
-        binding.etChangeColor.setText(color.toString());
         binding.tvColorPreview.setOnClickListener(v->displayColorDialog());
         binding.etChangeColor.setOnClickListener(v->displayColorDialog());
 
@@ -163,7 +160,21 @@ public class BulkEditFragment extends Fragment {
         binding.rvZonesResults.setHasFixedSize(true);
         binding.rvZonesResults.setLayoutManager(layoutManager2);
         binding.rvZonesResults.setAdapter(zoneAdapter);
+        initValues();
         showLands(true);
+    }
+
+    private void initValues(){
+        binding.cbChangeNote.setChecked(false);
+        binding.cbChangeColor.setChecked(false);
+        binding.cbAddTag.setChecked(false);
+        binding.cbRemoveTag.setChecked(false);
+        binding.etAddTag.setText("");
+        binding.etRemoveTag.setText("");
+        binding.etChangeNote.setText("");
+        ColorData color = AppValues.defaultLandColor;
+        binding.tvColorPreview.setBackgroundColor(color.getColor());
+        binding.etChangeColor.setText(color.toString());
     }
 
     private void displayColorDialog() {
@@ -196,10 +207,11 @@ public class BulkEditFragment extends Fragment {
     }
 
     private void onSaveClick() {
-        final String newNote = getNoteData();
-        final ColorData newColor = getColorData();
-        final String addTags = getTagsToAdd();
-        final String removeTags = getTagsToRemove();
+        String newNote = getNoteData();
+        ColorData newColor = getColorData();
+        List<String> addTags = getTagsToAdd();
+        List<String> removeTags = getTagsToRemove();
+        initValues();
         if(isShowingLands){
             saveLandsData(newColor,addTags,removeTags);
         }else{
@@ -239,34 +251,32 @@ public class BulkEditFragment extends Fragment {
         return null;
     }
 
-    private String getTagsToAdd(){
-        String temp;
+    private List<String> getTagsToAdd(){
         if(binding.cbAddTag.isChecked() && binding.etAddTag.getText() != null){
-            temp = binding.etAddTag.getText().toString();
+            List<String> ans = new ArrayList<>();
+            String temp = binding.etAddTag.getText().toString();
             temp = DataUtil.removeSpecialCharactersCSV(temp);
-            List<String> addTagsList = DataUtil.splitTags(temp);
-            StringBuilder builder = new StringBuilder();
-            for(int i = 0; i < addTagsList.size(); i++){
-                builder.append(addTagsList.get(i));
-                if(i != (addTagsList.size() - 1)) builder.append(", ");
+            List<String> tags = DataUtil.splitTags(temp);
+            for(String tag : tags){
+                if(tag == null || tag.isEmpty()) continue;
+                if(!ans.contains(tag)) ans.add(tag);
             }
-            if(addTagsList.size() > 0) return builder.toString();
+            return ans;
         }
         return null;
     }
 
-    private String getTagsToRemove(){
-        String temp;
+    private List<String> getTagsToRemove(){
         if(binding.cbRemoveTag.isChecked() && binding.etRemoveTag.getText() != null){
-            temp = binding.etRemoveTag.getText().toString();
+            List<String> ans = new ArrayList<>();
+            String temp = binding.etRemoveTag.getText().toString();
             temp = DataUtil.removeSpecialCharactersCSV(temp);
-            List<String> removeTagsList = DataUtil.splitTags(temp);
-            StringBuilder builder = new StringBuilder();
-            for(int i = 0; i < removeTagsList.size(); i++){
-                builder.append(removeTagsList.get(i));
-                if(i != (removeTagsList.size() - 1)) builder.append(", ");
+            List<String> tags = DataUtil.splitTags(temp);
+            for(String tag : tags){
+                if(tag == null || tag.isEmpty()) continue;
+                if(!ans.contains(tag)) ans.add(tag);
             }
-            if(removeTagsList.size() > 0) return builder.toString();
+            return ans;
         }
         return null;
     }
@@ -356,10 +366,9 @@ public class BulkEditFragment extends Fragment {
         binding.tvLandsFilterResult.setText(display);
     }
 
-    private void saveLandsData(ColorData newColor, String addTags, String removeTags){
+    private void saveLandsData(ColorData newColor, List<String> addTags, List<String> removeTags){
         if(viewModel == null) return;
         if(filteredLands.size() == 0) return;
-        if(newColor == null && addTags == null && removeTags == null) return;
 
         isSaving = true;
         if(dialog != null){
@@ -374,7 +383,26 @@ public class BulkEditFragment extends Fragment {
                 if(land.getData() == null) continue;
                 boolean needSave = false;
                 LandData data = new LandData(land.getData());
-                //todo: add `add tags` & `remove tags` methods
+                if(addTags != null){
+                    List<String> landTags = LandUtil.getLandTags(data);
+                    landTags.remove(null);
+                    for(String addTag : addTags){
+                        if(addTag == null || addTag.isEmpty()) continue;
+                        if(!landTags.contains(addTag)) landTags.add(addTag);
+                    }
+                    data.setTags(DataUtil.mergeTags(landTags));
+                    needSave = true;
+                }
+                if(removeTags != null){
+                    List<String> landTags = LandUtil.getLandTags(data);
+                    landTags.remove(null);
+                    for(String removeTag : removeTags){
+                        if(removeTag == null || removeTag.isEmpty()) continue;
+                        landTags.remove(removeTag);
+                    }
+                    data.setTags(DataUtil.mergeTags(landTags));
+                    needSave = true;
+                }
                 if(newColor != null) {
                     data.setColor(newColor);
                     needSave = true;
@@ -470,10 +498,9 @@ public class BulkEditFragment extends Fragment {
         binding.tvZonesFilterResult.setText(display);
     }
 
-    private void saveZonesData(String newNote, ColorData newColor, String addTags, String removeTags) {
+    private void saveZonesData(String newNote, ColorData newColor, List<String> addTags, List<String> removeTags) {
         if(viewModel == null) return;
         if(filteredZones.size() == 0) return;
-        if(newNote == null && newColor == null && addTags == null && removeTags == null) return;
 
         isSaving = true;
         if(dialog != null){
@@ -488,7 +515,26 @@ public class BulkEditFragment extends Fragment {
                 if(zone.getData() == null) continue;
                 boolean needSave = false;
                 LandZoneData data = new LandZoneData(zone.getData());
-                //todo: add `add tags` & `remove tags` methods
+                if(addTags != null){
+                    List<String> zoneTags = LandUtil.getLandZoneTags(data);
+                    zoneTags.remove(null);
+                    for(String addTag : addTags){
+                        if(addTag == null || addTag.isEmpty()) continue;
+                        if(!zoneTags.contains(addTag)) zoneTags.add(addTag);
+                    }
+                    data.setTags(DataUtil.mergeTags(zoneTags));
+                    needSave = true;
+                }
+                if(removeTags != null){
+                    List<String> zoneTags = LandUtil.getLandZoneTags(data);
+                    zoneTags.remove(null);
+                    for(String removeTag : removeTags){
+                        if(removeTag == null || removeTag.isEmpty()) continue;
+                        zoneTags.remove(removeTag);
+                    }
+                    data.setTags(DataUtil.mergeTags(zoneTags));
+                    needSave = true;
+                }
                 if(newNote != null) {
                     data.setNote(newNote);
                     needSave = true;

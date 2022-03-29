@@ -81,6 +81,16 @@ public final class DataUtil {
         if(ans.size() == 0) ans.add(null);
         return ans;
     }
+    public static String mergeTags(List<String> tags){
+        if(tags == null) return "";
+
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < tags.size(); i++){
+            builder.append(tags.get(i));
+            if(i != (tags.size() - 1)) builder.append(", ");
+        }
+        return builder.toString();
+    }
     public static String removeSpecialCharacters(String string){
         if(string == null) return "";
         String ans = string.replaceAll(
