@@ -138,9 +138,9 @@
     <string name="zone_delete">Zones Deleted Successfully</string>
     <string name="zone_delete_error">Some zones did not delete</string>
     <string name="zone_export">Zones Exported Successfully</string>
-    <string name="land_zones_filter_title">land_zones_filter_title</string>
-    <string name="filter_land_zones_all_tag">[filter_land_zones_all_tag]</string>
-    <string name="filter_land_zones_empty_tag">[filter_land_zones_empty_tag]</string>
+    <string name="land_zones_filter_title">Zone Filters</string>
+    <string name="filter_land_zones_all_tag">[All Data]</string>
+    <string name="filter_land_zones_empty_tag">[Without Tag]</string>
     <!-- Zone Preview Fragment -->
     <string name="delete_zone_dialog_title">Delete Zone\'s</string>
     <string name="delete_zone_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
@@ -155,7 +155,7 @@
     <string name="zone_note_label">Edit Zone Note</string>
     <string name="zone_note_hint">Note</string>
     <string name="edit_zone_note">Change Zone Note</string>
-    <string name="zone_tags">Land Tags</string>
+    <string name="zone_tags">Zone Tags</string>
     <string name="edit_zone_tags">Change Zone Tags</string>
     <string name="zone_border_error">Zone must be 3 points minimum</string>
     <string name="zone_saved">Zone saved</string>

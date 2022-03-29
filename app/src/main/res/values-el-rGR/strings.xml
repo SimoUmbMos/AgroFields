@@ -35,8 +35,8 @@
     <string name="my_zones_label">Οι Περιοχές μου</string>
     <string name="file_created">Το αρχείο δημιουργήθηκε</string>
     <string name="file_not_created">Το αρχείο δεν δημιουργήθηκε</string>
-    <string name="file_path_not_created">File path not created</string>
-    <string name="file_something_did_not_run">Something has goes wrong, try again.</string>
+    <string name="file_path_not_created">Η διαδρομή αρχείου δεν δημιουργήθηκε</string>
+    <string name="file_something_did_not_run">Κάτι πήγε στραβά, δοκιμάστε ξανά.</string>
     <string name="saving_label">Αποθήκευση…</string>
     <string name="loading_label">Φόρτωση…</string>
     <string name="add">Προσθήκη</string>
@@ -62,7 +62,7 @@
     <string name="reset_points">Επαναφορά σημείων</string>
     <string name="edit_color">Αλλαγή χρώματος</string>
     <string name="calendar_default_category">Προγραμματισμένη εργασία</string>
-    <string name="default_year_picker_title">Pick A Year</string>
+    <string name="default_year_picker_title">Διαλέξτε ένα έτος</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
     <!-- Loading Fragment -->
@@ -73,14 +73,14 @@
     <string name="main_menu_calendar_button">Ημερολόγιο</string>
     <string name="main_menu_land_button">Χωράφια</string>
     <!-- Land Menu Fragment -->
-    <string name="land_filter_title">Land Filter</string>
-    <string name="filter_lands_all_tag">[All Lands]</string>
-    <string name="filter_lands_empty_tag">[Empty tag]</string>
+    <string name="land_filter_title">Φίλτρα χωραφιών</string>
+    <string name="filter_lands_all_tag">[Όλα τα Δεδομένα]</string>
+    <string name="filter_lands_empty_tag">[Χωρίς Ετικέτα]</string>
     <string name="delete_lands_title">Διαγραφή χωράφιων</string>
     <string name="delete_lands_text">Επιθυμείτε να διαγράψετε τα επιλεγμένα χωράφια;</string>
-    <string name="land_delete_successful">Lands Deleted</string>
+    <string name="land_delete_successful">Τα χωράφια διαγράφηκαν</string>
     <string name="some_lands_have_zones_error">Ορισμένα χωράφια έχουν ζώνες</string>
-    <string name="land_export">Lands Exported</string>
+    <string name="land_export">Έγινε εξαγωγή χωραφιών</string>
     <!-- Land Info Fragment -->
     <string name="land_info_title">Πληροφορίες χωραφιού</string>
     <string name="land_name">Τίτλος χωραφιού</string>
@@ -115,27 +115,27 @@
     <string name="land_action_updated">Ενημερώθηκε</string>
     <string name="land_action_restored">Επαναφέρθηκε</string>
     <string name="land_action_imported">Έγινε εισαγωγή</string>
-    <string name="land_action_bulk_edited">Bulk Edited</string>
+    <string name="land_action_bulk_edited">Μαζική Eπεξεργασία</string>
     <string name="land_action_deleted">Διαγράφηκε</string>
     <string name="land_action_zone_created">Δημιουργία Ζώνης</string>
     <string name="land_action_zone_updated">Ενημέρωση Ζώνης</string>
     <string name="land_action_zone_imported">Εισαγωγή Ζώνης</string>
     <string name="land_action_zone_deleted">Διαγράφη Ζώνης</string>
     <!-- Zone Land Selected Fragment -->
-    <string name="delete_zones_dialog_title">Delete Zone\'s</string>
-    <string name="delete_zones_dialog_text">Are you sure you want to delete the selected zone\'s?</string>
+    <string name="delete_zones_dialog_title">Διαγραφή Ζώνης</string>
+    <string name="delete_zones_dialog_text">Είστε βέβαιοι ότι θέλετε να διαγράψετε τις επιλεγμένες ζώνες;</string>
     <string name="zone_delete">Οι περιοχές διαγράφηκαν με επιτυχία</string>
-    <string name="zone_delete_error">Some zones did not delete</string>
+    <string name="zone_delete_error">Ορισμένες ζώνες δεν διαγράφηκαν</string>
     <string name="zone_export">Οι περιοχές εξήχθησαν με επιτυχία</string>
-    <string name="land_zones_filter_title">land_zones_filter_title</string>
-    <string name="filter_land_zones_all_tag">[filter_land_zones_all_tag]</string>
-    <string name="filter_land_zones_empty_tag">[filter_land_zones_empty_tag]</string>
+    <string name="land_zones_filter_title">Φίλτρα ζώνης</string>
+    <string name="filter_land_zones_all_tag">[Όλα τα Δεδομένα]</string>
+    <string name="filter_land_zones_empty_tag">[Χωρίς Ετικέτα]</string>
     <!-- Zone Preview Fragment -->
-    <string name="delete_zone_dialog_title">Delete Zone</string>
-    <string name="delete_zone_dialog_text">Are you sure you want to delete the current zone?</string>
+    <string name="delete_zone_dialog_title">Διαγραφή ζώνης</string>
+    <string name="delete_zone_dialog_text">Είστε βέβαιοι ότι θέλετε να διαγράψετε την τρέχουσα ζώνη;</string>
     <string name="new_zone_bar_label">Νέα περιοχή</string>
     <string name="save_zone">Αποθήκευση περιοχής</string>
-    <string name="delete_zone">Delete Zone</string>
+    <string name="delete_zone">Διαγραφή ζώνης</string>
     <string name="zone_actions_group_title">Ενέργειες περιοχής</string>
     <string name="edit_zone_title">Αλλαγή τίτλου περιοχής</string>
     <string name="zone_border_actions_group_title">Ενέργειες σχήματος</string>
@@ -144,8 +144,8 @@
     <string name="zone_note_hint">Σημείωση</string>
     <string name="zone_note_label">Επεξεργασία σημείωσης περιοχής</string>
     <string name="edit_zone_note">Αλλαγή σημείωσης περιοχής</string>
-    <string name="zone_tags">Land Tags</string>
-    <string name="edit_zone_tags">Change Zone Tags</string>
+    <string name="zone_tags">Ετικέτες ζώνης</string>
+    <string name="edit_zone_tags">Αλλαγή ετικετών ζώνης</string>
     <string name="zone_border_error">Η περιοχή πρέπει να έχει τουλάχιστον 3 σημεία</string>
     <string name="zone_saved">Η περιοχή αποθηκεύτηκε</string>
     <string name="zone_need_save_new">Η νέα περιοχή δεν αποθηκεύτηκε.\nΠατήστε δύο φορές για έξοδο.</string>
@@ -169,7 +169,7 @@
         <item>Σκοτεινό Θέμα</item>
     </string-array>
     <string name="bulk_edit_button_label">Μαζική Επεξεργασία Δεδομένων</string>
-    <string name="calendar_categories_button_label">Calendar Categories</string>
+    <string name="calendar_categories_button_label">Κατηγορίες Ημερολογίου</string>
     <string name="import_database_button_label">Εισαγωγή Χωραφιών</string>
     <string name="export_database_button_label">Εξαγωγή Χωραφιών</string>
     <string name="import_db_success">Τα δεδομένα ενημερώθηκαν</string>
@@ -177,8 +177,8 @@
     <string name="import_db_failed">Αποτυχία ενημέρωσης δεδομένων</string>
     <string name="export_db_fail">Αποτυχία εξαγωγής δεδομένων</string>
     <string name="open_xml_action_not_ended_error">Παρακαλώ Περιμένετε…</string>
-    <string name="copy_to_other_snapshot_button_label">Clone Data To Other Snapshot</string>
-    <string name="select_snapshot_to_copy">Select Snapshot To Copy</string>
+    <string name="copy_to_other_snapshot_button_label">Αντιγραφή δεδομένων σε άλλο στιγμιότυπο</string>
+    <string name="select_snapshot_to_copy">Επιλέξτε Στιγμιότυπο προς αντιγραφή</string>
     <!-- File Map Fragment -->
     <string name="file_map_fragment_import_action">Κάντε κλικ σε σχήμα για εισαγωγή</string>
     <string name="file_map_fragment_loading">Φόρτωση αρχείου…</string>
@@ -201,7 +201,7 @@
     <string name="default_zone_spinner_value">Όλο το χωράφι</string>
     <string name="calendar_pop_up_date_title">Επιλέξτε ημερομηνία</string>
     <string name="calendar_pop_up_time_title">Επιλέξτε ώρα</string>
-    <string name="select_snapshot_label">Select Snapshot</string>
+    <string name="select_snapshot_label">Επιλέξτε Στιγμιότυπο</string>
     <string name="select_date_label">Ημερομηνία</string>
     <string name="select_time_label">Ώρα</string>
     <string name="select_title_label">Τίτλος</string>
@@ -214,27 +214,27 @@
     <string name="live_map_title">Χάρτης</string>
     <!-- Bulk Edit Fragment -->
     <string name="bulk_edit_fragment_title">Μαζική Επεξεργασία</string>
-    <string name="bulk_edit_select_tag_title">Select Tag</string>
-    <string name="bulk_edit_change_note">Change Note</string>
-    <string name="bulk_edit_add_tag">Add Tag</string>
-    <string name="bulk_edit_remove_tag">Remove Tag</string>
-    <string name="bulk_edit_change_color">Change Color</string>
-    <string name="bulk_edit_all_tag">[All Data]</string>
-    <string name="bulk_edit_empty_tag">[Without Tag]</string>
-    <string name="bulk_edit_title_label">Title</string>
-    <string name="bulk_edit_note_label">Note</string>
-    <string name="bulk_edit_tags_label">Tags</string>
-    <string name="bulk_edit_color_label">Color</string>
+    <string name="bulk_edit_select_tag_title">Επιλέξτε Ετικέτα</string>
+    <string name="bulk_edit_change_note">Αλλαγή Σημείωσης</string>
+    <string name="bulk_edit_add_tag">Προσθήκη Ετικετών</string>
+    <string name="bulk_edit_remove_tag">Αφαίρεση Ετικετών</string>
+    <string name="bulk_edit_change_color">Αλλαγή χρώματος</string>
+    <string name="bulk_edit_all_tag">[Όλα τα Δεδομένα]</string>
+    <string name="bulk_edit_empty_tag">[Χωρίς Ετικέτα]</string>
+    <string name="bulk_edit_title_label">Τίτλος</string>
+    <string name="bulk_edit_note_label">Σημείωση</string>
+    <string name="bulk_edit_tags_label">Ετικέτες</string>
+    <string name="bulk_edit_color_label">Χρώμα</string>
     <!-- Categories List Fragment -->
-    <string name="notification_categories_fragment_title">Calendar Categories</string>
-    <string name="removed_all_categories">Removed all the selected categories</string>
-    <string name="removed_some_categories">Some selected categories have notifications</string>
-    <string name="removed_none_categories">All selected categories have notifications</string>
-    <string name="delete_calendar_categories_title">Delete Category</string>
-    <string name="delete_calendar_categories_text">Are you sure you want to delete the selected categories?</string>
+    <string name="notification_categories_fragment_title">Κατηγορίες Ημερολογίου</string>
+    <string name="removed_all_categories">Καταργήθηκαν όλες οι επιλεγμένες κατηγορίες</string>
+    <string name="removed_some_categories">Ορισμένες επιλεγμένες κατηγορίες έχουν ειδοποιήσεις</string>
+    <string name="removed_none_categories">Όλες οι επιλεγμένες κατηγορίες έχουν ειδοποιήσεις</string>
+    <string name="delete_calendar_categories_title">Διαγραφή Κατηγορίας</string>
+    <string name="delete_calendar_categories_text">Είστε βέβαιοι ότι θέλετε να διαγράψετε τις επιλεγμένες κατηγορίες;</string>
     <!-- Categories Editor Fragment -->
-    <string name="calendar_category_editor_title_new">New Category</string>
-    <string name="calendar_category_editor_title_edit">Edit Category</string>
-    <string name="calendar_category_editor_edit_title">Category Name</string>
-    <string name="calendar_category_editor_edit_color">Category Color</string>
+    <string name="calendar_category_editor_title_new">Νέα Κατηγορία</string>
+    <string name="calendar_category_editor_title_edit">Επεξεργασία Κατηγορίας</string>
+    <string name="calendar_category_editor_edit_title">Όνομα Κατηγορίας</string>
+    <string name="calendar_category_editor_edit_color">Χρώμα Κατηγορίας</string>
 </resources>
