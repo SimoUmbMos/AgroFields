@@ -18,9 +18,11 @@ import android.widget.ArrayAdapter;
 
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
+import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.DialogUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
@@ -28,25 +30,33 @@ import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentBulkEditBinding;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
-import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.BulkEditorAdapter;
+import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.LandsBulkEditorAdapter;
+import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.ZonesBulkEditorAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BulkEditFragment extends Fragment {
-    //todo: create `bulk edit zones`
     private FragmentBulkEditBinding binding;
     private LoadingDialog loadingDialog;
     private AlertDialog dialog;
     private ColorData tempColor;
 
     private AppViewModel viewModel;
-    private ArrayAdapter<String> tags;
-    private BulkEditorAdapter adapter;
 
+    private ArrayAdapter<String> landTags;
+    private LandsBulkEditorAdapter landAdapter;
+    private final List<Land> lands = new ArrayList<>();
     private List<Land> filteredLands;
-    private List<Land> lands;
-    private String selectedTag;
+    private String selectedLandsTag;
+
+    private ArrayAdapter<String> zoneTags;
+    private ZonesBulkEditorAdapter zoneAdapter;
+    private final List<LandZone> zones = new ArrayList<>();
+    private List<LandZone> filteredZones;
+    private String selectedZonesTag;
+
     private boolean isSaving, isShowingLands;
 
     @Override
@@ -74,15 +84,23 @@ public class BulkEditFragment extends Fragment {
     private void initData() {
         isSaving = false;
         isShowingLands = true;
-        selectedTag = getString(R.string.bulk_edit_all_tag);
-        lands = new ArrayList<>();
         filteredLands = new ArrayList<>();
-        List<String> tempTags = new ArrayList<>();
-        tempTags.add(getString(R.string.bulk_edit_all_tag));
-        tags = new ArrayAdapter<>(
+        selectedLandsTag = getString(R.string.bulk_edit_all_tag);
+        filteredZones = new ArrayList<>();
+        selectedZonesTag = getString(R.string.bulk_edit_all_tag);
+        List<String> landTagsList = new ArrayList<>();
+        landTagsList.add(getString(R.string.bulk_edit_all_tag));
+        landTags = new ArrayAdapter<>(
                 getContext(),
                 android.R.layout.simple_list_item_1,
-                tempTags
+                landTagsList
+        );
+        List<String> zoneTagsList = new ArrayList<>();
+        zoneTagsList.add(getString(R.string.bulk_edit_all_tag));
+        zoneTags = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_list_item_1,
+                zoneTagsList
         );
     }
 
@@ -98,17 +116,26 @@ public class BulkEditFragment extends Fragment {
         binding.ibClose1.setOnClickListener(v-> goBack());
         binding.ibSave.setOnClickListener(v->onSaveClick());
 
-        binding.tvTag.setAdapter(tags);
-        binding.tvTag.setOnItemClickListener((parent, view, position, id) -> {
-            selectedTag = tags.getItem(position);
-            binding.tvTag.setText(selectedTag,false);
+        binding.tvLandsTag.setAdapter(landTags);
+        binding.tvLandsTag.setOnItemClickListener((parent, view, position, id) -> {
+            selectedLandsTag = landTags.getItem(position);
+            binding.tvLandsTag.setText(selectedLandsTag,false);
             updateLands(this.lands);
         });
-        binding.tvTag.setText(selectedTag,false);
+        binding.tvLandsTag.setText(selectedLandsTag,false);
 
+        binding.tvZonesTag.setAdapter(zoneTags);
+        binding.tvZonesTag.setOnItemClickListener((parent, view, position, id) -> {
+            selectedZonesTag = zoneTags.getItem(position);
+            binding.tvZonesTag.setText(selectedZonesTag,false);
+            updateZones(this.zones);
+        });
+        binding.tvZonesTag.setText(selectedZonesTag,false);
+
+        binding.cbChangeNote.setOnCheckedChangeListener((button, checked) -> binding.tilChangeNote.setEnabled(checked));
+        binding.cbChangeColor.setOnCheckedChangeListener((button, checked) -> binding.tilChangeColor.setEnabled(checked));
         binding.cbAddTag.setOnCheckedChangeListener((button, checked) -> binding.tilAddTag.setEnabled(checked));
         binding.cbRemoveTag.setOnCheckedChangeListener((button, checked) -> binding.tilRemoveTag.setEnabled(checked));
-        binding.cbChangeColor.setOnCheckedChangeListener((button, checked) -> binding.tilChangeColor.setEnabled(checked));
         ColorData color = AppValues.defaultLandColor;
         binding.tvColorPreview.setBackgroundColor(color.getColor());
         binding.etChangeColor.setText(color.toString());
@@ -117,15 +144,25 @@ public class BulkEditFragment extends Fragment {
 
         binding.rgDataOption.setOnCheckedChangeListener((radioGroup,id) -> showLands(id != R.id.rbZones));
 
-        adapter = new BulkEditorAdapter();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(
+        landAdapter = new LandsBulkEditorAdapter();
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(
                 getContext(),
                 LinearLayoutManager.VERTICAL,
                 false
         );
         binding.rvLandsResults.setHasFixedSize(true);
-        binding.rvLandsResults.setLayoutManager(layoutManager);
-        binding.rvLandsResults.setAdapter(adapter);
+        binding.rvLandsResults.setLayoutManager(layoutManager1);
+        binding.rvLandsResults.setAdapter(landAdapter);
+
+        zoneAdapter = new ZonesBulkEditorAdapter();
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(
+                getContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+        );
+        binding.rvZonesResults.setHasFixedSize(true);
+        binding.rvZonesResults.setLayoutManager(layoutManager2);
+        binding.rvZonesResults.setAdapter(zoneAdapter);
         showLands(true);
     }
 
@@ -155,138 +192,51 @@ public class BulkEditFragment extends Fragment {
         if(getActivity() == null) return;
         viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
         viewModel.getLands().observe(getViewLifecycleOwner(),this::onLandsUpdate);
-    }
-
-    private void onLandsUpdate(List<Land> lands) {
-        this.lands.clear();
-        if(lands != null) this.lands.addAll(lands);
-        onLandTagsUpdate(LandUtil.getLandsTags(this.lands));
-        updateLands(this.lands);
-    }
-
-    private void onLandTagsUpdate(List<String> landTags) {
-        String emptyTag = getString(R.string.bulk_edit_empty_tag);
-        List<String> tempTags = new ArrayList<>();
-        tempTags.add(getString(R.string.bulk_edit_all_tag));
-
-        if(landTags != null) {
-            for(String tag : landTags){
-                String tempTag = tag;
-                if(tempTag == null) tempTag = emptyTag;
-                if(tempTags.contains(tempTag)) continue;
-                if(tempTag.equals(emptyTag)) tempTags.add(1,tempTag);
-                else tempTags.add(tempTag);
-            }
-        }
-
-        tags.clear();
-        tags.addAll(tempTags);
-        tags.notifyDataSetChanged();
-        updateUi();
-    }
-
-    private void updateUi() {
-        boolean resetTag = true;
-        for(int i = 0; i < tags.getCount(); i ++){
-            if(tags.getItem(i).equals(selectedTag)) {
-                resetTag = false;
-                break;
-            }
-        }
-        if(resetTag){
-            selectedTag = getString(R.string.bulk_edit_all_tag);
-            binding.tvTag.setText(selectedTag,false);
-        }
-        if(tags.getCount() > 2){
-            binding.tvTag.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
-        }else{
-            binding.tvTag.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        updateLands(this.lands);
-    }
-
-    private void updateLands(List<Land> lands) {
-        filteredLands = new ArrayList<>();
-        if(selectedTag.equals(getString(R.string.bulk_edit_all_tag))){
-            filteredLands.addAll(lands);
-        }else if(selectedTag.equals(getString(R.string.bulk_edit_empty_tag))){
-            for(Land land : lands){
-                if(land.getData() == null) continue;
-                String tags = land.getData().getTags();
-                if(tags == null || tags.isEmpty()){
-                    filteredLands.add(land);
-                }
-            }
-        }else{
-            for(Land land : lands){
-                if(land.getData() == null) continue;
-                String tags = land.getData().getTags();
-                if(tags == null || tags.isEmpty()) continue;
-                List<String> tagsList = LandUtil.getLandTags(land.getData());
-                if(tagsList.contains(selectedTag)) filteredLands.add(land);
-            }
-        }
-        adapter.saveData(filteredLands);
-        if(filteredLands.size() == 0) binding.tvLandsEmptyList.setVisibility(View.VISIBLE);
-        else binding.tvLandsEmptyList.setVisibility(View.GONE);
-        String display = filteredLands.size() + " ";
-        if(filteredLands.size() == 1){
-            display += getString(R.string.singular_land_label);
-        }else{
-            display += getString(R.string.plural_land_label);
-        }
-        binding.tvLandsFilterResult.setText(display);
+        viewModel.getLandZones().observe(getViewLifecycleOwner(),this::onZonesUpdate);
     }
 
     private void onSaveClick() {
-        if(isShowingLands){
-            saveLandsData();
-        }
-    }
-
-    private void saveLandsData(){
-        if(filteredLands.size() == 0) return;
-
+        final String newNote = getNoteData();
+        final ColorData newColor = getColorData();
         final String addTags = getTagsToAdd();
         final String removeTags = getTagsToRemove();
-        final ColorData newColor = getColorData();
-
-        if(newColor == null && addTags == null && removeTags == null) return;
-
-        isSaving = true;
-        if(dialog != null){
-            if(dialog.isShowing()) dialog.dismiss();
-            dialog = null;
+        if(isShowingLands){
+            saveLandsData(newColor,addTags,removeTags);
+        }else{
+            saveZonesData(newNote,newColor,addTags,removeTags);
         }
-        if(loadingDialog != null) loadingDialog.openDialog();
-        final List<LandData> saveList = new ArrayList<>();
-        for(Land land: filteredLands){
-            if(land.getData() == null) continue;
-            boolean needSave = false;
-            LandData data = new LandData(land.getData());
-            //todo: add `add tags` & `remove tags` methods
-            if(newColor != null) {
-                data.setColor(newColor);
-                needSave = true;
-            }
-            if(needSave){
-                saveList.add(data);
-            }
-        }
-        AsyncTask.execute(()->{
-            viewModel.bulkEditLandData(saveList);
-            if(loadingDialog != null) loadingDialog.closeDialog();
-            isSaving = false;
-        });
     }
 
     private void showLands(boolean enable){
         if(enable){
+            binding.trChangeNote.setVisibility(View.GONE);
+            binding.clZonesBulkEdit.setVisibility(View.GONE);
             binding.clLandsBulkEdit.setVisibility(View.VISIBLE);
         }else{
+            binding.trChangeNote.setVisibility(View.VISIBLE);
+            binding.clZonesBulkEdit.setVisibility(View.VISIBLE);
             binding.clLandsBulkEdit.setVisibility(View.GONE);
         }
         isShowingLands = enable;
+    }
+
+    private String getNoteData(){
+        if(binding.cbChangeNote.isChecked() && binding.etChangeNote.getText() != null){
+            return binding.etChangeNote.getText().toString()
+                    .replaceAll("\n+", " ")
+                    .replaceAll(" +", " ")
+                    .trim();
+        }
+        return null;
+    }
+
+    private ColorData getColorData(){
+        if(binding.cbChangeColor.isChecked()){
+            if(binding.etChangeColor.getText() != null) {
+                return new ColorData(binding.etChangeColor.getText().toString());
+            }
+        }
+        return null;
     }
 
     private String getTagsToAdd(){
@@ -321,13 +271,240 @@ public class BulkEditFragment extends Fragment {
         return null;
     }
 
-    private ColorData getColorData(){
-        if(binding.cbChangeColor.isChecked()){
-            if(binding.etChangeColor.getText() != null) {
-                return new ColorData(binding.etChangeColor.getText().toString());
+    private void onLandsUpdate(List<Land> lands) {
+        this.lands.clear();
+        if(lands != null) {
+            for(Land land : lands){
+                if(land == null || land.getData() == null) continue;
+                this.lands.add(land);
             }
         }
-        return null;
+        onLandTagsUpdate(LandUtil.getLandsTags(this.lands));
+    }
+
+    private void onLandTagsUpdate(List<String> landTags) {
+        String emptyTag = getString(R.string.bulk_edit_empty_tag);
+        List<String> tempTags = new ArrayList<>();
+        tempTags.add(getString(R.string.bulk_edit_all_tag));
+
+        if(landTags != null) {
+            for(String tag : landTags){
+                String tempTag = tag;
+                if(tempTag == null) tempTag = emptyTag;
+                if(tempTags.contains(tempTag)) continue;
+                if(tempTag.equals(emptyTag)) tempTags.add(1,tempTag);
+                else tempTags.add(tempTag);
+            }
+        }
+
+        this.landTags.clear();
+        this.landTags.addAll(tempTags);
+        this.landTags.notifyDataSetChanged();
+        updateLandsUi();
+    }
+
+    private void updateLandsUi() {
+        boolean resetTag = true;
+        for(int i = 0; i < landTags.getCount(); i ++){
+            if(landTags.getItem(i).equals(selectedLandsTag)) {
+                resetTag = false;
+                break;
+            }
+        }
+        if(resetTag){
+            selectedLandsTag = getString(R.string.bulk_edit_all_tag);
+            binding.tvLandsTag.setText(selectedLandsTag,false);
+        }
+        if(landTags.getCount() > 2){
+            binding.tvLandsTag.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvLandsTag.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        updateLands(this.lands);
+    }
+
+    private void updateLands(List<Land> lands) {
+        filteredLands = new ArrayList<>();
+        if(selectedLandsTag.equals(getString(R.string.bulk_edit_all_tag))){
+            filteredLands.addAll(lands);
+        }else if(selectedLandsTag.equals(getString(R.string.bulk_edit_empty_tag))){
+            for(Land land : lands){
+                if(land.getData() == null) continue;
+                String tags = land.getData().getTags();
+                if(tags == null || tags.isEmpty()){
+                    filteredLands.add(land);
+                }
+            }
+        }else{
+            for(Land land : lands){
+                if(land.getData() == null) continue;
+                String tags = land.getData().getTags();
+                if(tags == null || tags.isEmpty()) continue;
+                List<String> tagsList = LandUtil.getLandTags(land.getData());
+                if(tagsList.contains(selectedLandsTag)) filteredLands.add(land);
+            }
+        }
+        landAdapter.saveData(filteredLands);
+        if(filteredLands.size() == 0) binding.tvLandsEmptyList.setVisibility(View.VISIBLE);
+        else binding.tvLandsEmptyList.setVisibility(View.GONE);
+        String display = filteredLands.size() + " ";
+        if(filteredLands.size() == 1){
+            display += getString(R.string.singular_land_label);
+        }else{
+            display += getString(R.string.plural_land_label);
+        }
+        binding.tvLandsFilterResult.setText(display);
+    }
+
+    private void saveLandsData(ColorData newColor, String addTags, String removeTags){
+        if(viewModel == null) return;
+        if(filteredLands.size() == 0) return;
+        if(newColor == null && addTags == null && removeTags == null) return;
+
+        isSaving = true;
+        if(dialog != null){
+            if(dialog.isShowing()) dialog.dismiss();
+            dialog = null;
+        }
+        if(loadingDialog != null) loadingDialog.openDialog();
+        List<Land> landsResult = new ArrayList<>(filteredLands);
+        AsyncTask.execute(()->{
+            List<LandData> saveList = new ArrayList<>();
+            for(Land land: landsResult){
+                if(land.getData() == null) continue;
+                boolean needSave = false;
+                LandData data = new LandData(land.getData());
+                //todo: add `add tags` & `remove tags` methods
+                if(newColor != null) {
+                    data.setColor(newColor);
+                    needSave = true;
+                }
+                if(needSave){
+                    saveList.add(data);
+                }
+            }
+            viewModel.bulkEditLandData(saveList);
+            if(loadingDialog != null) loadingDialog.closeDialog();
+            isSaving = false;
+        });
+    }
+
+    private void onZonesUpdate(Map<Long, List<LandZone>> zonesList) {
+        this.zones.clear();
+        if(zonesList != null) {
+            zonesList.forEach((lid,zones)->{
+                for(LandZone zone : zones){
+                    if(zone == null || zone.getData() == null) continue;
+                    this.zones.add(zone);
+                }
+            });
+        }
+        onZoneTagsUpdate(LandUtil.getLandZonesTags(this.zones));
+    }
+
+    private void onZoneTagsUpdate(List<String> zoneTags) {
+        String emptyTag = getString(R.string.bulk_edit_empty_tag);
+        List<String> tempTags = new ArrayList<>();
+        tempTags.add(getString(R.string.bulk_edit_all_tag));
+
+        if(zoneTags != null) {
+            for(String tag : zoneTags){
+                String tempTag = tag;
+                if(tempTag == null) tempTag = emptyTag;
+                if(tempTags.contains(tempTag)) continue;
+                if(tempTag.equals(emptyTag)) tempTags.add(1,tempTag);
+                else tempTags.add(tempTag);
+            }
+        }
+
+        this.zoneTags.clear();
+        this.zoneTags.addAll(tempTags);
+        this.zoneTags.notifyDataSetChanged();
+        updateZonesUi();
+    }
+
+    private void updateZonesUi() {
+        boolean resetTag = true;
+        for(int i = 0; i < zoneTags.getCount(); i ++){
+            if(zoneTags.getItem(i).equals(selectedZonesTag)) {
+                resetTag = false;
+                break;
+            }
+        }
+        if(resetTag){
+            selectedZonesTag = getString(R.string.bulk_edit_all_tag);
+            binding.tvZonesTag.setText(selectedZonesTag,false);
+        }
+        if(zoneTags.getCount() > 2){
+            binding.tvZonesTag.setDropDownHeight(getResources().getDimensionPixelSize(R.dimen.dropDownHeight));
+        }else{
+            binding.tvZonesTag.setDropDownHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        updateZones(this.zones);
+    }
+
+    private void updateZones(List<LandZone> zones) {
+        filteredZones = new ArrayList<>();
+        if(selectedZonesTag.equals(getString(R.string.bulk_edit_all_tag))){
+            filteredZones.addAll(zones);
+        }else{
+            boolean emptyTag = selectedZonesTag.equals(getString(R.string.bulk_edit_empty_tag));
+            for(LandZone zone : zones){
+                List<String> tagsList = LandUtil.getLandZoneTags(zone.getData());
+                if(emptyTag){
+                    if(tagsList.contains(null)) filteredZones.add(zone);
+                }else{
+                    if(tagsList.contains(selectedZonesTag)) filteredZones.add(zone);
+                }
+            }
+        }
+        zoneAdapter.saveData(filteredZones);
+        if(filteredZones.size() == 0) binding.tvZonesEmptyList.setVisibility(View.VISIBLE);
+        else binding.tvZonesEmptyList.setVisibility(View.GONE);
+        String display = filteredZones.size() + " ";
+        if(filteredZones.size() == 1){
+            display += getString(R.string.singular_zone_label);
+        }else{
+            display += getString(R.string.plural_zone_label);
+        }
+        binding.tvZonesFilterResult.setText(display);
+    }
+
+    private void saveZonesData(String newNote, ColorData newColor, String addTags, String removeTags) {
+        if(viewModel == null) return;
+        if(filteredZones.size() == 0) return;
+        if(newNote == null && newColor == null && addTags == null && removeTags == null) return;
+
+        isSaving = true;
+        if(dialog != null){
+            if(dialog.isShowing()) dialog.dismiss();
+            dialog = null;
+        }
+        if(loadingDialog != null) loadingDialog.openDialog();
+        List<LandZone> zonesResult = new ArrayList<>(filteredZones);
+        AsyncTask.execute(()->{
+            List<LandZoneData> saveList = new ArrayList<>();
+            for(LandZone zone: zonesResult){
+                if(zone.getData() == null) continue;
+                boolean needSave = false;
+                LandZoneData data = new LandZoneData(zone.getData());
+                //todo: add `add tags` & `remove tags` methods
+                if(newNote != null) {
+                    data.setNote(newNote);
+                    needSave = true;
+                }
+                if(newColor != null) {
+                    data.setColor(newColor);
+                    needSave = true;
+                }
+                if(needSave){
+                    saveList.add(data);
+                }
+            }
+            viewModel.bulkEditZoneData(saveList);
+            if(loadingDialog != null) loadingDialog.closeDialog();
+            isSaving = false;
+        });
     }
 
     private void goBack(){

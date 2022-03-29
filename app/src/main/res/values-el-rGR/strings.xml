@@ -215,14 +215,16 @@
     <!-- Bulk Edit Fragment -->
     <string name="bulk_edit_fragment_title">Μαζική Επεξεργασία</string>
     <string name="bulk_edit_select_tag_title">Select Tag</string>
+    <string name="bulk_edit_change_note">Change Note</string>
     <string name="bulk_edit_add_tag">Add Tag</string>
     <string name="bulk_edit_remove_tag">Remove Tag</string>
     <string name="bulk_edit_change_color">Change Color</string>
     <string name="bulk_edit_all_tag">[All Data]</string>
     <string name="bulk_edit_empty_tag">[Without Tag]</string>
-    <string name="land_title_label_bulk_edit">title</string>
-    <string name="land_tags_label_bulk_edit">tags</string>
-    <string name="land_color_label_bulk_edit">color</string>
+    <string name="bulk_edit_title_label">Title</string>
+    <string name="bulk_edit_note_label">Note</string>
+    <string name="bulk_edit_tags_label">Tags</string>
+    <string name="bulk_edit_color_label">Color</string>
     <!-- Categories List Fragment -->
     <string name="notification_categories_fragment_title">Calendar Categories</string>
     <string name="removed_all_categories">Removed all the selected categories</string>

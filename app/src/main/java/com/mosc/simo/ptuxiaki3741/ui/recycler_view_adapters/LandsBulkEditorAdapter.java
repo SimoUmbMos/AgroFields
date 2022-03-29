@@ -16,22 +16,20 @@ import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderBulkEditLandBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BulkEditorAdapter extends RecyclerView.Adapter<BulkEditorAdapter.ViewHolder>{
+public class LandsBulkEditorAdapter extends RecyclerView.Adapter<LandsBulkEditorAdapter.ViewHolder>{
     private final List<Land> data;
 
-    public BulkEditorAdapter(){
+    public LandsBulkEditorAdapter(){
         data = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.view_holder_bulk_edit_land,
-                parent,
-                false
+        return ViewHolder.getNewInstance(
+                LayoutInflater.from(parent.getContext()),
+                parent
         );
-        return new ViewHolder(view);
     }
 
     @Override
@@ -46,7 +44,7 @@ public class BulkEditorAdapter extends RecyclerView.Adapter<BulkEditorAdapter.Vi
     }
 
     public void saveData(List<Land> data){
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BulkEditDiffUtil(this.data, data));
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new LandsBulkEditDiffUtil(this.data, data));
         this.data.clear();
         this.data.addAll(data);
         diffResult.dispatchUpdatesTo(this);
@@ -67,13 +65,17 @@ public class BulkEditorAdapter extends RecyclerView.Adapter<BulkEditorAdapter.Vi
             binding.tvTags.setText(data.getTags());
             binding.tvColor.setBackgroundColor(data.getColor().getColor());
         }
+        public static ViewHolder getNewInstance(LayoutInflater inflater, ViewGroup parent){
+            ViewHolderBulkEditLandBinding binding = ViewHolderBulkEditLandBinding.inflate(inflater,parent,false);
+            return new ViewHolder(binding.getRoot());
+        }
     }
 
-    private static class BulkEditDiffUtil extends DiffUtil.Callback {
+    private static class LandsBulkEditDiffUtil extends DiffUtil.Callback {
         private final List<Land> oldData;
         private final List<Land> newData;
 
-        public BulkEditDiffUtil(List<Land> oldData, List<Land> newData){
+        public LandsBulkEditDiffUtil(List<Land> oldData, List<Land> newData){
             this.oldData = oldData;
             this.newData = newData;
         }

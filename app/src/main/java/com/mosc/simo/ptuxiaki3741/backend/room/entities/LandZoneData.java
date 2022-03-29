@@ -3,6 +3,7 @@ package com.mosc.simo.ptuxiaki3741.backend.room.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -178,4 +179,11 @@ public class LandZoneData implements Parcelable {
             return new LandZoneData[size];
         }
     };
+
+    @Override
+    @NonNull
+    public String toString() {
+        if(id > 0) return "#" + id + " " + title;
+        return title;
+    }
 }

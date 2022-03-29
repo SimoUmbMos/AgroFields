@@ -13,6 +13,7 @@ import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
@@ -296,6 +297,32 @@ public class AppViewModel extends AndroidViewModel {
         }
         appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
 
+        populateLists();
+    }
+    public void bulkEditZoneData(List<LandZoneData> data){
+        if(data == null) return;
+
+        for(LandZoneData zone : data){
+            if(zone == null) continue;
+
+            Land land = appRepository.getLand( zone.getLid(), zone.getSnapshot() );
+            if(land == null) return;
+
+            appRepository.saveZone(new LandZone(zone));
+
+            LandDBAction action = LandDBAction.ZONE_UPDATED;
+            LandDataRecord landRecord = new LandDataRecord(
+                    land.getData(),
+                    action,
+                    new Date()
+            );
+            List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
+            List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+            for(LandZone temp : zones){
+                zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
+            }
+            appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
+        }
         populateLists();
     }
     private boolean removeZoneAction(LandZone zone){
