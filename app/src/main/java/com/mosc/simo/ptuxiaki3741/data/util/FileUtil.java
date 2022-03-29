@@ -18,8 +18,6 @@ import com.mosc.simo.ptuxiaki3741.backend.file.openxml.OpenXmlDataBaseOutput;
 import com.mosc.simo.ptuxiaki3741.backend.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.data.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandFileState;
-import com.mosc.simo.ptuxiaki3741.backend.file.wkt.WellKnownTextExporter;
-import com.mosc.simo.ptuxiaki3741.backend.file.wkt.WellKnownTextReader;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
@@ -59,9 +57,6 @@ public final class FileUtil {
         XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
         return xmOut.outputString(document);
     }
-    public static String landsToWKTString(List<Land> lands) {
-        return WellKnownTextExporter.WellKnownTextExport(lands);
-    }
     public static String landsToGeoJsonString(List<Land> lands) {
         JSONObject export = GeoJsonExporter.geoJsonExport(lands);
         return export.toString();
@@ -84,13 +79,6 @@ public final class FileUtil {
             lands.add(new Land(new LandData(zone.getData().getBorder())));
         }
         return landsToKmlString(lands,label);
-    }
-    public static String zonesToWKTString(List<LandZone> zones) {
-        List<Land> lands = new ArrayList<>();
-        for(LandZone zone:zones){
-            lands.add(new Land(new LandData(zone.getData().getBorder())));
-        }
-        return landsToWKTString(lands);
     }
     public static String zonesToGeoJsonString(List<LandZone> zones) {
         List<Land> lands = new ArrayList<>();
@@ -134,7 +122,6 @@ public final class FileUtil {
                         isKML(ctx, response) ||
                         isGML(ctx, response) ||
                         isXML(ctx, response) ||
-                        isText(ctx, response) ||
                         isShapeFile(ctx, response);
     }
     public static ArrayList<LandData> handleFile(Context ctx, Intent result){
@@ -194,14 +181,6 @@ public final class FileUtil {
                             Log.e(TAG, "handleKml: ", e);
                         }
                         break;
-                    case TEXT:
-                        try{
-                            data.addAll(handleWKT(ctx, uri));
-                            return data;
-                        }catch (Exception e){
-                            Log.e(TAG, "handleWKT: ", e);
-                        }
-                        break;
                 }
             }
         }
@@ -217,8 +196,6 @@ public final class FileUtil {
             return FileType.SHAPEFILE;
         else if(isGML(ctx, result))
             return FileType.GML;
-        else if(isText(ctx, result))
-            return FileType.TEXT;
         else if(isXML(ctx, result))
             return FileType.XML;
         return FileType.NONE;
@@ -234,10 +211,6 @@ public final class FileUtil {
     private static boolean isShapeFile(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
         return extension.equals("shp");
-    }
-    private static boolean isText(Context ctx, Intent response){
-        String extension = getExtension(getFileName(ctx, response));
-        return extension.equals("txt");
     }
     private static boolean isXML(Context ctx, Intent response){
         String extension = getExtension(getFileName(ctx, response));
@@ -277,9 +250,6 @@ public final class FileUtil {
     }
     private static ArrayList<LandData> handleGML(Context ctx, Uri uri) throws Exception{
         return GMLReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));
-    }
-    private static ArrayList<LandData> handleWKT(Context ctx, Uri uri) throws Exception{
-        return WellKnownTextReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));
     }
     private static ArrayList<LandData> handleShapeFile(Context ctx, Uri uri) throws Exception{
         return MyShapeFileReader.exec(ctx, ctx.getContentResolver().openInputStream(uri));

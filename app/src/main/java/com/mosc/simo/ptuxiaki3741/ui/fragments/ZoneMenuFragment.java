@@ -372,7 +372,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
             }
             doDialogUpdate = true;
             dialogChecked = 0;
-            String[] dataTypes = {"KML","GeoJson","GML","Well Known Text"};
+            String[] dataTypes = {"KML","GeoJson","GML"};
             dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog)
                     .setIcon(R.drawable.ic_menu_export)
                     .setTitle(getString(R.string.file_type_select_title))
@@ -395,9 +395,6 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                                 break;
                             case 2:
                                 exportSelectedZones(FileType.GML);
-                                break;
-                            case 3:
-                                exportSelectedZones(FileType.WKT);
                                 break;
                             default:
                                 exportSelectedZones(FileType.NONE);
@@ -463,10 +460,6 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
                         case GML:
                             output = FileUtil.zonesToGmlString(zones);
                             fileName = fileName+".gml";
-                            break;
-                        case WKT:
-                            output = FileUtil.zonesToWKTString(zones);
-                            fileName = fileName+".txt";
                             break;
                     }
                     if(FileUtil.createFile(output, fileName, path)){
