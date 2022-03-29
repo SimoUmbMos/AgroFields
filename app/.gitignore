@@ -1,3 +1,5 @@
 /build
 /src/androidTest/resources
+/src/debug/res/values/google_maps_api.xml
 google-services.json
+google
