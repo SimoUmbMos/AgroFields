@@ -229,10 +229,11 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_cluster_marker.xml" value="0.324" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_location_marker.xml" value="0.3615" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_main_background.xml" value="0.193" />
-        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_main_menu.xml" value="0.193" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_main_menu.xml" value="0.3195" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_map_button.xml" value="0.112" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_round.xml" value="0.26" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_round_background.xml" value="0.2985" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/bg_stroke_secondary.xml" value="0.359" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/divider_horizontal.xml" value="0.3505" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/divider_linear_layout_list.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/divider_transparent_horizontal.xml" value="0.2985" />
@@ -288,6 +289,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_select_all.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_settings.xml" value="0.2985" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/drawable/ic_menu_submit.xml" value="0.1925" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout-sw600dp/fragment_menu_main.xml" value="0.17890625" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/activity_main.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_day_layout.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/calendar_month_header_layout.xml" value="0.2975630611372381" />
@@ -310,7 +312,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_live_map.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_loading.xml" value="0.16247379454926625" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.2975630611372381" />
-        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_main.xml" value="0.2937152629328773" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zone_editor.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_select.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_zones_land_selected.xml" value="0.27247451343836887" />
@@ -411,12 +413,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.16247379454926625" />
-      </ProjectState>
-    </option>
   </component>
 </project>

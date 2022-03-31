@@ -178,9 +178,9 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         updateList();
     }
     private void onLandZonesTagsChange(List<String> landZonesTags) {
-        String emptyTag = getString(R.string.filter_land_zones_empty_tag);
+        String emptyTag = getString(R.string.empty_tag_tag);
         tags.clear();
-        tags.add(getString(R.string.filter_land_zones_all_tag));
+        tags.add(getString(R.string.all_tags_tag));
         if(landZonesTags != null){
             for(String tag : landZonesTags){
                 String tempTag = tag;
@@ -236,7 +236,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         int i = item.getItemId();
         if(i < 0 || i >= tags.size()) return false;
         String tag = tags.get(i);
-        if(tag.equals(getString(R.string.filter_land_zones_all_tag))){
+        if(tag.equals(getString(R.string.all_tags_tag))){
             selectedTag = null;
         }else{
             selectedTag = tag;
@@ -555,7 +555,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         if(selectedTag == null){
             displayData.addAll(data);
         }else{
-            boolean isEmpty = selectedTag.equals(getString(R.string.filter_land_zones_empty_tag));
+            boolean isEmpty = selectedTag.equals(getString(R.string.empty_tag_tag));
             for(LandZone zone : data){
                 if(zone == null || zone.getData() == null) continue;
                 List<String> landZoneTags = LandUtil.getLandZoneTags(zone.getData());
@@ -579,7 +579,7 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         if(selectedTag == null){
             displayData.addAll(data);
         }else{
-            boolean isEmpty = selectedTag.equals(getString(R.string.filter_land_zones_empty_tag));
+            boolean isEmpty = selectedTag.equals(getString(R.string.empty_tag_tag));
             for(LandZone zone : data){
                 if(zone == null || zone.getData() == null) continue;
                 List<String> landZoneTags = LandUtil.getLandZoneTags(zone.getData());

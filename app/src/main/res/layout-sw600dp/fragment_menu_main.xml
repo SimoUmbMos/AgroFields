@@ -129,17 +129,15 @@
                 android:id="@+id/ivLands"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="48dp"
                 android:src="@drawable/ic_button_lands"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintHeight_min="120dp"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_min="120dp"
                 app:tint="?attr/colorOnSecondary" />
 
             <TextView
@@ -160,10 +158,10 @@
 
             <ImageView
                 android:id="@+id/ivLandsArrow"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:src="@drawable/ic_menu_arrow_right"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -200,15 +198,13 @@
                 android:id="@+id/ivCalendar"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="48dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintHeight_min="120dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_min="120dp"
                 app:strokeColor="?attr/colorSecondary"
                 app:strokeWidth="2dp">
 
@@ -290,10 +286,10 @@
 
             <ImageView
                 android:id="@+id/ivCalendarArrow"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:src="@drawable/ic_menu_arrow_right"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -329,16 +325,14 @@
                 android:id="@+id/ivLiveMap"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="48dp"
                 android:src="@drawable/ic_button_live_map"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintHeight_min="120dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_min="120dp"
                 app:tint="?attr/colorSecondary" />
 
             <TextView
@@ -361,10 +355,10 @@
 
             <ImageView
                 android:id="@+id/ivLiveMapArrow"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:src="@drawable/ic_menu_arrow_right"
                 app:layout_constraintBottom_toBottomOf="parent"

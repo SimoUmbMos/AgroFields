@@ -6,8 +6,9 @@
     <!-- Card metrics -->
     <dimen name="cardStrokeWidth">0dp</dimen>
     <dimen name="cardElevation">4dp</dimen>
-    <dimen name="cardElevationMainMenuPrimary">8dp</dimen>
-    <dimen name="cardElevationMainMenuSecondary">2dp</dimen>
+    <!-- MainMenu Card metrics -->
+    <dimen name="cardStrokeWidthMainMenu">0dp</dimen>
+    <dimen name="cardElevationMainMenu">2dp</dimen>
     <!-- List margin metrics -->
     <dimen name="list_history_item_margin">4dp</dimen>
     <dimen name="list_history_item_side_margin">8dp</dimen>

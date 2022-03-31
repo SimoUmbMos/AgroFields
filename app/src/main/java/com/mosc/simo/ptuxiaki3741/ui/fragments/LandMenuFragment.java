@@ -254,9 +254,9 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         updateList();
     }
     private void onLandsTagsChange(List<String> landTags) {
-        String emptyTag = getString(R.string.filter_lands_empty_tag);
+        String emptyTag = getString(R.string.empty_tag_tag);
         tags.clear();
-        tags.add(getString(R.string.filter_lands_all_tag));
+        tags.add(getString(R.string.all_tags_tag));
         if(landTags != null){
             for(String tag : landTags){
                 String tempTag = tag;
@@ -321,7 +321,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         int i = item.getItemId();
         if(i < 0 || i >= tags.size()) return false;
         String tag = tags.get(i);
-        if(tag.equals(getString(R.string.filter_lands_all_tag))){
+        if(tag.equals(getString(R.string.all_tags_tag))){
             selectedTag = null;
         }else{
             selectedTag = tag;
@@ -564,7 +564,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(selectedTag == null){
             displayData.addAll(data);
         }else{
-            boolean isEmpty = selectedTag.equals(getString(R.string.filter_lands_empty_tag));
+            boolean isEmpty = selectedTag.equals(getString(R.string.empty_tag_tag));
             for(Land land : data){
                 if(land == null || land.getData() == null) continue;
                 List<String> landTags = LandUtil.getLandTags(land.getData());
@@ -588,7 +588,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         if(selectedTag == null){
             displayData.addAll(data);
         }else{
-            boolean isEmpty = selectedTag.equals(getString(R.string.filter_lands_empty_tag));
+            boolean isEmpty = selectedTag.equals(getString(R.string.empty_tag_tag));
             for(Land land : data){
                 if(land == null || land.getData() == null) continue;
                 List<String> landTags = LandUtil.getLandTags(land.getData());

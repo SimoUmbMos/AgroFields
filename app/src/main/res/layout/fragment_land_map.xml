@@ -169,6 +169,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
+        android:overScrollMode="never"
         app:menu="@menu/land_map_side_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

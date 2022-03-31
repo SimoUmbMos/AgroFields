@@ -85,18 +85,18 @@ public class BulkEditFragment extends Fragment {
         isSaving = false;
         isShowingLands = true;
         filteredLands = new ArrayList<>();
-        selectedLandsTag = getString(R.string.bulk_edit_all_tag);
+        selectedLandsTag = getString(R.string.all_tags_tag);
         filteredZones = new ArrayList<>();
-        selectedZonesTag = getString(R.string.bulk_edit_all_tag);
+        selectedZonesTag = getString(R.string.all_tags_tag);
         List<String> landTagsList = new ArrayList<>();
-        landTagsList.add(getString(R.string.bulk_edit_all_tag));
+        landTagsList.add(getString(R.string.all_tags_tag));
         landTags = new ArrayAdapter<>(
                 getContext(),
                 android.R.layout.simple_list_item_1,
                 landTagsList
         );
         List<String> zoneTagsList = new ArrayList<>();
-        zoneTagsList.add(getString(R.string.bulk_edit_all_tag));
+        zoneTagsList.add(getString(R.string.all_tags_tag));
         zoneTags = new ArrayAdapter<>(
                 getContext(),
                 android.R.layout.simple_list_item_1,
@@ -293,9 +293,9 @@ public class BulkEditFragment extends Fragment {
     }
 
     private void onLandTagsUpdate(List<String> landTags) {
-        String emptyTag = getString(R.string.bulk_edit_empty_tag);
+        String emptyTag = getString(R.string.empty_tag_tag);
         List<String> tempTags = new ArrayList<>();
-        tempTags.add(getString(R.string.bulk_edit_all_tag));
+        tempTags.add(getString(R.string.all_tags_tag));
 
         if(landTags != null) {
             for(String tag : landTags){
@@ -322,7 +322,7 @@ public class BulkEditFragment extends Fragment {
             }
         }
         if(resetTag){
-            selectedLandsTag = getString(R.string.bulk_edit_all_tag);
+            selectedLandsTag = getString(R.string.all_tags_tag);
             binding.tvLandsTag.setText(selectedLandsTag,false);
         }
         if(landTags.getCount() > 2){
@@ -335,9 +335,9 @@ public class BulkEditFragment extends Fragment {
 
     private void updateLands(List<Land> lands) {
         filteredLands = new ArrayList<>();
-        if(selectedLandsTag.equals(getString(R.string.bulk_edit_all_tag))){
+        if(selectedLandsTag.equals(getString(R.string.all_tags_tag))){
             filteredLands.addAll(lands);
-        }else if(selectedLandsTag.equals(getString(R.string.bulk_edit_empty_tag))){
+        }else if(selectedLandsTag.equals(getString(R.string.empty_tag_tag))){
             for(Land land : lands){
                 if(land.getData() == null) continue;
                 String tags = land.getData().getTags();
@@ -431,9 +431,9 @@ public class BulkEditFragment extends Fragment {
     }
 
     private void onZoneTagsUpdate(List<String> zoneTags) {
-        String emptyTag = getString(R.string.bulk_edit_empty_tag);
+        String emptyTag = getString(R.string.empty_tag_tag);
         List<String> tempTags = new ArrayList<>();
-        tempTags.add(getString(R.string.bulk_edit_all_tag));
+        tempTags.add(getString(R.string.all_tags_tag));
 
         if(zoneTags != null) {
             for(String tag : zoneTags){
@@ -460,7 +460,7 @@ public class BulkEditFragment extends Fragment {
             }
         }
         if(resetTag){
-            selectedZonesTag = getString(R.string.bulk_edit_all_tag);
+            selectedZonesTag = getString(R.string.all_tags_tag);
             binding.tvZonesTag.setText(selectedZonesTag,false);
         }
         if(zoneTags.getCount() > 2){
@@ -473,10 +473,10 @@ public class BulkEditFragment extends Fragment {
 
     private void updateZones(List<LandZone> zones) {
         filteredZones = new ArrayList<>();
-        if(selectedZonesTag.equals(getString(R.string.bulk_edit_all_tag))){
+        if(selectedZonesTag.equals(getString(R.string.all_tags_tag))){
             filteredZones.addAll(zones);
         }else{
-            boolean emptyTag = selectedZonesTag.equals(getString(R.string.bulk_edit_empty_tag));
+            boolean emptyTag = selectedZonesTag.equals(getString(R.string.empty_tag_tag));
             for(LandZone zone : zones){
                 List<String> tagsList = LandUtil.getLandZoneTags(zone.getData());
                 if(emptyTag){
