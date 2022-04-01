@@ -56,6 +56,23 @@ public final class LandUtil {
         return ans;
     }
 
+    public static String getTagsString(List<String> tags){
+        if(tags == null) return "";
+        List<String> tempTags = new ArrayList<>();
+        for(int i = 0; i < tags.size(); i++){
+            if(tags.get(i) == null || tags.get(i).isEmpty()) continue;
+            tempTags.add(tags.get(i));
+        }
+        tags.clear();
+        tags.addAll(tempTags);
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < tags.size(); i++){
+            builder.append(tags.get(i));
+            if(i != (tags.size() - 1)) builder.append(", ");
+        }
+        return builder.toString();
+    }
+
     public static LandData uniteLandData(LandData currLandData, LandData landDataToAdd){
         List<LatLng> newBorder = new ArrayList<>(currLandData.getBorder());
         List<List<LatLng>> holes = new ArrayList<>(currLandData.getHoles());

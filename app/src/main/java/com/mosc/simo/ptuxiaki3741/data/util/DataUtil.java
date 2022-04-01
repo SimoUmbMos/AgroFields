@@ -159,6 +159,7 @@ public final class DataUtil {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
     public static List<LatLng> removeSamePointStartEnd(List<LatLng> p){
+        if(p == null) return new ArrayList<>();
         List<LatLng> tempPointList = new ArrayList<>(p);
         boolean continueRemoving = true;
         while (tempPointList.size()>1 && continueRemoving){

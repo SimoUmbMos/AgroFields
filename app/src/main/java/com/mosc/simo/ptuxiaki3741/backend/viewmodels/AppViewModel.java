@@ -15,6 +15,7 @@ import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneDataRecord;
+import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.room.database.RoomDatabase;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandDBAction;
@@ -468,23 +469,33 @@ public class AppViewModel extends AndroidViewModel {
     private void importLand(Land land){
         if(land == null) return;
         if(land.getData() == null) return;
+        if(land.getData().getBorder() == null) return;
 
-        LandDBAction action = LandDBAction.IMPORTED;
+        String landTitle = DataUtil.removeSpecialCharacters(land.getData().getTitle());
+        if(landTitle.isEmpty()) return;
+        land.getData().setTitle(landTitle);
 
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        List<String> tags = LandUtil.getLandTags(land.getData());
+        land.getData().setTags(LandUtil.getTagsString(tags));
 
         List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
-        List<List<LatLng>> tempHoles = new ArrayList<>();
-        for(List<LatLng> hole : land.getData().getHoles()){
-            tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
-        }
+        if(tempPointList.size() < 3) return;
         land.getData().setBorder(tempPointList);
+
+        List<List<LatLng>> holes = land.getData().getHoles();
+        if(holes == null) holes = new ArrayList<>();
+        List<List<LatLng>> tempHoles = new ArrayList<>();
+        for(List<LatLng> hole : holes){
+            List<LatLng> tempHole = DataUtil.removeSamePointStartEnd(hole);
+            if(tempHole.size() > 2) tempHoles.add(tempHole);
+        }
         land.getData().setHoles(tempHoles);
 
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
         appRepository.saveLand(land);
         LandDataRecord landRecord = new LandDataRecord(
                 land.getData(),
-                action,
+                LandDBAction.IMPORTED,
                 new Date()
         );
         List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
@@ -521,19 +532,29 @@ public class AppViewModel extends AndroidViewModel {
         if(zone == null) return;
         if(zone.getData() == null) return;
 
-        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
-        if(land == null) return;
-        zone.getData().setSnapshot(land.getData().getSnapshot());
+        String zoneTitle = DataUtil.removeSpecialCharacters(zone.getData().getTitle());
+        if(zoneTitle.isEmpty()) return;
+        zone.getData().setTitle(zoneTitle);
 
-        LandDBAction action = LandDBAction.ZONE_IMPORTED;
+        String zoneNote = zone.getData().getNote().replaceAll("\n+", " ").trim().replaceAll(" +", " ");
+        if(zoneNote.length() > 100) zoneNote = zoneNote.substring(0,99);
+        zone.getData().setNote(zoneNote);
+
+        List<String> tags = LandUtil.getLandZoneTags(zone.getData());
+        zone.getData().setTags(LandUtil.getTagsString(tags));
 
         List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
+        if( tempPointList.size() < 3 ) return;
         zone.getData().setBorder(tempPointList);
+
+        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        if(land == null) return;
+
         appRepository.saveZone(zone);
 
         LandDataRecord landRecord = new LandDataRecord(
                 land.getData(),
-                action,
+                LandDBAction.ZONE_IMPORTED,
                 new Date()
         );
         List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
