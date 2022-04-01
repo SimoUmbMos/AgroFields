@@ -160,16 +160,22 @@ public class AppMainFragment extends Fragment{
         }
         binding.tvCalendarTodayEventCount.setText(builder.toString());
     }
-    private void onSnapshotUpdate(Long snapshot){
-        if(vmLands == null || snapshot == null) return;
+    private void onSnapshotUpdate(Long tempYear){
+        if(vmLands == null || tempYear == null) return;
         closeDialog();
         if(loadingDialog != null) loadingDialog.openDialog();
-        this.snapshot = snapshot;
+        snapshot = tempYear;
         AsyncTask.execute(()->{
-            vmLands.setDefaultSnapshot(this.snapshot);
-            this.snapshot = vmLands.getDefaultSnapshot();
-            if(getActivity() != null) getActivity().runOnUiThread(()->{
+            vmLands.setDefaultSnapshot(snapshot);
+            snapshot = vmLands.getDefaultSnapshot();
+            if(getActivity() == null) return;
+            Activity activity = getActivity();
+            activity.runOnUiThread(()->{
                 binding.tvSnapshot.setText(String.valueOf(snapshot));
+                SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong(AppValues.argSnapshotKey, snapshot);
+                editor.apply();
                 if(loadingDialog != null) loadingDialog.closeDialog();
             });
         });
