@@ -204,7 +204,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         binding.ibClose.setOnClickListener( v -> goBack());
         binding.ibInfo.setOnClickListener(v->toDegreeInfo(getActivity()));
         binding.ibReset.setOnClickListener(v->factoryReset());
-        binding.btnCopyDataToOtherSnapshot.setOnClickListener(v->showYearSelectForCopy());
+        binding.btnCopyDataToOtherSnapshot.setOnClickListener(v->showYearSelectToCopy());
         binding.btnBulkEdit.setOnClickListener(v->toBulkEdit());
         binding.btnCalendarCategories.setOnClickListener(v->toCalendarCategories());
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
@@ -253,31 +253,61 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         yearPicker.openDialog(snapshot);
     }
 
-    private void showYearSelectForCopy() {
+    private void showYearSelectToCopy() {
         if(getActivity() == null) return;
         if(dialog != null){
             if(dialog.isShowing())
                 dialog.dismiss();
             dialog = null;
         }
-        YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), this::startCopyToOtherSnapshot);
+        YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), this::showYearSelectToPaste);
+        ypDialog.openDialog(getString(R.string.select_snapshot_from_copy),snapshot);
+        dialog = ypDialog.getDialog();
+    }
+
+    private void showYearSelectToPaste(Long from) {
+        if(from == null) return;
+        if(getActivity() == null) return;
+        if(dialog != null){
+            if(dialog.isShowing())
+                dialog.dismiss();
+            dialog = null;
+        }
+        YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), to -> startCopyToOtherSnapshot(from,to));
         ypDialog.openDialog(getString(R.string.select_snapshot_to_copy),snapshot);
         dialog = ypDialog.getDialog();
     }
 
-    private void startCopyToOtherSnapshot(Long to) {
-        if(loadingDialog == null || viewModel == null || to == null) return;
+    private void startCopyToOtherSnapshot(Long from, Long to) {
+        if(from == null || to == null) return;
+
+        final long finalFrom;
+        if(from < AppValues.minSnapshot) finalFrom = AppValues.minSnapshot;
+        else if(from > AppValues.maxSnapshot) finalFrom = AppValues.maxSnapshot;
+        else finalFrom = from;
+
+        final long finalTo;
+        if(to < AppValues.minSnapshot) finalTo = AppValues.minSnapshot;
+        else if(to > AppValues.maxSnapshot) finalTo = AppValues.maxSnapshot;
+        else finalTo = to;
+
+        if(finalFrom == finalTo) {
+            showSnackBar(getString(R.string.snapshot_copy_same_snapshot));
+            return;
+        }
+        if(viewModel == null) return;
         if(dialog != null){
             if(dialog.isShowing())
                 dialog.dismiss();
             dialog = null;
         }
         dataIsSaving = true;
-        loadingDialog.openDialog();
+        if(loadingDialog != null) loadingDialog.openDialog();
         AsyncTask.execute(()->{
-            viewModel.importFromSnapshotToAnotherSnapshot(snapshot, to);
-            loadingDialog.closeDialog();
+            viewModel.importFromSnapshotToAnotherSnapshot(finalFrom, finalTo);
+            if(loadingDialog != null) loadingDialog.closeDialog();
             dataIsSaving = false;
+            showSnackBar(getString(R.string.snapshot_copy_finished));
         });
     }
 

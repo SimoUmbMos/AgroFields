@@ -70,7 +70,7 @@
     <!-- Loading Fragment -->
     <string name="file_input_error">Σφάλμα κατά την ανάγνωση του αρχείου.</string>
     <!-- Main Menu Fragment -->
-    <string name="main_menu_snapshot_title">Στιγμιότυπο:</string>
+    <string name="main_menu_snapshot_title">Έτος:</string>
     <string name="main_menu_live_map_button">Χάρτης</string>
     <string name="main_menu_calendar_button">Ημερολόγιο</string>
     <string name="main_menu_land_button">Χωράφια</string>
@@ -158,7 +158,7 @@
     <string name="owner_name_setting">Ονομα Κατόχου</string>
     <string name="owner_email_setting">Email Κατόχου</string>
     <string name="settings_section_data">Ρυθμίσεις Δεδομένων</string>
-    <string name="select_snapshot_title">Στιγμιότυπα</string>
+    <string name="select_snapshot_title">Έτος</string>
     <string name="settings_section_ui">Ρυθμίσεις Ui</string>
     <string name="select_theme_title">Στυλ Εφαρμογής</string>
     <string-array name="theme_styles">
@@ -175,8 +175,11 @@
     <string name="import_db_failed">Αποτυχία ενημέρωσης δεδομένων</string>
     <string name="export_db_fail">Αποτυχία εξαγωγής δεδομένων</string>
     <string name="open_xml_action_not_ended_error">Παρακαλώ Περιμένετε…</string>
-    <string name="copy_to_other_snapshot_button_label">Αντιγραφή δεδομένων σε στιγμιότυπο</string>
-    <string name="select_snapshot_to_copy">Επιλέξτε Στιγμιότυπο προς αντιγραφή</string>
+    <string name="copy_to_other_snapshot_button_label">Αντιγραφή δεδομένων έτους</string>
+    <string name="select_snapshot_from_copy">Επιλέξτε ένα έτος για αντιγραφή</string>
+    <string name="select_snapshot_to_copy">Επιλέξτε ένα έτος για επικόλληση</string>
+    <string name="snapshot_copy_same_snapshot">Δεν είναι δυνατή η αντιγραφή του ίδιου έτους</string>
+    <string name="snapshot_copy_finished">Το έτος αντιγράφηκε</string>
     <!-- File Map Fragment -->
     <string name="file_map_fragment_import_action">Κάντε κλικ σε σχήμα για εισαγωγή</string>
     <string name="file_map_fragment_loading">Φόρτωση αρχείου…</string>
@@ -199,7 +202,7 @@
     <string name="default_zone_spinner_value">Όλο το χωράφι</string>
     <string name="calendar_pop_up_date_title">Επιλέξτε ημερομηνία</string>
     <string name="calendar_pop_up_time_title">Επιλέξτε ώρα</string>
-    <string name="select_snapshot_label">Επιλέξτε Στιγμιότυπο</string>
+    <string name="select_snapshot_label">Επιλέξτε Έτος</string>
     <string name="select_date_label">Ημερομηνία</string>
     <string name="select_time_label">Ώρα</string>
     <string name="select_title_label">Τίτλος</string>

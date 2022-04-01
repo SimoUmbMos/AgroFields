@@ -3,10 +3,12 @@ package com.mosc.simo.ptuxiaki3741.ui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -23,6 +25,8 @@ import com.mosc.simo.ptuxiaki3741.databinding.FragmentMenuMainBinding;
 import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
+import com.mosc.simo.ptuxiaki3741.ui.dialogs.YearPickerDialog;
 
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
@@ -33,6 +37,12 @@ import java.util.Map;
 
 public class AppMainFragment extends Fragment{
     private FragmentMenuMainBinding binding;
+    private AppViewModel vmLands;
+    private long snapshot;
+
+    private LoadingDialog loadingDialog;
+    private YearPickerDialog yearPicker;
+    private AlertDialog dialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +53,7 @@ public class AppMainFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         initActivity();
         initFragment();
         initViewModels();
@@ -68,13 +79,16 @@ public class AppMainFragment extends Fragment{
     }
 
     //init
+    private void initData(){
+        snapshot = LocalDate.now().getYear();
+    }
     private void initActivity() {
-        if(getActivity() != null){
-            if(getActivity().getClass() == MainActivity.class){
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.setOnBackPressed(()->true);
-            }
-        }
+        if(getActivity() == null) return;
+        yearPicker = new YearPickerDialog(getActivity(), this::onSnapshotUpdate);
+        if(getActivity().getClass() != MainActivity.class) return;
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setOnBackPressed(()->true);
+        loadingDialog = mainActivity.getLoadingDialog();
     }
 
     private void initFragment() {
@@ -82,6 +96,7 @@ public class AppMainFragment extends Fragment{
         binding.btnLiveMap.setOnClickListener(v -> toLiveMap(getActivity()));
         binding.btnCalendar.setOnClickListener(v -> toCalendar(getActivity()));
         binding.ibMenuButton.setOnClickListener(v-> toSettings(getActivity()));
+        binding.tvSnapshot.setOnClickListener(v-> showCalendarDialog());
         LocalDate now = LocalDate.now();
         String day =  now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.getDefault()) +
                 " " +
@@ -95,8 +110,9 @@ public class AppMainFragment extends Fragment{
 
     private void initViewModels() {
         if(getActivity() != null){
-            AppViewModel vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
-            binding.tvSnapshot.setText(String.valueOf(vmLands.getDefaultSnapshot()));
+            vmLands = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+            snapshot = vmLands.getDefaultSnapshot();
+            binding.tvSnapshot.setText(String.valueOf(snapshot));
             vmLands.getLands().observe(getViewLifecycleOwner(),this::onLandUpdate);
             vmLands.getNotifications().observe(getViewLifecycleOwner(),this::onNotificationsUpdate);
         }
@@ -143,6 +159,33 @@ public class AppMainFragment extends Fragment{
             builder.append(getString(R.string.plural_event_label));
         }
         binding.tvCalendarTodayEventCount.setText(builder.toString());
+    }
+    private void onSnapshotUpdate(Long snapshot){
+        if(vmLands == null || snapshot == null) return;
+        closeDialog();
+        if(loadingDialog != null) loadingDialog.openDialog();
+        this.snapshot = snapshot;
+        AsyncTask.execute(()->{
+            vmLands.setDefaultSnapshot(this.snapshot);
+            this.snapshot = vmLands.getDefaultSnapshot();
+            if(getActivity() != null) getActivity().runOnUiThread(()->{
+                binding.tvSnapshot.setText(String.valueOf(snapshot));
+                if(loadingDialog != null) loadingDialog.closeDialog();
+            });
+        });
+    }
+
+    private void showCalendarDialog(){
+        if(binding == null) return;
+        closeDialog();
+        dialog = yearPicker.getDialog();
+        yearPicker.openDialog(snapshot);
+    }
+
+    private void closeDialog(){
+        if(dialog == null) return;
+        if(dialog.isShowing()) dialog.dismiss();
+        dialog = null;
     }
 
     //navigation

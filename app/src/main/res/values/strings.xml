@@ -81,7 +81,7 @@
     <!-- Loading Fragment -->
     <string name="file_input_error">Error reading the file</string>
     <!-- Main Menu Fragment -->
-    <string name="main_menu_snapshot_title">Snapshot:</string>
+    <string name="main_menu_snapshot_title">Year:</string>
     <string name="main_menu_live_map_button">Map</string>
     <string name="main_menu_calendar_button">Calendar</string>
     <string name="main_menu_land_button">Land\'s</string>
@@ -169,7 +169,7 @@
     <string name="owner_name_setting">Owner Name</string>
     <string name="owner_email_setting">Owner Email</string>
     <string name="settings_section_data">Data Settings</string>
-    <string name="select_snapshot_title">Snapshots</string>
+    <string name="select_snapshot_title">Year</string>
     <string name="settings_section_ui">Ui Settings</string>
     <string name="select_theme_title">App Style</string>
     <string-array name="theme_styles">
@@ -186,8 +186,11 @@
     <string name="import_db_failed">Failed Data Update</string>
     <string name="export_db_fail">Failed Data Export</string>
     <string name="open_xml_action_not_ended_error">Please Wait…</string>
-    <string name="copy_to_other_snapshot_button_label">Copy Data To Snapshot</string>
-    <string name="select_snapshot_to_copy">Select Snapshot To Copy</string>
+    <string name="copy_to_other_snapshot_button_label">Copy Year Data</string>
+    <string name="select_snapshot_from_copy">Select a year to copy</string>
+    <string name="select_snapshot_to_copy">Select a year to paste</string>
+    <string name="snapshot_copy_same_snapshot">Can not copy same year</string>
+    <string name="snapshot_copy_finished">The year has copied</string>
     <!-- File Map Fragment -->
     <string name="file_map_fragment_import_action">Click Shape To Import</string>
     <string name="file_map_fragment_loading">Loading File…</string>
@@ -210,7 +213,7 @@
     <string name="default_zone_spinner_value">All Zones</string>
     <string name="calendar_pop_up_date_title">Select date</string>
     <string name="calendar_pop_up_time_title">Select time</string>
-    <string name="select_snapshot_label">Select Snapshot</string>
+    <string name="select_snapshot_label">Select Year</string>
     <string name="select_date_label">Date</string>
     <string name="select_time_label">Time</string>
     <string name="select_title_label">Title</string>
