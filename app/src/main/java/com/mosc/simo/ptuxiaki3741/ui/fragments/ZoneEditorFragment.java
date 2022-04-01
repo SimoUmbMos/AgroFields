@@ -2,7 +2,9 @@ package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -29,6 +32,7 @@ import android.widget.EditText;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,6 +43,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentZoneEditorBinding;
@@ -277,7 +282,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     fillColor,
                     false
             );
-            mMap.addPolygon(options.zIndex(1));
+            mMap.addPolygon(options.zIndex(AppValues.liveMapLandZIndex));
         }
     }
 
@@ -306,7 +311,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                         fillColor,
                         false
                 );
-                mMap.addPolygon(options.zIndex(2));
+                mMap.addPolygon(options.zIndex(AppValues.liveMapZoneZIndex));
             }
         }
     }
@@ -930,10 +935,28 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     private void drawPositionMarker(LatLng currLocation) {
         if(positionMarker == null){
-            positionMarker = mMap.addMarker(new MarkerOptions()
-                    .position(currLocation)
-                    .draggable(false)
-            );
+            Drawable bitmapDraw;
+            try{
+                bitmapDraw = ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_location_marker);
+            }catch (Exception e){
+                bitmapDraw = null;
+            }
+            if(bitmapDraw != null){
+                Bitmap b = UIUtil.drawableToBitmap(bitmapDraw);
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, 36, 36, false);
+                positionMarker = mMap.addMarker(new MarkerOptions()
+                        .position(currLocation)
+                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+                        .zIndex(AppValues.liveMapClusterZIndex)
+                        .draggable(false)
+                );
+            }else{
+                positionMarker = mMap.addMarker(new MarkerOptions()
+                        .position(currLocation)
+                        .zIndex(AppValues.liveMapClusterZIndex)
+                        .draggable(false)
+                );
+            }
         }else{
             positionMarker.setPosition(currLocation);
         }
@@ -1073,7 +1096,13 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                     color.getBlue()
             );
 
-            zonePolygon = mMap.addPolygon(new PolygonOptions().addAll(border).clickable(false).strokeColor(strokeColor).fillColor(fillColor).zIndex(3));
+            zonePolygon = mMap.addPolygon(
+                    new PolygonOptions()
+                            .addAll(border)
+                            .clickable(false)
+                            .strokeColor(strokeColor)
+                            .fillColor(fillColor)
+                            .zIndex(AppValues.liveMapMyLocationZIndex));
             for(LatLng point : border){
                 zonePoints.add(mMap.addCircle(new CircleOptions()
                         .center(point)
@@ -1081,7 +1110,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                         .fillColor(strokeColor)
                         .strokeColor(strokeColor)
                         .clickable(false)
-                        .zIndex(4)
+                        .zIndex(AppValues.liveMapMarkerZIndex)
                 ));
             }
         }

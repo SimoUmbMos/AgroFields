@@ -4,7 +4,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
@@ -23,6 +25,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -33,6 +36,7 @@ import androidx.navigation.NavController;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -511,7 +515,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                 false
         );
         if(options != null){
-            mMap.addPolygon(options);
+            mMap.addPolygon(options.zIndex(AppValues.liveMapLandZIndex));
             int pointsNumber = 0;
             for(List<LatLng> hole : holes){
                 pointsNumber = pointsNumber + hole.size();
@@ -524,6 +528,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                             .radius(10)
                             .fillColor(strokeColor)
                             .strokeColor(strokeColor)
+                            .zIndex(AppValues.liveMapZoneZIndex)
                             .clickable(false)
                     );
                 }
@@ -534,6 +539,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                                 .radius(10)
                                 .fillColor(strokeColor)
                                 .strokeColor(strokeColor)
+                                .zIndex(AppValues.liveMapZoneZIndex)
                                 .clickable(false)
                         );
                     }
@@ -541,17 +547,54 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             }
         }
         if(currPosition != null){
-            positionMarker = mMap.addMarker(new MarkerOptions()
-                    .position(currPosition)
-            );
+            Drawable bitmapDraw;
+            try{
+                bitmapDraw = ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_location_marker);
+            }catch (Exception e){
+                bitmapDraw = null;
+            }
+            if(bitmapDraw != null){
+                Bitmap b = UIUtil.drawableToBitmap(bitmapDraw);
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, 36, 36, false);
+                positionMarker = mMap.addMarker(new MarkerOptions()
+                        .position(currPosition)
+                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+                        .zIndex(AppValues.liveMapMyLocationZIndex)
+                        .draggable(false)
+                );
+            }else{
+                positionMarker = mMap.addMarker(new MarkerOptions()
+                        .position(currPosition)
+                        .zIndex(AppValues.liveMapMyLocationZIndex)
+                        .draggable(false)
+                );
+            }
         }
     }
     private void drawPositionMarker(LatLng currLocation) {
         if(positionMarker == null){
-            positionMarker = mMap.addMarker(new MarkerOptions()
-                    .position(currLocation)
-                    .draggable(false)
-            );
+            Drawable bitmapDraw;
+            try{
+                bitmapDraw = ContextCompat.getDrawable(binding.getRoot().getContext(), R.drawable.bg_location_marker);
+            }catch (Exception e){
+                bitmapDraw = null;
+            }
+            if(bitmapDraw != null){
+                Bitmap b = UIUtil.drawableToBitmap(bitmapDraw);
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, 36, 36, false);
+                positionMarker = mMap.addMarker(new MarkerOptions()
+                        .position(currLocation)
+                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+                        .zIndex(AppValues.liveMapMyLocationZIndex)
+                        .draggable(false)
+                );
+            }else{
+                positionMarker = mMap.addMarker(new MarkerOptions()
+                        .position(currLocation)
+                        .zIndex(AppValues.liveMapMyLocationZIndex)
+                        .draggable(false)
+                );
+            }
         }else{
             positionMarker.setPosition(currLocation);
         }
