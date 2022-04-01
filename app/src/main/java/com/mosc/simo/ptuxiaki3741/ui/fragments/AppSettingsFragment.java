@@ -54,7 +54,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private static final String TAG = "AppSettingsFragment";
     private FragmentAppSettingsBinding binding;
     private LoadingDialog loadingDialog;
-    private YearPickerDialog yearPicker;
     private AlertDialog dialog;
 
     private SharedPreferences sharedPref;
@@ -125,12 +124,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 editor.remove(AppValues.ownerEmail);
             }
 
-            if(snapshot != null){
-                editor.putLong(AppValues.argSnapshotKey, snapshot);
-            }else{
-                editor.remove(AppValues.argSnapshotKey);
-            }
-
             editor.apply();
         }
 
@@ -190,7 +183,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void initActivity(){
         if(getActivity() == null) return;
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        yearPicker = new YearPickerDialog(getActivity(), this::onSnapshotUpdate);
         viewModel = new ViewModelProvider(getActivity()).get(AppViewModel.class);
         this.snapshot = viewModel.getDefaultSnapshot();
 
@@ -218,7 +210,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
 
         binding.etSnapshot.setOnClickListener(v->onOpenSnapshotPicker());
-        binding.etSnapshot.setText(String.valueOf(snapshot));
+        onSnapshotUpdate(snapshot);
 
         binding.tvTheme.setOnItemClickListener((adapterView, view, position, id) -> {
             binding.tvTheme.clearFocus();
@@ -229,28 +221,34 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         });
     }
 
-    private void onSnapshotUpdate(Long snapshot) {
-        String display;
-        if(snapshot != null) {
-            display = String.valueOf(snapshot);
+    private void onSnapshotUpdate(Long year) {
+        if(year != null) {
+            if(year < AppValues.minSnapshot) snapshot = AppValues.minSnapshot;
+            else if(year > AppValues.maxSnapshot) snapshot = AppValues.maxSnapshot;
+            else snapshot = year;
         }else if(viewModel != null){
-            display = String.valueOf(viewModel.getDefaultSnapshot());
+            snapshot = viewModel.getDefaultSnapshot();
         }else{
-            display = String.valueOf(LocalDate.now().getYear());
+            snapshot = (long) LocalDate.now().getYear();
         }
-        binding.etSnapshot.setText(display);
-        this.snapshot = snapshot;
+        binding.etSnapshot.setText(String.valueOf(snapshot));
+        if(sharedPref != null){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putLong(AppValues.argSnapshotKey, snapshot);
+            editor.apply();
+        }
     }
 
     private void onOpenSnapshotPicker() {
-        if(yearPicker == null) return;
+        if(getActivity() == null) return;
         if(dialog != null){
             if(dialog.isShowing())
                 dialog.dismiss();
             dialog = null;
         }
-        dialog = yearPicker.getDialog();
-        yearPicker.openDialog(snapshot);
+        YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), this::onSnapshotUpdate);
+        ypDialog.openDialog(snapshot);
+        dialog = ypDialog.getDialog();
     }
 
     private void showYearSelectToCopy() {
@@ -456,6 +454,9 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     }
 
     private void factoryReset(){
+        onSnapshotUpdate((long) LocalDate.now().getYear());
+        binding.etOwnerName.setText("");
+        binding.etOwnerEmail.setText("");
         if(sharedPref != null){
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.remove(AppValues.isForceKey);
