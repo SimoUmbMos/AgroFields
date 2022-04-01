@@ -51,7 +51,19 @@
         <!-- background -->
         <item name="android:background">?attr/colorSurface</item>
     </style>
-    <style name="ErrorMaterialAlertDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="MaterialAlertDialog.Tint" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- text -->
+        <item name="materialAlertDialogTitleTextStyle">@style/NormalAlertDialogTitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
+        <item name="android:checkedTextViewStyle">@style/AlertDialogCheckedTextView</item>
+        <!-- buttons -->
+        <item name="buttonBarPositiveButtonStyle">@style/TintPositiveAlertDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/TintNegativeAlertDialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButtonStyle</item>
+        <!-- background -->
+        <item name="android:background">?attr/colorSurface</item>
+    </style>
+    <style name="MaterialAlertDialog.Error" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <!-- text -->
         <item name="materialAlertDialogTitleTextStyle">@style/ErrorAlertDialogTitleTextStyle</item>
         <item name="materialAlertDialogBodyTextStyle">@style/AlertDialogTextStyle</item>
@@ -78,7 +90,16 @@
     <style name="AlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
+    <style name="TintPositiveAlertDialogButtonStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+    <style name="TintNegativeAlertDialogButtonStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="backgroundTint">?attr/colorFabVariant</item>
+        <item name="android:textColor">?attr/colorOnFabVariant</item>
+    </style>
     <style name="ErrorAlertDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">?attr/colorError</item>
+        <item name="backgroundTint">?attr/colorError</item>
+        <item name="android:textColor">?attr/colorOnError</item>
     </style>
 </resources>

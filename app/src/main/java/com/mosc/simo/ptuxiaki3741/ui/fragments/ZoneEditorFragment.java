@@ -337,7 +337,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 dialog.dismiss();
             dialog = null;
         }
-        dialog = new MaterialAlertDialogBuilder(binding.getRoot().getContext(), R.style.ErrorMaterialAlertDialog)
+        dialog = new MaterialAlertDialogBuilder(binding.getRoot().getContext(), R.style.MaterialAlertDialog_Error)
                 .setIcon(R.drawable.ic_menu_delete)
                 .setTitle(getString(R.string.delete_zone_dialog_title))
                 .setMessage(getString(R.string.delete_zone_dialog_text))

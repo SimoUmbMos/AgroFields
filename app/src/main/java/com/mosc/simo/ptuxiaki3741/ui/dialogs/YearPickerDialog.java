@@ -12,6 +12,8 @@ import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
+import java.time.LocalDate;
+
 public class YearPickerDialog {
     private final Activity activity;
     private final AlertDialog dialog;
@@ -22,11 +24,12 @@ public class YearPickerDialog {
     public YearPickerDialog(@NonNull Activity activity, ActionResult<Long> onSuccess){
         this.activity = activity;
         defaultTitle = activity.getString(R.string.default_year_picker_title);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this.activity, R.style.MaterialAlertDialog);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this.activity, R.style.MaterialAlertDialog_Tint);
         builder.setView(R.layout.dialog_year_picker);
         builder.setOnDismissListener((d)->closeDialog());
-        builder.setNeutralButton(activity.getResources().getString(R.string.cancel),(d,i)->d.dismiss());
-        builder.setPositiveButton(activity.getResources().getString(R.string.okey),(d,i)-> {
+        builder.setNeutralButton(R.string.cancel, (d,i)->d.dismiss());
+        builder.setNegativeButton(R.string.current_year, (d,i)-> onSuccess.onActionResult((long) LocalDate.now().getYear()));
+        builder.setPositiveButton(R.string.submit,(d,i)-> {
             if(numberPicker != null){
                 onSuccess.onActionResult((long)numberPicker.getValue());
             }

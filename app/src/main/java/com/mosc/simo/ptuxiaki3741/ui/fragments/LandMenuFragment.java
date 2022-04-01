@@ -665,7 +665,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
                 dialog = null;
             }
             doDialogUpdate = true;
-            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog_Error)
                     .setIcon(R.drawable.ic_menu_delete)
                     .setTitle(getString(R.string.delete_lands_title))
                     .setMessage(getString(R.string.delete_lands_text))

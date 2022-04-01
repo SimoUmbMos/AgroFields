@@ -444,7 +444,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                     dialog.dismiss();
                 dialog = null;
             }
-            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.ErrorMaterialAlertDialog)
+            dialog = new MaterialAlertDialogBuilder(getContext(), R.style.MaterialAlertDialog_Error)
                     .setIcon(R.drawable.ic_menu_delete)
                     .setTitle(getString(R.string.delete_land_title))
                     .setMessage(getString(R.string.delete_land_text))

@@ -264,7 +264,7 @@ public class CalendarCategoriesFragment extends Fragment implements FragmentBack
             dialog = null;
         }
         doDialogUpdate = true;
-        dialog = new MaterialAlertDialogBuilder(binding.getRoot().getContext(), R.style.ErrorMaterialAlertDialog)
+        dialog = new MaterialAlertDialogBuilder(binding.getRoot().getContext(), R.style.MaterialAlertDialog_Error)
                 .setIcon(R.drawable.ic_menu_delete)
                 .setTitle(getString(R.string.delete_calendar_categories_title))
                 .setMessage(getString(R.string.delete_calendar_categories_text))

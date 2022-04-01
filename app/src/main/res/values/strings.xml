@@ -76,6 +76,7 @@
     <string name="default_year_picker_title">Pick A Year</string>
     <string name="all_tags_tag"> All Data </string>
     <string name="empty_tag_tag"> Without Tag </string>
+    <string name="current_year">Current</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->

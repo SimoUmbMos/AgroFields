@@ -65,6 +65,7 @@
     <string name="default_year_picker_title">Διαλέξτε ένα έτος</string>
     <string name="all_tags_tag"> Όλα τα Δεδομένα </string>
     <string name="empty_tag_tag"> Χωρίς Ετικέτα </string>
+    <string name="current_year">Τρέχον</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
     <!-- Loading Fragment -->
