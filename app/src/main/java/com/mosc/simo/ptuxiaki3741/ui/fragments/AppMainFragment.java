@@ -82,6 +82,7 @@ public class AppMainFragment extends Fragment{
     private void initData(){
         snapshot = LocalDate.now().getYear();
     }
+
     private void initActivity() {
         if(getActivity() == null) return;
         yearPicker = new YearPickerDialog(getActivity(), this::onSnapshotUpdate);
@@ -172,10 +173,6 @@ public class AppMainFragment extends Fragment{
             Activity activity = getActivity();
             activity.runOnUiThread(()->{
                 binding.tvSnapshot.setText(String.valueOf(snapshot));
-                SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(AppValues.argSnapshotKey, snapshot);
-                editor.apply();
                 if(loadingDialog != null) loadingDialog.closeDialog();
             });
         });

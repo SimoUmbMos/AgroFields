@@ -13,7 +13,6 @@ import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandDataRecord;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
-import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class AppRepositoryImpl implements AppRepository {
 
     public AppRepositoryImpl(RoomDatabase db){
         this.db = db;
-        this.snapshot = AppValues.defaultSnapshot;
+        this.snapshot = LocalDate.now().getYear();
     }
 
 

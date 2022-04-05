@@ -235,7 +235,13 @@ public class AppViewModel extends AndroidViewModel {
     private boolean removeLandAction(Land land) {
         if(land == null) return false;
         if(land.getData() == null) return false;
-        if(appRepository.getLandZonesByLandData(land.getData()).size() > 0) return false;
+        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        if(zones != null && zones.size() > 0){
+            for(LandZone zone : zones){
+                if(zone == null || zone.getData() == null) continue;
+                return false;
+            }
+        }
 
         LandDataRecord landRecord = new LandDataRecord(
                 land.getData(),
@@ -331,22 +337,20 @@ public class AppViewModel extends AndroidViewModel {
         if(zone.getData() == null) return false;
 
         Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
-        if(land == null) return false;
-
-        LandDBAction action = LandDBAction.ZONE_REMOVED;
         appRepository.deleteZone(zone);
-
-        LandDataRecord landRecord = new LandDataRecord(
-                land.getData(),
-                action,
-                new Date()
-        );
-        List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
-        for(LandZone temp : zones){
-            zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
+        if(land != null) {
+            LandDataRecord landRecord = new LandDataRecord(
+                    land.getData(),
+                    LandDBAction.ZONE_REMOVED,
+                    new Date()
+            );
+            List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
+            List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+            for(LandZone temp : zones){
+                zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
+            }
+            appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
         }
-        appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
         return true;
     }
     public boolean removeZone(LandZone zone) {
@@ -614,6 +618,7 @@ public class AppViewModel extends AndroidViewModel {
                 if(landZone == null || landZone.getData() == null) continue;
                 landZone.getData().setId(0);
                 landZone.getData().setSnapshot(to);
+                landZone.getData().setLid(land.getData().getId());
                 appRepository.saveZone(landZone);
                 zoneDataRecords.add(new LandZoneDataRecord(landRecord,landZone.getData()));
             }
@@ -633,5 +638,9 @@ public class AppViewModel extends AndroidViewModel {
             snapshotLandZones.postValue(appRepository.getLandZones(snapshot));
             return snapshot;
         }
+    }
+
+    public List<Land> getLands(long snapshot){
+        return appRepository.getLands(snapshot);
     }
 }

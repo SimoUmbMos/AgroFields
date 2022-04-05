@@ -51,7 +51,7 @@ public class LandZoneData implements Parcelable {
     @ColumnInfo(name = "Snapshot")
     private long snapshot;
     @ColumnInfo(name = "LandID")
-    private final long lid;
+    private long lid;
     @ColumnInfo(name = "Title")
     private String title;
     @ColumnInfo(name = "Note")
@@ -149,6 +149,9 @@ public class LandZoneData implements Parcelable {
     }
     public void setSnapshot(long snapshot) {
         this.snapshot = snapshot;
+    }
+    public void setLid(long lid) {
+        this.lid = lid;
     }
 
     @Override

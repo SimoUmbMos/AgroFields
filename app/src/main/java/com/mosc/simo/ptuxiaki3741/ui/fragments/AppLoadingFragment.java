@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
@@ -28,12 +29,15 @@ import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppLoadingFragment extends Fragment {
     public static final String TAG = "LoadingFragment";
     private Intent intent;
+    private int oldYear;
+    private AppViewModel appVM;
 
     private final ActivityResultLauncher<String> permissionReadChecker = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
@@ -70,24 +74,66 @@ public class AppLoadingFragment extends Fragment {
         Log.d(TAG, "initViewModel: called");
         if(getActivity() == null) return;
 
-        AppViewModel appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
+        appVM = new ViewModelProvider(getActivity()).get(AppViewModel.class);
         appVM.getSnapshots().observe(getViewLifecycleOwner(), this::onUpdate);
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        long snapshotKey = sharedPref.getLong(AppValues.argSnapshotKey, AppValues.defaultSnapshot);
-        Log.d(TAG, "initViewModel: key = "+snapshotKey);
-        AsyncTask.execute(()->{
-            appVM.setDefaultSnapshot(snapshotKey);
-            Log.d(TAG, "initViewModel: setDefaultSnapshot = "+snapshotKey);
-        });
+        AsyncTask.execute(()-> appVM.setDefaultSnapshot(LocalDate.now().getYear()));
     }
 
     private void onUpdate(List<Long> snapshots) {
-        //todo: check if new year is on snapshots and if snapshots > 1 show dialog import to new year and set default snapshot
-        Log.d(TAG, "onUpdate:  called");
-        if(snapshots != null) {
-            toMenu(getActivity());
+        if(snapshots == null || getActivity() == null) return;
+        Activity activity = getActivity();
+        AsyncTask.execute(()->{
+            if(isNewYear()){
+                showDialogNewYearImport(activity);
+            }else{
+                toMenu(activity);
+            }
+        });
+    }
+
+    private boolean isNewYear() {
+        if(getActivity() == null) return false;
+        SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        oldYear = pref.getInt(AppValues.argSnapshotKey, -1);
+        int currYear = LocalDate.now().getYear();
+        if(oldYear == -1){
+            editor = pref.edit();
+            editor.putInt(AppValues.argSnapshotKey, currYear);
+            editor.apply();
+        }else if(oldYear != currYear){
+            editor = pref.edit();
+            editor.putInt(AppValues.argSnapshotKey, currYear);
+            editor.apply();
+            return appVM.getLands(oldYear).size() > 0;
         }
+        return false;
+    }
+
+    private void showDialogNewYearImport(Activity activity) {
+        if(activity == null) return;
+        activity.runOnUiThread(()->{
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(activity, R.style.MaterialAlertDialog);
+            builder.setCancelable(false);
+            builder.setTitle(R.string.new_year_import_title);
+            builder.setMessage(R.string.new_year_import_msg);
+            builder.setNeutralButton(
+                    R.string.cancel,
+                    (d,i)-> toMenu(activity)
+            );
+            builder.setPositiveButton(
+                    R.string.import_label,
+                    (d,i)-> AsyncTask.execute(()-> showDialogLandsImport(activity))
+            );
+            builder.create().show();
+        });
+    }
+
+    private void showDialogLandsImport(Activity activity) {
+        if(activity == null) return;
+        //todo: show dialog import lands from old year
+        appVM.importFromSnapshotToAnotherSnapshot(oldYear, LocalDate.now().getYear());
     }
 
     private void handleFile(Intent intent) {

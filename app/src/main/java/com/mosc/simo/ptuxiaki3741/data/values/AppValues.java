@@ -2,8 +2,6 @@ package com.mosc.simo.ptuxiaki3741.data.values;
 
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 
-import java.time.LocalDate;
-
 public final class AppValues {
 
     private AppValues(){}
@@ -13,7 +11,6 @@ public final class AppValues {
     public static final String sheetLandZoneName = "Zones";
     public static final String sheetLandZoneNameLowerCase = "zones";
     /* Common Values */
-    public static final long defaultSnapshot = LocalDate.now().getYear();
     public static final int defaultPadding = 64;
     public static final int defaultPaddingLite = 16;
     public static final int defaultPaddingLarge = 128;

@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import android.os.Handler;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,9 +99,9 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     public void onStop() {
         if(sharedPref != null){
             SharedPreferences.Editor editor = sharedPref.edit();
-
-            if (binding.etOwnerName.getText() != null) {
-                String name = binding.etOwnerName.getText().toString()
+            Editable text = binding.etOwnerName.getText();
+            if (text != null) {
+                String name = text.toString()
                         .trim()
                         .replaceAll("[\\t\\n\\r]+"," ")
                         .replaceAll(" +", " ");
@@ -113,8 +114,9 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 editor.remove(AppValues.ownerName);
             }
 
-            if (binding.etOwnerEmail.getText() != null) {
-                String email = binding.etOwnerEmail.getText().toString().trim();
+            text = binding.etOwnerEmail.getText();
+            if (text != null) {
+                String email = text.toString().trim();
                 if(!email.isEmpty()){
                     editor.putString(AppValues.ownerEmail, email);
                 }else{
@@ -196,7 +198,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         binding.ibClose.setOnClickListener( v -> goBack());
         binding.ibInfo.setOnClickListener(v->toDegreeInfo(getActivity()));
         binding.ibReset.setOnClickListener(v->factoryReset());
-        binding.btnCopyDataToOtherSnapshot.setOnClickListener(v->showYearSelectToCopy());
         binding.btnBulkEdit.setOnClickListener(v->toBulkEdit());
         binding.btnCalendarCategories.setOnClickListener(v->toCalendarCategories());
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
@@ -232,11 +233,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             snapshot = (long) LocalDate.now().getYear();
         }
         binding.etSnapshot.setText(String.valueOf(snapshot));
-        if(sharedPref != null){
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putLong(AppValues.argSnapshotKey, snapshot);
-            editor.apply();
-        }
     }
 
     private void onOpenSnapshotPicker() {
@@ -249,64 +245,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), this::onSnapshotUpdate);
         ypDialog.openDialog(snapshot);
         dialog = ypDialog.getDialog();
-    }
-
-    private void showYearSelectToCopy() {
-        if(getActivity() == null) return;
-        if(dialog != null){
-            if(dialog.isShowing())
-                dialog.dismiss();
-            dialog = null;
-        }
-        YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), this::showYearSelectToPaste);
-        ypDialog.openDialog(getString(R.string.select_snapshot_from_copy),snapshot);
-        dialog = ypDialog.getDialog();
-    }
-
-    private void showYearSelectToPaste(Long from) {
-        if(from == null) return;
-        if(getActivity() == null) return;
-        if(dialog != null){
-            if(dialog.isShowing())
-                dialog.dismiss();
-            dialog = null;
-        }
-        YearPickerDialog ypDialog = new YearPickerDialog(getActivity(), to -> startCopyToOtherSnapshot(from,to));
-        ypDialog.openDialog(getString(R.string.select_snapshot_to_copy),snapshot);
-        dialog = ypDialog.getDialog();
-    }
-
-    private void startCopyToOtherSnapshot(Long from, Long to) {
-        if(from == null || to == null) return;
-
-        final long finalFrom;
-        if(from < AppValues.minSnapshot) finalFrom = AppValues.minSnapshot;
-        else if(from > AppValues.maxSnapshot) finalFrom = AppValues.maxSnapshot;
-        else finalFrom = from;
-
-        final long finalTo;
-        if(to < AppValues.minSnapshot) finalTo = AppValues.minSnapshot;
-        else if(to > AppValues.maxSnapshot) finalTo = AppValues.maxSnapshot;
-        else finalTo = to;
-
-        if(finalFrom == finalTo) {
-            showSnackBar(getString(R.string.snapshot_copy_same_snapshot));
-            return;
-        }
-        if(viewModel == null) return;
-        if(dialog != null){
-            if(dialog.isShowing())
-                dialog.dismiss();
-            dialog = null;
-        }
-        dataIsSaving = true;
-        if(loadingDialog != null) loadingDialog.openDialog();
-        AsyncTask.execute(()->{
-            viewModel.importFromSnapshotToAnotherSnapshot(finalFrom, finalTo);
-            if(loadingDialog != null) loadingDialog.closeDialog();
-            dataIsSaving = false;
-            showSnackBar(getString(R.string.snapshot_copy_finished));
-        });
     }
 
     private void onThemeSpinnerItemSelect(){

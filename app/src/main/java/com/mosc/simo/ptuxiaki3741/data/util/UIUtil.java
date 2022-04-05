@@ -18,11 +18,13 @@ public final class UIUtil {
 
     public static NavController getNavController(Fragment fragment, int fragment_id){
         if(fragment == null) return null;
-        NavController navController = NavHostFragment.findNavController(fragment);
-        if(navController.getCurrentDestination() == null)
-            return navController;
-        else if(navController.getCurrentDestination().getId() == fragment_id)
-            return navController;
+        try{
+            NavController navController = NavHostFragment.findNavController(fragment);
+            if(navController.getCurrentDestination() == null)
+                return navController;
+            else if(navController.getCurrentDestination().getId() == fragment_id)
+                return navController;
+        }catch (Exception ignored){}
         return null;
     }
 

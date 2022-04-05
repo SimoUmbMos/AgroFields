@@ -77,10 +77,13 @@
     <string name="all_tags_tag"> All Data </string>
     <string name="empty_tag_tag"> Without Tag </string>
     <string name="current_year">Current</string>
+    <string name="import_label">Import</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->
     <string name="file_input_error">Error reading the file</string>
+    <string name="new_year_import_title">New Year</string>
+    <string name="new_year_import_msg">Do you want to import the lands from previous year?</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_snapshot_title">Year:</string>
     <string name="main_menu_live_map_button">Map</string>
@@ -113,7 +116,6 @@
     <string name="edit_img">Edit Image</string>
     <string name="opacity_img">Change Opacity</string>
     <string name="file_actions_group_title">File Actions</string>
-    <string name="import_label">Import</string>
     <string name="add_to_land_label">Add Land From File</string>
     <string name="remove_from_land_label">Subtract Land From File</string>
     <string name="land_actions_group_title">Land Actions</string>

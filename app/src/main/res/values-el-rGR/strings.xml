@@ -66,10 +66,13 @@
     <string name="all_tags_tag"> Όλα τα Δεδομένα </string>
     <string name="empty_tag_tag"> Χωρίς Ετικέτα </string>
     <string name="current_year">Τρέχον</string>
+    <string name="import_label">Εισαγωγή</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
     <!-- Loading Fragment -->
     <string name="file_input_error">Σφάλμα κατά την ανάγνωση του αρχείου.</string>
+    <string name="new_year_import_title">Νέο Έτος</string>
+    <string name="new_year_import_msg">Θέλετε να εισάγετε τα xωράφια από το προηγούμενο έτος;</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_snapshot_title">Έτος:</string>
     <string name="main_menu_live_map_button">Χάρτης</string>
@@ -102,7 +105,6 @@
     <string name="edit_img">Επεξεργασία εικόνας</string>
     <string name="opacity_img">Αλλαγή αδιαφάνειας</string>
     <string name="file_actions_group_title">Ενέργειες αρχείου</string>
-    <string name="import_label">Εισαγωγή</string>
     <string name="add_to_land_label">Προσθήκη από αρχείο</string>
     <string name="remove_from_land_label">Αφαίρεση από αρχείο</string>
     <string name="land_actions_group_title">Ενέργειες χωραφιού</string>
