@@ -59,12 +59,6 @@ public final class DataUtil {
         }
     }
 
-    public static int lineCount(String string){
-        if(string == null)
-            return 1;
-        String[] lines = string.split("\r\n|\r|\n");
-        return  lines.length;
-    }
     public static List<String> splitTags(String in){
         List<String> ans = new ArrayList<>();
         if(in == null || in.isEmpty()){
@@ -247,5 +241,44 @@ public final class DataUtil {
     public static boolean checkItemsTheSame(CalendarEntity not1, CalendarEntity not2) {
         if(not1 == null || not2 == null) return false;
         return not1.getNotification().getId() == not2.getNotification().getId();
+    }
+
+    public static List<LatLng> formatZonePoints(List<LatLng> currentZone, Land land, List<LandZone> otherZones) {
+        if(land == null || land.getData() == null || currentZone == null) return new ArrayList<>();
+
+        List<LatLng> border = DataUtil.removeSamePointStartEnd(currentZone);
+
+        List<LatLng> temp = new ArrayList<>(MapUtil.getBiggerAreaZoneIntersections(border,land.getData().getBorder()));
+        border.clear();
+        border.addAll(temp);
+        if(border.size() > 2 && otherZones != null){
+            for(LandZone zone : otherZones){
+                if(zone == null || zone.getData() == null || zone.getData().getBorder() == null) continue;
+                if(MapUtil.containsAll(border,zone.getData().getBorder())){
+                    border.clear();
+                    break;
+                }
+                temp.clear();
+                temp.addAll(MapUtil.getBiggerAreaZoneDifference(border,zone.getData().getBorder()));
+                border.clear();
+                border.addAll(temp);
+                if(border.size() < 3) break;
+            }
+        }
+        if(border.size() > 2){
+            for(List<LatLng> hole : land.getData().getHoles()){
+                if(hole == null) continue;
+                if(MapUtil.containsAll(border,hole)){
+                    border.clear();
+                    break;
+                }
+                List<LatLng> tempBorder = new ArrayList<>(MapUtil.getBiggerAreaZoneDifference(border,hole));
+                border.clear();
+                border.addAll(tempBorder);
+                if(border.size() < 3) break;
+            }
+        }
+        if(border.size() < 3) border.clear();
+        return border;
     }
 }

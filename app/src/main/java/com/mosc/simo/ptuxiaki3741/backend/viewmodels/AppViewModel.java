@@ -277,7 +277,7 @@ public class AppViewModel extends AndroidViewModel {
         if(zone.getData() == null) return;
 
         Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
-        if(land == null) return;
+        if(land == null || land.getData() == null) return;
 
         zone.getData().setSnapshot(land.getData().getSnapshot());
 
@@ -289,6 +289,7 @@ public class AppViewModel extends AndroidViewModel {
         }
 
         List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
+        if( tempPointList.size() < 3 ) return;
         zone.getData().setBorder(tempPointList);
         appRepository.saveZone(zone);
 
@@ -536,6 +537,9 @@ public class AppViewModel extends AndroidViewModel {
         if(zone == null) return;
         if(zone.getData() == null) return;
 
+        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        if(land == null || land.getData() == null) return;
+
         String zoneTitle = DataUtil.removeSpecialCharacters(zone.getData().getTitle());
         if(zoneTitle.isEmpty()) return;
         zone.getData().setTitle(zoneTitle);
@@ -547,12 +551,9 @@ public class AppViewModel extends AndroidViewModel {
         List<String> tags = LandUtil.getLandZoneTags(zone.getData());
         zone.getData().setTags(LandUtil.getTagsString(tags));
 
-        List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
-        if( tempPointList.size() < 3 ) return;
-        zone.getData().setBorder(tempPointList);
-
-        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
-        if(land == null) return;
+        List<LatLng> tempBorder = DataUtil.formatZonePoints(zone.getData().getBorder(), land, appRepository.getLandZonesByLandData(land.getData()));
+        if( tempBorder.size() == 0) return;
+        zone.getData().setBorder(tempBorder);
 
         appRepository.saveZone(zone);
 
