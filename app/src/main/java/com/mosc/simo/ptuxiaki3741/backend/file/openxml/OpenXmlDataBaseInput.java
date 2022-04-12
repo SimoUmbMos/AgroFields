@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,11 +102,8 @@ public final class OpenXmlDataBaseInput {
         return false;
     }
 
-    private static void readDataFromWorkbook(
-            Workbook workbook,
-            List<Land> lands,
-            List<LandZone> zones
-    ) throws IOException {
+    private static void readDataFromWorkbook(Workbook workbook, List<Land> lands, List<LandZone> zones)
+            throws IOException {
         for(Sheet sheet : workbook){
             String sheetName = sheet.getSheetName().toLowerCase().trim();
             switch (sheetName){
@@ -129,10 +127,10 @@ public final class OpenXmlDataBaseInput {
         List<List<LatLng>> holes;
         for (Row row : sheet) {
             id = 0;
+            snapshot = LocalDate.now().getYear();
             title = "";
             tags = "";
             color = null;
-            snapshot = -1;
             border = new ArrayList<>();
             holes = new ArrayList<>();
 
@@ -145,30 +143,58 @@ public final class OpenXmlDataBaseInput {
                             }catch (Exception e){
                                 id = 0;
                             }
+                        }else if(cell.getCellType() == CellType.STRING){
+                            try{
+                                id = Double.valueOf(cell.getStringCellValue()).longValue();
+                            }catch (Exception e){
+                                id = 0;
+                            }
                         }
                         break;
                     case 1:
-                        boolean isDouble;
-                        try{
-                            snapshot = Long.parseLong(cell.getStringCellValue().trim());
-                            isDouble = false;
-                        }catch (Exception ignore){
-                            isDouble = true;
-                        }
-                        if(isDouble){
+                        if(cell.getCellType() == CellType.NUMERIC){
                             try{
-                                snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
-                            }catch (Exception ignore){}
+                                snapshot = (long) cell.getNumericCellValue();
+                            }catch (Exception e){
+                                snapshot = LocalDate.now().getYear();
+                            }
+                        }else if(cell.getCellType() == CellType.STRING){
+                            boolean isDouble;
+                            try{
+                                snapshot = Long.parseLong(cell.getStringCellValue().trim());
+                                isDouble = false;
+                            }catch (Exception e){
+                                isDouble = true;
+                            }
+                            if(isDouble){
+                                try{
+                                    snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
+                                }catch (Exception e){
+                                    snapshot = LocalDate.now().getYear();
+                                }
+                            }
                         }
                         break;
                     case 2:
-                        title = cell.getStringCellValue().trim();
+                        try{
+                            title = cell.getStringCellValue().trim();
+                        }catch (Exception e){
+                            title = "";
+                        }
                         break;
                     case 3:
-                        tags = cell.getStringCellValue().trim();
+                        try{
+                            tags = cell.getStringCellValue().trim();
+                        }catch (Exception e){
+                            tags = "";
+                        }
                         break;
                     case 4:
-                        color = new ColorData(cell.getStringCellValue().trim());
+                        try{
+                            color = new ColorData(cell.getStringCellValue().trim());
+                        }catch (Exception e){
+                            color = AppValues.defaultLandColor;
+                        }
                         break;
                     case 5:
                         fillListsFromPointsString(
@@ -194,12 +220,12 @@ public final class OpenXmlDataBaseInput {
         List<LatLng> border;
         for (Row row : sheet) {
             id = 0;
+            snapshot = LocalDate.now().getYear();
             lid = -1;
             title = "";
             note = "";
             tags = "";
             color = null;
-            snapshot = -1;
             border = new ArrayList<>();
 
             for (Cell cell : row) {
@@ -211,20 +237,36 @@ public final class OpenXmlDataBaseInput {
                             }catch (Exception e){
                                 id = 0;
                             }
+                        }else if(cell.getCellType() == CellType.STRING){
+                            try{
+                                id = Double.valueOf(cell.getStringCellValue()).longValue();
+                            }catch (Exception e){
+                                id = 0;
+                            }
                         }
                         break;
                     case 1:
-                        boolean isDouble;
-                        try{
-                            snapshot = Long.parseLong(cell.getStringCellValue().trim());
-                            isDouble = false;
-                        }catch (Exception ignore){
-                            isDouble = true;
-                        }
-                        if(isDouble){
+                        if(cell.getCellType() == CellType.NUMERIC){
                             try{
-                                snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
-                            }catch (Exception ignore){}
+                                snapshot = (long) cell.getNumericCellValue();
+                            }catch (Exception e){
+                                snapshot = LocalDate.now().getYear();
+                            }
+                        }else if(cell.getCellType() == CellType.STRING){
+                            boolean isDouble;
+                            try{
+                                snapshot = Long.parseLong(cell.getStringCellValue().trim());
+                                isDouble = false;
+                            }catch (Exception e){
+                                isDouble = true;
+                            }
+                            if(isDouble){
+                                try{
+                                    snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
+                                }catch (Exception e){
+                                    snapshot = LocalDate.now().getYear();
+                                }
+                            }
                         }
                         break;
                     case 2:
@@ -234,19 +276,41 @@ public final class OpenXmlDataBaseInput {
                             }catch (Exception e){
                                 lid = -1;
                             }
+                        }else if(cell.getCellType() == CellType.STRING){
+                            try{
+                                lid = Double.valueOf(cell.getStringCellValue()).longValue();
+                            }catch (Exception e){
+                                lid = -1;
+                            }
                         }
                         break;
                     case 3:
-                        title = cell.getStringCellValue().trim();
+                        try{
+                            title = cell.getStringCellValue().trim();
+                        }catch (Exception e){
+                            title = "";
+                        }
                         break;
                     case 4:
-                        note = cell.getStringCellValue().trim();
+                        try{
+                            note = cell.getStringCellValue().trim();
+                        }catch (Exception e){
+                            note = "";
+                        }
                         break;
                     case 5:
-                        tags = cell.getStringCellValue().trim();
+                        try{
+                            tags = cell.getStringCellValue().trim();
+                        }catch (Exception e){
+                            tags = "";
+                        }
                         break;
                     case 6:
-                        color = new ColorData(cell.getStringCellValue().trim());
+                        try{
+                            color = new ColorData(cell.getStringCellValue().trim());
+                        }catch (Exception e){
+                            color = AppValues.defaultZoneColor;
+                        }
                         break;
                     case 7:
                         fillListsFromPointsString(
@@ -265,11 +329,8 @@ public final class OpenXmlDataBaseInput {
         }
     }
 
-    protected static void processLandsSheet(
-            ReadOnlySharedStringsTable strings,
-            InputStream sheetInputStream,
-            List<Land> lands
-    ) throws IOException, SAXException, ParserConfigurationException {
+    protected static void processLandsSheet(ReadOnlySharedStringsTable strings, InputStream sheetInputStream, List<Land> lands)
+            throws IOException, SAXException, ParserConfigurationException {
         InputSource sheetSource = new InputSource(sheetInputStream);
         SAXParserFactory saxFactory = SAXParserFactory.newInstance();
         SAXParser saxParser = saxFactory.newSAXParser();
@@ -286,10 +347,10 @@ public final class OpenXmlDataBaseInput {
                     @Override
                     public void startRow(int rowNum) {
                         id = 0;
+                        snapshot = LocalDate.now().getYear();
                         title = "";
                         tags = "";
                         color = "";
-                        snapshot = -1;
                         border = new ArrayList<>();
                         holes = new ArrayList<>();
                     }
@@ -297,7 +358,13 @@ public final class OpenXmlDataBaseInput {
                     @Override
                     public void endRow(int rowNum) {
                         if(!title.isEmpty() && border.size() != 0) {
-                            lands.add(new Land(new LandData(id, snapshot, title, tags, new ColorData(color), border, holes)));
+                            ColorData colorData;
+                            try{
+                                colorData = new ColorData(color);
+                            }catch (Exception e){
+                                colorData = AppValues.defaultLandColor;
+                            }
+                            lands.add(new Land(new LandData(id, snapshot, title, tags, colorData, border, holes)));
                         }
                     }
 
@@ -309,6 +376,7 @@ public final class OpenXmlDataBaseInput {
                                 .trim();
                         switch (cellLetter){
                             case "A":
+                                if(value == null || value.isEmpty()) break;
                                 try{
                                     id = Double.valueOf(value).longValue();
                                 }catch (Exception e){
@@ -316,29 +384,36 @@ public final class OpenXmlDataBaseInput {
                                 }
                                 break;
                             case "B":
+                                if(value == null || value.isEmpty()) break;
                                 boolean isDouble;
                                 try{
                                     snapshot = Long.parseLong(value.trim());
                                     isDouble = false;
-                                }catch (Exception ignore){
+                                }catch (Exception e){
                                     isDouble = true;
                                 }
                                 if(isDouble){
                                     try{
                                         snapshot = (long) Double.parseDouble(value.trim());
-                                    }catch (Exception ignore){}
+                                    }catch (Exception e){
+                                        snapshot = LocalDate.now().getYear();
+                                    }
                                 }
                                 break;
                             case "C":
+                                if(value == null || value.isEmpty()) break;
                                 title = value;
                                 break;
                             case "D":
+                                if(value == null || value.isEmpty()) break;
                                 tags = value;
                                 break;
                             case "E":
+                                if(value == null || value.isEmpty()) break;
                                 color = value;
                                 break;
                             case "F":
+                                if(value == null || value.isEmpty()) break;
                                 fillListsFromPointsString(
                                         border,
                                         holes,
@@ -353,11 +428,8 @@ public final class OpenXmlDataBaseInput {
         sheetParser.setContentHandler(handler);
         sheetParser.parse(sheetSource);
     }
-    protected static void processZonesSheet(
-            ReadOnlySharedStringsTable strings,
-            InputStream sheetInputStream,
-            List<LandZone> zones
-    ) throws IOException, SAXException, ParserConfigurationException {
+    protected static void processZonesSheet(ReadOnlySharedStringsTable strings, InputStream sheetInputStream, List<LandZone> zones)
+            throws IOException, SAXException, ParserConfigurationException {
         InputSource sheetSource = new InputSource(sheetInputStream);
         SAXParserFactory saxFactory = SAXParserFactory.newInstance();
         SAXParser saxParser = saxFactory.newSAXParser();
@@ -373,19 +445,25 @@ public final class OpenXmlDataBaseInput {
                     @Override
                     public void startRow(int rowNum) {
                         id = 0;
+                        snapshot = LocalDate.now().getYear();
                         lid = -1;
                         title = "";
                         note = "";
                         tags = "";
                         color = "";
-                        snapshot = -1;
                         border = new ArrayList<>();
                     }
 
                     @Override
                     public void endRow(int rowNum) {
                         if(lid != -1 && !title.isEmpty() && border.size() != 0){
-                            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,tags,new ColorData(color),border)));
+                            ColorData colorData;
+                            try{
+                                colorData = new ColorData(color);
+                            }catch (Exception e){
+                                colorData = AppValues.defaultZoneColor;
+                            }
+                            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,tags,colorData,border)));
                         }
                     }
 
@@ -397,6 +475,7 @@ public final class OpenXmlDataBaseInput {
                                 .trim();
                         switch (cellLetter){
                             case "A":
+                                if(value == null || value.isEmpty()) break;
                                 try{
                                     id = Double.valueOf(value).longValue();
                                 }catch (Exception e){
@@ -404,20 +483,24 @@ public final class OpenXmlDataBaseInput {
                                 }
                                 break;
                             case "B":
+                                if(value == null || value.isEmpty()) break;
                                 boolean isDouble;
                                 try{
                                     snapshot = Long.parseLong(value.trim());
                                     isDouble = false;
-                                }catch (Exception ignore){
+                                }catch (Exception e){
                                     isDouble = true;
                                 }
                                 if(isDouble){
                                     try{
                                         snapshot = (long) Double.parseDouble(value.trim());
-                                    }catch (Exception ignore){}
+                                    }catch (Exception e){
+                                        snapshot = LocalDate.now().getYear();
+                                    }
                                 }
                                 break;
                             case "C":
+                                if(value == null || value.isEmpty()) break;
                                 try{
                                     lid = Double.valueOf(value).longValue();
                                 }catch (Exception e){
@@ -425,18 +508,23 @@ public final class OpenXmlDataBaseInput {
                                 }
                                 break;
                             case "D":
+                                if(value == null || value.isEmpty()) break;
                                 title = value;
                                 break;
                             case "E":
+                                if(value == null || value.isEmpty()) break;
                                 note = value;
                                 break;
                             case "F":
+                                if(value == null || value.isEmpty()) break;
                                 tags = value;
                                 break;
                             case "G":
+                                if(value == null || value.isEmpty()) break;
                                 color = value;
                                 break;
                             case "H":
+                                if(value == null || value.isEmpty()) break;
                                 fillListsFromPointsString(
                                         border,
                                         new ArrayList<>(),

@@ -55,7 +55,7 @@ public final class AppValues {
     public static final float bearingAlphaLow = 0.0375f;
     public static final float bearingAlphaNone = 0.01875f;
     /* Settings Fragment Values */
-    public static final long minSnapshot = 1900;
+    public static final long minSnapshot = 2000;
     public static final long maxSnapshot = 2100;
     public static final String ownerName = "AppOwnerName";
     public static final String ownerEmail = "AppOwnerEmail";
