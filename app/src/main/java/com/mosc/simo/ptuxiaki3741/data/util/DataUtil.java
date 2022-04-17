@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.data.enums.AreaMetrics;
 import com.mosc.simo.ptuxiaki3741.data.models.CalendarEntity;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.ui.broadcast_receivers.CalendarReceiver;
@@ -280,5 +281,19 @@ public final class DataUtil {
         }
         if(border.size() < 3) border.clear();
         return border;
+    }
+    public static String getAreaMetricSymbol(Context context,AreaMetrics metric){
+        if(context == null || metric == null) return "";
+        switch (metric){
+            case SquareFoot: return context.getString(R.string.square_foot_symbol);
+            case SquareYard: return context.getString(R.string.square_yard_symbol);
+            case SquareMeter: return context.getString(R.string.square_meter_symbol);
+            case Stremma: return context.getString(R.string.stremma_symbol);
+            case Hectare: return context.getString(R.string.hectare_symbol);
+            case Acres: return context.getString(R.string.acres_symbol);
+            case SquareKiloMeter: return context.getString(R.string.square_kilometer_symbol);
+            case SquareMile: return context.getString(R.string.square_mile_symbol);
+            default: return "";
+        }
     }
 }

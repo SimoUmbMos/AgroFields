@@ -17,8 +17,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        //noinspection JcenterRepositoryObsolete
-        jcenter()
         maven { url "https://jitpack.io" }
         maven { url 'https://esri.jfrog.io/artifactory/arcgis' }
     }

@@ -18,6 +18,9 @@
         <action
             android:id="@+id/toCalendarCategories"
             app:destination="@id/CalendarCategoriesMenu" />
+        <action
+            android:id="@+id/toLandsDimensions"
+            app:destination="@id/LandsDimensionsFragment" />
     </fragment>
     <fragment android:id="@+id/DegreeInfoFragment"
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppInfoFragment"
@@ -201,5 +204,10 @@
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarCategoryEditorFragment"
         android:label="fragment_calendar_category_editor"
         tools:layout="@layout/fragment_calendar_category_editor" />
+    <fragment
+        android:id="@+id/LandsDimensionsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandsDimensionsFragment"
+        android:label="fragment_lands_dimensions"
+        tools:layout="@layout/fragment_lands_dimensions" />
 
 </navigation>

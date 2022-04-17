@@ -109,9 +109,11 @@ public class LandData implements Parcelable {
         title = parcel.readString();
         tags = parcel.readString();
         color = parcel.readParcelable(ColorData.class.getClassLoader());
-        border = parcel.createTypedArrayList(LatLng.CREATOR);
-        List<ParcelableHole> holes = parcel.createTypedArrayList(ParcelableHole.CREATOR);
+        this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
+        List<LatLng> border = parcel.createTypedArrayList(LatLng.CREATOR);
+        List<ParcelableHole> holes = parcel.createTypedArrayList(ParcelableHole.CREATOR);
+        setBorder(border);
         this.holes.addAll(holes);
     }
 
@@ -122,13 +124,13 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(List<LatLng> border) {
         this.id = 0;
+        this.snapshot = -1;
         this.title = "";
         this.tags = "";
+        this.color = new ColorData(20, 249, 80);
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = new ColorData(20, 249, 80);
         setBorder(border);
-        this.snapshot = -1;
     }
 
     /**
@@ -139,14 +141,14 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(List<LatLng> border,List<List<LatLng>> holes) {
         this.id = 0;
+        this.snapshot = -1;
         this.title = "";
         this.tags = "";
+        this.color = new ColorData(20, 249, 80);
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = new ColorData(20, 249, 80);
         setBorder(border);
         setHoles(holes);
-        this.snapshot = -1;
     }
 
     /**
@@ -157,12 +159,12 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(ColorData color,List<LatLng> border) {
         this.id = 0;
+        this.snapshot = -1;
         this.title = "";
+        this.color = color;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = color;
         setBorder(border);
-        this.snapshot = -1;
     }
 
     /**
@@ -174,14 +176,14 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(ColorData color, List<LatLng> border,List<List<LatLng>> holes) {
         this.id = 0;
+        this.snapshot = -1;
         this.title = "";
         this.tags = "";
+        this.color = color;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = color;
         setBorder(border);
         setHoles(holes);
-        this.snapshot = -1;
     }
 
     /**
@@ -197,9 +199,9 @@ public class LandData implements Parcelable {
         this.snapshot = snapshot;
         this.title = title;
         this.tags = tags;
+        this.color = color;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = color;
     }
 
     /**
@@ -217,9 +219,9 @@ public class LandData implements Parcelable {
         this.snapshot = snapshot;
         this.title = title;
         this.tags = tags;
+        this.color = color;
         this.border = new ArrayList<>();
         this.holes = new ArrayList<>();
-        this.color = color;
         setBorder(border);
         setHoles(holes);
     }

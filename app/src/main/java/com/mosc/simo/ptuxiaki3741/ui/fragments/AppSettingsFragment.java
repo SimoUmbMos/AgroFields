@@ -200,6 +200,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         binding.ibReset.setOnClickListener(v->factoryReset());
         binding.btnBulkEdit.setOnClickListener(v->toBulkEdit());
         binding.btnCalendarCategories.setOnClickListener(v->toCalendarCategories());
+        binding.btnLandDimens.setOnClickListener(v->toLandDimen());
         binding.btnImportDB.setOnClickListener(v->onImportDBPressed());
         binding.btnExportDB.setOnClickListener(v->onExportDBPressed());
 
@@ -531,6 +532,16 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             NavController nav = UIUtil.getNavController(this,R.id.AppSettingsFragment);
             if(nav != null)
                 nav.navigate(R.id.toBulkEditor);
+        });
+    }
+
+    private void toLandDimen(){
+        FragmentActivity activity = getActivity();
+        if(activity == null) return;
+        activity.runOnUiThread(()-> {
+            NavController nav = UIUtil.getNavController(this,R.id.AppSettingsFragment);
+            if(nav != null)
+                nav.navigate(R.id.toLandsDimensions);
         });
     }
 }

@@ -316,4 +316,12 @@ public final class LandUtil {
         options.zIndex(2);
         return options;
     }
+    public static double landArea(LandData data){
+        if(data == null || data.getBorder().size() < 3) return 0.0;
+        double landArea = MapUtil.areaNoRound(new ArrayList<>(data.getBorder()));
+        for(List<LatLng> hole: data.getHoles()){
+            landArea -= MapUtil.areaNoRound(new ArrayList<>(hole));
+        }
+        return Math.abs(landArea);
+    }
 }

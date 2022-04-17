@@ -78,6 +78,15 @@
     <string name="empty_tag_tag"> Without Tag </string>
     <string name="current_year">Current</string>
     <string name="import_label">Import</string>
+    <!-- Metrics -->
+    <string name="square_foot_symbol">ft²</string>
+    <string name="square_yard_symbol">yd²</string>
+    <string name="square_meter_symbol">m²</string>
+    <string name="stremma_symbol">stremma</string>
+    <string name="hectare_symbol">ha</string>
+    <string name="acres_symbol">ac</string>
+    <string name="square_kilometer_symbol">km²</string>
+    <string name="square_mile_symbol">mi²</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->
@@ -182,6 +191,7 @@
     </string-array>
     <string name="bulk_edit_button_label">Data Bulk Edit</string>
     <string name="calendar_categories_button_label">Calendar Categories</string>
+    <string name="land_dimen_button_label">Lands Dimensions</string>
     <string name="import_database_button_label">Import Lands</string>
     <string name="export_database_button_label">Export Lands</string>
     <string name="import_db_success">Data Updated</string>
@@ -250,4 +260,7 @@
     <string name="calendar_category_editor_title_new">New Category</string>
     <string name="calendar_category_editor_edit_title">Category Name</string>
     <string name="calendar_category_editor_edit_color">Category Color</string>
+    <!-- Lands Dimensions Fragment -->
+    <string name="lands_dimensions_title">Land Dimensions</string>
+    <string name="selected_lands_title">Total:</string>
 </resources>

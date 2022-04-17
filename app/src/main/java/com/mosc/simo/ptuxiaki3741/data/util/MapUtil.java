@@ -123,6 +123,18 @@ public final class MapUtil {
         return 0;
     }
 
+    public static double areaNoRound(List<LatLng> p){
+        if(p != null){
+            if(p.size()>2){
+                if( p.get(0) != p.get(p.size()-1)){
+                    p.add(p.get(0));
+                }
+                return SphericalUtil.computeArea(p);
+            }
+        }
+        return 0;
+    }
+
     public static double length(List<LatLng> p){
         if(p != null){
             if(p.size()>2){

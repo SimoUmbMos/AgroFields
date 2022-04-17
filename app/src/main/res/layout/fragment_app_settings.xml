@@ -158,6 +158,24 @@
                 app:iconSize="12dp" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLandDimens"
+                style="@style/Widget.Material3.Button.ElevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="24dp"
+                android:paddingHorizontal="8dp"
+                android:text="@string/land_dimen_button_label"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/TextAppearance.AppTheme.Body"
+                android:textColor="?attr/colorOnSurface"
+                app:cornerRadius="4dp"
+                app:icon="@drawable/ic_menu_arrow_right"
+                app:iconTint="?attr/colorSecondary"
+                app:iconGravity="end"
+                app:iconSize="12dp" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnExportDB"
                 style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="match_parent"

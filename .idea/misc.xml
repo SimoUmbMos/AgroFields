@@ -303,12 +303,14 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_event_list.xml" value="0.1" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_calendar_new_event.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_degree_info.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_dimensions.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_file_map.xml" value="0.1" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_deleted.xml" value="0.1" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_history_selected.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_info.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_land_map_preview.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_lands_dimensions.xml" value="0.2860196665241556" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_live_map.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_loading.xml" value="0.16247379454926625" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/fragment_menu_land.xml" value="0.2975630611372381" />
@@ -331,6 +333,7 @@
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_history.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_history_selected.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_land.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_land_area.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_land_with_tags.xml" value="0.6455576559546313" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_holder_notification_category.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/sorar/AndroidStudioProjects/Ptuxiaki3741/app/src/main/res/layout/view_land_cluster.xml" value="0.2975630611372381" />
