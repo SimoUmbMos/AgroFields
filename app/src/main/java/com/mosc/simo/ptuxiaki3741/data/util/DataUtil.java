@@ -310,7 +310,7 @@ public final class DataUtil {
     }
     private static AreaMetrics getAreaMetric(final double area){
         final Locale locale = Locale.getDefault();
-        if(locale.equals(Locale.US) || locale.getLanguage().equals("my")){
+        if(locale.equals(Locale.US) || locale.getLanguage().equals("my") || locale.getLanguage().equals("vai")){
             double miArea = area * AreaMetrics.SquareMile.dimensionToSquareMeter;
             double acArea = area * AreaMetrics.Acres.dimensionToSquareMeter;
             double ydArea = area * AreaMetrics.SquareYard.dimensionToSquareMeter;
