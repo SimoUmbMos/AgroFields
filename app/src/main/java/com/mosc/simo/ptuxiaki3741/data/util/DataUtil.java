@@ -288,7 +288,7 @@ public final class DataUtil {
     public static String getAreaString(Context context, double area) {
         AreaMetrics metric = DataUtil.getAreaMetric(area);
         String metricSymbol = DataUtil.getAreaMetricSymbol(context,metric);
-        String displayArea = new DecimalFormat("#.##").format(area * metric.dimensionToSquareMeter);
+        String displayArea = new DecimalFormat("#.###").format(area * metric.dimensionToSquareMeter);
         if(!metricSymbol.isEmpty()){
             displayArea += " " + metricSymbol;
         }

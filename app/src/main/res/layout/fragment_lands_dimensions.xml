@@ -57,26 +57,28 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/selected_lands_title"
         android:textAppearance="@style/TextAppearance.AppTheme.Body"
-        app:layout_constraintStart_toStartOf="@+id/ibBack"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvSubTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppTheme.Body"
-        app:layout_constraintEnd_toEndOf="@+id/ibSelectAll"
+        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintTop_toTopOf="@+id/textView8"
         tools:text="1000 m2" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -84,10 +86,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvSubTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSubTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <TextView
         android:id="@+id/tvListLabel"
