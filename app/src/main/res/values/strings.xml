@@ -81,12 +81,12 @@
     <!-- Metrics -->
     <string name="square_foot_symbol">ft²</string>
     <string name="square_yard_symbol">yd²</string>
-    <string name="square_meter_symbol">m²</string>
-    <string name="stremma_symbol">stremma</string>
-    <string name="hectare_symbol">ha</string>
     <string name="acres_symbol">ac</string>
-    <string name="square_kilometer_symbol">km²</string>
     <string name="square_mile_symbol">mi²</string>
+    <string name="square_meter_symbol">m²</string>
+    <string name="stremma_symbol">str</string>
+    <string name="hectare_symbol">ha</string>
+    <string name="square_kilometer_symbol">km²</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Double Tap to exit</string>
     <!-- Loading Fragment -->

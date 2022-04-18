@@ -1,7 +1,5 @@
 package com.mosc.simo.ptuxiaki3741.ui.fragments;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,16 +20,13 @@ import android.view.ViewGroup;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
-import com.mosc.simo.ptuxiaki3741.data.enums.AreaMetrics;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
-import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandsDimensionsBinding;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.ui.recycler_view_adapters.LandDimenAdapter;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +34,6 @@ public class LandsDimensionsFragment extends Fragment {
     private FragmentLandsDimensionsBinding binding;
     private LandDimenAdapter adapter;
 
-    private AreaMetrics metric;
     private final List<Land> data = new ArrayList<>();
     private final List<LandData> selectedData = new ArrayList<>();
 
@@ -53,7 +47,6 @@ public class LandsDimensionsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
         initActivity();
         initFragment();
         initViewModel();
@@ -65,21 +58,8 @@ public class LandsDimensionsFragment extends Fragment {
         binding = null;
     }
 
-    private void initData() {
-        metric = AreaMetrics.SquareMeter;
-    }
-
     private void initActivity() {
         if(getActivity() == null) return;
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        if(sharedPref.contains(AppValues.argAreaMetrics)){
-            try{
-                int i = sharedPref.getInt(AppValues.argAreaMetrics, AreaMetrics.SquareMeter.ordinal());
-                metric = AreaMetrics.values()[i];
-            }catch (Exception e){
-                metric = AreaMetrics.SquareMeter;
-            }
-        }
         if(getActivity().getClass() != MainActivity.class) return;
         MainActivity activity = (MainActivity) getActivity();
         activity.setOnBackPressed(()->true);
@@ -98,7 +78,6 @@ public class LandsDimensionsFragment extends Fragment {
                 )
         );
         adapter = new LandDimenAdapter();
-        adapter.setMetric(metric);
         adapter.setOnClick(this::onLandsSelect);
         binding.rvLandsDimensions.setAdapter(adapter);
         binding.tvListLabel.setText(R.string.loading_list);
@@ -176,19 +155,19 @@ public class LandsDimensionsFragment extends Fragment {
     }
 
     private void updateAreaUI(){
-        String metricSymbol = DataUtil.getAreaMetricSymbol(binding.getRoot().getContext(),metric);
-        String displayArea = new DecimalFormat("#.##").format(calcAreas());
-        if(!metricSymbol.isEmpty()){
-            displayArea += " " + metricSymbol;
-        }
-        binding.tvSubTitle.setText(displayArea);
+        binding.tvSubTitle.setText(
+                DataUtil.getAreaString(
+                        binding.tvSubTitle.getContext(),
+                        calcAreas()
+                )
+        );
         binding.tvSubTitle.setSelected(true);
     }
 
     private double calcAreas(){
         double totalArea = 0.0;
         for(LandData data : selectedData){
-            totalArea += (LandUtil.landArea(data) * metric.dimensionToSquareMeter);
+            totalArea += LandUtil.landArea(data);
         }
         return totalArea;
     }

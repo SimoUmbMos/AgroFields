@@ -8,20 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mosc.simo.ptuxiaki3741.data.enums.AreaMetrics;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.ActionResult;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.LandUtil;
 import com.mosc.simo.ptuxiaki3741.databinding.ViewHolderLandAreaBinding;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LandDimenAdapter extends RecyclerView.Adapter<LandDimenAdapter.LandItem>{
     private final List<Land> data = new ArrayList<>();
-    private AreaMetrics metric = AreaMetrics.SquareMeter;
     private ActionResult<Land> onClick = null;
 
     @NonNull
@@ -40,7 +37,7 @@ public class LandDimenAdapter extends RecyclerView.Adapter<LandDimenAdapter.Land
         if(land == null || land.getData() == null)
             return;
 
-        holder.bindData(land,metric);
+        holder.bindData(land);
         holder.binding.getRoot().setOnClickListener(v->{
             if(onClick != null) onClick.onActionResult(land);
         });
@@ -58,12 +55,6 @@ public class LandDimenAdapter extends RecyclerView.Adapter<LandDimenAdapter.Land
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public void setMetric(AreaMetrics metric){
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new LandsAreaDiffUtil(this.data, this.metric, this.data, metric));
-        this.metric = metric;
-        diffResult.dispatchUpdatesTo(this);
-    }
-
     public void setOnClick(ActionResult<Land> onClick){
         this.onClick = onClick;
     }
@@ -78,14 +69,18 @@ public class LandDimenAdapter extends RecyclerView.Adapter<LandDimenAdapter.Land
             ViewHolderLandAreaBinding binding = ViewHolderLandAreaBinding.inflate(inflater,parent,false);
             return new LandItem(binding.getRoot());
         }
-        public void bindData(Land data, AreaMetrics metric) {
+        public void bindData(Land data) {
             binding.cbSelected.setChecked(data.isSelected());
             binding.tvLandTitle.setText(data.getData().toString());
+            binding.tvLandArea.setText(
+                    DataUtil.getAreaString(
+                            binding.tvLandArea.getContext(),
+                            LandUtil.landArea(
+                                    data.getData()
+                            )
+                    )
+            );
             binding.tvLandTitle.setSelected(true);
-            String metricSymbol = DataUtil.getAreaMetricSymbol(binding.getRoot().getContext(),metric);
-            String displayArea = new DecimalFormat("#.##").format(LandUtil.landArea(data.getData()) * metric.dimensionToSquareMeter);
-            if(!metricSymbol.isEmpty()) displayArea += " " + metricSymbol;
-            binding.tvLandArea.setText(displayArea);
             binding.tvLandArea.setSelected(true);
         }
     }
@@ -93,21 +88,10 @@ public class LandDimenAdapter extends RecyclerView.Adapter<LandDimenAdapter.Land
     private static class LandsAreaDiffUtil extends DiffUtil.Callback {
         private final List<Land> oldData;
         private final List<Land> newData;
-        private final AreaMetrics oldMetric;
-        private final AreaMetrics newMetric;
 
         public LandsAreaDiffUtil(List<Land> oldData, List<Land> newData){
             this.oldData = oldData;
             this.newData = newData;
-            oldMetric = AreaMetrics.SquareMeter;
-            newMetric = AreaMetrics.SquareMeter;
-        }
-
-        public LandsAreaDiffUtil(List<Land> oldData, AreaMetrics oldMetric, List<Land> newData, AreaMetrics newMetric){
-            this.oldData = oldData;
-            this.oldMetric = oldMetric;
-            this.newData = newData;
-            this.newMetric = newMetric;
         }
 
         @Override
@@ -135,13 +119,15 @@ public class LandDimenAdapter extends RecyclerView.Adapter<LandDimenAdapter.Land
 
         @Override
         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            if(oldMetric != newMetric) return false;
             try{
                 Land oldLand = oldData.get(oldItemPosition);
                 Land newLand = newData.get(newItemPosition);
-                return oldLand.getData().toString().equals(newLand.getData().toString()) && oldLand.isSelected() == newLand.isSelected();
-            }catch (Exception ignore){}
-            return false;
+                if(oldLand.isSelected() != newLand.isSelected()) return false;
+                if(!oldLand.getData().toString().equals(newLand.getData().toString())) return false;
+                return LandUtil.landArea(oldLand.getData()) == LandUtil.landArea(newLand.getData());
+            }catch (Exception ignore){
+                return false;
+            }
         }
     }
 }

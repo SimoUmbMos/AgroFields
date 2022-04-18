@@ -27,12 +27,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class DataUtil {
@@ -282,7 +284,17 @@ public final class DataUtil {
         if(border.size() < 3) border.clear();
         return border;
     }
-    public static String getAreaMetricSymbol(Context context,AreaMetrics metric){
+
+    public static String getAreaString(Context context, double area) {
+        AreaMetrics metric = DataUtil.getAreaMetric(area);
+        String metricSymbol = DataUtil.getAreaMetricSymbol(context,metric);
+        String displayArea = new DecimalFormat("#.##").format(area * metric.dimensionToSquareMeter);
+        if(!metricSymbol.isEmpty()){
+            displayArea += " " + metricSymbol;
+        }
+        return displayArea;
+    }
+    private static String getAreaMetricSymbol(Context context,AreaMetrics metric){
         if(context == null || metric == null) return "";
         switch (metric){
             case SquareFoot: return context.getString(R.string.square_foot_symbol);
@@ -294,6 +306,36 @@ public final class DataUtil {
             case SquareKiloMeter: return context.getString(R.string.square_kilometer_symbol);
             case SquareMile: return context.getString(R.string.square_mile_symbol);
             default: return "";
+        }
+    }
+    private static AreaMetrics getAreaMetric(final double area){
+        final Locale locale = Locale.getDefault();
+        if(locale.equals(Locale.US) || locale.getLanguage().equals("my")){
+            double miArea = area * AreaMetrics.SquareMile.dimensionToSquareMeter;
+            double acArea = area * AreaMetrics.Acres.dimensionToSquareMeter;
+            double ydArea = area * AreaMetrics.SquareYard.dimensionToSquareMeter;
+            if(miArea > 1.0){
+                return AreaMetrics.SquareMile;
+            }else if(acArea > 1.0){
+                return AreaMetrics.Acres;
+            }else if(ydArea > 1.0){
+                return AreaMetrics.SquareYard;
+            }else {
+                return AreaMetrics.SquareFoot;
+            }
+        }else{
+            double kmArea = area * AreaMetrics.SquareKiloMeter.dimensionToSquareMeter;
+            double heArea = area * AreaMetrics.Hectare.dimensionToSquareMeter;
+            double stArea = area * AreaMetrics.Stremma.dimensionToSquareMeter;
+            if(kmArea > 1.0){
+                return AreaMetrics.SquareKiloMeter;
+            }else if(heArea > 1.0){
+                return AreaMetrics.Hectare;
+            }else if(locale.getLanguage().equals("el") && stArea > 1.0){
+                return AreaMetrics.Stremma;
+            }else{
+                return AreaMetrics.SquareMeter;
+            }
         }
     }
 }
