@@ -18,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
@@ -32,7 +33,7 @@ import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentLandFileViewerBinding;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
-import com.mosc.simo.ptuxiaki3741.ui.renderers.LandRendered;
+import com.mosc.simo.ptuxiaki3741.ui.renderers.LandImportRendered;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +169,7 @@ public class LandFileViewerFragment extends Fragment {
         }
 
         clusterManager = new ClusterManager<>(getActivity(), mMap);
-        LandRendered renderer = new LandRendered(getActivity(), mMap, clusterManager);
+        LandImportRendered renderer = new LandImportRendered(getActivity(), mMap, clusterManager);
         renderer.setMinClusterSize(2);
         renderer.setAnimation(false);
         clusterManager.setRenderer(renderer);
@@ -176,6 +177,7 @@ public class LandFileViewerFragment extends Fragment {
         algorithm.setMaxDistanceBetweenClusteredItems(60);
         clusterManager.setAlgorithm(algorithm);
         mMap.setOnCameraIdleListener(()-> new Handler().post(clusterManager::onCameraIdle));
+        mMap.setOnPolygonClickListener(this::onPolygonClick);
 
         if(isPreview) {
             binding.ibZoom.setOnClickListener(v->zoomOnLands());
@@ -250,6 +252,14 @@ public class LandFileViewerFragment extends Fragment {
             return true;
         }
         return false;
+    }
+
+    private void onPolygonClick(Polygon polygon) {
+        if(landData == null) return;
+        Object tag = polygon.getTag();
+        if(tag != null && tag.getClass() == ClusterLand.class){
+            zoomOnMarkerWithSelect((ClusterLand) tag);
+        }
     }
 
     private void zoomOnLandsWithSelect(){
