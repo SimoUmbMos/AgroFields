@@ -1,6 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.ui.fragments.livemap;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 
 import android.os.Handler;
 import android.os.VibrationEffect;
@@ -26,7 +28,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -528,27 +529,23 @@ public class MapMenuFragment extends Fragment{
     }
 
     private void onLandPolygonClick(LandData data) {
+        if(cameraFollow) return;
         if(data.getId() > 0){
             Bundle args = new Bundle();
+            args.putString(AppValues.argTitle, data.toString());
             args.putLong(AppValues.argLandID,data.getId());
-            Toast.makeText(
-                    binding.getRoot().getContext(),
-                    data.toString(),
-                    Toast.LENGTH_SHORT
-            ).show();
+            toLandCalendarList(args);
         }
     }
 
     private void onLandZonePolygonClick(LandZoneData data) {
+        if(cameraFollow) return;
         if(data.getId() > 0 && data.getLid() > 0){
             Bundle args = new Bundle();
+            args.putString(AppValues.argTitle, data.toString());
             args.putLong(AppValues.argLandID,data.getLid());
             args.putLong(AppValues.argZoneID,data.getId());
-            Toast.makeText(
-                    binding.getRoot().getContext(),
-                    data.toString(),
-                    Toast.LENGTH_SHORT
-            ).show();
+            toLandCalendarList(args);
         }
     }
 
@@ -698,6 +695,20 @@ public class MapMenuFragment extends Fragment{
     }
 
     private void goBack(){
-        if(getActivity() != null) getActivity().onBackPressed();
+        Activity activity = getActivity();
+        if(activity != null) {
+            activity.runOnUiThread(activity::onBackPressed);
+        }
+    }
+
+    private void toLandCalendarList(Bundle args) {
+        Activity activity = getActivity();
+        if(activity != null) {
+            activity.runOnUiThread(() -> {
+                NavController nav = UIUtil.getNavController(this, R.id.LiveMapFragment);
+                if (nav != null)
+                    nav.navigate(R.id.toLandCalendarList, args);
+            });
+        }
     }
 }

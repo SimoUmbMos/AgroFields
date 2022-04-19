@@ -37,7 +37,7 @@ public final class AppValues {
     public static final String argNotification = "calendar_notification";
     public static final String argCalendarCategory = "calendar_category";
     public static final String argListView = "calendar_list_view";
-    public static final String argAreaMetrics = "area_metric_ordinal";
+    public static final String argTitle = "fragment_title";
     /* Land Map Editor Fragment Values */
     public static final double distanceToMapActionKM = 100;
     public static final float countryZoom = 6.0f;
