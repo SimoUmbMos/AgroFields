@@ -81,6 +81,7 @@ public class LandsDimensionsFragment extends Fragment {
         adapter.setOnClick(this::onLandsSelect);
         binding.rvLandsDimensions.setAdapter(adapter);
         binding.tvListLabel.setText(R.string.loading_list);
+        updateAreaUI();
     }
 
     private void initViewModel() {

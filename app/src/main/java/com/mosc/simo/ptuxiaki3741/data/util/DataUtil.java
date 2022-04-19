@@ -311,12 +311,9 @@ public final class DataUtil {
     private static AreaMetrics getAreaMetric(final double area){
         final Locale locale = Locale.getDefault();
         if(locale.equals(Locale.US) || locale.getLanguage().equals("my") || locale.getLanguage().equals("vai")){
-            double miArea = area * AreaMetrics.SquareMile.dimensionToSquareMeter;
             double acArea = area * AreaMetrics.Acres.dimensionToSquareMeter;
             double ydArea = area * AreaMetrics.SquareYard.dimensionToSquareMeter;
-            if(miArea > 1.0){
-                return AreaMetrics.SquareMile;
-            }else if(acArea > 1.0){
+            if(acArea > 1.0){
                 return AreaMetrics.Acres;
             }else if(ydArea > 1.0){
                 return AreaMetrics.SquareYard;
@@ -324,17 +321,20 @@ public final class DataUtil {
                 return AreaMetrics.SquareFoot;
             }
         }else{
-            double kmArea = area * AreaMetrics.SquareKiloMeter.dimensionToSquareMeter;
-            double heArea = area * AreaMetrics.Hectare.dimensionToSquareMeter;
-            double stArea = area * AreaMetrics.Stremma.dimensionToSquareMeter;
-            if(kmArea > 1.0){
-                return AreaMetrics.SquareKiloMeter;
-            }else if(heArea > 1.0){
-                return AreaMetrics.Hectare;
-            }else if(locale.getLanguage().equals("el") && stArea > 1.0){
-                return AreaMetrics.Stremma;
+            if(locale.getLanguage().equals("el")){
+                double stArea = area * AreaMetrics.Stremma.dimensionToSquareMeter;
+                if(stArea > 1.0){
+                    return AreaMetrics.Stremma;
+                }else{
+                    return AreaMetrics.SquareMeter;
+                }
             }else{
-                return AreaMetrics.SquareMeter;
+                double heArea = area * AreaMetrics.Hectare.dimensionToSquareMeter;
+                if(heArea > 1.0){
+                    return AreaMetrics.Hectare;
+                }else{
+                    return AreaMetrics.SquareMeter;
+                }
             }
         }
     }

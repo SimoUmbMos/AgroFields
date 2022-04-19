@@ -76,7 +76,7 @@
     <string name="square_mile_symbol">μι²</string>
     <string name="square_meter_symbol">μ²</string>
     <string name="stremma_symbol">στρέμ.</string>
-    <string name="hectare_symbol">εκτ.</string>
+    <string name="hectare_symbol">ha</string>
     <string name="square_kilometer_symbol">κμ²</string>
     <!-- Main Activity -->
     <string name="double_tap_exit">Πατήστε δύο φορές για έξοδο.</string>
