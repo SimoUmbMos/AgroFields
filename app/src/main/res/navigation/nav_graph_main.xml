@@ -6,26 +6,6 @@
     android:id="@+id/nav_land_graph"
     app:startDestination="@id/LoadingFragment">
 
-    <fragment android:id="@+id/AppSettingsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppSettingsFragment"
-        android:label="fragment_app_settings"
-        tools:layout="@layout/fragment_app_settings" >
-        <action android:id="@+id/toDegreeInfo"
-            app:destination="@id/DegreeInfoFragment" />
-        <action
-            android:id="@+id/toBulkEditor"
-            app:destination="@id/BulkEditFragment" />
-        <action
-            android:id="@+id/toCalendarCategories"
-            app:destination="@id/CalendarCategoriesMenu" />
-        <action
-            android:id="@+id/toLandsDimensions"
-            app:destination="@id/LandsDimensionsFragment" />
-    </fragment>
-    <fragment android:id="@+id/DegreeInfoFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppInfoFragment"
-        android:label="fragment_degree_info"
-        tools:layout="@layout/fragment_degree_info" />
     <fragment android:id="@+id/LoadingFragment"
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppLoadingFragment"
         android:label="fragment_loading"
@@ -41,173 +21,42 @@
             app:launchSingleTop="true"
             app:popUpToInclusive="true"/>
     </fragment>
-    <fragment android:id="@+id/MapFileFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.MapFileFragment"
-        android:label="fragment_file_map"
-        tools:layout="@layout/fragment_file_map" >
-        <action
-            android:id="@+id/toMapLandEditor"
-            app:destination="@id/MapLandEditorFragment"
-            app:popUpTo="@id/MenuLandsFragment"
-            app:popUpToInclusive="false" />
-    </fragment>
-    <fragment android:id="@+id/MapLandEditorFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandEditorFragment"
-        android:label="fragment_land_map"
-        tools:layout="@layout/fragment_land_map" >
-        <action android:id="@+id/toProfileLand"
-            app:destination="@id/ProfileLandFragment" />
-        <action android:id="@+id/toMenuLands"
-            app:destination="@id/MenuLandsFragment"
-            app:popUpTo="@id/MenuLandsFragment"
-            app:popUpToInclusive="true"/>
-        <action android:id="@+id/toMapFile"
-            app:destination="@id/MapFileFragment" />
-    </fragment>
-    <fragment android:id="@+id/MapLandPreviewFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandPreviewFragment"
-        android:label="fragment_land_map_preview"
-        tools:layout="@layout/fragment_land_map_preview">
-        <action
-            android:id="@+id/toMapLandEditor"
-            app:destination="@id/MapLandEditorFragment"
-            app:popUpTo="@id/MenuLandsFragment"
-            app:popUpToInclusive="false"/>
-        <action android:id="@+id/toLandHistory"
-            app:destination="@id/LandHistorySelectedFragment"/>
-        <action
-            android:id="@+id/toZonesLandSelected"
-            app:destination="@id/ZonesLandSelectedFragment" />
-    </fragment>
-    <fragment android:id="@+id/LandHistorySelectedFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandSelectedHistoryFragment"
-        android:label="fragment_land_history_menu"
-        tools:layout="@layout/fragment_land_history_selected" >
-        <action android:id="@+id/toMapLandPreview"
-            app:destination="@id/MapLandPreviewFragment" />
-    </fragment>
-    <fragment android:id="@+id/LandHistoryDeletedFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandHistoriesFragment"
-        android:label="fragment_land_history_menu"
-        tools:layout="@layout/fragment_land_history_deleted" >
-        <action android:id="@+id/toMapLandPreview"
-            app:destination="@id/MapLandPreviewFragment" />
-    </fragment>
-    <fragment android:id="@+id/MenuLandsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandMenuFragment"
-        android:label="fragment_land_collection"
-        tools:layout="@layout/fragment_menu_land" >
-        <action android:id="@+id/toProfileLand"
-            app:destination="@id/ProfileLandFragment" />
-        <action android:id="@+id/toMapLandPreview"
-            app:destination="@id/MapLandPreviewFragment" />
-        <action android:id="@+id/toLandsHistory"
-            app:destination="@id/LandHistoryDeletedFragment" />
-    </fragment>
-    <fragment android:id="@+id/ZonesLandSelectedFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.ZoneMenuFragment"
-        android:label="fragment_zones_land_selected"
-        tools:layout="@layout/fragment_zones_menu" >
-        <action
-            android:id="@+id/toLandPreview"
-            app:destination="@id/ZoneEditorFragment" />
-    </fragment>
-    <fragment android:id="@+id/ZoneEditorFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.ZoneEditorFragment"
-        android:label="fragment_zone_editor"
-        tools:layout="@layout/fragment_zone_editor" />
     <fragment android:id="@+id/MenuMainFragment"
         android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.AppMainFragment"
         android:label="fragment_menu"
         tools:layout="@layout/fragment_menu_main" >
         <action
             android:id="@+id/toAppSettings"
-            app:destination="@id/AppSettingsFragment" />
+            app:destination="@id/nav_graph_settings" />
         <action
             android:id="@+id/toMenuLands"
-            app:destination="@id/MenuLandsFragment"
+            app:destination="@id/nav_graph_land"
             app:enterAnim="@anim/animation_from_right"
             app:exitAnim="@anim/animation_to_left"
             app:popEnterAnim="@anim/animation_from_left"
             app:popExitAnim="@anim/animation_to_right" />
         <action
             android:id="@+id/toLiveMap"
-            app:destination="@id/LiveMapFragment"
+            app:destination="@id/nav_graph_live_map"
             app:enterAnim="@anim/animation_from_right"
             app:exitAnim="@anim/animation_to_left"
             app:popEnterAnim="@anim/animation_from_left"
             app:popExitAnim="@anim/animation_to_right" />
         <action
             android:id="@+id/toCalendar"
-            app:destination="@id/CalendarFragment"
+            app:destination="@id/nav_graph_calendar"
             app:enterAnim="@anim/animation_from_right"
             app:exitAnim="@anim/animation_to_left"
             app:popEnterAnim="@anim/animation_from_left"
             app:popExitAnim="@anim/animation_to_right" />
     </fragment>
-    <fragment android:id="@+id/ProfileLandFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandProfileFragment"
-        android:label="fragment_land_info"
-        tools:layout="@layout/fragment_land_info" >
-        <action
-            android:id="@+id/toMapLandEditor"
-            app:destination="@id/MapLandEditorFragment"
-            app:popUpTo="@id/MenuLandsFragment"
-            app:popUpToInclusive="false" />
-    </fragment>
-    <fragment android:id="@+id/LiveMapFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.MapMenuFragment"
-        android:label="fragment_contacts_container"
-        tools:layout="@layout/fragment_live_map"/>
-    <fragment
-        android:id="@+id/CalendarFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarMenuFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" >
-        <action
-            android:id="@+id/toCalendarEvent"
-            app:destination="@id/CalendarNewEventFragment" />
-        <action
-            android:id="@+id/toCalendarEventsList"
-            app:destination="@id/CalendarEventListFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/CalendarEventListFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarEventListFragment"
-        android:label="fragment_calendar_event_list"
-        tools:layout="@layout/fragment_calendar_event_list" >
-        <action
-            android:id="@+id/toCalendarEvent"
-            app:destination="@id/CalendarNewEventFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/CalendarNewEventFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarEventFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar_new_event" />
-    <fragment
-        android:id="@+id/BulkEditFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.BulkEditFragment"
-        android:label="fragment_bulk_edit"
-        tools:layout="@layout/fragment_bulk_edit" />
-    <fragment
-        android:id="@+id/CalendarCategoriesMenu"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarCategoriesFragment"
-        android:label="fragment_calendar_categories"
-        tools:layout="@layout/fragment_calendar_categories" >
-        <action
-            android:id="@+id/toCalendarCategoryEditor"
-            app:destination="@id/CalendarCategoryEditor" />
-    </fragment>
-    <fragment
-        android:id="@+id/CalendarCategoryEditor"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.CalendarCategoryEditorFragment"
-        android:label="fragment_calendar_category_editor"
-        tools:layout="@layout/fragment_calendar_category_editor" />
-    <fragment
-        android:id="@+id/LandsDimensionsFragment"
-        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.LandsDimensionsFragment"
-        android:label="fragment_lands_dimensions"
-        tools:layout="@layout/fragment_lands_dimensions" />
+    <fragment android:id="@+id/MapFileFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.MapFileFragment"
+        android:label="fragment_file_map"
+        tools:layout="@layout/fragment_file_map"/>
 
+    <include app:graph="@navigation/nav_graph_secondary_settings" />
+    <include app:graph="@navigation/nav_graph_secondary_calendar" />
+    <include app:graph="@navigation/nav_graph_secondary_live_map" />
+    <include app:graph="@navigation/nav_graph_secondary_land" />
 </navigation>

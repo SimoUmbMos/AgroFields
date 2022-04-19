@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_calendar"
+    app:startDestination="@id/CalendarFragment">
+    <fragment
+        android:id="@+id/CalendarFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.calendar.CalendarMenuFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/toCalendarEvent"
+            app:destination="@id/CalendarNewEventFragment" />
+        <action
+            android:id="@+id/toCalendarEventsList"
+            app:destination="@id/CalendarEventListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CalendarEventListFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.calendar.CalendarEventListFragment"
+        android:label="fragment_calendar_event_list"
+        tools:layout="@layout/fragment_calendar_event_list" >
+        <action
+            android:id="@+id/toCalendarEvent"
+            app:destination="@id/CalendarNewEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CalendarNewEventFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.calendar.CalendarEventFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar_new_event" />
+</navigation>

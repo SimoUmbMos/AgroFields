@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:orientation="vertical"
     android:scrollbars="none"
-    tools:context=".ui.fragments.AppInfoFragment">
+    tools:context=".ui.fragments.setting.AppInfoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"

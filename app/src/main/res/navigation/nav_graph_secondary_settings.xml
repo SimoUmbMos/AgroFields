@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_settings"
+    app:startDestination="@id/AppSettingsFragment">
+    <fragment android:id="@+id/AppSettingsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.setting.AppSettingsFragment"
+        android:label="fragment_app_settings"
+        tools:layout="@layout/fragment_app_settings" >
+        <action android:id="@+id/toDegreeInfo"
+            app:destination="@id/DegreeInfoFragment" />
+        <action
+            android:id="@+id/toBulkEditor"
+            app:destination="@id/BulkEditFragment" />
+        <action
+            android:id="@+id/toCalendarCategories"
+            app:destination="@id/CalendarCategoriesMenu" />
+        <action
+            android:id="@+id/toLandsDimensions"
+            app:destination="@id/LandsDimensionsFragment" />
+    </fragment>
+    <fragment android:id="@+id/DegreeInfoFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.setting.AppInfoFragment"
+        android:label="fragment_degree_info"
+        tools:layout="@layout/fragment_degree_info" />
+    <fragment
+        android:id="@+id/BulkEditFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.setting.BulkEditFragment"
+        android:label="fragment_bulk_edit"
+        tools:layout="@layout/fragment_bulk_edit" />
+    <fragment
+        android:id="@+id/CalendarCategoriesMenu"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.setting.CalendarCategoriesFragment"
+        android:label="fragment_calendar_categories"
+        tools:layout="@layout/fragment_calendar_categories" >
+        <action
+            android:id="@+id/toCalendarCategoryEditor"
+            app:destination="@id/CalendarCategoryEditor" />
+    </fragment>
+    <fragment
+        android:id="@+id/CalendarCategoryEditor"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.setting.CalendarCategoryEditorFragment"
+        android:label="fragment_calendar_category_editor"
+        tools:layout="@layout/fragment_calendar_category_editor" />
+    <fragment
+        android:id="@+id/LandsDimensionsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.setting.LandsDimensionsFragment"
+        android:label="fragment_lands_dimensions"
+        tools:layout="@layout/fragment_lands_dimensions" />
+</navigation>

@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.ui.fragments;
+package com.mosc.simo.ptuxiaki3741.ui.fragments.calendar;
 
 import android.content.Context;
 import android.content.SharedPreferences;

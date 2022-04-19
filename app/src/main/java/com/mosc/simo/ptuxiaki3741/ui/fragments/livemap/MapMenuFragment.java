@@ -1,7 +1,6 @@
-package com.mosc.simo.ptuxiaki3741.ui.fragments;
+package com.mosc.simo.ptuxiaki3741.ui.fragments.livemap;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -27,6 +26,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,6 +42,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandZoneData;
 import com.mosc.simo.ptuxiaki3741.data.enums.LocationStates;
 import com.mosc.simo.ptuxiaki3741.data.helpers.LocationHelper;
@@ -64,7 +65,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MapMenuFragment extends Fragment{
-    //todo: land and zone click to notification list
     public static final String TAG = "ContactsContainerFragment";
 
     private FragmentLiveMapBinding binding;
@@ -94,7 +94,6 @@ public class MapMenuFragment extends Fragment{
     private Marker myLocation;
     private LatLng userLocation;
 
-    @SuppressLint("MissingPermission")
     private final ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
             this::onLocationPermissionResult
@@ -277,7 +276,7 @@ public class MapMenuFragment extends Fragment{
         isInit = true;
 
         clusterManager = new ClusterManager<>(getActivity(), mMap);
-        LandRendered renderer = new LandRendered(getActivity(),mMap,clusterManager);
+        LandRendered renderer = new LandRendered(getActivity(),mMap,clusterManager,true);
         renderer.setMinClusterSize(2);
         clusterManager.setRenderer(renderer);
         NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
@@ -304,6 +303,15 @@ public class MapMenuFragment extends Fragment{
                 cameraMovingThread.postDelayed(cameraMovingRunnable, AppValues.liveMapMillisToCameraReset);
             }
             new Handler().post(clusterManager::onCameraIdle);
+        });
+        mMap.setOnPolygonClickListener(polygon -> {
+            if(polygon.getTag() != null) {
+                if (polygon.getTag().getClass() == LandData.class) {
+                    onLandPolygonClick((LandData) polygon.getTag());
+                } else if (polygon.getTag().getClass() == LandZoneData.class) {
+                    onLandZonePolygonClick((LandZoneData) polygon.getTag());
+                }
+            }
         });
         clusterManager.setOnClusterItemClickListener(this::onClusterItemClick);
         clusterManager.setOnClusterClickListener(this::onClusterClick);
@@ -448,7 +456,7 @@ public class MapMenuFragment extends Fragment{
                     for(LandZoneData zoneData : item.getZonesData()){
                         if(zoneData == null) continue;
                         if(MapUtil.contains(userLocation,zoneData.getBorder())){
-                            title = zoneData.getTitle();
+                            title = zoneData.toString();
                             msg = zoneData.getNote();
                             break;
                         }
@@ -467,7 +475,6 @@ public class MapMenuFragment extends Fragment{
 
     private boolean onClusterItemClick(ClusterLand item) {
         if(mMap == null) return false;
-
         int size = 0;
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for(LatLng point : item.getLandData().getBorder()){
@@ -476,8 +483,25 @@ public class MapMenuFragment extends Fragment{
         }
         if(size > 0){
             mMap.stopAnimation();
-            cameraUserMovement = true;
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), AppValues.defaultPaddingLarge));
+            LatLngBounds bounds = builder.build();
+            if(MapUtil.distanceBetweenMeter(bounds.getCenter(),mMap.getCameraPosition().target) < 0.1){
+                LatLng position = new LatLng(mMap.getCameraPosition().target.latitude,mMap.getCameraPosition().target.longitude);
+                LandZoneData currZone = null;
+                for(LandZoneData zone : item.getZonesData()){
+                    if(MapUtil.contains(position,zone.getBorder())){
+                        currZone = zone;
+                        break;
+                    }
+                }
+                if(currZone != null){
+                    onLandZonePolygonClick(currZone);
+                }else{
+                    onLandPolygonClick(item.getLandData());
+                }
+            }else{
+                cameraUserMovement = true;
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, AppValues.defaultPaddingLite));
+            }
             return true;
         }
         return false;
@@ -501,6 +525,31 @@ public class MapMenuFragment extends Fragment{
             return true;
         }
         return false;
+    }
+
+    private void onLandPolygonClick(LandData data) {
+        if(data.getId() > 0){
+            Bundle args = new Bundle();
+            args.putLong(AppValues.argLandID,data.getId());
+            Toast.makeText(
+                    binding.getRoot().getContext(),
+                    data.toString(),
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
+    }
+
+    private void onLandZonePolygonClick(LandZoneData data) {
+        if(data.getId() > 0 && data.getLid() > 0){
+            Bundle args = new Bundle();
+            args.putLong(AppValues.argLandID,data.getLid());
+            args.putLong(AppValues.argZoneID,data.getId());
+            Toast.makeText(
+                    binding.getRoot().getContext(),
+                    data.toString(),
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 
     private void zoomOnLands(){

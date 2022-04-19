@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.ui.fragments;
+package com.mosc.simo.ptuxiaki3741.ui.fragments.land;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -181,6 +181,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                 Log.d(TAG, "fileLauncher: called");
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     new Thread(() -> {
+                        if(loadingDialog != null) loadingDialog.openDialog();
                         ArrayList<LandData> data = FileUtil.handleFile(
                                 getContext(),
                                 result.getData()
@@ -193,13 +194,16 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                             );
                             args.putParcelable(
                                     AppValues.argLand,
-                                    currLand.getData()
+                                    new LandData(currLand.getData())
                             );
                             args.putSerializable(
                                     AppValues.argAction,
                                     importAction
                             );
+                            if(loadingDialog != null) loadingDialog.closeDialog();
                             toImport(getActivity(), args);
+                        }else{
+                            if(loadingDialog != null) loadingDialog.closeDialog();
                         }
                     }).start();
                 }

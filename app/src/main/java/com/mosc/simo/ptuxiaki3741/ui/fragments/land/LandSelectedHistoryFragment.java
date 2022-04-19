@@ -1,4 +1,4 @@
-package com.mosc.simo.ptuxiaki3741.ui.fragments;
+package com.mosc.simo.ptuxiaki3741.ui.fragments.land;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

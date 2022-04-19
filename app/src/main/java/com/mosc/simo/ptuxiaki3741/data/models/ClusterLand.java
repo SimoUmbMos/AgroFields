@@ -17,12 +17,12 @@ public class ClusterLand implements ClusterItem {
     private final List<LandZoneData> zonesData;
 
     public ClusterLand(Land land, List<LandZone> zones) {
-        zonesData = new ArrayList<>();
         if(land != null && land.getData() != null){
             landData = land.getData();
         }else{
             landData = new LandData(new ArrayList<>());
         }
+        zonesData = new ArrayList<>();
         if(zones != null){
             for(LandZone zone : zones){
                 if(zone != null && zone.getData() != null) zonesData.add(zone.getData());

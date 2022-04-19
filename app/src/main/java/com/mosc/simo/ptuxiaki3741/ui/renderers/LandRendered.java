@@ -1,9 +1,7 @@
 package com.mosc.simo.ptuxiaki3741.ui.renderers;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -31,54 +29,72 @@ import java.util.Map;
 public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
     private final Context context;
     private final GoogleMap map;
-    private final Map<ClusterLand, List<Polygon>> polygons;
+    private final Map<ClusterLand, List<Polygon>> polygons = new HashMap<>();
+    private final boolean polygonClickable;
 
     public LandRendered(Context context, GoogleMap map, ClusterManager<ClusterLand> clusterManager) {
         super(context, map, clusterManager);
         this.context = context;
         this.map = map;
-        polygons = new HashMap<>();
+        this.polygonClickable = false;
+    }
+
+    public LandRendered(Context context, GoogleMap map, ClusterManager<ClusterLand> clusterManager, boolean polygonClickable) {
+        super(context, map, clusterManager);
+        this.context = context;
+        this.map = map;
+        this.polygonClickable = polygonClickable;
     }
 
     @Override
     protected void onBeforeClusterItemRendered(@NonNull ClusterLand item, @NonNull MarkerOptions markerOptions) {
-        setupMarker(item,markerOptions);
         removePolygons(item);
         addPolygons(item);
+        setupMarkerOptions(item,markerOptions);
     }
 
     @Override
     protected void onBeforeClusterRendered(@NonNull Cluster<ClusterLand> cluster, @NonNull MarkerOptions markerOptions) {
-        setupCluster(cluster,markerOptions);
         cluster.getItems().forEach(this::removePolygons);
+        setupMarkerOptions(cluster,markerOptions);
     }
 
     @Override
-    protected void onClusterItemUpdated(@NonNull ClusterLand item, @NonNull Marker marker) { }
+    protected void onClusterItemUpdated(@NonNull ClusterLand item, @NonNull Marker marker) {
+        setupMarkerOptions(item,marker);
+    }
 
     @Override
-    protected void onClusterUpdated(@NonNull Cluster<ClusterLand> cluster, @NonNull Marker marker) { }
+    protected void onClusterUpdated(@NonNull Cluster<ClusterLand> cluster, @NonNull Marker marker) {
+        setupMarkerOptions(cluster,marker);
+    }
 
     private void addPolygons(ClusterLand item) {
+        if(item == null) return;
+
         List<Polygon> itemPolygons = new ArrayList<>();
-
-        Polygon polygon = map.addPolygon(
-                LandUtil.getPolygonOptions(
-                        item.getLandData(),
-                        false
-                ).zIndex(AppValues.liveMapLandZIndex)
-        );
-
-        itemPolygons.add(polygon);
-        for(LandZoneData zone : item.getZonesData()){
-            polygon = map.addPolygon(
+        if(item.getLandData() != null){
+            Polygon polygon = map.addPolygon(
                     LandUtil.getPolygonOptions(
-                            zone,
-                            false
-                    ).zIndex(AppValues.liveMapZoneZIndex)
+                            item.getLandData(),
+                            polygonClickable
+                    ).zIndex(AppValues.liveMapLandZIndex)
             );
+            polygon.setTag(item.getLandData());
             itemPolygons.add(polygon);
+            for(LandZoneData zone : item.getZonesData()){
+                if(zone == null) continue;
+                polygon = map.addPolygon(
+                        LandUtil.getPolygonOptions(
+                                zone,
+                                polygonClickable
+                        ).zIndex(AppValues.liveMapZoneZIndex)
+                );
+                polygon.setTag(zone);
+                itemPolygons.add(polygon);
+            }
         }
+
         this.polygons.put(item,itemPolygons);
     }
 
@@ -91,7 +107,7 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
         this.polygons.remove(item);
     }
 
-    private void setupMarker(@NonNull ClusterLand item, @NonNull MarkerOptions markerOptions) {
+    private void setupMarkerOptions(@NonNull ClusterLand item, @NonNull MarkerOptions markerOptions) {
         IconGenerator iconGenerator = new IconGenerator(context);
         iconGenerator.setBackground(null);
         View inflatedView = View.inflate(context, R.layout.view_land_marker, null);
@@ -103,17 +119,48 @@ public class LandRendered extends DefaultClusterRenderer<ClusterLand> {
         markerOptions.zIndex(AppValues.liveMapMarkerZIndex);
     }
 
-    @SuppressLint("SetTextI18n")
-    private void setupCluster(@NonNull Cluster<ClusterLand> cluster, @NonNull MarkerOptions markerOptions) {
+    private void setupMarkerOptions(@NonNull ClusterLand item, @NonNull Marker marker) {
+        IconGenerator iconGenerator = new IconGenerator(context);
+        iconGenerator.setBackground(null);
+        View inflatedView = View.inflate(context, R.layout.view_land_marker, null);
+        ViewLandMarkerBinding binding = ViewLandMarkerBinding.bind(inflatedView);
+        binding.tvMarkerTitle.setText(item.getTitle());
+        iconGenerator.setContentView(inflatedView);
+        marker.setIcon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon()));
+        marker.setAlpha(0.8f);
+        marker.setZIndex(AppValues.liveMapMarkerZIndex);
+    }
+
+    private void setupMarkerOptions(@NonNull Cluster<ClusterLand> cluster, @NonNull Marker marker) {
         IconGenerator iconGenerator = new IconGenerator(context);
         iconGenerator.setBackground(null);
         View inflatedView = View.inflate(context, R.layout.view_land_cluster, null);
         ViewLandClusterBinding binding = ViewLandClusterBinding.bind(inflatedView);
+        String display;
         if(cluster.getSize() > 99){
-            binding.tvClusterTitle.setText("99+");
+            display = "99+";
         }else{
-            binding.tvClusterTitle.setText(String.valueOf(cluster.getSize()));
+            display = String.valueOf(cluster.getSize());
         }
+        binding.tvClusterTitle.setText(display);
+        iconGenerator.setContentView(inflatedView);
+        marker.setIcon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon()));
+        marker.setAlpha(0.8f);
+        marker.setZIndex(AppValues.liveMapClusterZIndex);
+    }
+
+    private void setupMarkerOptions(@NonNull Cluster<ClusterLand> cluster, @NonNull MarkerOptions markerOptions) {
+        IconGenerator iconGenerator = new IconGenerator(context);
+        iconGenerator.setBackground(null);
+        View inflatedView = View.inflate(context, R.layout.view_land_cluster, null);
+        ViewLandClusterBinding binding = ViewLandClusterBinding.bind(inflatedView);
+        String display;
+        if(cluster.getSize() > 99){
+            display = "99+";
+        }else{
+            display = String.valueOf(cluster.getSize());
+        }
+        binding.tvClusterTitle.setText(display);
         iconGenerator.setContentView(inflatedView);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon()));
         markerOptions.alpha(0.8f);

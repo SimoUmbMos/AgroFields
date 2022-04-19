@@ -26,8 +26,10 @@ public final class AppValues {
     public static final String argSnapshotKey = "data_snapshot_key";
     public static final String argLand = "land";
     public static final String argLands = "lands";
+    public static final String argLandID = "land_id";
     public static final String argZone = "zone";
     public static final String argZones = "zones";
+    public static final String argZoneID = "zone_id";
     public static final String argAction = "action";
     public static final String argAddress = "address";
     public static final String argIsHistory = "is_history";

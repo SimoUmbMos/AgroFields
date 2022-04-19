@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragments.MapFileFragment">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".ui.fragments.land.LandFileViewerFragment">
 
     <ImageButton
         android:id="@+id/ibClose"
@@ -48,6 +48,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tvSelect"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="@string/file_map_fragment_no_land_selected"
+        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+        app:layout_constraintEnd_toStartOf="@+id/ibSubmit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <TextView
+        android:id="@+id/ibSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/menu_button"
+        android:layout_marginEnd="16dp"
+        android:maxWidth="@dimen/max_width_menu_button"
+        android:minWidth="@dimen/menu_button"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:maxLines="1"
+        android:text="@string/submit"
+        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+        app:drawableTopCompat="@drawable/ic_menu_submit"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSelect"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.google.android.gms.maps.MapView
         android:id="@+id/mvFileMap"
         android:layout_width="0dp"
@@ -56,7 +88,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvSelect"
         app:mapType="satellite" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

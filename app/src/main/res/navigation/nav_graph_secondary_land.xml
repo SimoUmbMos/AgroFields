@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_land"
+    app:startDestination="@id/MenuLandsFragment">
+    <fragment android:id="@+id/MapLandEditorFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.LandEditorFragment"
+        android:label="fragment_land_map"
+        tools:layout="@layout/fragment_land_map" >
+        <action android:id="@+id/toProfileLand"
+            app:destination="@id/ProfileLandFragment" />
+        <action android:id="@+id/toMenuLands"
+            app:destination="@id/MenuLandsFragment"
+            app:popUpTo="@id/MenuLandsFragment"
+            app:popUpToInclusive="true"/>
+        <action android:id="@+id/toMapFile"
+            app:destination="@id/LandFileViewerFragment" />
+    </fragment>
+    <fragment android:id="@+id/MapLandPreviewFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.LandPreviewFragment"
+        android:label="fragment_land_map_preview"
+        tools:layout="@layout/fragment_land_map_preview">
+        <action
+            android:id="@+id/toMapLandEditor"
+            app:destination="@id/MapLandEditorFragment"
+            app:popUpTo="@id/MenuLandsFragment"
+            app:popUpToInclusive="false"/>
+        <action android:id="@+id/toLandHistory"
+            app:destination="@id/LandHistorySelectedFragment"/>
+        <action
+            android:id="@+id/toZonesLandSelected"
+            app:destination="@id/ZonesLandSelectedFragment" />
+    </fragment>
+    <fragment android:id="@+id/LandHistorySelectedFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.LandSelectedHistoryFragment"
+        android:label="fragment_land_history_menu"
+        tools:layout="@layout/fragment_land_history_selected" >
+        <action android:id="@+id/toMapLandPreview"
+            app:destination="@id/MapLandPreviewFragment" />
+    </fragment>
+    <fragment android:id="@+id/LandHistoryDeletedFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.LandHistoriesFragment"
+        android:label="fragment_land_history_menu"
+        tools:layout="@layout/fragment_land_history_deleted" >
+        <action android:id="@+id/toMapLandPreview"
+            app:destination="@id/MapLandPreviewFragment" />
+    </fragment>
+    <fragment android:id="@+id/MenuLandsFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.LandMenuFragment"
+        android:label="fragment_land_collection"
+        tools:layout="@layout/fragment_menu_land" >
+        <action android:id="@+id/toProfileLand"
+            app:destination="@id/ProfileLandFragment" />
+        <action android:id="@+id/toMapLandPreview"
+            app:destination="@id/MapLandPreviewFragment" />
+        <action android:id="@+id/toLandsHistory"
+            app:destination="@id/LandHistoryDeletedFragment" />
+    </fragment>
+    <fragment android:id="@+id/ZonesLandSelectedFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.ZoneMenuFragment"
+        android:label="fragment_zones_land_selected"
+        tools:layout="@layout/fragment_zones_menu" >
+        <action
+            android:id="@+id/toLandPreview"
+            app:destination="@id/ZoneEditorFragment" />
+    </fragment>
+    <fragment android:id="@+id/ZoneEditorFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.ZoneEditorFragment"
+        android:label="fragment_zone_editor"
+        tools:layout="@layout/fragment_zone_editor" />
+    <fragment android:id="@+id/ProfileLandFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.LandProfileFragment"
+        android:label="fragment_land_info"
+        tools:layout="@layout/fragment_land_info" >
+        <action
+            android:id="@+id/toMapLandEditor"
+            app:destination="@id/MapLandEditorFragment"
+            app:popUpTo="@id/MenuLandsFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment android:id="@+id/LandFileViewerFragment"
+        android:name="com.mosc.simo.ptuxiaki3741.ui.fragments.land.LandFileViewerFragment"
+        android:label="fragment_land_file_viewer"
+        tools:layout="@layout/fragment_land_file_viewer" >
+        <action
+            android:id="@+id/toMapLandEditor"
+            app:destination="@id/MapLandEditorFragment"
+            app:popUpTo="@id/MenuLandsFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+</navigation>
