@@ -124,16 +124,15 @@ public class AppLoadingFragment extends Fragment {
             );
             builder.setPositiveButton(
                     R.string.import_label,
-                    (d,i)-> AsyncTask.execute(()-> showDialogLandsImport(activity))
+                    (d,i)-> AsyncTask.execute(this::importToNewYear)
             );
             builder.create().show();
         });
     }
 
-    private void showDialogLandsImport(Activity activity) {
-        if(activity == null) return;
-        //todo: show dialog import lands from old year
-        appVM.importFromSnapshotToAnotherSnapshot(oldYear, LocalDate.now().getYear());
+    private void importToNewYear() {
+        if(appVM != null)
+            appVM.importFromSnapshotToAnotherSnapshot(oldYear, LocalDate.now().getYear());
     }
 
     private void handleFile(Intent intent) {
