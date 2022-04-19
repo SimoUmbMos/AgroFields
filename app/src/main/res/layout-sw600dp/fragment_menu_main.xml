@@ -7,66 +7,80 @@
     tools:context=".ui.fragments.AppMainFragment"
     android:background="@drawable/bg_main_menu">
 
-    <TextView
-        android:id="@+id/tvTitle"
+    <LinearLayout
+        android:id="@+id/llTitles"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="1"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppTheme.Headline"
-        android:textStyle="bold"
-        android:textColor="?attr/colorOnSurface"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@+id/ibMenuButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="4dp"
-        android:text="@string/main_menu_snapshot_title"
-        android:textAlignment="textEnd"
-        android:textColor="?attr/colorOnSurface"
-        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
-        app:layout_constraintEnd_toStartOf="@+id/tvSnapshot"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/tvTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.AppTheme.Title"
+            android:textColor="?attr/colorOnSurface"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvSnapshot"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/textView3"
-        app:layout_constraintEnd_toEndOf="@+id/tvTitle"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        tools:text="2022" />
+        <TextView
+            android:id="@+id/tvSubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="@string/app_sub_name"
+            android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+            android:textColor="?attr/colorOnSurface" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/main_menu_snapshot_title"
+                android:textAppearance="@style/TextAppearance.AppTheme.Button"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/tvSnapshot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:textAppearance="@style/TextAppearance.AppTheme.Button"
+                android:textColor="?attr/colorPrimary"
+                tools:text="2022" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/ibMenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        app:cardElevation="@dimen/cardElevationMainMenu"
+        app:layout_constraintBottom_toBottomOf="@id/llTitles"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeWidth="@dimen/cardStrokeWidthMainMenu"
+        app:layout_constraintTop_toTopOf="@+id/llTitles"
         app:strokeColor="?attr/colorSecondary"
-        app:cardElevation="@dimen/cardElevationMainMenu">
+        app:strokeWidth="@dimen/cardStrokeWidthMainMenu">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/menu_button"
@@ -79,8 +93,8 @@
             android:text="@string/app_settings_title"
             android:textAppearance="@style/TextAppearance.AppTheme.Caption"
             android:textColor="?attr/colorSecondary"
-            app:drawableTopCompat="@drawable/ic_menu_settings"
-            app:drawableTint="?attr/colorSecondary"/>
+            app:drawableTint="?attr/colorSecondary"
+            app:drawableTopCompat="@drawable/ic_menu_settings" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -98,7 +112,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@id/llTitles"
         app:strokeColor="?attr/colorSecondary"
         app:strokeWidth="@dimen/cardStrokeWidthMainMenu">
 
@@ -219,7 +233,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textAppearance="@style/TextAppearance.AppTheme.Body"
+                        android:textAppearance="@style/TextAppearance.AppTheme.Title"
                         android:textColor="?attr/colorSecondary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/tvCalendarTodayDay"
@@ -253,7 +267,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingHorizontal="8dp"
-                        android:textAppearance="@style/TextAppearance.AppTheme.Caption"
+                        android:textAppearance="@style/TextAppearance.AppTheme.Body"
                         android:textColor="?attr/colorSecondary"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"

@@ -102,9 +102,9 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             Editable text = binding.etOwnerName.getText();
             if (text != null) {
                 String name = text.toString()
-                        .trim()
                         .replaceAll("[\\t\\n\\r]+"," ")
-                        .replaceAll(" +", " ");
+                        .replaceAll(" +", " ")
+                        .trim();
                 if(!name.isEmpty()){
                     editor.putString(AppValues.ownerName, name);
                 }else{

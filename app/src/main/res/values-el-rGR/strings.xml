@@ -2,6 +2,8 @@
 <resources>
     <!-- translatable -->
     <!-- Common -->
+    <string name="app_name">Διαχειριστής Περιοχών</string>
+    <string name="app_sub_name">Διαχείριση Τμημάτων Αγροκτήματος</string>
     <string name="land_history">Ιστορικό χωραφιού</string>
     <string name="loading_list">Η λίστα φορτώνεται</string>
     <string name="empty_list">Η λίστα είναι κενή</string>
@@ -84,6 +86,7 @@
     <string name="new_year_import_msg">Θέλετε να εισάγετε τα xωράφια από το προηγούμενο έτος;</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_snapshot_title">Έτος:</string>
+    <string name="main_menu_user_data_label">Κάτοχος:</string>
     <string name="main_menu_live_map_button">Χάρτης</string>
     <string name="main_menu_calendar_button">Ημερολόγιο</string>
     <string name="main_menu_land_button">Χωράφια</string>

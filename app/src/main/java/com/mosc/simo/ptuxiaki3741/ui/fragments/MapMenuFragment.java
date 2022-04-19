@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MapMenuFragment extends Fragment{
+    //todo: land and zone click to notification list
     public static final String TAG = "ContactsContainerFragment";
 
     private FragmentLiveMapBinding binding;

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- not translatable -->
-    <string name="app_name" translatable="false">Land Holder</string>
-
     <string name="degree_info_title" translatable="false">Χαρτογράφηση αγροκτήματος με συμμετοχή θέσης, ορίων και παρεμβολής με χάρτες</string>
     <string name="degree_info_par1" translatable="false">Σκοπός της πτυχιακής αυτής είναι σχεδίαση μια εφαρμογής σε κινητό τηλέφωνο και σε υπολογιστή γραφείου η οποία θα επιτρέπει αγρότες να χαρτογραφούν τα αγροκτήματα τους. Η Εφαρμογή θα επιτρέπει τον χρήστη όχι μόνο να ορίσει την τοποθεσία στο google maps αλλά να ορίσει τα σύνορα και τους ιδιοκτήτες όπως και την δυνατότητα παρεμβολής χαρτών με αγροτική υπηρεσία και ΤΟΕΒ. Αποτέλεσμα αυτής της εφαρμογής θα είναι ένα προϊόν το οποίο θα δίνει μια ξεκάθαρη εικόνα στον αγρότη για το χαρτογραφικό υπόβαθρο του αγροκτήματος του, καθώς και η μεταφορά δεδομένων σε άλλα συστήματα όπως εξαγωγή χάρτη σε άλλες εφαρμογές θα του επιτρέψει την έγκυρη επίλυση προβλημάτων με οργανισμούς και διαχειριστή αγροκτήματος.</string>
     <string name="degree_info_par2" translatable="false">Η εφαρμογή θα επιτρέπει την έτοιμη εισαγωγή και εξαγωγή χωραφιών από το κτήμα καθώς και τις δυνατότητες διαίρεσης και πρόσθεσης γειτονικών κτημάτων. Ύπαρξη δυνατότητας ιστορικού για το πότε δημιουργήθηκε και από ποιον θα είναι βασικά ιστορικά δεδομένα που αφορούν άλλες εφαρμογές.</string>
@@ -13,6 +11,8 @@
     <string name="okey" translatable="false">OK</string>
     <!-- translatable -->
     <!-- Common -->
+    <string name="app_name">Zone Manager</string>
+    <string name="app_sub_name">Farm Zones Management</string>
     <string name="land_history">Lands History</string>
     <string name="loading_list">List is loading</string>
     <string name="empty_list">List is empty</string>
@@ -95,6 +95,7 @@
     <string name="new_year_import_msg">Do you want to import the lands from previous year?</string>
     <!-- Main Menu Fragment -->
     <string name="main_menu_snapshot_title">Year:</string>
+    <string name="main_menu_user_data_label">Owner:</string>
     <string name="main_menu_live_map_button">Map</string>
     <string name="main_menu_calendar_button">Calendar</string>
     <string name="main_menu_land_button">Land\'s</string>
