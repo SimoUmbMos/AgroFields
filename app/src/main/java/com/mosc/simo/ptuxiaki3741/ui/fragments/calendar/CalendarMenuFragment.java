@@ -56,6 +56,9 @@ import java.util.TreeMap;
 import kotlin.Unit;
 
 public class CalendarMenuFragment extends Fragment implements FragmentBackPress {
+    private static final int group_main_id = -6;
+    private static final int group_date_filter_id = -5;
+    private static final int group_category_filter_id = -4;
     private static final int show_new_id = -3;
     private static final int show_old_id = -2;
     private static final int show_all_id = -1;
@@ -232,37 +235,46 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
         switch (item.getItemId()){
             case (show_new_id):
                 showNewEvents();
-                return true;
+                break;
             case (show_old_id):
                 showOldEvents();
-                return true;
+                break;
             case (show_all_id):
                 showSubCategory(null);
-                return true;
+                break;
             default:
                 int id = item.getItemId();
                 if( id > -1 && id < categories.size()) {
                     showSubCategory(categories.get(item.getItemId()));
-                    return true;
                 }
-                return false;
+                break;
         }
+        return false;
     }
 
     private void updateSideMenu(){
         if(binding == null) return;
         Menu sideMenu = binding.navCalendarMenu.getMenu();
         sideMenu.clear();
+        sideMenu.setGroupCheckable(group_main_id,true,false);
 
-        SubMenu subMenu1 = sideMenu.addSubMenu(getString(R.string.date_filter_side_label));
-        subMenu1.add(Menu.NONE,show_new_id,Menu.NONE,getString(R.string.new_events_side_label));
-        subMenu1.add(Menu.NONE,show_old_id,Menu.NONE,getString(R.string.older_events_side_label));
+        SubMenu subMenu1 = sideMenu.addSubMenu(Menu.NONE,group_date_filter_id,Menu.NONE,getString(R.string.date_filter_side_label));
+        subMenu1.setGroupCheckable(group_date_filter_id,true,true);
+        MenuItem newItem = subMenu1.add(Menu.NONE,show_new_id,Menu.NONE,getString(R.string.new_events_side_label));
+        MenuItem oldItem = subMenu1.add(Menu.NONE,show_old_id,Menu.NONE,getString(R.string.older_events_side_label));
+        newItem.setCheckable(true);
+        oldItem.setCheckable(true);
 
-        SubMenu subMenu2 = sideMenu.addSubMenu(getString(R.string.event_filter_side_label));
-        subMenu2.add(Menu.NONE,show_all_id, Menu.NONE,getString(R.string.all_filter_side_label));
+        SubMenu subMenu2 = sideMenu.addSubMenu(Menu.NONE,group_category_filter_id,Menu.NONE,getString(R.string.event_filter_side_label));
+        subMenu2.setGroupCheckable(group_category_filter_id,true,true);
+        MenuItem allItem = subMenu2.add(Menu.NONE,show_all_id, Menu.NONE,getString(R.string.all_filter_side_label));
+        allItem.setCheckable(true);
         for(int i = 0; i < categories.size(); i++){
-            subMenu2.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
+            if(categories.get(i) == null) continue;
+            MenuItem tempItem = subMenu2.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
+            tempItem.setCheckable(true);
         }
+        updateSideMenuCheck();
     }
 
     private void onNotificationsUpdate(Map<LocalDate, List<CalendarEntity>> n) {
@@ -369,18 +381,21 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
     private void showOldEvents(){
         if(showFilter == CalendarShowFilter.BEFORE) return;
         showFilter = CalendarShowFilter.BEFORE;
+        updateSideMenuCheck();
         updateCalendarList();
     }
 
     private void showNewEvents(){
         if(showFilter == CalendarShowFilter.AFTER) return;
         showFilter = CalendarShowFilter.AFTER;
+        updateSideMenuCheck();
         updateCalendarList();
     }
 
     private void showSubCategory(CalendarCategory category){
         if(selectedCategory == category) return;
         selectedCategory = category;
+        updateSideMenuCheck();
         updateCalendarList();
     }
 
@@ -414,6 +429,50 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
             binding.tvCalendarListLabel.setVisibility(View.GONE);
         }
         adapter.saveData(listData);
+    }
+
+    private void updateSideMenuCheck() {
+        MenuItem subMenuItem = binding.navCalendarMenu.getMenu().findItem(group_category_filter_id);
+        if(!subMenuItem.hasSubMenu()) return;
+
+        SubMenu subMenu2 = subMenuItem.getSubMenu();
+        if(selectedCategory == null){
+            for(int i = 0; i < subMenu2.size(); i++){
+                MenuItem item = subMenu2.getItem(i);
+                if(item.getItemId() == show_all_id){
+                    if(!item.isChecked()) item.setChecked(true);
+                }else{
+                    item.setChecked(false);
+                }
+            }
+        }else{
+            boolean check = false;
+            int index = categories.indexOf(selectedCategory);
+            for(int i = 0; i < subMenu2.size(); i++){
+                MenuItem item = subMenu2.getItem(i);
+                if(index == item.getItemId() && !check){
+                    check = true;
+                    if(!item.isChecked()) item.setChecked(true);
+                }else{
+                    item.setChecked(false);
+                }
+            }
+            if(!check){
+                selectedCategory = null;
+                MenuItem allItem = subMenu2.findItem(show_all_id);
+                if(!allItem.isChecked()) allItem.setChecked(true);
+            }
+        }
+
+        MenuItem newItem = binding.navCalendarMenu.getMenu().findItem(show_new_id);
+        MenuItem oldItem = binding.navCalendarMenu.getMenu().findItem(show_old_id);
+        if(showFilter == CalendarShowFilter.AFTER){
+            if(!newItem.isChecked()) newItem.setChecked(true);
+            oldItem.setChecked(false);
+        }else{
+            newItem.setChecked(false);
+            if(!oldItem.isChecked()) oldItem.setChecked(true);
+        }
     }
 
     private void goBack(){

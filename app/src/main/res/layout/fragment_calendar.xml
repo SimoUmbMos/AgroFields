@@ -271,5 +271,6 @@
         android:layout_gravity="end"
         android:fitsSystemWindows="true"
         android:overScrollMode="never"
-        app:menu="@menu/empty_list"/>
+        android:checkableBehavior="all"
+        app:menu="@menu/empty_side_menu"/>
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -168,9 +168,24 @@ public class CalendarEventListFragment extends Fragment implements FragmentBackP
         Menu sideMenu = binding.navCalendarMenu.getMenu();
         sideMenu.clear();
         SubMenu subMenu = sideMenu.addSubMenu(getString(R.string.event_filter_side_label));
-        subMenu.add(Menu.NONE, show_all_id, Menu.NONE, getString(R.string.all_filter_side_label));
+        MenuItem all = subMenu.add(Menu.NONE, show_all_id, Menu.NONE, getString(R.string.all_filter_side_label));
+        all.setCheckable(true);
+        boolean checked = false;
+        if(selectedCategory == null){
+            binding.navCalendarMenu.setCheckedItem(all);
+            checked = true;
+        }
         for(int i = 0; i < categories.size(); i++){
-            subMenu.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
+            MenuItem temp = subMenu.add(Menu.NONE, i, Menu.NONE, categories.get(i).getName());
+            temp.setCheckable(true);
+            if(selectedCategory != null && selectedCategory.getId() == categories.get(i).getId() && !checked){
+                binding.navCalendarMenu.setCheckedItem(temp);
+                checked = true;
+            }
+        }
+        if(!checked){
+            binding.navCalendarMenu.setCheckedItem(all);
+            selectedCategory = null;
         }
     }
 

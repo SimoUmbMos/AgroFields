@@ -310,7 +310,7 @@ public final class DataUtil {
     }
     private static AreaMetrics getAreaMetric(final double area){
         final Locale locale = Locale.getDefault();
-        if(locale.equals(Locale.US) || locale.getLanguage().equals("my") || locale.getLanguage().equals("vai")){
+        if(locale.equals(Locale.UK) || locale.equals(Locale.US) || locale.getLanguage().equals("my") || locale.getLanguage().equals("vai")){
             double acArea = area * AreaMetrics.Acres.dimensionToSquareMeter;
             double ydArea = area * AreaMetrics.SquareYard.dimensionToSquareMeter;
             if(acArea > 1.0){
@@ -320,21 +320,19 @@ public final class DataUtil {
             }else {
                 return AreaMetrics.SquareFoot;
             }
-        }else{
-            if(locale.getLanguage().equals("el")){
-                double stArea = area * AreaMetrics.Stremma.dimensionToSquareMeter;
-                if(stArea > 1.0){
-                    return AreaMetrics.Stremma;
-                }else{
-                    return AreaMetrics.SquareMeter;
-                }
+        }else if(locale.getLanguage().equals("el")){
+            double stArea = area * AreaMetrics.Stremma.dimensionToSquareMeter;
+            if(stArea > 1.0){
+                return AreaMetrics.Stremma;
             }else{
-                double heArea = area * AreaMetrics.Hectare.dimensionToSquareMeter;
-                if(heArea > 1.0){
-                    return AreaMetrics.Hectare;
-                }else{
-                    return AreaMetrics.SquareMeter;
-                }
+                return AreaMetrics.SquareMeter;
+            }
+        }else{
+            double heArea = area * AreaMetrics.Hectare.dimensionToSquareMeter;
+            if(heArea > 1.0){
+                return AreaMetrics.Hectare;
+            }else{
+                return AreaMetrics.SquareMeter;
             }
         }
     }
