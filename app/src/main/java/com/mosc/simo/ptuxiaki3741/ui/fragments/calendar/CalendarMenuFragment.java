@@ -433,6 +433,7 @@ public class CalendarMenuFragment extends Fragment implements FragmentBackPress 
 
     private void updateSideMenuCheck() {
         MenuItem subMenuItem = binding.navCalendarMenu.getMenu().findItem(group_category_filter_id);
+        if(subMenuItem == null) return;
         if(!subMenuItem.hasSubMenu()) return;
 
         SubMenu subMenu2 = subMenuItem.getSubMenu();

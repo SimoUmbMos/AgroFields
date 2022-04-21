@@ -311,6 +311,7 @@ public class LandCalendarListFragment extends Fragment implements FragmentBackPr
 
     private void updateSideMenuCheck() {
         MenuItem subMenuItem = binding.navCalendarMenu.getMenu().findItem(group_category_filter_id);
+        if(subMenuItem == null) return;
         if(!subMenuItem.hasSubMenu()) return;
 
         SubMenu subMenu2 = subMenuItem.getSubMenu();
