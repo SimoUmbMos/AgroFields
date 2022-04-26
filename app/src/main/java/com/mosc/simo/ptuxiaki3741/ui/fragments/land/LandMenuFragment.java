@@ -176,9 +176,11 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
 
     //init
     private void initData(){
-        selectedTag = null;
         exportLands = new ArrayList<>();
         state = ListMenuState.NormalState;
+        tags.clear();
+        selectedTag = null;
+        tags.add(getString(R.string.all_tags_tag));
         adapter = new LandListAdapter(
                 this::onLandClick,
                 this::onLandLongClick
@@ -278,6 +280,7 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
     private void onLandLongClick(Land land) {
         if (state == ListMenuState.NormalState){
             setState(ListMenuState.MultiSelectState, true);
+            binding.mlRoot.transitionToEnd();
         }
         toggleSelectOnPosition(displayData.indexOf(land));
     }
@@ -611,8 +614,29 @@ public class LandMenuFragment extends Fragment implements FragmentBackPress {
         Menu menu = binding.navLandFilterMenu.getMenu();
         menu.clear();
         SubMenu subMenu = menu.addSubMenu(Menu.NONE,-1,Menu.NONE,getString(R.string.land_filter_title));
+        String emptyTag = getString(R.string.empty_tag_tag);
+        boolean checked = false;
+        List<String> insertedTags = new ArrayList<>();
         for(int i = 0; i < tags.size(); i++){
-            subMenu.add(Menu.NONE,i,Menu.NONE,tags.get(i));
+            String tag = tags.get(i);
+            if(tag == null || tag.isEmpty()) tag = emptyTag;
+
+            if(insertedTags.contains(tag)) continue;
+            insertedTags.add(tag);
+
+            MenuItem item = subMenu.add(Menu.NONE, i, Menu.NONE, tag);
+            item.setCheckable(true);
+            if(selectedTag != null){
+                if(binding != null && tag.equals(selectedTag) && !checked) {
+                    binding.navLandFilterMenu.setCheckedItem(item);
+                    checked = true;
+                }
+            }else{
+                if(binding != null && tag.equals(getString(R.string.all_tags_tag)) && !checked){
+                    binding.navLandFilterMenu.setCheckedItem(item);
+                    checked = true;
+                }
+            }
         }
     }
     private void showExportDialog(){

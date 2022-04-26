@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +46,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.thuytrinh.android.collageviews.MultiTouchListener;
@@ -298,7 +301,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
         binding.ibActionReset.setOnClickListener(v->undo());
         binding.slAlphaSlider.addOnChangeListener((range,value,user) -> onSliderUpdate(value));
 
-        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvLand.getMapAsync(this::initMap));
+        MapsInitializer.initialize(binding.mvLand.getContext(), MapsInitializer.Renderer.LATEST,r->binding.mvLand.getMapAsync(this::initMap));
     }
     @SuppressLint("PotentialBehaviorOverride")
     private void initMap(GoogleMap googleMap) {
@@ -355,7 +358,20 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                 setAction(LandActionStates.AddEnd);
                 return true;
             case (R.id.toolbar_action_add_between):
-                setAction(LandActionStates.AddBetween);
+                if(points.size()>1){
+                    setAction(LandActionStates.AddBetween);
+                }else{
+                    if( binding != null) {
+                        Snackbar snackbar = Snackbar.make(binding.getRoot(), R.string.point_editor_not_big_size, Snackbar.LENGTH_SHORT);
+                        TypedValue typedValue = new TypedValue();
+                        Resources.Theme theme = binding.getRoot().getContext().getTheme();
+                        theme.resolveAttribute(R.attr.colorSurface, typedValue, true);
+                        snackbar.setBackgroundTint(typedValue.data);
+                        theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true);
+                        snackbar.setTextColor(typedValue.data);
+                        snackbar.show();
+                    }
+                }
                 return true;
             case (R.id.toolbar_action_add_location):
                 setAction(LandActionStates.AddLocation);
@@ -985,6 +1001,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     @SuppressLint("ClickableViewAccessibility")
     private void clearTitle() {
         binding.tvTitle.setText(displayTitle);
+        binding.tvTitle.setSelected(false);
         binding.clLandControls.setVisibility(View.GONE);
         binding.ibActionSave.setVisibility(View.GONE);
         binding.ibActionReset.setVisibility(View.GONE);
@@ -1000,7 +1017,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     @SuppressLint("ClickableViewAccessibility")
     private void setTitle(String s) {
         binding.tvTitle.setText(s);
-
+        binding.tvTitle.setSelected(true);
         binding.clLandControls.setVisibility(View.VISIBLE);
         binding.ibActionSave.setVisibility(View.VISIBLE);
         binding.ibActionReset.setVisibility(View.VISIBLE);
@@ -1027,6 +1044,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
             }else{
                 binding.tvTitle.setText(getString(R.string.add_between_points_edit_new_point));
             }
+            binding.tvTitle.setSelected(true);
         }
     }
     private void toggleDrawer(boolean toggle) {
@@ -1201,25 +1219,20 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
     }
 
     @Override
+    public void onDestroyView() {
+        binding.mvLand.onDestroy();
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        binding.mvLand.onResume();
+        if(binding != null) binding.mvLand.onResume();
         if(locationPointWasRunning){
             locationPointWasRunning = false;
             locationHelperPoint.start();
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        binding.mvLand.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        binding.mvLand.onStop();
-        super.onStop();
     }
 
     @Override
@@ -1230,20 +1243,13 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                 locationHelperPoint.stop();
             }
         }
-        binding.mvLand.onPause();
+        if(binding != null) binding.mvLand.onPause();
         super.onPause();
     }
 
     @Override
-    public void onDestroyView() {
-        binding.mvLand.onDestroy();
-        super.onDestroyView();
-        binding = null;
-    }
-
-    @Override
     public void onLowMemory() {
-        binding.mvLand.onLowMemory();
+        if(binding != null) binding.mvLand.onLowMemory();
         super.onLowMemory();
     }
 

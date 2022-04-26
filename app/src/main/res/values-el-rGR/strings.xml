@@ -69,6 +69,7 @@
     <string name="empty_tag_tag"> Χωρίς Ετικέτα </string>
     <string name="current_year">Τρέχον</string>
     <string name="import_label">Εισαγωγή</string>
+    <string name="point_editor_not_big_size">Αυτή η ενέργεια χρειάζεται τουλάχιστον 2 σημεία.</string>
     <!-- Metrics -->
     <string name="square_foot_symbol">ft²</string>
     <string name="square_yard_symbol">yd²</string>
@@ -101,6 +102,7 @@
     <string name="land_info_title">Πληροφορίες χωραφιού</string>
     <string name="land_name">Τίτλος χωραφιού</string>
     <string name="land_tags">Ετικέτες χωραφιού</string>
+    <string name="tags_input_info">Διαχωρίστε τις ετικέτες με κόμματα (,)</string>
     <string name="address_hint">Διεύθυνση χωραφιού</string>
     <string name="create_land_label">Ορισμός τίτλου χωραφιού</string>
     <string name="edit_land_label">Επεξεργασία τίτλου χωραφιού</string>
@@ -121,7 +123,7 @@
     <string name="remove_from_land_label">Αφαίρεση από αρχείο</string>
     <string name="land_actions_group_title">Ενέργειες χωραφιού</string>
     <string name="delete_land">Διαγραφή χωραφιού</string>
-    <string name="make_land_editable">Κάντε το χωράφι Επεξεργάσιμο</string>
+    <string name="delete_land_holes">Διαγραφή Τρυπών</string>
     <string name="edit_land_data">Αλλαγή δεδομένων</string>
     <string name="delete_land_title">Διαγραφή χωραφιού</string>
     <string name="delete_land_text">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το χωράφι;</string>

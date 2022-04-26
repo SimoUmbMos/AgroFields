@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
@@ -80,13 +81,19 @@ public class LandProfileFragment extends Fragment {
         String landLabel;
         if(land == null){
             landLabel = getString(R.string.create_land_label);
-            binding.etLandInfoAddress.setEnabled(true);
+            binding.etLandInfoAddressLayout.setEnabled(true);
         }else{
             landLabel = getString(R.string.edit_land_label);
-            binding.etLandInfoName.setText(land.getData().getTitle());
-            binding.etLandInfoTags.setText(land.getData().getTags());
-            binding.etLandInfoAddress.setText("");
-            binding.etLandInfoAddress.setEnabled(false);
+            if(binding.etLandInfoNameLayout.getEditText() != null) {
+                binding.etLandInfoNameLayout.getEditText().setText(land.getData().getTitle());
+            }
+            if(binding.etLandInfoTagsLayout.getEditText() != null) {
+                binding.etLandInfoTagsLayout.getEditText().setText(land.getData().getTags());
+            }
+            if(binding.etLandInfoAddressLayout.getEditText() != null){
+                binding.etLandInfoAddressLayout.getEditText().setText("");
+            }
+            binding.etLandInfoAddressLayout.setEnabled(false);
             binding.etLandInfoAddressLayout.setVisibility(View.GONE);
         }
         binding.tvLandInfoActionLabel.setText(landLabel);
@@ -109,16 +116,21 @@ public class LandProfileFragment extends Fragment {
     //submit
     public void onSubmit() {
         closeKeyboard();
-        String landName = "";
-        String landTags = "";
-        String address = "";
-        if(binding.etLandInfoName.getText()!=null){
-            landName = binding.etLandInfoName.getText().toString();
+
+        EditText editTextName = binding.etLandInfoNameLayout.getEditText();
+        String landName;
+        if(editTextName != null && editTextName.getText() != null){
+            landName = editTextName.getText().toString();
             landName = DataUtil.removeSpecialCharacters(landName);
-            binding.etLandInfoName.setText(landName);
+            editTextName.setText(landName);
+        }else{
+            landName = "";
         }
-        if(binding.etLandInfoTags.getText()!=null){
-            landTags = binding.etLandInfoTags.getText().toString();
+
+        EditText editTextTags = binding.etLandInfoTagsLayout.getEditText();
+        String landTags;
+        if(editTextTags != null && editTextTags.getText() != null){
+            landTags = editTextTags.getText().toString();
             landTags = DataUtil.removeSpecialCharactersCSV(landTags);
             List<String> tags = DataUtil.splitTags(landTags);
             List<String> temp = new ArrayList<>();
@@ -134,11 +146,19 @@ public class LandProfileFragment extends Fragment {
                 if(i != (tags.size() - 1)) builder.append(", ");
             }
             landTags = builder.toString();
-            binding.etLandInfoTags.setText(landTags);
+            editTextTags.setText(landTags);
+        }else{
+            landTags = "";
         }
-        if(binding.etLandInfoAddress.getText()!=null){
-            address = binding.etLandInfoAddress.getText().toString();
+
+        EditText editTextAddress = binding.etLandInfoAddressLayout.getEditText();
+        String address;
+        if(editTextAddress != null && editTextAddress.getText() != null){
+            address = editTextAddress.getText().toString();
+        }else{
+            address = "";
         }
+
         if(!landName.isEmpty()){
             binding.etLandInfoNameLayout.setError(null);
             submit(landName, landTags, address);

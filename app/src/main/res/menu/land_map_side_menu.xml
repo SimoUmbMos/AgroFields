@@ -21,21 +21,21 @@
     <item android:title="@string/land_actions_group_title">
         <menu>
             <item
-                android:id="@+id/toolbar_action_make_land_editable"
-                android:icon="@drawable/ic_drawer_menu_edit"
-                android:orderInCategory="1"
-                android:title="@string/make_land_editable"
-                app:showAsAction="ifRoom|withText" />
-            <item
                 android:id="@+id/toolbar_action_edit_land_info"
                 android:icon="@drawable/ic_drawer_menu_edit"
-                android:orderInCategory="2"
+                android:orderInCategory="1"
                 android:title="@string/edit_land_data"
                 app:showAsAction="ifRoom|withText" />
             <item android:id="@+id/toolbar_action_edit_land_color"
                 android:title="@string/edit_color"
-                android:orderInCategory="3"
+                android:orderInCategory="2"
                 android:icon="@drawable/ic_menu_color_palette"
+                app:showAsAction="ifRoom|withText" />
+            <item
+                android:id="@+id/toolbar_action_make_land_editable"
+                android:icon="@drawable/ic_menu_delete"
+                android:orderInCategory="3"
+                android:title="@string/delete_land_holes"
                 app:showAsAction="ifRoom|withText" />
             <item
                 android:id="@+id/toolbar_action_delete_land"

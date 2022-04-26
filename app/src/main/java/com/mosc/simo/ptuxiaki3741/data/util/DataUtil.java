@@ -91,7 +91,7 @@ public final class DataUtil {
     public static String removeSpecialCharacters(String string){
         if(string == null) return "";
         String ans = string.replaceAll(
-                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
+                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√÷×¶<>,.]",
                 " "
         ).trim();
         return ans.replaceAll(" +", " ");
@@ -99,7 +99,7 @@ public final class DataUtil {
     public static String removeSpecialCharactersWithoutSpaces(String string) {
         if(string == null) return "";
         String ans = string.replaceAll(
-                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>,.]",
+                "[@#€_&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√÷×¶<>,.]",
                 " "
         ).trim();
         return ans.replaceAll(" +", "_");
@@ -107,7 +107,7 @@ public final class DataUtil {
     public static String removeSpecialCharactersCSV(String string){
         if(string == null) return "";
         String ans = string
-                .replaceAll("[@#€&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√π÷×¶∆<>.]", " ")
+                .replaceAll("[@#€&\\-+)(/?!;:'\"*✓™®©%{}\\[\\]=°^¢$¥£~`|\\\\•√÷×¶<>.]", " ")
                 .replaceAll("_+", " ")
                 .replaceAll("( *),( *)", ",")
                 .trim();

@@ -32,7 +32,9 @@
             android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:ellipsize="end"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:textAppearance="@style/TextAppearance.AppTheme.Headline"
             app:layout_constraintEnd_toStartOf="@+id/ibSave"
             app:layout_constraintStart_toEndOf="@+id/ibClose"
@@ -88,8 +90,10 @@
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:mapType="satellite" />
 
             <ImageView
@@ -112,53 +116,77 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clLandControls"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="?attr/colorSurface"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            tools:visibility="visible">
 
-            <ImageButton
-                android:id="@+id/ibActionSave"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_button_check"
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?attr/colorSurface"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/ibActionReset"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_button_reset"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ibActionSave"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ibActionSave"
+                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/menu_button"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/done"
+                android:textAppearance="@style/TextAppearance.AppTheme.Button"
+                app:icon="@drawable/ic_button_check"
+                app:layout_constraintBottom_toTopOf="@+id/slAlphaSlider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/ibActionReset"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ibActionReset"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/undo"
+                android:textAppearance="@style/TextAppearance.AppTheme.Button"
+                android:textColor="?attr/colorOnSurface"
+                app:icon="@drawable/ic_button_reset"
+                app:iconTint="?attr/colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/ibActionSave"
+                app:layout_constraintEnd_toStartOf="@+id/ibActionSave"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/slAlphaSlider"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
+                android:layout_height="@dimen/menu_button"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
                 android:stepSize="5.0"
                 android:value="50.0"
                 android:valueFrom="20.0"
                 android:valueTo="80.0"
                 app:labelBehavior="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ibActionReset"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/ibActionSave" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

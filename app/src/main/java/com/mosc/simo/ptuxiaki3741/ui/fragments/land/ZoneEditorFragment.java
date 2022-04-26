@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.ui.fragments.land;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -22,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -644,7 +646,11 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
     }
 
     private boolean onMenuClick(MenuItem item) {
-        toggleDrawer(false);
+        if(item.getItemId() == R.id.toolbar_action_zone_add_between_points){
+            if(border.size() > 1) toggleDrawer(false);
+        }else{
+            toggleDrawer(false);
+        }
         if( !mapLoaded ) return false;
         switch (item.getItemId()){
             case (R.id.toolbar_action_delete_zone):
@@ -671,6 +677,17 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
             case (R.id.toolbar_action_zone_add_between_points):
                 if(border.size()>1){
                     onStateUpdate(ZoneEditorState.AddBetweenPoint);
+                }else{
+                    if( binding != null) {
+                        Snackbar snackbar = Snackbar.make(binding.getRoot(), R.string.point_editor_not_big_size, Snackbar.LENGTH_SHORT);
+                        TypedValue typedValue = new TypedValue();
+                        Resources.Theme theme = binding.getRoot().getContext().getTheme();
+                        theme.resolveAttribute(R.attr.colorSurface, typedValue, true);
+                        snackbar.setBackgroundTint(typedValue.data);
+                        theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true);
+                        snackbar.setTextColor(typedValue.data);
+                        snackbar.show();
+                    }
                 }
                 return true;
             case (R.id.toolbar_action_zone_edit_point):
@@ -1172,7 +1189,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
 
     @Override public void onResume() {
         super.onResume();
-        binding.mvZonePreview.onResume();
+        if(binding != null) binding.mvZonePreview.onResume();
         if(locationPointWasRunning){
             locationPointWasRunning = false;
             locationHelperPoint.start();
@@ -1186,12 +1203,12 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                 locationHelperPoint.stop();
             }
         }
-        binding.mvZonePreview.onPause();
+        if(binding != null) binding.mvZonePreview.onPause();
         super.onPause();
     }
 
     @Override public void onLowMemory() {
-        binding.mvZonePreview.onLowMemory();
+        if(binding != null) binding.mvZonePreview.onLowMemory();
         super.onLowMemory();
     }
 

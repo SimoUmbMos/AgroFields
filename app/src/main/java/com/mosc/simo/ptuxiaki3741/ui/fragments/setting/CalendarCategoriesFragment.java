@@ -146,6 +146,7 @@ public class CalendarCategoriesFragment extends Fragment implements FragmentBack
     private void onItemLongClick(CalendarCategoryEntity item){
         if(state == ListMenuState.NormalState){
             setState(ListMenuState.MultiSelectState);
+            binding.getRoot().transitionToEnd();
         }
         toggleSelected(item);
     }

@@ -98,7 +98,7 @@ public class LandPreviewFragment extends Fragment {
         binding.ibRestore.setOnClickListener( v -> restoreLand() );
         binding.fabZonesMenu.setOnClickListener( v -> toZonesMenu(getActivity()) );
         binding.ibClose.setOnClickListener( v -> goBack(getActivity()) );
-        MapsInitializer.initialize(requireContext(), MapsInitializer.Renderer.LATEST,r->binding.mvLand.getMapAsync(this::initMap));
+        MapsInitializer.initialize(binding.mvLand.getContext(), MapsInitializer.Renderer.LATEST,r->binding.mvLand.getMapAsync(this::initMap));
     }
 
     private void initMap(GoogleMap googleMap) {
@@ -301,30 +301,6 @@ public class LandPreviewFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        binding.mvLand.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        binding.mvLand.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        binding.mvLand.onStop();
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        binding.mvLand.onPause();
-        super.onPause();
-    }
-
-    @Override
     public void onDestroyView() {
         binding.mvLand.onDestroy();
         super.onDestroyView();
@@ -332,8 +308,20 @@ public class LandPreviewFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(binding != null) binding.mvLand.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if(binding != null) binding.mvLand.onPause();
+        super.onPause();
+    }
+
+    @Override
     public void onLowMemory() {
-        binding.mvLand.onLowMemory();
+        if(binding != null) binding.mvLand.onLowMemory();
         super.onLowMemory();
     }
 }

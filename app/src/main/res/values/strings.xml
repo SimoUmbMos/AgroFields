@@ -78,6 +78,7 @@
     <string name="empty_tag_tag"> Without Tag </string>
     <string name="current_year">Current</string>
     <string name="import_label">Import</string>
+    <string name="point_editor_not_big_size">This action need at least 2 points.</string>
     <!-- Metrics -->
     <string name="square_foot_symbol">ft²</string>
     <string name="square_yard_symbol">yd²</string>
@@ -110,6 +111,7 @@
     <string name="land_info_title">Land Info</string>
     <string name="land_name">Land Name</string>
     <string name="land_tags">Land Tags</string>
+    <string name="tags_input_info">Separate tags with commas (,)</string>
     <string name="address_hint">Land Address</string>
     <string name="create_land_label">Set Land Name</string>
     <string name="edit_land_label">Edit Land Name</string>
@@ -130,7 +132,7 @@
     <string name="remove_from_land_label">Subtract Land From File</string>
     <string name="land_actions_group_title">Land Actions</string>
     <string name="delete_land">Delete Land</string>
-    <string name="make_land_editable">Make Land Editable</string>
+    <string name="delete_land_holes">Delete Holes</string>
     <string name="edit_land_data">Edit Data</string>
     <string name="delete_land_title">Delete Land</string>
     <string name="delete_land_text">Are you sure you want to delete this land?</string>
