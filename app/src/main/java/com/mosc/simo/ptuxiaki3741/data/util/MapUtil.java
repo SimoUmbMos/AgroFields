@@ -441,11 +441,11 @@ public final class MapUtil {
     }
 
     public static boolean sameLocation(final LatLng center, final LatLng target) {
-        double lat1 = roundDown5(center.latitude);
-        double lat2 = roundDown5(target.latitude);
-        double lng1 = roundDown5(center.longitude);
-        double lng2 = roundDown5(target.longitude);
-        return lat1 == lat2 && lng1 == lng2;
+        double lat1 = center.latitude;
+        double lat2 = target.latitude;
+        double lng1 = center.longitude;
+        double lng2 = target.longitude;
+        return roundDown5(lat1) == roundDown5(lat2) && roundDown5(lng1) == roundDown5(lng2);
     }
 
     private static double roundDown5(double d){

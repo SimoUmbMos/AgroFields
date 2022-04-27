@@ -486,19 +486,7 @@ public class MapMenuFragment extends Fragment{
             mMap.stopAnimation();
             LatLngBounds bounds = builder.build();
             if(MapUtil.sameLocation(bounds.getCenter(),mMap.getCameraPosition().target)){
-                LatLng position = new LatLng(mMap.getCameraPosition().target.latitude,mMap.getCameraPosition().target.longitude);
-                LandZoneData currZone = null;
-                for(LandZoneData zone : item.getZonesData()){
-                    if(MapUtil.contains(position,zone.getBorder())){
-                        currZone = zone;
-                        break;
-                    }
-                }
-                if(currZone != null){
-                    onLandZonePolygonClick(currZone);
-                }else{
-                    onLandPolygonClick(item.getLandData());
-                }
+                onLandPolygonClick(item.getLandData());
             }else{
                 cameraUserMovement = true;
                 mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, AppValues.defaultPaddingLite));
