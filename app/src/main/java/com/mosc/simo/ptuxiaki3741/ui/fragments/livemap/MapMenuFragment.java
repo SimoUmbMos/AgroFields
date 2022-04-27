@@ -485,7 +485,7 @@ public class MapMenuFragment extends Fragment{
         if(size > 0){
             mMap.stopAnimation();
             LatLngBounds bounds = builder.build();
-            if(MapUtil.distanceBetweenMeter(bounds.getCenter(),mMap.getCameraPosition().target) < 0.1){
+            if(MapUtil.sameLocation(bounds.getCenter(),mMap.getCameraPosition().target)){
                 LatLng position = new LatLng(mMap.getCameraPosition().target.latitude,mMap.getCameraPosition().target.longitude);
                 LandZoneData currZone = null;
                 for(LandZoneData zone : item.getZonesData()){

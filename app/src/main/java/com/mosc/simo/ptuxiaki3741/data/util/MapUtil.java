@@ -180,28 +180,6 @@ public final class MapUtil {
         }
         return Double.MAX_VALUE;
     }
-    public static double distanceBetweenMeter(LatLng p1, LatLng p2) {
-        if(p1 != null && p2 != null){
-            double lat1 = p1.latitude, lng1 = p1.longitude;
-            double lat2 = p2.latitude, lng2 = p2.longitude;
-
-            double earthRadius = 6371000;
-
-            double dLat = Math.toRadians(lat2-lat1);
-            double dLng = Math.toRadians(lng2-lng1);
-
-            double sindLat = Math.sin(dLat / 2);
-            double sindLng = Math.sin(dLng / 2);
-
-            double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-                    * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
-
-            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-            return earthRadius * c;
-        }
-        return Double.MAX_VALUE;
-    }
 
     public static boolean contains(LatLng point,List<LatLng> p){
         if(point != null && p !=null){
@@ -460,5 +438,17 @@ public final class MapUtil {
             return new com.esri.arcgisruntime.geometry.Polygon(polygonPoints);
         }
         return null;
+    }
+
+    public static boolean sameLocation(final LatLng center, final LatLng target) {
+        double lat1 = roundDown5(center.latitude);
+        double lat2 = roundDown5(target.latitude);
+        double lng1 = roundDown5(center.longitude);
+        double lng2 = roundDown5(target.longitude);
+        return lat1 == lat2 && lng1 == lng2;
+    }
+
+    private static double roundDown5(double d){
+        return Math.floor(d * 1e5) / 1e5;
     }
 }
