@@ -42,7 +42,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             holder.calendarEventView.setEvent(
                     entity.getCategory().getName(),
                     entity.getCategory().getColorData(),
-                    entity.getNotification().getTitle()
+                    entity.getNotification().toString()
             );
             holder.calendarEventView.setOnClick(v->onClick.onActionResult(entity.getNotification()));
         }else{
