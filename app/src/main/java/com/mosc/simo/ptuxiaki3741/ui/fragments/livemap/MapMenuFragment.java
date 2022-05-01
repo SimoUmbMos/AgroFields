@@ -88,6 +88,9 @@ public class MapMenuFragment extends Fragment{
     private final Handler cameraMovingThread = new Handler();
     private Runnable cameraMovingRunnable;
 
+    private final Handler clickHandler = new Handler();
+    private final List<Runnable> clickBackStack = new ArrayList<>();
+    private boolean isClickHandlerEmpty;
 
     private LocationHelper locationHelper;
     private final Handler locationThread = new Handler();
@@ -218,6 +221,8 @@ public class MapMenuFragment extends Fragment{
         cameraFollow = false;
         cameraUserMovement = false;
 
+        isClickHandlerEmpty = true;
+
         if(getArguments() != null && getArguments().containsKey(AppValues.argSnapshotKey)) {
             snapshot = getArguments().getLong(AppValues.argSnapshotKey, -1);
         }else {
@@ -277,7 +282,7 @@ public class MapMenuFragment extends Fragment{
         isInit = true;
 
         clusterManager = new ClusterManager<>(getActivity(), mMap);
-        LandRendered renderer = new LandRendered(getActivity(),mMap,clusterManager,true);
+        LandRendered renderer = new LandRendered(getActivity(),mMap,clusterManager,false);
         renderer.setMinClusterSize(2);
         clusterManager.setRenderer(renderer);
         NonHierarchicalDistanceBasedAlgorithm<ClusterLand> algorithm = new NonHierarchicalDistanceBasedAlgorithm<>();
@@ -305,15 +310,7 @@ public class MapMenuFragment extends Fragment{
             }
             new Handler().post(clusterManager::onCameraIdle);
         });
-        mMap.setOnPolygonClickListener(polygon -> {
-            if(polygon.getTag() != null) {
-                if (polygon.getTag().getClass() == LandData.class) {
-                    onLandPolygonClick((LandData) polygon.getTag());
-                } else if (polygon.getTag().getClass() == LandZoneData.class) {
-                    onLandZonePolygonClick((LandZoneData) polygon.getTag());
-                }
-            }
-        });
+        mMap.setOnMapClickListener(this::onMapClick);
         clusterManager.setOnClusterItemClickListener(this::onClusterItemClick);
         clusterManager.setOnClusterClickListener(this::onClusterClick);
         if(firstLandUpdate){
@@ -472,6 +469,51 @@ public class MapMenuFragment extends Fragment{
     private void onLocationUpdate(Location l) {
         if(l == null) return;
         updateUserLocation(new LatLng(l.getLatitude(), l.getLongitude()));
+    }
+
+
+    private void onMapClick(LatLng point) {
+        Runnable clickRunnable = ()->{
+            LandZone zone = null;
+            Land land = null;
+            for(Land key: data.keySet()){
+                if(key == null || key.getData() == null) continue;
+                if(MapUtil.contains(point,key.getData().getBorder())){
+                    List<LandZone> values = data.getOrDefault(key,null);
+                    if(values == null) values = new ArrayList<>();
+                    for(LandZone value : values){
+                        if(value == null || value.getData() == null) continue;
+                        if(MapUtil.contains(point,value.getData().getBorder())){
+                            zone = value;
+                            break;
+                        }
+                    }
+                    land = key;
+                    break;
+                }
+            }
+            if(zone != null){
+                clickBackStack.clear();
+                isClickHandlerEmpty = true;
+                onLandZonePolygonClick(zone.getData());
+            }else if(land != null){
+                clickBackStack.clear();
+                isClickHandlerEmpty = true;
+                onLandPolygonClick(land.getData());
+            }else{
+                clickBackStack.remove(0);
+                if(clickBackStack.size() > 0){
+                    clickHandler.post(clickBackStack.get(0));
+                }else{
+                    isClickHandlerEmpty = true;
+                }
+            }
+        };
+        clickBackStack.add(clickRunnable);
+        if(isClickHandlerEmpty){
+            isClickHandlerEmpty = false;
+            clickHandler.post(clickBackStack.get(0));
+        }
     }
 
     private boolean onClusterItemClick(ClusterLand item) {
