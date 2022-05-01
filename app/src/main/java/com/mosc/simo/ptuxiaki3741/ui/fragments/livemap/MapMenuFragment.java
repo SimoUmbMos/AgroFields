@@ -489,24 +489,28 @@ public class MapMenuFragment extends Fragment{
                         }
                     }
                     land = key;
+
+                    clickBackStack.clear();
+                    isClickHandlerEmpty = true;
                     break;
                 }
             }
-            if(zone != null){
-                clickBackStack.clear();
-                isClickHandlerEmpty = true;
-                onLandZonePolygonClick(zone.getData());
-            }else if(land != null){
-                clickBackStack.clear();
-                isClickHandlerEmpty = true;
-                onLandPolygonClick(land.getData());
-            }else{
-                clickBackStack.remove(0);
-                if(clickBackStack.size() > 0){
-                    clickHandler.post(clickBackStack.get(0));
+            if(binding != null){
+                if(zone != null){
+                    onLandZonePolygonClick(zone.getData());
+                }else if(land != null){
+                    onLandPolygonClick(land.getData());
                 }else{
-                    isClickHandlerEmpty = true;
+                    clickBackStack.remove(0);
+                    if(clickBackStack.size() > 0){
+                        clickHandler.post(clickBackStack.get(0));
+                    }else{
+                        isClickHandlerEmpty = true;
+                    }
                 }
+            }else{
+                clickBackStack.clear();
+                isClickHandlerEmpty = true;
             }
         };
         clickBackStack.add(clickRunnable);
