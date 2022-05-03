@@ -496,10 +496,12 @@ public class MapMenuFragment extends Fragment{
                 }
             }
             if(binding != null){
-                if(zone != null){
-                    onLandZonePolygonClick(zone.getData());
-                }else if(land != null){
-                    onLandPolygonClick(land.getData());
+                if(land != null){
+                    if(zone != null){
+                        onLandZonePolygonClick(land.getData(), zone.getData());
+                    }else{
+                        onLandPolygonClick(land.getData());
+                    }
                 }else{
                     clickBackStack.remove(0);
                     if(clickBackStack.size() > 0){
@@ -562,25 +564,23 @@ public class MapMenuFragment extends Fragment{
         return false;
     }
 
-    private void onLandPolygonClick(LandData data) {
+    private void onLandPolygonClick(LandData landData) {
         if(cameraFollow) return;
-        if(data.getId() > 0){
-            Bundle args = new Bundle();
-            args.putString(AppValues.argTitle, data.toString());
-            args.putLong(AppValues.argLandID,data.getId());
-            toLandCalendarList(args);
-        }
+        if(landData == null || landData.getId() <= 0) return;
+        Bundle args = new Bundle();
+        args.putString(AppValues.argTitle, landData.toString());
+        args.putLong(AppValues.argLandID,landData.getId());
+        toLandCalendarList(args);
     }
 
-    private void onLandZonePolygonClick(LandZoneData data) {
+    private void onLandZonePolygonClick(LandData landData, LandZoneData zoneData) {
         if(cameraFollow) return;
-        if(data.getId() > 0 && data.getLid() > 0){
-            Bundle args = new Bundle();
-            args.putString(AppValues.argTitle, data.toString());
-            args.putLong(AppValues.argLandID,data.getLid());
-            args.putLong(AppValues.argZoneID,data.getId());
-            toLandCalendarList(args);
-        }
+        if(landData == null || zoneData == null || landData.getId() <= 0 || zoneData.getId() <= 0 || landData.getId() != zoneData.getLid()) return;
+        Bundle args = new Bundle();
+        args.putLong(AppValues.argLandID,landData.getId());
+        args.putLong(AppValues.argZoneID,zoneData.getId());
+        args.putString(AppValues.argTitle, landData + ": " + zoneData);
+        toLandCalendarList(args);
     }
 
     private void zoomOnLands(){

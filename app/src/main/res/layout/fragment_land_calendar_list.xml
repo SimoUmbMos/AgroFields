@@ -26,6 +26,7 @@
             android:id="@+id/ibMenuButton"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/menu_button"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:gravity="bottom|center_horizontal"
@@ -35,25 +36,24 @@
             android:text="@string/filters"
             android:textAppearance="@style/TextAppearance.AppTheme.Caption"
             app:drawableTopCompat="@drawable/ic_menu_filter"
-            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
-            android:gravity="center_vertical"
-            android:maxLines="1"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppTheme.Headline"
+            app:layout_constraintBottom_toBottomOf="@+id/ibMenuButton"
             app:layout_constraintEnd_toStartOf="@+id/ibMenuButton"
             app:layout_constraintStart_toEndOf="@+id/ibClose"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/ibMenuButton" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvNotificationsList"
@@ -63,7 +63,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"/>
+            app:layout_constraintTop_toBottomOf="@+id/ibMenuButton" />
 
         <TextView
             android:id="@+id/tvNotificationListLabel"
