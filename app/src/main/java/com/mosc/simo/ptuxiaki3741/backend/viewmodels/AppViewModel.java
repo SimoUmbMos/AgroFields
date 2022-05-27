@@ -476,6 +476,9 @@ public class AppViewModel extends AndroidViewModel {
         if(land.getData() == null) return;
         if(land.getData().getBorder() == null) return;
 
+        if(land.getData().getSnapshot() < 1){
+            land.getData().setSnapshot(appRepository.getDefaultSnapshot());
+        }
         String landTitle = DataUtil.removeSpecialCharacters(land.getData().getTitle());
         if(landTitle.isEmpty()) return;
         land.getData().setTitle(landTitle);
@@ -537,6 +540,9 @@ public class AppViewModel extends AndroidViewModel {
         if(zone == null) return;
         if(zone.getData() == null) return;
 
+        if(zone.getData().getSnapshot() < 1){
+            zone.getData().setSnapshot(appRepository.getDefaultSnapshot());
+        }
         Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
         if(land == null || land.getData() == null) return;
 
