@@ -7,9 +7,9 @@ public final class AppValues {
     private AppValues(){}
     /* Open XML SDK */
     public static final String sheetLandName = "Lands";
-    public static final String sheetLandNameLowerCase = "lands";
     public static final String sheetLandZoneName = "Zones";
-    public static final String sheetLandZoneNameLowerCase = "zones";
+    public static final String sheetCategoriesName = "Categories";
+    public static final String sheetNotificationsName = "Notifications";
     /* Common Values */
     public static final int defaultPadding = 64;
     public static final int defaultPaddingLite = 16;

@@ -26,6 +26,10 @@ public interface LandDao {
     )
     LandData getLand(long id, long snapshot);
 
+
+    @Query("SELECT * FROM LandData")
+    List<LandData> getLands();
+
     @Query(
             "SELECT * FROM LandData " +
             "WHERE LandData.Snapshot = :snapshot " +

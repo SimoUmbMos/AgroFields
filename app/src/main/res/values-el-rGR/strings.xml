@@ -186,8 +186,8 @@
     <string name="bulk_edit_button_label">Μαζική Επεξεργασία Δεδομένων</string>
     <string name="calendar_categories_button_label">Κατηγορίες Ημερολογίου</string>
     <string name="land_dimen_button_label">Διαστάσεις Χωραφιών</string>
-    <string name="import_database_button_label">Εισαγωγή Χωραφιών</string>
-    <string name="export_database_button_label">Εξαγωγή Χωραφιών</string>
+    <string name="import_database_button_label">Εισαγωγή Δεδομένων</string>
+    <string name="export_database_button_label">Εξαγωγή Δεδομένων</string>
     <string name="import_db_success">Τα δεδομένα ενημερώθηκαν</string>
     <string name="export_db_success">Η εξαγωγή δεδομένων ολοκληρώθηκε</string>
     <string name="import_db_failed">Αποτυχία ενημέρωσης δεδομένων</string>

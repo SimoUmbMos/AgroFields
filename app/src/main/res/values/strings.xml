@@ -195,8 +195,8 @@
     <string name="bulk_edit_button_label">Data Bulk Edit</string>
     <string name="calendar_categories_button_label">Calendar Categories</string>
     <string name="land_dimen_button_label">Lands Dimensions</string>
-    <string name="import_database_button_label">Import Lands</string>
-    <string name="export_database_button_label">Export Lands</string>
+    <string name="import_database_button_label">Import Data</string>
+    <string name="export_database_button_label">Export Data</string>
     <string name="import_db_success">Data Updated</string>
     <string name="export_db_success">Data Export Completed</string>
     <string name="import_db_failed">Failed Data Update</string>

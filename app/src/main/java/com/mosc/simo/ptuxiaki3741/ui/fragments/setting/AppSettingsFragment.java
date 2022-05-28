@@ -30,13 +30,12 @@ import android.widget.ArrayAdapter;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.mosc.simo.ptuxiaki3741.backend.file.openxml.OpenXmlState;
 import com.mosc.simo.ptuxiaki3741.ui.activities.MainActivity;
 import com.mosc.simo.ptuxiaki3741.R;
 import com.mosc.simo.ptuxiaki3741.databinding.FragmentAppSettingsBinding;
 import com.mosc.simo.ptuxiaki3741.backend.file.openxml.OpenXmlDataBaseInput;
 import com.mosc.simo.ptuxiaki3741.data.interfaces.FragmentBackPress;
-import com.mosc.simo.ptuxiaki3741.data.models.Land;
-import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.data.util.FileUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
@@ -47,9 +46,6 @@ import com.mosc.simo.ptuxiaki3741.ui.dialogs.YearPickerDialog;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private static final String TAG = "AppSettingsFragment";
@@ -311,29 +307,17 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         if(backThread == null){
             if(loadingDialog != null) loadingDialog.openDialog();
             backThread = new Thread(()->{
-                List<Land> lands = new ArrayList<>();
-                List<LandZone> zones = new ArrayList<>();
-                List<Land> temp1 = viewModel.getLands().getValue();
-                if(temp1 != null) {
-                    for(Land tempLand : temp1){
-                        if(tempLand != null) lands.add(tempLand);
-                    }
-                }
-                Map<Long,List<LandZone>> temp2 = viewModel.getLandZones().getValue();
-                if(temp2 != null){
-                    temp2.forEach((k,v)-> {
-                        if(v != null)
-                            zones.addAll(v);
-                    });
-                }
+                OpenXmlState state = new OpenXmlState(
+                        viewModel.getAllLands(),
+                        viewModel.getAllLandZones(),
+                        viewModel.getAllNotifications(),
+                        viewModel.getAllCalendarCategories()
+                );
                 boolean result = false;
-                if(lands.size() > 0 || zones.size()>0){
-                    try{
-                        result = FileUtil.dbExportAFileFileXLSX(lands,zones);
-                    }catch (IOException e) {
-                        Log.e(TAG, "onExportDBActionXLSX: ",e);
-                        result = false;
-                    }
+                try{
+                    result = FileUtil.dbExportAFileFileXLSX(state);
+                }catch (IOException e) {
+                    Log.e(TAG, "onExportDBActionXLSX: ",e);
                 }
                 backThread = null;
                 if(loadingDialog != null) loadingDialog.closeDialog();
@@ -349,24 +333,17 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         if(backThread == null){
             if(loadingDialog != null) loadingDialog.openDialog();
             backThread = new Thread(()->{
-                List<Land> lands = new ArrayList<>();
-                List<LandZone> zones = new ArrayList<>();
-                List<Land> temp1 = viewModel.getLands().getValue();
-                if(temp1 != null) {
-                    lands.addAll(temp1);
-                }
-                Map<Long,List<LandZone>> temp2 = viewModel.getLandZones().getValue();
-                if(temp2 != null){
-                    temp2.forEach((k,v)-> zones.addAll(v));
-                }
+                OpenXmlState state = new OpenXmlState(
+                        viewModel.getAllLands(),
+                        viewModel.getAllLandZones(),
+                        viewModel.getAllNotifications(),
+                        viewModel.getAllCalendarCategories()
+                );
                 boolean result = false;
-                if(lands.size() > 0 || zones.size()>0){
-                    try{
-                        result = FileUtil.dbExportAFileFileXLS(lands,zones);
-                    }catch (IOException e) {
-                        Log.e(TAG, "onExportDBActionXLS: ",e);
-                        result = false;
-                    }
+                try{
+                    result = FileUtil.dbExportAFileFileXLS(state);
+                }catch (IOException e) {
+                    Log.e(TAG, "onExportDBActionXLS: ",e);
                 }
                 backThread = null;
                 if(loadingDialog != null) loadingDialog.closeDialog();
@@ -453,12 +430,11 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         if(backThread == null){
             if(loadingDialog != null) loadingDialog.openDialog();
             backThread = new Thread(()->{
-                List<Land> lands = new ArrayList<>();
-                List<LandZone> zones = new ArrayList<>();
+                OpenXmlState state = OpenXmlDataBaseInput.importDB(fis);
                 boolean ImportResult = false;
-                if(OpenXmlDataBaseInput.importDB(fis,lands,zones)){
+                if(state != null){
                     ImportResult = true;
-                    saveData(lands, zones);
+                    saveData(state);
                 }
                 if(loadingDialog != null) loadingDialog.closeDialog();
                 onImportDBResult(ImportResult);
@@ -467,30 +443,6 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
             backThread.start();
         }else{
             showSnackBar(getString(R.string.open_xml_action_not_ended_error));
-        }
-    }
-
-    private void onPermissionWriteResult(boolean permission) {
-        if(permission){
-            if(dialogChecked == 0){
-                onExportDBActionXLS();
-            }else{
-                onExportDBActionXLSX();
-            }
-        }
-    }
-
-    private void saveData(List<Land> lands, List<LandZone> zones) {
-        try {
-            dataIsSaving = true;
-            Log.d(TAG, "saveData: lands size = "+lands.size());
-            Log.d(TAG, "saveData: zones size = "+zones.size());
-            viewModel.importLandsAndZones(lands, zones);
-        } catch (Exception e) {
-            Log.e(TAG, "saveData: ", e);
-        } finally {
-            dataIsSaving = false;
-            Log.d(TAG, "saveData: dataIsSaving = false");
         }
     }
 
@@ -505,6 +457,32 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 }
                 showSnackBar(text);
             });
+        }
+    }
+
+    private void onPermissionWriteResult(boolean permission) {
+        if(permission){
+            if(dialogChecked == 0){
+                onExportDBActionXLS();
+            }else{
+                onExportDBActionXLSX();
+            }
+        }
+    }
+
+    private void saveData(OpenXmlState state) {
+        try {
+            dataIsSaving = true;
+            Log.d(TAG, "saveData: lands size = "+state.getLands().size());
+            Log.d(TAG, "saveData: zones size = "+state.getZones().size());
+            Log.d(TAG, "saveData: categories size = "+state.getCategories().size());
+            Log.d(TAG, "saveData: notifications size = "+state.getNotifications().size());
+            viewModel.importFromOpenXmlFile(state);
+        } catch (Exception e) {
+            Log.e(TAG, "saveData: ", e);
+        } finally {
+            dataIsSaving = false;
+            Log.d(TAG, "saveData: dataIsSaving = false");
         }
     }
 

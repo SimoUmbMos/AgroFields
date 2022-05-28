@@ -12,6 +12,9 @@ import java.util.List;
 
 @Dao
 public interface CalendarCategoriesDao {
+    @Query("SELECT * FROM CalendarCategory WHERE ID = :id LIMIT 1")
+    CalendarCategory getCalendarCategory(long id);
+
     @Query("SELECT * FROM CalendarCategory")
     List<CalendarCategory> getCalendarCategories();
 

@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.R;
+import com.mosc.simo.ptuxiaki3741.backend.file.openxml.OpenXmlState;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
@@ -575,20 +576,56 @@ public class AppViewModel extends AndroidViewModel {
         }
         appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
     }
-    public void importLandsAndZones(List<Land> lands, List<LandZone> zones) {
-        if(lands != null){
-            for(Land land : lands){
-                if(land.getData() == null) continue;
-                importLand(land);
+    private void importCategories(CalendarCategory category) {
+        if(category == null) return;
+        if(category.getId() <= 0){
+            List<CalendarCategory> categories = appRepository.getCalendarCategories();
+            for(CalendarCategory temp :categories){
+                if(temp == null) continue;
+                if(temp.getName().equals(category.getName())){
+                    category.setId(temp.getId());
+                    break;
+                }
             }
         }
-        if(zones != null){
-            for(LandZone zone : zones){
-                if(zone.getData() == null) continue;
-                importZone(zone);
+        appRepository.saveCalendarCategory(category);
+    }
+    private void importNotification(CalendarNotification notification) {
+        if(notification == null) return;
+        if(
+                appRepository.getCalendarCategory(notification.getCategoryID()) != null ||
+                notification.getCategoryID() == AppValues.defaultCalendarCategoryID
+        ){
+            if(notification.getSnapshot() < 1){
+                notification.setSnapshot(appRepository.getDefaultSnapshot());
             }
+            if(notification.getLid() != null){
+                Land land = appRepository.getLand( notification.getLid(), notification.getSnapshot() );
+                if(land == null || land.getData() == null) return;
+                if(notification.getZid() != null){
+                    LandZone zone = appRepository.getLandZone( notification.getZid(), notification.getSnapshot() );
+                    if(zone == null || zone.getData() == null) return;
+                }
+            }
+            if(notification.getId() != 0){
+                DataUtil.removeNotificationToAlertManager(
+                        getApplication().getApplicationContext(),
+                        appRepository.getNotification(notification.getId())
+                );
+            }
+            appRepository.saveNotification(notification);
+            DataUtil.addNotificationToAlertManager(
+                    getApplication().getApplicationContext(),
+                    notification
+            );
         }
-        populateSnapshotLists();
+    }
+    public void importFromOpenXmlFile(OpenXmlState state) {
+        state.getLands().forEach(this::importLand);
+        state.getZones().forEach(this::importZone);
+        state.getCategories().forEach(this::importCategories);
+        state.getNotifications().forEach(this::importNotification);
+        populateLists();
     }
     public void importFromSnapshotToAnotherSnapshot(long snapshotFrom, long snapshotTo){
         long from = snapshotFrom;
@@ -649,5 +686,18 @@ public class AppViewModel extends AndroidViewModel {
 
     public List<Land> getLands(long snapshot){
         return appRepository.getLands(snapshot);
+    }
+
+    public List<Land> getAllLands() {
+        return appRepository.getAllLands();
+    }
+    public List<LandZone> getAllLandZones() {
+        return appRepository.getAllLandZones();
+    }
+    public List<CalendarNotification> getAllNotifications() {
+        return appRepository.getAllNotifications();
+    }
+    public List<CalendarCategory> getAllCalendarCategories() {
+        return appRepository.getAllCalendarCategories();
     }
 }

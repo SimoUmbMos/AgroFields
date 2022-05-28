@@ -15,6 +15,7 @@ import com.mosc.simo.ptuxiaki3741.backend.file.gml.GMLReader;
 import com.mosc.simo.ptuxiaki3741.backend.file.kml.KmlExporter;
 import com.mosc.simo.ptuxiaki3741.backend.file.kml.KmlReader;
 import com.mosc.simo.ptuxiaki3741.backend.file.openxml.OpenXmlDataBaseOutput;
+import com.mosc.simo.ptuxiaki3741.backend.file.openxml.OpenXmlState;
 import com.mosc.simo.ptuxiaki3741.backend.file.shapefile.MyShapeFileReader;
 import com.mosc.simo.ptuxiaki3741.data.enums.FileType;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandFileState;
@@ -274,7 +275,9 @@ public final class FileUtil {
         return false;
     }
 
-    public static boolean dbExportAFileFileXLS(List<Land> lands, List<LandZone> zones) throws IOException {
+    public static boolean dbExportAFileFileXLS(OpenXmlState state) throws IOException {
+        if(state == null) return false;
+
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS
         );
@@ -282,13 +285,12 @@ public final class FileUtil {
         File mFile = new File(path, fileName);
 
         FileOutputStream outputStream = new FileOutputStream(mFile);
-        if(lands.size()>0){
-            return OpenXmlDataBaseOutput.exportDBXLS(outputStream, lands, zones);
-        }
-        return false;
+        return OpenXmlDataBaseOutput.exportDBXLS(outputStream, state);
     }
 
-    public static boolean dbExportAFileFileXLSX(List<Land> lands, List<LandZone> zones) throws IOException {
+    public static boolean dbExportAFileFileXLSX(OpenXmlState state) throws IOException {
+        if(state == null) return false;
+
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS
         );
@@ -296,6 +298,6 @@ public final class FileUtil {
         File mFile = new File(path, fileName);
 
         FileOutputStream outputStream = new FileOutputStream(mFile);
-        return OpenXmlDataBaseOutput.exportDBXLSX(outputStream, lands, zones);
+        return OpenXmlDataBaseOutput.exportDBXLSX(outputStream, state);
     }
 }

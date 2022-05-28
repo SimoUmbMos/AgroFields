@@ -20,6 +20,7 @@ public interface AppRepository {
     List<Long> getSnapshots();
     Snapshot saveSnapshot(long snapshot);
 
+    List<Land> getAllLands();
     List<Land> getLands();
     List<Land> getLands(long snapshot);
     boolean landExist(long id, long snapshot);
@@ -27,6 +28,8 @@ public interface AppRepository {
     void saveLand(Land land);
     void deleteLand(Land land);
 
+    List<LandZone> getAllLandZones();
+    LandZone getLandZone(Long id, long snapshot);
     Map<Long,List<LandZone>> getLandZones();
     Map<Long,List<LandZone>> getLandZones(long snapshot);
     boolean zoneExist(long id, long snapshot);
@@ -37,12 +40,15 @@ public interface AppRepository {
     List<LandHistoryRecord> getLandRecords();
     void saveLandRecord(LandHistoryRecord record);
 
+    List<CalendarNotification> getAllNotifications();
     Map<LocalDate,List<CalendarEntity>> getNotifications();
     CalendarNotification getNotification(long id);
     void saveNotification(CalendarNotification notification);
     void deleteNotification(CalendarNotification notification);
 
+    List<CalendarCategory> getAllCalendarCategories();
     List<CalendarCategory> getCalendarCategories();
+    CalendarCategory getCalendarCategory(long id);
     void saveCalendarCategory(CalendarCategory category);
     void deleteCalendarCategory(CalendarCategory category);
 

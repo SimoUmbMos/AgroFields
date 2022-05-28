@@ -12,6 +12,9 @@ import java.util.List;
 
 @Dao
 public interface LandZoneDao {
+    @Query("SELECT * FROM LandZoneData ")
+    List<LandZoneData> getZones();
+
     @Query(
             "SELECT * FROM LandZoneData " +
             "WHERE LandZoneData.Snapshot = :snapshot "+
@@ -33,6 +36,14 @@ public interface LandZoneDao {
             "ORDER BY ID"
     )
     List<LandZoneData> getLandZonesByLandID(long lid, long snapshot);
+
+
+    @Query(
+            "SELECT * FROM LandZoneData " +
+                    "WHERE LandZoneData.ID = :id AND LandZoneData.Snapshot = :snapshot "+
+                    "LIMIT 1"
+    )
+    LandZoneData getLandZone(long id, long snapshot);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandZoneData zone);

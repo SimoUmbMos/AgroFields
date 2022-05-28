@@ -1,6 +1,8 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.openxml;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarCategory;
+import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
@@ -23,22 +25,31 @@ public final class OpenXmlDataBaseOutput {
 
     public static boolean exportDBXLS(
             FileOutputStream outputStream,
-            List<Land> lands,
-            List<LandZone> zones
+            OpenXmlState state
     ) throws IOException {
         if(outputStream == null)
             return false;
 
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        //Land Sheet
-        if(lands.size()>0){
-            createLandSheetXLS(lands, workbook);
+        //Lands Sheet
+        if(state.getLands().size()>0){
+            createLandSheetXLS(state.getLands(), workbook);
         }
 
-        //Zone Sheet
-        if(zones.size()>0){
-            createLandZoneSheetXLS(zones, workbook);
+        //Zones Sheet
+        if(state.getZones().size()>0){
+            createLandZoneSheetXLS(state.getZones(), workbook);
+        }
+
+        //Categories Sheet
+        if(state.getCategories().size() > 0){
+            createCategoriesSheetXLS(state.getCategories(), workbook);
+        }
+
+        //Notifications Sheet
+        if(state.getNotifications().size() > 0){
+            createNotificationsSheetXLS(state.getNotifications(), workbook);
         }
 
         workbook.write(outputStream);
@@ -55,10 +66,7 @@ public final class OpenXmlDataBaseOutput {
         HSSFSheet sheetLand = workbook.createSheet(AppValues.sheetLandName);
 
         for(Land land:lands){
-            if(land == null)
-                continue;
-
-            if(land.getData() == null)
+            if(land == null || land.getData() == null)
                 continue;
 
             row = sheetLand.createRow(rowNum++);
@@ -96,9 +104,7 @@ public final class OpenXmlDataBaseOutput {
         List<List<LatLng>> points;
         List<LatLng> border;
         for(LandZone zone:zones){
-            if(zone == null)
-                continue;
-            if(zone.getData() == null)
+            if(zone == null || zone.getData() == null)
                 continue;
 
             row = sheetLandZone.createRow(rowNum++);
@@ -133,11 +139,81 @@ public final class OpenXmlDataBaseOutput {
 
         }
     }
+    private static void createCategoriesSheetXLS(List<CalendarCategory> categories, HSSFWorkbook workbook) {
+        Row row;
+        Cell cell;
+        int colNum;
+        int rowNum = 0;
+        HSSFSheet sheetLand = workbook.createSheet(AppValues.sheetCategoriesName);
+
+        for(CalendarCategory category: categories){
+            if(category == null)
+                continue;
+
+            row = sheetLand.createRow(rowNum++);
+            colNum = 0;
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(category.getId());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(category.getName());
+
+            cell = row.createCell(colNum);
+            cell.setCellValue(category.getColorData().toString());
+        }
+    }
+    private static void createNotificationsSheetXLS(List<CalendarNotification> notifications, HSSFWorkbook workbook) {
+        Row row;
+        Cell cell;
+        int colNum;
+        int rowNum = 0;
+        HSSFSheet sheetLand = workbook.createSheet(AppValues.sheetNotificationsName);
+
+        for(CalendarNotification notification: notifications){
+            if(notification == null)
+                continue;
+
+            row = sheetLand.createRow(rowNum++);
+            colNum = 0;
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getId());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getCategoryID());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getSnapshot());
+
+            cell = row.createCell(colNum++);
+            if(notification.getLid() != null){
+                cell.setCellValue(notification.getLid());
+            }else{
+                cell.setCellValue("");
+            }
+
+            cell = row.createCell(colNum++);
+            if(notification.getZid() != null){
+                cell.setCellValue(notification.getZid());
+            }else{
+                cell.setCellValue("");
+            }
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getTitle());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getMessage());
+
+            cell = row.createCell(colNum);
+            cell.setCellValue(notification.getDate().getTime());
+        }
+    }
 
     public static boolean exportDBXLSX(
             FileOutputStream outputStream,
-            List<Land> lands,
-            List<LandZone> zones
+            OpenXmlState state
     ) throws IOException {
         if(outputStream == null)
             return false;
@@ -145,13 +221,23 @@ public final class OpenXmlDataBaseOutput {
         XSSFWorkbook workbook = new XSSFWorkbook();
 
         //Land Sheet
-        if(lands.size()>0){
-            createLandSheetXLSX(lands, workbook);
+        if(state.getLands().size()>0){
+            createLandSheetXLSX(state.getLands(), workbook);
         }
 
         //Zone Sheet
-        if(zones.size()>0){
-            createLandZoneSheetXLSX(zones, workbook);
+        if(state.getZones().size()>0){
+            createLandZoneSheetXLSX(state.getZones(), workbook);
+        }
+
+        //Categories Sheet
+        if(state.getCategories().size() > 0){
+            createCategoriesSheetXLSX(state.getCategories(), workbook);
+        }
+
+        //Notifications Sheet
+        if(state.getNotifications().size() > 0){
+            createNotificationsSheetXLSX(state.getNotifications(), workbook);
         }
 
         workbook.write(outputStream);
@@ -168,10 +254,7 @@ public final class OpenXmlDataBaseOutput {
         XSSFSheet sheetLand = workbook.createSheet(AppValues.sheetLandName);
 
         for(Land land:lands){
-            if(land == null)
-                continue;
-
-            if(land.getData() == null)
+            if(land == null || land.getData() == null)
                 continue;
 
             row = sheetLand.createRow(rowNum++);
@@ -209,9 +292,7 @@ public final class OpenXmlDataBaseOutput {
         List<List<LatLng>> points;
         List<LatLng> border;
         for(LandZone zone:zones){
-            if(zone == null)
-                continue;
-            if(zone.getData() == null)
+            if(zone == null || zone.getData() == null)
                 continue;
 
             row = sheetLandZone.createRow(rowNum++);
@@ -244,6 +325,77 @@ public final class OpenXmlDataBaseOutput {
             points.add(border);
             cell.setCellValue(DataUtil.pointsPrettyPrint(points));
 
+        }
+    }
+    private static void createCategoriesSheetXLSX(List<CalendarCategory> categories, XSSFWorkbook workbook) {
+        Row row;
+        Cell cell;
+        int colNum;
+        int rowNum = 0;
+        XSSFSheet sheetLand = workbook.createSheet(AppValues.sheetCategoriesName);
+
+        for(CalendarCategory category: categories){
+            if(category == null)
+                continue;
+
+            row = sheetLand.createRow(rowNum++);
+            colNum = 0;
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(category.getId());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(category.getName());
+
+            cell = row.createCell(colNum);
+            cell.setCellValue(category.getColorData().toString());
+        }
+    }
+    private static void createNotificationsSheetXLSX(List<CalendarNotification> notifications, XSSFWorkbook workbook) {
+        Row row;
+        Cell cell;
+        int colNum;
+        int rowNum = 0;
+        XSSFSheet sheetLand = workbook.createSheet(AppValues.sheetNotificationsName);
+
+        for(CalendarNotification notification: notifications){
+            if(notification == null)
+                continue;
+
+            row = sheetLand.createRow(rowNum++);
+            colNum = 0;
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getId());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getCategoryID());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getSnapshot());
+
+            cell = row.createCell(colNum++);
+            if(notification.getLid() != null){
+                cell.setCellValue(notification.getLid());
+            }else{
+                cell.setCellValue("");
+            }
+
+            cell = row.createCell(colNum++);
+            if(notification.getZid() != null){
+                cell.setCellValue(notification.getZid());
+            }else{
+                cell.setCellValue("");
+            }
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getTitle());
+
+            cell = row.createCell(colNum++);
+            cell.setCellValue(notification.getMessage());
+
+            cell = row.createCell(colNum);
+            cell.setCellValue(notification.getDate().getTime());
         }
     }
 }

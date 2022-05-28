@@ -30,7 +30,6 @@ public class AppRepositoryImpl implements AppRepository {
         this.snapshot = LocalDate.now().getYear();
     }
 
-
     @Override
     public void setDefaultSnapshot(long snapshot){
         Snapshot temp = saveSnapshot(snapshot);
@@ -41,7 +40,6 @@ public class AppRepositoryImpl implements AppRepository {
     public long getDefaultSnapshot(){
         return snapshot;
     }
-
 
     @Override
     public List<Long> getSnapshots(){
@@ -68,6 +66,14 @@ public class AppRepositoryImpl implements AppRepository {
         return db.snapshotDao().getSnapshot(snapshot);
     }
 
+    @Override
+    public List<Land> getAllLands() {
+        List<Land> ans = new ArrayList<>();
+        List<LandData> temp = db.landDao().getLands();
+        if(temp != null)
+            temp.forEach(it -> ans.add(new Land(it)));
+        return ans;
+    }
 
     @Override
     public List<Land> getLands() {
@@ -146,6 +152,22 @@ public class AppRepositoryImpl implements AppRepository {
             db.landDao().delete(land.getData());
     }
 
+    @Override
+    public List<LandZone> getAllLandZones() {
+        List<LandZone> ans = new ArrayList<>();
+        List<LandZoneData> temp = db.landZoneDao().getZones();
+        if(temp != null)
+            temp.forEach(it -> ans.add(new LandZone(it)));
+        return ans;
+    }
+
+    @Override
+    public LandZone getLandZone(Long id, long snapshot) {
+        LandZoneData data = db.landZoneDao().getLandZone(id,snapshot);
+        if(data != null)
+            return new LandZone(data);
+        return null;
+    }
 
     @Override
     public Map<Long,List<LandZone>> getLandZones(){
@@ -250,7 +272,6 @@ public class AppRepositoryImpl implements AppRepository {
             db.landZoneDao().delete(zone.getData());
     }
 
-
     @Override
     public List<LandHistoryRecord> getLandRecords() {
         List<LandHistoryRecord> ans = new ArrayList<>();
@@ -305,6 +326,14 @@ public class AppRepositoryImpl implements AppRepository {
         }
     }
 
+    @Override
+    public List<CalendarNotification> getAllNotifications() {
+        List<CalendarNotification> ans = new ArrayList<>();
+        List<CalendarNotification> temp = db.calendarNotificationDao().getNotifications();
+        if(temp != null)
+            ans.addAll(temp);
+        return ans;
+    }
 
     @Override
     public Map<LocalDate, List<CalendarEntity>> getNotifications() {
@@ -370,6 +399,14 @@ public class AppRepositoryImpl implements AppRepository {
             db.calendarNotificationDao().delete(notification);
     }
 
+    @Override
+    public List<CalendarCategory> getAllCalendarCategories() {
+        List<CalendarCategory> ans = new ArrayList<>();
+        List<CalendarCategory> temp = db.calendarCategoriesDao().getCalendarCategories();
+        if(temp != null)
+            ans.addAll(temp);
+        return ans;
+    }
 
     @Override
     public List<CalendarCategory> getCalendarCategories() {
@@ -377,6 +414,11 @@ public class AppRepositoryImpl implements AppRepository {
         if(categories == null)
             categories = new ArrayList<>();
         return categories;
+    }
+
+    @Override
+    public CalendarCategory getCalendarCategory(long id) {
+        return db.calendarCategoriesDao().getCalendarCategory(id);
     }
 
     @Override
