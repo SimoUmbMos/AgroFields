@@ -128,8 +128,8 @@
     <string name="edit_img">Edit Image</string>
     <string name="opacity_img">Change Opacity</string>
     <string name="file_actions_group_title">File Actions</string>
-    <string name="add_to_land_label">Add Land From File</string>
-    <string name="remove_from_land_label">Subtract Land From File</string>
+    <string name="add_to_land_label">Add Land</string>
+    <string name="remove_from_land_label">Subtract Land</string>
     <string name="land_actions_group_title">Land Actions</string>
     <string name="delete_land">Delete Land</string>
     <string name="delete_land_holes">Delete Holes</string>

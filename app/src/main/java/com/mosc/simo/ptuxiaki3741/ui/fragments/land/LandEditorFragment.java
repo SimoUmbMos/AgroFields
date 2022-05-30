@@ -195,9 +195,13 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                                     AppValues.argLands,
                                     data
                             );
+                            LandData temp = currLand.getData();
+                            temp.setBorder(points);
+                            temp.setHoles(holes);
+                            temp.setColor(color);
                             args.putParcelable(
                                     AppValues.argLand,
-                                    new LandData(currLand.getData())
+                                    temp
                             );
                             args.putSerializable(
                                     AppValues.argAction,

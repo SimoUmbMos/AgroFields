@@ -119,8 +119,8 @@
     <string name="edit_img">Επεξεργασία εικόνας</string>
     <string name="opacity_img">Αλλαγή αδιαφάνειας</string>
     <string name="file_actions_group_title">Ενέργειες αρχείου</string>
-    <string name="add_to_land_label">Προσθήκη από αρχείο</string>
-    <string name="remove_from_land_label">Αφαίρεση από αρχείο</string>
+    <string name="add_to_land_label">Προσθήκη χωραφιού</string>
+    <string name="remove_from_land_label">Αφαίρεση χωραφιού</string>
     <string name="land_actions_group_title">Ενέργειες χωραφιού</string>
     <string name="delete_land">Διαγραφή χωραφιού</string>
     <string name="delete_land_holes">Διαγραφή Τρυπών</string>
