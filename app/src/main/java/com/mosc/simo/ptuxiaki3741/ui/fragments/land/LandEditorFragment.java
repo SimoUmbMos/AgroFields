@@ -195,7 +195,7 @@ public class LandEditorFragment extends Fragment implements FragmentBackPress, V
                                     AppValues.argLands,
                                     data
                             );
-                            LandData temp = currLand.getData();
+                            LandData temp = new LandData(currLand.getData());
                             temp.setBorder(points);
                             temp.setHoles(holes);
                             temp.setColor(color);
