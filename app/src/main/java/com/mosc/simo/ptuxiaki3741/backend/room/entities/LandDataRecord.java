@@ -3,7 +3,7 @@ package com.mosc.simo.ptuxiaki3741.backend.room.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.enums.LandDBAction;
@@ -15,26 +15,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(
-        tableName = "LandDataRecord",
-        primaryKeys = {
-            "ID",
-            "Snapshot"
-        },
-        indices = {
-                @Index(
-                        value = {"ID","Snapshot"},
-                        unique = true
-                )
-        }
-)
+@Entity(tableName = "LandDataRecord")
 public class LandDataRecord {
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private long id;
-    @ColumnInfo(name = "Snapshot")
-    private long snapshot;
     @ColumnInfo(name = "LandID")
     private final long landID;
+    @ColumnInfo(name = "LandYear")
+    private final long landYear;
     @ColumnInfo(name = "LandTitle")
     private final String landTitle;
     @ColumnInfo(name = "LandTags")
@@ -53,7 +42,7 @@ public class LandDataRecord {
     @Ignore
     public LandDataRecord(LandData land, LandDBAction actionID, Date date) {
         this.id = 0;
-        this.snapshot = land.getSnapshot();
+        this.landYear = land.getYear();
         this.landID = land.getId();
         this.landTitle = land.getTitle();
         this.landTags = land.getTags();
@@ -66,13 +55,13 @@ public class LandDataRecord {
         setHoles(land.getHoles());
     }
 
-    public LandDataRecord(long id, long snapshot,
+    public LandDataRecord(long id, long landYear,
                           long landID, String landTitle, String landTags, ColorData landColor,
                           List<LatLng> border, List<List<LatLng>> holes,
                           LandDBAction actionID, Date date
     ) {
         this.id = id;
-        this.snapshot = snapshot;
+        this.landYear = landYear;
         this.landID = landID;
         this.landTitle = landTitle;
         this.landTags = landTags;
@@ -112,8 +101,8 @@ public class LandDataRecord {
     public List<List<LatLng>> getHoles() {
         return this.holes;
     }
-    public long getSnapshot() {
-        return snapshot;
+    public long getLandYear() {
+        return landYear;
     }
 
     public void setId(long id) {
@@ -128,9 +117,6 @@ public class LandDataRecord {
         this.holes.clear();
         this.holes.addAll(holes);
     }
-    public void setSnapshot(long snapshot) {
-        this.snapshot = snapshot;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -139,7 +125,7 @@ public class LandDataRecord {
         LandDataRecord that = (LandDataRecord) o;
         return
                 id == that.id &&
-                snapshot == that.snapshot &&
+                landYear == that.landYear &&
                 landID == that.landID &&
                 actionID == that.actionID &&
                 landTitle.equals(that.landTitle) &&
@@ -151,6 +137,6 @@ public class LandDataRecord {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, snapshot, landID, actionID, landTitle, landTags, date, border, holes);
+        return Objects.hash(id, landYear, landID, actionID, landTitle, landTags, date, border, holes);
     }
 }

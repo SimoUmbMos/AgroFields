@@ -14,10 +14,10 @@ import java.util.List;
 public interface LandZoneHistoryDao {
     @Query(
             "SELECT * FROM LandZoneDataRecord " +
-            "WHERE RecordID = :id AND RecordSnapshot = :snapshot "+
+            "WHERE RecordID = :rid "+
             "ORDER BY ID"
     )
-    List<LandZoneDataRecord> getZoneRecordByRecordIdAndSnapshot(long id, long snapshot);
+    List<LandZoneDataRecord> getZoneRecordByRecordId(long rid);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandZoneDataRecord record);

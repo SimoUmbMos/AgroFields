@@ -14,17 +14,24 @@ import java.util.List;
 public interface LandDao {
     @Query(
             "SELECT EXISTS( " +
-                    "SELECT * FROM LandData " +
-                    "WHERE ID = :id AND LandData.Snapshot = :snapshot " +
-                    ")"
+                    "SELECT * " +
+                    "FROM LandData " +
+                    "WHERE ID = :id " +
+            ")"
     )
-    boolean landExist(long id, long snapshot);
+    boolean landExist(long id);
+
+    @Query(
+            "SELECT DISTINCT Year " +
+            "FROM LandData "
+    )
+    List<Long> getYears();
 
     @Query(
             "SELECT * FROM LandData " +
-            "WHERE ID = :id AND LandData.Snapshot = :snapshot "
+            "WHERE ID = :id "
     )
-    LandData getLand(long id, long snapshot);
+    LandData getLand(long id);
 
 
     @Query("SELECT * FROM LandData")
@@ -32,10 +39,10 @@ public interface LandDao {
 
     @Query(
             "SELECT * FROM LandData " +
-            "WHERE LandData.Snapshot = :snapshot " +
+            "WHERE LandData.Year = :year " +
             "ORDER BY ID"
     )
-    List<LandData> getLands(long snapshot);
+    List<LandData> getLands(long year);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandData land);

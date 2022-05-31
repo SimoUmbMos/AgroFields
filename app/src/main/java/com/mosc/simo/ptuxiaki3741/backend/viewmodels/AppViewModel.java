@@ -41,6 +41,7 @@ import java.util.TreeMap;
 public class AppViewModel extends AndroidViewModel {
     public static final String TAG = "LandViewModel";
     private final AppRepository appRepository;
+    private long defaultYear;
 
     private final MutableLiveData<List<Long>> snapshots = new MutableLiveData<>();
     private final MutableLiveData<List<Land>> lands = new MutableLiveData<>();
@@ -56,6 +57,7 @@ public class AppViewModel extends AndroidViewModel {
         super(application);
         RoomDatabase db = MainApplication.getRoomDb(application);
         appRepository = new AppRepositoryImpl(db);
+        defaultYear = LocalDate.now().getYear();
     }
 
     public LiveData<List<Long>> getSnapshots(){
@@ -82,12 +84,12 @@ public class AppViewModel extends AndroidViewModel {
         return notifications;
     }
 
-    public void setDefaultSnapshot(long snapshot){
-        appRepository.setDefaultSnapshot(snapshot);
+    public void setDefaultSnapshot(long year){
+        defaultYear = year;
         populateLists();
     }
     public long getDefaultSnapshot(){
-        return appRepository.getDefaultSnapshot();
+        return defaultYear;
     }
 
     private void populateLists() {
@@ -105,48 +107,45 @@ public class AppViewModel extends AndroidViewModel {
         populateLandsRecords();
     }
     private void populateDataSnapshots() {
-        List<Long> snapshotsList = appRepository.getSnapshots();
+        List<Long> snapshotsList = appRepository.getLandYears();
         if(snapshotsList == null)
             snapshotsList = new ArrayList<>();
         snapshots.postValue(snapshotsList);
     }
     private void populateLands() {
-        List<Land> landList = appRepository.getLands();
+        List<Land> landList = appRepository.getLands(getDefaultSnapshot());
         if(landList == null)
             landList = new ArrayList<>();
         lands.postValue(landList);
     }
     private void populateLandZones(){
-        Map<Long,List<LandZone>> zoneList = appRepository.getLandZones();
+        Map<Long,List<LandZone>> zoneList = appRepository.getLandZones(getDefaultSnapshot());
         if(zoneList == null)
             zoneList = new HashMap<>();
         landZones.postValue(zoneList);
     }
     private void populateLandsRecords() {
-        List<LandHistoryRecord> landsHistoryList = appRepository.getLandRecords();
+        List<LandHistoryRecord> landsHistoryList = appRepository.getLandRecords(getDefaultSnapshot());
         if(landsHistoryList == null)
             landsHistoryList = new ArrayList<>();
         landsHistory.postValue(landsHistoryList);
     }
     private void populateCalendarCategories() {
         List<CalendarCategory> categories = appRepository.getCalendarCategories();
-        if(categories == null)
-            categories = new ArrayList<>();
+        if(categories == null) categories = new ArrayList<>();
         categories.add(0,getDefaultCategory());
         calendarCategories.postValue(categories);
     }
     private void populateNotifications() {
         Map<LocalDate,List<CalendarEntity>> notificationsList = appRepository.getNotifications();
-        if(notificationsList == null)
-            notificationsList = new TreeMap<>();
+        if(notificationsList == null) notificationsList = new TreeMap<>();
         CalendarCategory defaultCategory = getDefaultCategory();
-        notificationsList.forEach((date,notifications)->{
-            for(CalendarEntity entity : notifications){
-                if(entity.getCategory() != null) continue;
-                entity.setCategory(defaultCategory);
-                entity.getNotification().setCategoryID(defaultCategory.getId());
+        notificationsList.forEach((date,notifications) -> notifications.forEach(notification -> {
+            if(notification.getCategory() == null){
+                notification.setCategory(defaultCategory);
+                notification.getNotification().setCategoryID(defaultCategory.getId());
             }
-        });
+        }));
         notifications.postValue(notificationsList);
     }
 
@@ -155,18 +154,15 @@ public class AppViewModel extends AndroidViewModel {
         if(land.getData() == null) return;
 
         LandDBAction action = LandDBAction.CREATE;
-        if(land.getData().getId() != 0){
-            if(appRepository.landExist(land.getData().getId(),land.getData().getSnapshot())){
-                action = LandDBAction.UPDATE;
-            }
+        if(land.getData().getId() != 0 && appRepository.landExist(land.getData().getId())){
+            action = LandDBAction.UPDATE;
         }
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        List<LandZone> zones = appRepository.getLandZonesByLandID(land.getData().getId());
+        List<CalendarNotification> notifications = appRepository.getAllNotificationsByLid(land.getData().getId());
 
         List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(land.getData().getBorder());
         List<List<LatLng>> tempHoles = new ArrayList<>();
-        for(List<LatLng> hole : land.getData().getHoles()){
-            tempHoles.add(DataUtil.removeSamePointStartEnd(hole));
-        }
+        land.getData().getHoles().forEach(it-> tempHoles.add(DataUtil.removeSamePointStartEnd(it)));
         land.getData().setBorder(tempPointList);
         land.getData().setHoles(tempHoles);
 
@@ -205,44 +201,46 @@ public class AppViewModel extends AndroidViewModel {
         }
 
         appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
+        notifications.forEach(notification -> {
+            removeNotificationAction(notification);
+            saveNotificationAction(notification);
+        });
         populateLists();
     }
     public void bulkEditLandData(List<LandData> data){
         if(data == null) return;
+        data.forEach(it->{
+            List<LandZone> zones = appRepository.getLandZonesByLandID(it.getId());
+            List<CalendarNotification> notifications = appRepository.getAllNotificationsByLid(it.getId());
 
-        for(LandData tempData : data){
-            if(tempData == null) continue;
-
-            LandDBAction action = LandDBAction.BULK_EDITED;
-            List<LandZone> zones = appRepository.getLandZonesByLandData(tempData);
-            appRepository.saveLand(new Land(tempData));
+            appRepository.saveLand(new Land(it));
             LandDataRecord landRecord = new LandDataRecord(
-                    tempData,
-                    action,
+                    it,
+                    LandDBAction.BULK_EDITED,
                     new Date()
             );
             List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
-            for(LandZone zone : zones){
-                if(zone == null) continue;
-                if(zone.getData() == null) continue;
-
+            zones.forEach(zone->{
                 appRepository.saveZone(zone);
                 zoneDataRecords.add(new LandZoneDataRecord(landRecord,zone.getData()));
-            }
+            });
             appRepository.saveLandRecord(new LandHistoryRecord(landRecord,zoneDataRecords));
-        }
+            notifications.forEach(notification -> {
+                removeNotificationAction(notification);
+                saveNotificationAction(notification);
+            });
+        });
         populateLists();
     }
     private boolean removeLandAction(Land land) {
         if(land == null) return false;
         if(land.getData() == null) return false;
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
-        if(zones != null && zones.size() > 0){
-            for(LandZone zone : zones){
-                if(zone == null || zone.getData() == null) continue;
-                return false;
-            }
-        }
+        if(appRepository.getLandZonesByLandID(
+                land.getData().getId()
+        ).size() > 0) return false;
+        if(appRepository.getAllNotificationsByLid(
+                land.getData().getId()
+        ).size() > 0) return false;
 
         LandDataRecord landRecord = new LandDataRecord(
                 land.getData(),
@@ -264,12 +262,19 @@ public class AppViewModel extends AndroidViewModel {
     }
     public boolean removeLands(List<Land> lands) {
         if(lands == null) return false;
-
         boolean ans = true;
+
+        boolean needUpdate = false;
         for(Land land:lands){
-            if(!removeLandAction(land)) ans = false;
+            if(removeLandAction(land)) {
+                needUpdate = true;
+            }else{
+                ans = false;
+            }
         }
-        populateLists();
+        if(needUpdate)
+            populateLists();
+
         return ans;
     }
 
@@ -277,20 +282,20 @@ public class AppViewModel extends AndroidViewModel {
         if(zone == null) return;
         if(zone.getData() == null) return;
 
-        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        Land land = appRepository.getLand(zone.getData().getLid());
         if(land == null || land.getData() == null) return;
 
-        zone.getData().setSnapshot(land.getData().getSnapshot());
-
         LandDBAction action = LandDBAction.ZONE_ADDED;
-        if(zone.getData().getId() != 0){
-            if(appRepository.zoneExist(zone.getData().getId(),zone.getData().getSnapshot())){
-                action = LandDBAction.ZONE_UPDATED;
-            }
+        if(zone.getData().getId() != 0 && appRepository.zoneExist(zone.getData().getId())){
+            action = LandDBAction.ZONE_UPDATED;
         }
 
+        List<CalendarNotification> notifications = appRepository.getAllNotificationsByZid(
+                zone.getData().getId()
+        );
+
         List<LatLng> tempPointList = DataUtil.removeSamePointStartEnd(zone.getData().getBorder());
-        if( tempPointList.size() < 3 ) return;
+        if(tempPointList.size() < 3) return;
         zone.getData().setBorder(tempPointList);
         appRepository.saveZone(zone);
 
@@ -300,25 +305,24 @@ public class AppViewModel extends AndroidViewModel {
                 new Date()
         );
         List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
-        for(LandZone temp : zones){
-            zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
-        }
+        List<LandZone> zones = appRepository.getLandZonesByLandID(land.getData().getId());
+        zones.forEach(it -> zoneRecords.add(new LandZoneDataRecord(landRecord, it.getData())));
         appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
-
+        notifications.forEach(notification -> {
+            removeNotificationAction(notification);
+            saveNotificationAction(notification);
+        });
         populateLists();
     }
     public void bulkEditZoneData(List<LandZoneData> data){
         if(data == null) return;
-
-        for(LandZoneData zone : data){
-            if(zone == null) continue;
-
-            Land land = appRepository.getLand( zone.getLid(), zone.getSnapshot() );
+        data.forEach(it->{
+            Land land = appRepository.getLand(it.getLid());
             if(land == null) return;
-
-            appRepository.saveZone(new LandZone(zone));
-
+            List<CalendarNotification> notifications = appRepository.getAllNotificationsByZid(
+                    it.getId()
+            );
+            appRepository.saveZone(new LandZone(it));
             LandDBAction action = LandDBAction.ZONE_UPDATED;
             LandDataRecord landRecord = new LandDataRecord(
                     land.getData(),
@@ -326,19 +330,24 @@ public class AppViewModel extends AndroidViewModel {
                     new Date()
             );
             List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
-            List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
-            for(LandZone temp : zones){
-                zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
-            }
+            List<LandZone> zones = appRepository.getLandZonesByLandID(land.getData().getId());
+            zones.forEach(zone-> zoneRecords.add(new LandZoneDataRecord(landRecord, zone.getData())));
             appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
-        }
+            notifications.forEach(notification -> {
+                removeNotificationAction(notification);
+                saveNotificationAction(notification);
+            });
+        });
         populateLists();
     }
     private boolean removeZoneAction(LandZone zone){
         if(zone == null) return false;
         if(zone.getData() == null) return false;
+        if(appRepository.getAllNotificationsByZid(
+                zone.getData().getId()
+        ).size() > 0) return false;
 
-        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        Land land = appRepository.getLand(zone.getData().getLid());
         appRepository.deleteZone(zone);
         if(land != null) {
             LandDataRecord landRecord = new LandDataRecord(
@@ -346,11 +355,9 @@ public class AppViewModel extends AndroidViewModel {
                     LandDBAction.ZONE_REMOVED,
                     new Date()
             );
+            List<LandZone> zones = appRepository.getLandZonesByLandID(land.getData().getId());
             List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
-            List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
-            for(LandZone temp : zones){
-                zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
-            }
+            zones.forEach(it-> zoneRecords.add(new LandZoneDataRecord(landRecord, it.getData())));
             appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zoneRecords));
         }
         return true;
@@ -366,17 +373,26 @@ public class AppViewModel extends AndroidViewModel {
         if(zones == null) return false;
         boolean ans = true;
 
+        boolean needUpdate = false;
         for(LandZone zone:zones){
-            if(!removeZoneAction(zone)) ans = false;
+            if(removeZoneAction(zone)) {
+                needUpdate = true;
+            }else{
+                ans = false;
+            }
         }
-        if(ans) populateLists();
+        if(needUpdate)
+            populateLists();
+
         return ans;
     }
 
     public void restoreLand(Land land, List<LandZone> zones) {
         if(land == null) return;
         if(land.getData() == null) return;
-        if(land.getData().getId() <= 0) return;
+        if(land.getData().getId() == 0) return;
+
+        List<CalendarNotification> notifications = appRepository.getAllNotificationsByLid(land.getData().getId());
 
         LandDataRecord landRecord = new LandDataRecord(
                 land.getData(),
@@ -388,22 +404,29 @@ public class AppViewModel extends AndroidViewModel {
         appRepository.saveLand(land);
 
         if(zones == null) zones = new ArrayList<>();
-        List<LandZone> zonesDelete =appRepository.getLandZonesByLandData(land.getData());
-        for(LandZone zone : zonesDelete){
-            appRepository.deleteZone(zone);
-        }
-        for(LandZone zone : zones){
-            appRepository.saveZone(zone);
-            zonesRecord.add(new LandZoneDataRecord(landRecord, zone.getData()));
-        }
+        appRepository.getLandZonesByLandID(land.getData().getId())
+                .forEach(appRepository::deleteZone);
+        zones.forEach(it->{
+            appRepository.saveZone(it);
+            zonesRecord.add(new LandZoneDataRecord(landRecord, it.getData()));
+        });
 
         appRepository.saveLandRecord(new LandHistoryRecord(landRecord, zonesRecord));
+        notifications.forEach(notification -> {
+            removeNotificationAction(notification);
+            saveNotificationAction(notification);
+        });
         populateLists();
     }
 
-    public void saveNotification(CalendarNotification notification) {
-        if(notification == null) return;
-
+    private boolean saveNotificationAction(CalendarNotification notification) {
+        if(notification == null) return false;
+        if(notification.getLid() != null && !appRepository.landExist(notification.getLid())){
+            return false;
+        }
+        if(notification.getZid() != null && !appRepository.zoneExist(notification.getZid())){
+            return false;
+        }
         if(notification.getId() != 0){
             DataUtil.removeNotificationToAlertManager(
                     getApplication().getApplicationContext(),
@@ -411,21 +434,29 @@ public class AppViewModel extends AndroidViewModel {
             );
         }
         appRepository.saveNotification(notification);
-        populateLists();
-        DataUtil.addNotificationToAlertManager(
-                getApplication().getApplicationContext(),
-                notification
-        );
+        return true;
     }
-    public void removeNotification(CalendarNotification notification) {
-        if(notification == null) return;
-
+    private boolean removeNotificationAction(CalendarNotification notification) {
+        if(notification == null) return false;
         DataUtil.removeNotificationToAlertManager(
                 getApplication().getApplicationContext(),
                 notification
         );
         appRepository.deleteNotification(notification);
-        populateLists();
+        return true;
+    }
+    public void saveNotification(CalendarNotification notification) {
+        if(saveNotificationAction(notification)){
+            populateLists();
+            DataUtil.addNotificationToAlertManager(
+                    getApplication().getApplicationContext(),
+                    notification
+            );
+        }
+    }
+    public void removeNotification(CalendarNotification notification) {
+        if(removeNotificationAction(notification))
+            populateLists();
     }
 
     public CalendarCategory getDefaultCategory(){
@@ -437,7 +468,7 @@ public class AppViewModel extends AndroidViewModel {
     }
     public void saveCalendarCategory(CalendarCategory category){
         if(category == null) return;
-        if(category.getId() <= 0){
+        if(category.getId() == 0){
             List<CalendarCategory> categories = appRepository.getCalendarCategories();
             for(CalendarCategory temp :categories){
                 if(temp == null) continue;
@@ -451,18 +482,21 @@ public class AppViewModel extends AndroidViewModel {
         populateLists();
     }
     public boolean removeCalendarCategory(CalendarCategory category){
-        if(category != null && !appRepository.calendarCategoryHasNotifications(category.getId())) {
+        if(category == null)
+            return false;
+        if(!appRepository.calendarCategoryHasNotifications(category.getId())) {
             appRepository.deleteCalendarCategory(category);
             populateLists();
             return true;
-        }
-        return false;
+        }else
+            return false;
     }
     public void removeCalendarCategories(List<CalendarCategory> categories) {
         if(categories == null) return;
         for(CalendarCategory category : categories){
             if(category == null) continue;
-            if(!appRepository.calendarCategoryHasNotifications(category.getId())) appRepository.deleteCalendarCategory(category);
+            if(!appRepository.calendarCategoryHasNotifications(category.getId()))
+                appRepository.deleteCalendarCategory(category);
         }
         populateLists();
     }
@@ -477,8 +511,8 @@ public class AppViewModel extends AndroidViewModel {
         if(land.getData() == null) return;
         if(land.getData().getBorder() == null) return;
 
-        if(land.getData().getSnapshot() < 1){
-            land.getData().setSnapshot(appRepository.getDefaultSnapshot());
+        if(land.getData().getYear() < 1){
+            land.getData().setYear(getDefaultSnapshot());
         }
         String landTitle = DataUtil.removeSpecialCharacters(land.getData().getTitle());
         if(landTitle.isEmpty()) return;
@@ -500,7 +534,7 @@ public class AppViewModel extends AndroidViewModel {
         }
         land.getData().setHoles(tempHoles);
 
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        List<LandZone> zones = appRepository.getLandZonesByLandID(land.getData().getId());
         appRepository.saveLand(land);
         LandDataRecord landRecord = new LandDataRecord(
                 land.getData(),
@@ -541,10 +575,7 @@ public class AppViewModel extends AndroidViewModel {
         if(zone == null) return;
         if(zone.getData() == null) return;
 
-        if(zone.getData().getSnapshot() < 1){
-            zone.getData().setSnapshot(appRepository.getDefaultSnapshot());
-        }
-        Land land = appRepository.getLand( zone.getData().getLid(), zone.getData().getSnapshot() );
+        Land land = appRepository.getLand( zone.getData().getLid() );
         if(land == null || land.getData() == null) return;
 
         String zoneTitle = DataUtil.removeSpecialCharacters(zone.getData().getTitle());
@@ -558,7 +589,12 @@ public class AppViewModel extends AndroidViewModel {
         List<String> tags = LandUtil.getLandZoneTags(zone.getData());
         zone.getData().setTags(LandUtil.getTagsString(tags));
 
-        List<LatLng> tempBorder = DataUtil.formatZonePoints(zone.getData().getBorder(), land, appRepository.getLandZonesByLandData(land.getData()));
+        List<LatLng> tempBorder = DataUtil.formatZonePoints(
+                zone.getData().getBorder(),
+                land,
+                appRepository.getLandZonesByLandID(
+                        land.getData().getId()
+                ));
         if( tempBorder.size() == 0) return;
         zone.getData().setBorder(tempBorder);
 
@@ -570,7 +606,9 @@ public class AppViewModel extends AndroidViewModel {
                 new Date()
         );
         List<LandZoneDataRecord> zoneRecords = new ArrayList<>();
-        List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+        List<LandZone> zones = appRepository.getLandZonesByLandID(
+                land.getData().getId()
+        );
         for(LandZone temp : zones){
             zoneRecords.add(new LandZoneDataRecord(landRecord, temp.getData()));
         }
@@ -578,7 +616,7 @@ public class AppViewModel extends AndroidViewModel {
     }
     private void importCategories(CalendarCategory category) {
         if(category == null) return;
-        if(category.getId() <= 0){
+        if(category.getId() == 0){
             List<CalendarCategory> categories = appRepository.getCalendarCategories();
             for(CalendarCategory temp :categories){
                 if(temp == null) continue;
@@ -592,18 +630,20 @@ public class AppViewModel extends AndroidViewModel {
     }
     private void importNotification(CalendarNotification notification) {
         if(notification == null) return;
+
         if(
                 appRepository.getCalendarCategory(notification.getCategoryID()) != null ||
                 notification.getCategoryID() == AppValues.defaultCalendarCategoryID
         ){
-            if(notification.getSnapshot() < 1){
-                notification.setSnapshot(appRepository.getDefaultSnapshot());
+            if(notification.getYear() < 1){
+                notification.setYear(getDefaultSnapshot());
             }
             if(notification.getLid() != null){
-                Land land = appRepository.getLand( notification.getLid(), notification.getSnapshot() );
+                Land land = appRepository.getLand(notification.getLid());
                 if(land == null || land.getData() == null) return;
+
                 if(notification.getZid() != null){
-                    LandZone zone = appRepository.getLandZone( notification.getZid(), notification.getSnapshot() );
+                    LandZone zone = appRepository.getLandZone(notification.getZid());
                     if(zone == null || zone.getData() == null) return;
                 }
             }
@@ -627,9 +667,9 @@ public class AppViewModel extends AndroidViewModel {
         state.getNotifications().forEach(this::importNotification);
         populateLists();
     }
-    public void importFromSnapshotToAnotherSnapshot(long snapshotFrom, long snapshotTo){
-        long from = snapshotFrom;
-        long to = snapshotTo;
+    public void importFromSnapshotToAnotherSnapshot(long fromYear, long toYear){
+        long from = fromYear;
+        long to = toYear;
 
         from = Math.max(from, AppValues.minSnapshot);
         to = Math.max(to, AppValues.minSnapshot);
@@ -645,10 +685,12 @@ public class AppViewModel extends AndroidViewModel {
         for(Land land : lands){
             if(land == null || land.getData() == null) continue;
 
-            List<LandZone> zones = appRepository.getLandZonesByLandData(land.getData());
+            List<LandZone> zones = appRepository.getLandZonesByLandID(
+                    land.getData().getId()
+            );
 
             land.getData().setId(0);
-            land.getData().setSnapshot(to);
+            land.getData().setYear(to);
             appRepository.saveLand(land);
             LandDataRecord landRecord = new LandDataRecord(
                     land.getData(),
@@ -658,10 +700,11 @@ public class AppViewModel extends AndroidViewModel {
 
             List<LandZoneDataRecord> zoneDataRecords = new ArrayList<>();
             if(zones == null) zones = new ArrayList<>();
+
             for(LandZone landZone : zones){
                 if(landZone == null || landZone.getData() == null) continue;
+
                 landZone.getData().setId(0);
-                landZone.getData().setSnapshot(to);
                 landZone.getData().setLid(land.getData().getId());
                 appRepository.saveZone(landZone);
                 zoneDataRecords.add(new LandZoneDataRecord(landRecord,landZone.getData()));
@@ -672,20 +715,20 @@ public class AppViewModel extends AndroidViewModel {
         populateSnapshotLists();
     }
 
-    public long setTempSnapshot(long snapshot){
-        if(snapshot < 0){
+    public long setTempSnapshot(long year){
+        if(year < 0){
             snapshotLands.postValue(appRepository.getLands(getDefaultSnapshot()));
             snapshotLandZones.postValue(appRepository.getLandZones(getDefaultSnapshot()));
             return getDefaultSnapshot();
         }else{
-            snapshotLands.postValue(appRepository.getLands(snapshot));
-            snapshotLandZones.postValue(appRepository.getLandZones(snapshot));
-            return snapshot;
+            snapshotLands.postValue(appRepository.getLands(year));
+            snapshotLandZones.postValue(appRepository.getLandZones(year));
+            return year;
         }
     }
 
-    public List<Land> getLands(long snapshot){
-        return appRepository.getLands(snapshot);
+    public List<Land> getLands(long year){
+        return appRepository.getLands(year);
     }
 
     public List<Land> getAllLands() {
@@ -698,6 +741,6 @@ public class AppViewModel extends AndroidViewModel {
         return appRepository.getAllNotifications();
     }
     public List<CalendarCategory> getAllCalendarCategories() {
-        return appRepository.getAllCalendarCategories();
+        return appRepository.getCalendarCategories();
     }
 }

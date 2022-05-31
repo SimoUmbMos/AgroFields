@@ -9,6 +9,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
@@ -17,39 +18,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "LandZoneData",
-        indices = {
-                @Index(
-                        value = {"LandID", "Snapshot"}
-                ),
-                @Index(
-                        value = {"ID","Snapshot"},
-                        unique = true
-                )
-        },
         foreignKeys = {
                 @ForeignKey(
                         entity = LandData.class,
-                        parentColumns = {
-                                "ID",
-                                "Snapshot"
-                        },
-                        childColumns = {
-                                "LandID",
-                                "Snapshot"
-                        },
+                        parentColumns = "ID",
+                        childColumns = "LandID",
                         onDelete = ForeignKey.CASCADE
                 )
         },
-        primaryKeys = {
-            "ID",
-            "Snapshot"
+        indices = {
+                @Index(
+                        value = "LandID"
+                )
         }
 )
 public class LandZoneData implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private long id;
-    @ColumnInfo(name = "Snapshot")
-    private long snapshot;
     @ColumnInfo(name = "LandID")
     private long lid;
     @ColumnInfo(name = "Title")
@@ -65,13 +51,12 @@ public class LandZoneData implements Parcelable {
 
     @Ignore
     public LandZoneData(LandZoneData in) {
-        this(in.id,in.snapshot, in.lid, in.title, in.note, in.tags, new ColorData(in.color.toString()), in.border);
+        this(in.id, in.lid, in.title, in.note, in.tags, new ColorData(in.color.toString()), in.border);
     }
 
     @Ignore
     protected LandZoneData(Parcel in) {
         id = in.readLong();
-        snapshot = in.readLong();
         lid = in.readLong();
         title = in.readString();
         note = in.readString();
@@ -81,9 +66,8 @@ public class LandZoneData implements Parcelable {
     }
 
     @Ignore
-    public LandZoneData(long snapshot, long lid, String title, String note, String tags, ColorData color, List<LatLng> border) {
+    public LandZoneData(long lid, String title, String note, String tags, ColorData color, List<LatLng> border) {
         this.id = 0;
-        this.snapshot = snapshot;
         this.lid = lid;
         this.title = title;
         this.note = note;
@@ -93,9 +77,8 @@ public class LandZoneData implements Parcelable {
         setBorder(border);
     }
 
-    public LandZoneData(long id, long snapshot, long lid, String title, String note, String tags, ColorData color, List<LatLng> border) {
+    public LandZoneData(long id, long lid, String title, String note, String tags, ColorData color, List<LatLng> border) {
         this.id = id;
-        this.snapshot = snapshot;
         this.lid = lid;
         this.title = title;
         this.note = note;
@@ -125,9 +108,6 @@ public class LandZoneData implements Parcelable {
     public List<LatLng> getBorder() {
         return border;
     }
-    public long getSnapshot() {
-        return snapshot;
-    }
 
     public void setId(long id) {
         this.id = id;
@@ -147,9 +127,6 @@ public class LandZoneData implements Parcelable {
     public void setBorder(List<LatLng> border) {
         this.border = border;
     }
-    public void setSnapshot(long snapshot) {
-        this.snapshot = snapshot;
-    }
     public void setLid(long lid) {
         this.lid = lid;
     }
@@ -157,7 +134,6 @@ public class LandZoneData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeLong(snapshot);
         dest.writeLong(lid);
         dest.writeString(title);
         dest.writeString(note);

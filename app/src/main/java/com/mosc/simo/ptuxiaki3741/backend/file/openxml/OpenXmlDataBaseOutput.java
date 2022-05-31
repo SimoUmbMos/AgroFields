@@ -76,7 +76,7 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(land.getData().getId());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(land.getData().getSnapshot());
+            cell.setCellValue(land.getData().getYear());
 
             cell = row.createCell(colNum++);
             cell.setCellValue(land.getData().getTitle());
@@ -112,9 +112,6 @@ public final class OpenXmlDataBaseOutput {
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getId());
-
-            cell = row.createCell(colNum++);
-            cell.setCellValue(zone.getData().getSnapshot());
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getLid());
@@ -184,7 +181,7 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(notification.getCategoryID());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(notification.getSnapshot());
+            cell.setCellValue(notification.getYear());
 
             cell = row.createCell(colNum++);
             if(notification.getLid() != null){
@@ -264,7 +261,7 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(land.getData().getId());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(land.getData().getSnapshot());
+            cell.setCellValue(land.getData().getYear());
 
             cell = row.createCell(colNum++);
             cell.setCellValue(land.getData().getTitle());
@@ -300,9 +297,6 @@ public final class OpenXmlDataBaseOutput {
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getId());
-
-            cell = row.createCell(colNum++);
-            cell.setCellValue(zone.getData().getSnapshot());
 
             cell = row.createCell(colNum++);
             cell.setCellValue(zone.getData().getLid());
@@ -372,7 +366,7 @@ public final class OpenXmlDataBaseOutput {
             cell.setCellValue(notification.getCategoryID());
 
             cell = row.createCell(colNum++);
-            cell.setCellValue(notification.getSnapshot());
+            cell.setCellValue(notification.getYear());
 
             cell = row.createCell(colNum++);
             if(notification.getLid() != null){

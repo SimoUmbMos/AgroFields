@@ -389,7 +389,7 @@ public class ZoneEditorFragment extends Fragment implements FragmentBackPress {
                                 tempData.setBorder(border);
                                 zone = new LandZone(tempData);
                             }else{
-                                zone = new LandZone(new LandZoneData(land.getData().getSnapshot(),land.getData().getId(),title,note,tags,color,border));
+                                zone = new LandZone(new LandZoneData(land.getData().getId(),title,note,tags,color,border));
                             }
                             try{
                                 vmLands.saveZone(zone);

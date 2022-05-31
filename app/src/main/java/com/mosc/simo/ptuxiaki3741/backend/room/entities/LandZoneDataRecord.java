@@ -20,24 +20,14 @@ import java.util.Objects;
         foreignKeys = {
                 @ForeignKey(
                         entity = LandDataRecord.class,
-                        parentColumns = {
-                                "ID",
-                                "Snapshot"
-                        },
-                        childColumns = {
-                                "RecordID",
-                                "RecordSnapshot"
-                        },
+                        parentColumns = "ID",
+                        childColumns = "RecordID",
                         onDelete = ForeignKey.CASCADE
                 ),
         },
         indices = {
                 @Index(
-                        value = {"RecordID","RecordSnapshot"}
-                ),
-                @Index(
-                        value = "ID",
-                        unique = true
+                        value = "RecordID"
                 )
         }
 )
@@ -47,8 +37,6 @@ public class LandZoneDataRecord {
     private long id;
     @ColumnInfo(name = "RecordID")
     private long recordID;
-    @ColumnInfo(name = "RecordSnapshot")
-    private long recordSnapshot;
     @ColumnInfo(name = "ZoneID")
     private long zoneID;
     @ColumnInfo(name = "ZoneTitle")
@@ -65,7 +53,6 @@ public class LandZoneDataRecord {
     @Ignore
     public LandZoneDataRecord(LandDataRecord record, LandZoneData zone) {
         this.recordID = record.getId();
-        this.recordSnapshot = record.getSnapshot();
         this.zoneID = zone.getId();
         this.zoneTitle = zone.getTitle();
         this.zoneNote = zone.getNote();
@@ -75,12 +62,11 @@ public class LandZoneDataRecord {
     }
 
     public LandZoneDataRecord(
-            long id, long recordID, long recordSnapshot,
+            long id, long recordID,
             long zoneID, String zoneTitle, String zoneNote, String zoneTags, ColorData zoneColor, List<LatLng> zoneBorder
     ) {
         this.id = id;
         this.recordID = recordID;
-        this.recordSnapshot = recordSnapshot;
         this.zoneID = zoneID;
         this.zoneTitle = zoneTitle;
         this.zoneNote = zoneNote;
@@ -94,9 +80,6 @@ public class LandZoneDataRecord {
     }
     public long getRecordID() {
         return recordID;
-    }
-    public long getRecordSnapshot() {
-        return recordSnapshot;
     }
     public long getZoneID() {
         return zoneID;
@@ -122,9 +105,6 @@ public class LandZoneDataRecord {
     }
     public void setRecordID(long recordID) {
         this.recordID = recordID;
-    }
-    public void setRecordSnapshot(long recordSnapshot) {
-        this.recordSnapshot = recordSnapshot;
     }
     public void setZoneID(long zoneID) {
         this.zoneID = zoneID;
@@ -155,7 +135,6 @@ public class LandZoneDataRecord {
         LandZoneDataRecord that = (LandZoneDataRecord) o;
         return id == that.id &&
                 recordID == that.recordID &&
-                recordSnapshot == that.recordSnapshot &&
                 zoneID == that.zoneID &&
                 zoneTitle.equals(that.zoneTitle) &&
                 zoneNote.equals(that.zoneNote) &&
@@ -166,6 +145,6 @@ public class LandZoneDataRecord {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, recordID, recordSnapshot, zoneID, zoneTitle, zoneNote, zoneColor, zoneBorder);
+        return Objects.hash(id, recordID, zoneID, zoneTitle, zoneNote, zoneColor, zoneBorder);
     }
 }

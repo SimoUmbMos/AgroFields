@@ -22,6 +22,14 @@ public interface CalendarNotificationDao {
     CalendarNotification getNotificationById(long id);
 
     @Query("Select * From CalendarNotification " +
+            "Where CalendarNotification.LandID = :lid")
+    List<CalendarNotification> getNotificationByLid(long lid);
+
+    @Query("Select * From CalendarNotification " +
+            "Where CalendarNotification.ZoneID = :zid")
+    List<CalendarNotification> getAllNotificationsByZid(long zid);
+
+    @Query("Select * From CalendarNotification " +
             "Where CalendarNotification.CategoryID = :categoryID")
     List<CalendarNotification> getNotificationsByCategory(long categoryID);
 

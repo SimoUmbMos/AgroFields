@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ff49d0db55f8af326460bd6a30f2e387",
+    "identityHash": "3cd87e809154bdc9ea7195e6686541d3",
     "entities": [
       {
         "tableName": "LandData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER NOT NULL, `Snapshot` INTEGER NOT NULL, `Title` TEXT, `Tags` TEXT, `Color` TEXT, `Border` TEXT, `Holes` TEXT, PRIMARY KEY(`ID`, `Snapshot`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Year` INTEGER NOT NULL, `Title` TEXT, `Tags` TEXT, `Color` TEXT, `Border` TEXT, `Holes` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,8 +15,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "snapshot",
-            "columnName": "Snapshot",
+            "fieldPath": "year",
+            "columnName": "Year",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -53,38 +53,20 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "ID",
-            "Snapshot"
+            "ID"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
-        "indices": [
-          {
-            "name": "index_LandData_ID_Snapshot",
-            "unique": true,
-            "columnNames": [
-              "ID",
-              "Snapshot"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandData_ID_Snapshot` ON `${TABLE_NAME}` (`ID`, `Snapshot`)"
-          }
-        ],
+        "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "LandZoneData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER NOT NULL, `Snapshot` INTEGER NOT NULL, `LandID` INTEGER NOT NULL, `Title` TEXT, `Note` TEXT, `Color` TEXT, `Border` TEXT, PRIMARY KEY(`ID`, `Snapshot`), FOREIGN KEY(`LandID`, `Snapshot`) REFERENCES `LandData`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LandID` INTEGER NOT NULL, `Title` TEXT, `Note` TEXT, `Tags` TEXT, `Color` TEXT, `Border` TEXT, FOREIGN KEY(`LandID`) REFERENCES `LandData`(`ID`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "ID",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "snapshot",
-            "columnName": "Snapshot",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -107,6 +89,12 @@
             "notNull": false
           },
           {
+            "fieldPath": "tags",
+            "columnName": "Tags",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "color",
             "columnName": "Color",
             "affinity": "TEXT",
@@ -121,31 +109,19 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "ID",
-            "Snapshot"
+            "ID"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [
           {
-            "name": "index_LandZoneData_LandID_Snapshot",
+            "name": "index_LandZoneData_LandID",
             "unique": false,
             "columnNames": [
-              "LandID",
-              "Snapshot"
+              "LandID"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LandZoneData_LandID_Snapshot` ON `${TABLE_NAME}` (`LandID`, `Snapshot`)"
-          },
-          {
-            "name": "index_LandZoneData_ID_Snapshot",
-            "unique": true,
-            "columnNames": [
-              "ID",
-              "Snapshot"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandZoneData_ID_Snapshot` ON `${TABLE_NAME}` (`ID`, `Snapshot`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LandZoneData_LandID` ON `${TABLE_NAME}` (`LandID`)"
           }
         ],
         "foreignKeys": [
@@ -154,73 +130,17 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "LandID",
-              "Snapshot"
+              "LandID"
             ],
             "referencedColumns": [
-              "ID",
-              "Snapshot"
+              "ID"
             ]
           }
         ]
       },
       {
-        "tableName": "Snapshot",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Key` INTEGER NOT NULL, `LandCount` INTEGER NOT NULL, `ZoneCount` INTEGER NOT NULL, `CalendarCount` INTEGER NOT NULL, `RecordCount` INTEGER NOT NULL, PRIMARY KEY(`Key`))",
-        "fields": [
-          {
-            "fieldPath": "key",
-            "columnName": "Key",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "landCount",
-            "columnName": "LandCount",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "zoneCount",
-            "columnName": "ZoneCount",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "calendarCount",
-            "columnName": "CalendarCount",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "recordCount",
-            "columnName": "RecordCount",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "Key"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [
-          {
-            "name": "index_Snapshot_Key",
-            "unique": false,
-            "columnNames": [
-              "Key"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Snapshot_Key` ON `${TABLE_NAME}` (`Key`)"
-          }
-        ],
-        "foreignKeys": []
-      },
-      {
         "tableName": "LandDataRecord",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER NOT NULL, `Snapshot` INTEGER NOT NULL, `LandID` INTEGER NOT NULL, `LandTitle` TEXT, `LandTags` TEXT, `LandColor` TEXT, `ActionID` INTEGER, `Date` INTEGER, `LandBorder` TEXT, `LandHoles` TEXT, PRIMARY KEY(`ID`, `Snapshot`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `LandID` INTEGER NOT NULL, `LandYear` INTEGER NOT NULL, `LandTitle` TEXT, `LandTags` TEXT, `LandColor` TEXT, `ActionID` INTEGER, `Date` INTEGER, `LandBorder` TEXT, `LandHoles` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -229,14 +149,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "snapshot",
-            "columnName": "Snapshot",
+            "fieldPath": "landID",
+            "columnName": "LandID",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "landID",
-            "columnName": "LandID",
+            "fieldPath": "landYear",
+            "columnName": "LandYear",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -285,28 +205,16 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "ID",
-            "Snapshot"
+            "ID"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
-        "indices": [
-          {
-            "name": "index_LandDataRecord_ID_Snapshot",
-            "unique": true,
-            "columnNames": [
-              "ID",
-              "Snapshot"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandDataRecord_ID_Snapshot` ON `${TABLE_NAME}` (`ID`, `Snapshot`)"
-          }
-        ],
+        "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "LandZoneDataRecord",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `RecordID` INTEGER NOT NULL, `RecordSnapshot` INTEGER NOT NULL, `ZoneID` INTEGER NOT NULL, `ZoneTitle` TEXT, `ZoneNote` TEXT, `ZoneColor` TEXT, `ZoneBorder` TEXT, FOREIGN KEY(`RecordID`, `RecordSnapshot`) REFERENCES `LandDataRecord`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `RecordID` INTEGER NOT NULL, `ZoneID` INTEGER NOT NULL, `ZoneTitle` TEXT, `ZoneNote` TEXT, `ZoneTags` TEXT, `ZoneColor` TEXT, `ZoneBorder` TEXT, FOREIGN KEY(`RecordID`) REFERENCES `LandDataRecord`(`ID`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -317,12 +225,6 @@
           {
             "fieldPath": "recordID",
             "columnName": "RecordID",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "recordSnapshot",
-            "columnName": "RecordSnapshot",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -341,6 +243,12 @@
           {
             "fieldPath": "zoneNote",
             "columnName": "ZoneNote",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "zoneTags",
+            "columnName": "ZoneTags",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -365,23 +273,13 @@
         },
         "indices": [
           {
-            "name": "index_LandZoneDataRecord_RecordID_RecordSnapshot",
+            "name": "index_LandZoneDataRecord_RecordID",
             "unique": false,
             "columnNames": [
-              "RecordID",
-              "RecordSnapshot"
+              "RecordID"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LandZoneDataRecord_RecordID_RecordSnapshot` ON `${TABLE_NAME}` (`RecordID`, `RecordSnapshot`)"
-          },
-          {
-            "name": "index_LandZoneDataRecord_ID",
-            "unique": true,
-            "columnNames": [
-              "ID"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LandZoneDataRecord_ID` ON `${TABLE_NAME}` (`ID`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LandZoneDataRecord_RecordID` ON `${TABLE_NAME}` (`RecordID`)"
           }
         ],
         "foreignKeys": [
@@ -390,19 +288,17 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "RecordID",
-              "RecordSnapshot"
+              "RecordID"
             ],
             "referencedColumns": [
-              "ID",
-              "Snapshot"
+              "ID"
             ]
           }
         ]
       },
       {
-        "tableName": "CalendarNotification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Snapshot` INTEGER NOT NULL, `LandID` INTEGER, `ZoneID` INTEGER, `Title` TEXT, `Message` TEXT, `Type` INTEGER, `Date` INTEGER, FOREIGN KEY(`LandID`, `Snapshot`) REFERENCES `LandData`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`ZoneID`, `Snapshot`) REFERENCES `LandZoneData`(`ID`, `Snapshot`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "CalendarCategory",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `NAME` TEXT, `COLOR` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -411,8 +307,46 @@
             "notNull": true
           },
           {
-            "fieldPath": "snapshot",
-            "columnName": "Snapshot",
+            "fieldPath": "name",
+            "columnName": "NAME",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "colorData",
+            "columnName": "COLOR",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CalendarNotification",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `CategoryID` INTEGER NOT NULL, `Year` INTEGER NOT NULL, `LandID` INTEGER, `ZoneID` INTEGER, `Title` TEXT, `Message` TEXT, `Date` INTEGER, FOREIGN KEY(`LandID`) REFERENCES `LandData`(`ID`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`ZoneID`) REFERENCES `LandZoneData`(`ID`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryID",
+            "columnName": "CategoryID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "Year",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -441,12 +375,6 @@
             "notNull": false
           },
           {
-            "fieldPath": "type",
-            "columnName": "Type",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
             "fieldPath": "date",
             "columnName": "Date",
             "affinity": "INTEGER",
@@ -461,33 +389,22 @@
         },
         "indices": [
           {
-            "name": "index_CalendarNotification_LandID_Snapshot",
+            "name": "index_CalendarNotification_LandID",
             "unique": false,
             "columnNames": [
-              "LandID",
-              "Snapshot"
+              "LandID"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_CalendarNotification_LandID_Snapshot` ON `${TABLE_NAME}` (`LandID`, `Snapshot`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CalendarNotification_LandID` ON `${TABLE_NAME}` (`LandID`)"
           },
           {
-            "name": "index_CalendarNotification_ZoneID_Snapshot",
+            "name": "index_CalendarNotification_ZoneID",
             "unique": false,
             "columnNames": [
-              "ZoneID",
-              "Snapshot"
+              "ZoneID"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_CalendarNotification_ZoneID_Snapshot` ON `${TABLE_NAME}` (`ZoneID`, `Snapshot`)"
-          },
-          {
-            "name": "index_CalendarNotification_ID",
-            "unique": true,
-            "columnNames": [
-              "ID"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_CalendarNotification_ID` ON `${TABLE_NAME}` (`ID`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CalendarNotification_ZoneID` ON `${TABLE_NAME}` (`ZoneID`)"
           }
         ],
         "foreignKeys": [
@@ -496,12 +413,10 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "LandID",
-              "Snapshot"
+              "LandID"
             ],
             "referencedColumns": [
-              "ID",
-              "Snapshot"
+              "ID"
             ]
           },
           {
@@ -509,12 +424,10 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "ZoneID",
-              "Snapshot"
+              "ZoneID"
             ],
             "referencedColumns": [
-              "ID",
-              "Snapshot"
+              "ID"
             ]
           }
         ]
@@ -523,7 +436,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff49d0db55f8af326460bd6a30f2e387')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3cd87e809154bdc9ea7195e6686541d3')"
     ]
   }
 }

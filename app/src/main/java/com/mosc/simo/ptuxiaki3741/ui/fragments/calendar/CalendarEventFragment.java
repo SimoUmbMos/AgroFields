@@ -30,6 +30,7 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -110,7 +111,7 @@ public class CalendarEventFragment extends Fragment{
             calendarNotification = new CalendarNotification(
                     0,
                     AppValues.defaultCalendarCategoryID,
-                    -1,
+                    LocalDate.now().getYear(),
                     null,
                     null,
                     "",
@@ -118,7 +119,7 @@ public class CalendarEventFragment extends Fragment{
                     notificationDate.getTime()
             );
         }
-        snapshot = calendarNotification.getSnapshot();
+        snapshot = calendarNotification.getYear();
     }
 
     private void initActivity(){
@@ -482,7 +483,7 @@ public class CalendarEventFragment extends Fragment{
         }
         if( selectedLand != null && selectedLand.getData() != null){
             lid = selectedLand.getData().getId();
-            snapshot = selectedLand.getData().getSnapshot();
+            snapshot = selectedLand.getData().getYear();
             if( selectedZone != null && selectedZone.getData() != null && selectedZone.getData().getLid() == lid){
                 zid = selectedZone.getData().getId();
             }

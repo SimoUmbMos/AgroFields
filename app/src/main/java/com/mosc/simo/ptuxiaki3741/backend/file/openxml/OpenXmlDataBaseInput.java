@@ -198,13 +198,11 @@ public final class OpenXmlDataBaseInput {
     }
     private static void getLandZoneData(Sheet sheet, List<LandZone> zones) {
         long id, lid;
-        long snapshot;
         String title, note, tags;
         ColorData color;
         List<LatLng> border;
         for (Row row : sheet) {
             id = 0;
-            snapshot = LocalDate.now().getYear();
             lid = -1;
             title = "";
             note = "";
@@ -232,30 +230,6 @@ public final class OpenXmlDataBaseInput {
                     case 1:
                         if(cell.getCellType() == CellType.NUMERIC){
                             try{
-                                snapshot = (long) cell.getNumericCellValue();
-                            }catch (Exception e){
-                                snapshot = LocalDate.now().getYear();
-                            }
-                        }else if(cell.getCellType() == CellType.STRING){
-                            boolean isDouble;
-                            try{
-                                snapshot = Long.parseLong(cell.getStringCellValue().trim());
-                                isDouble = false;
-                            }catch (Exception e){
-                                isDouble = true;
-                            }
-                            if(isDouble){
-                                try{
-                                    snapshot = (long) Double.parseDouble(cell.getStringCellValue().trim());
-                                }catch (Exception e){
-                                    snapshot = LocalDate.now().getYear();
-                                }
-                            }
-                        }
-                        break;
-                    case 2:
-                        if(cell.getCellType() == CellType.NUMERIC){
-                            try{
                                 lid = Double.valueOf(cell.getNumericCellValue()).longValue();
                             }catch (Exception e){
                                 lid = -1;
@@ -268,35 +242,35 @@ public final class OpenXmlDataBaseInput {
                             }
                         }
                         break;
-                    case 3:
+                    case 2:
                         try{
                             title = cell.getStringCellValue().trim();
                         }catch (Exception e){
                             title = "";
                         }
                         break;
-                    case 4:
+                    case 3:
                         try{
                             note = cell.getStringCellValue().trim();
                         }catch (Exception e){
                             note = "";
                         }
                         break;
-                    case 5:
+                    case 4:
                         try{
                             tags = cell.getStringCellValue().trim();
                         }catch (Exception e){
                             tags = "";
                         }
                         break;
-                    case 6:
+                    case 5:
                         try{
                             color = new ColorData(cell.getStringCellValue().trim());
                         }catch (Exception e){
                             color = AppValues.defaultZoneColor;
                         }
                         break;
-                    case 7:
+                    case 6:
                         fillListsFromPointsString(
                                 border,
                                 new ArrayList<>(),
@@ -309,7 +283,7 @@ public final class OpenXmlDataBaseInput {
                 continue;
             }
 
-            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,tags,color,border)));
+            zones.add(new LandZone(new LandZoneData(id,lid,title,note,tags,color,border)));
         }
     }
     private static void getCategoryData(Sheet sheet, List<CalendarCategory> categories){
@@ -631,13 +605,11 @@ public final class OpenXmlDataBaseInput {
                 strings,
                 new XSSFSheetXMLHandler.SheetContentsHandler() {
                     private long id, lid;
-                    private long snapshot;
                     private String title,note,tags,color;
                     private List<LatLng> border;
                     @Override
                     public void startRow(int rowNum) {
                         id = 0;
-                        snapshot = LocalDate.now().getYear();
                         lid = -1;
                         title = "";
                         note = "";
@@ -655,7 +627,7 @@ public final class OpenXmlDataBaseInput {
                             }catch (Exception e){
                                 colorData = AppValues.defaultZoneColor;
                             }
-                            zones.add(new LandZone(new LandZoneData(id,snapshot,lid,title,note,tags,colorData,border)));
+                            zones.add(new LandZone(new LandZoneData(id,lid,title,note,tags,colorData,border)));
                         }
                     }
 
@@ -676,46 +648,29 @@ public final class OpenXmlDataBaseInput {
                                 break;
                             case "B":
                                 if(value == null || value.isEmpty()) break;
-                                boolean isDouble;
-                                try{
-                                    snapshot = Long.parseLong(value.trim());
-                                    isDouble = false;
-                                }catch (Exception e){
-                                    isDouble = true;
-                                }
-                                if(isDouble){
-                                    try{
-                                        snapshot = (long) Double.parseDouble(value.trim());
-                                    }catch (Exception e){
-                                        snapshot = LocalDate.now().getYear();
-                                    }
-                                }
-                                break;
-                            case "C":
-                                if(value == null || value.isEmpty()) break;
                                 try{
                                     lid = Double.valueOf(value).longValue();
                                 }catch (Exception e){
                                     lid = -1;
                                 }
                                 break;
-                            case "D":
+                            case "C":
                                 if(value == null || value.isEmpty()) break;
                                 title = value;
                                 break;
-                            case "E":
+                            case "D":
                                 if(value == null || value.isEmpty()) break;
                                 note = value;
                                 break;
-                            case "F":
+                            case "E":
                                 if(value == null || value.isEmpty()) break;
                                 tags = value;
                                 break;
-                            case "G":
+                            case "F":
                                 if(value == null || value.isEmpty()) break;
                                 color = value;
                                 break;
-                            case "H":
+                            case "G":
                                 if(value == null || value.isEmpty()) break;
                                 fillListsFromPointsString(
                                         border,

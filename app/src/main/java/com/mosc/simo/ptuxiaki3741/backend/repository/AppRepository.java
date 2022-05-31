@@ -6,51 +6,43 @@ import com.mosc.simo.ptuxiaki3741.data.models.Land;
 import com.mosc.simo.ptuxiaki3741.data.models.LandHistoryRecord;
 import com.mosc.simo.ptuxiaki3741.data.models.LandZone;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.CalendarNotification;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.Snapshot;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 public interface AppRepository {
-    void setDefaultSnapshot(long snapshot);
-    long getDefaultSnapshot();
-
-    List<Long> getSnapshots();
-    Snapshot saveSnapshot(long snapshot);
 
     List<Land> getAllLands();
-    List<Land> getLands();
-    List<Land> getLands(long snapshot);
-    boolean landExist(long id, long snapshot);
-    Land getLand(long id, long snapshot);
+    List<Land> getLands(long year);
+    List<Long> getLandYears();
+    boolean landExist(long id);
+    Land getLand(long id);
     void saveLand(Land land);
     void deleteLand(Land land);
 
     List<LandZone> getAllLandZones();
-    LandZone getLandZone(Long id, long snapshot);
-    Map<Long,List<LandZone>> getLandZones();
-    Map<Long,List<LandZone>> getLandZones(long snapshot);
-    boolean zoneExist(long id, long snapshot);
-    List<LandZone> getLandZonesByLandData(LandData data);
+    Map<Long,List<LandZone>> getLandZones(long year);
+    LandZone getLandZone(Long id);
+    boolean zoneExist(long id);
+    List<LandZone> getLandZonesByLandID(long id);
     void saveZone(LandZone zone);
     void deleteZone(LandZone zone);
 
-    List<LandHistoryRecord> getLandRecords();
+    List<LandHistoryRecord> getLandRecords(long year);
     void saveLandRecord(LandHistoryRecord record);
 
     List<CalendarNotification> getAllNotifications();
     Map<LocalDate,List<CalendarEntity>> getNotifications();
     CalendarNotification getNotification(long id);
+    List<CalendarNotification> getAllNotificationsByLid(long lid);
+    List<CalendarNotification> getAllNotificationsByZid(long zid);
     void saveNotification(CalendarNotification notification);
     void deleteNotification(CalendarNotification notification);
 
-    List<CalendarCategory> getAllCalendarCategories();
     List<CalendarCategory> getCalendarCategories();
     CalendarCategory getCalendarCategory(long id);
+    boolean calendarCategoryHasNotifications(long categoryID);
     void saveCalendarCategory(CalendarCategory category);
     void deleteCalendarCategory(CalendarCategory category);
-
-    boolean calendarCategoryHasNotifications(long categoryID);
 }

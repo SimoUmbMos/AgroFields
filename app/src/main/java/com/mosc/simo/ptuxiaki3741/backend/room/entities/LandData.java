@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
@@ -24,32 +24,21 @@ import java.util.Objects;
  * @author      Simo Mos
  * @version     %I%, %G%
  */
-@Entity(
-        tableName = "LandData",
-        primaryKeys = {
-                "ID",
-                "Snapshot"
-        },
-        indices = {
-                @Index(
-                        value = {"ID","Snapshot"},
-                        unique = true
-                )
-        }
-)
+@Entity(tableName = "LandData")
 public class LandData implements Parcelable {
 
     /**
      * Represents the Land ID
      */
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private long id;
 
     /**
      * Represents the Snapshot Key
      */
-    @ColumnInfo(name = "Snapshot")
-    private long snapshot;
+    @ColumnInfo(name = "Year")
+    private long year;
 
     /**
      * Represents the Land Title
@@ -88,7 +77,7 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(LandData clone) {
         id = clone.id;
-        snapshot = clone.snapshot;
+        year = clone.year;
         title = clone.title;
         tags = clone.tags;
         color = new ColorData(clone.color.toString());
@@ -105,7 +94,7 @@ public class LandData implements Parcelable {
     @Ignore
     protected LandData(Parcel parcel) {
         id = parcel.readLong();
-        snapshot = parcel.readLong();
+        year = parcel.readLong();
         title = parcel.readString();
         tags = parcel.readString();
         color = parcel.readParcelable(ColorData.class.getClassLoader());
@@ -124,7 +113,7 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(List<LatLng> border) {
         this.id = 0;
-        this.snapshot = -1;
+        this.year = -1;
         this.title = "";
         this.tags = "";
         this.color = new ColorData(20, 249, 80);
@@ -141,7 +130,7 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(List<LatLng> border,List<List<LatLng>> holes) {
         this.id = 0;
-        this.snapshot = -1;
+        this.year = -1;
         this.title = "";
         this.tags = "";
         this.color = new ColorData(20, 249, 80);
@@ -159,7 +148,7 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(ColorData color,List<LatLng> border) {
         this.id = 0;
-        this.snapshot = -1;
+        this.year = -1;
         this.title = "";
         this.color = color;
         this.border = new ArrayList<>();
@@ -176,7 +165,7 @@ public class LandData implements Parcelable {
     @Ignore
     public LandData(ColorData color, List<LatLng> border,List<List<LatLng>> holes) {
         this.id = 0;
-        this.snapshot = -1;
+        this.year = -1;
         this.title = "";
         this.tags = "";
         this.color = color;
@@ -188,15 +177,15 @@ public class LandData implements Parcelable {
 
     /**
      * Creates Land Data with the Land snapshot key, title and color
-     * @param snapshot A long representing the land snapshot key
+     * @param year A long representing the land year
      * @param title  A String representing the land title
      * @param tags  A String representing the land tags
      * @param color A ColorData containing the land color
      */
     @Ignore
-    public LandData(long snapshot, String title, String tags, ColorData color) {
+    public LandData(long year, String title, String tags, ColorData color) {
         this.id = 0;
-        this.snapshot = snapshot;
+        this.year = year;
         this.title = title;
         this.tags = tags;
         this.color = color;
@@ -207,16 +196,16 @@ public class LandData implements Parcelable {
     /**
      * Creates an Land Data with the specified values
      * @param id A long representing the land id
-     * @param snapshot A long representing the land snapshot key
+     * @param year A long representing the land year
      * @param title  A String representing the land title
      * @param tags  A String representing the land tags
      * @param color A ColorData containing the land color
      * @param border A List&lt;LatLng&gt; containing the land border
      * @param holes A List&lt;List&lt;LatLng&gt;&gt; containing the land holes
      */
-    public LandData(long id, long snapshot, String title, String tags, ColorData color, List<LatLng> border, List<List<LatLng>> holes) {
+    public LandData(long id, long year, String title, String tags, ColorData color, List<LatLng> border, List<List<LatLng>> holes) {
         this.id = id;
-        this.snapshot = snapshot;
+        this.year = year;
         this.title = title;
         this.tags = tags;
         this.color = color;
@@ -238,8 +227,8 @@ public class LandData implements Parcelable {
      * Gets the Land snapshot key
      * @return A long representing the land snapshot key
      */
-    public long getSnapshot() {
-        return snapshot;
+    public long getYear() {
+        return year;
     }
 
     /**
@@ -292,10 +281,10 @@ public class LandData implements Parcelable {
 
     /**
      * Sets the Land snapshot key
-     * @param snapshot A long representing the land snapshot key
+     * @param year A long representing the land year
      */
-    public void setSnapshot(long snapshot) {
-        this.snapshot = snapshot;
+    public void setYear(long year) {
+        this.year = year;
     }
 
     /**
@@ -373,7 +362,7 @@ public class LandData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeLong(snapshot);
+        dest.writeLong(year);
         dest.writeString(title);
         dest.writeString(tags);
         dest.writeParcelable(color,flags);
@@ -399,7 +388,7 @@ public class LandData implements Parcelable {
         LandData landData = (LandData) o;
         return
                 id == landData.id &&
-                snapshot == landData.snapshot &&
+                year == landData.year &&
                 title.equals(landData.title) &&
                 tags.equals(landData.tags) &&
                 color.equals(landData.color) &&
@@ -413,7 +402,7 @@ public class LandData implements Parcelable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, snapshot, title, tags, color, border, holes);
+        return Objects.hash(id, year, title, tags, color, border, holes);
     }
 
     /**

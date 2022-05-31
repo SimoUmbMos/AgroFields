@@ -25,6 +25,7 @@ import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class LandProfileFragment extends Fragment {
     private void initData() {
         land = null;
         color = AppValues.defaultLandColor;
+        snapshot = LocalDate.now().getYear();
         if(getArguments() != null){
             if(getArguments().containsKey(AppValues.argLand)){
                 land = getArguments().getParcelable(AppValues.argLand);
@@ -64,7 +66,7 @@ public class LandProfileFragment extends Fragment {
         }
         if(land != null) {
             color = land.getData().getColor();
-            snapshot = land.getData().getSnapshot();
+            snapshot = land.getData().getYear();
         }
     }
 

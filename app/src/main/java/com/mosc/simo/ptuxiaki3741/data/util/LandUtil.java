@@ -113,7 +113,7 @@ public final class LandUtil {
 
         return new LandData(
                 currLandData.getId(),
-                currLandData.getSnapshot(),
+                currLandData.getYear(),
                 currLandData.getTitle(),
                 currLandData.getTags(),
                 currLandData.getColor(),
@@ -160,7 +160,7 @@ public final class LandUtil {
 
         return new LandData(
                 currLandData.getId(),
-                currLandData.getSnapshot(),
+                currLandData.getYear(),
                 currLandData.getTitle(),
                 currLandData.getTags(),
                 currLandData.getColor(),
@@ -174,7 +174,7 @@ public final class LandUtil {
             LandDataRecord record = r.getLandData();
             return new LandData(
                     record.getLandID(),
-                    record.getSnapshot(),
+                    record.getLandYear(),
                     record.getLandTitle(),
                     record.getLandTags(),
                     record.getLandColor(),
@@ -192,7 +192,6 @@ public final class LandUtil {
         for(LandZoneDataRecord zoneRecord : zoneRecords){
             LandZoneData data = new LandZoneData(
                     zoneRecord.getZoneID(),
-                    zoneRecord.getRecordSnapshot(),
                     r.getLandData().getLandID(),
                     zoneRecord.getZoneTitle(),
                     zoneRecord.getZoneNote(),

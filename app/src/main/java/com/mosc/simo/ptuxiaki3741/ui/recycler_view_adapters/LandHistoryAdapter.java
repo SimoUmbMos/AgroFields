@@ -181,8 +181,7 @@ public class LandHistoryAdapter extends RecyclerView.Adapter<LandHistoryAdapter.
         @Override
         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
             try{
-                return oldData.get(oldItemPosition).getLandData().getId() == newData.get(newItemPosition).getLandData().getId() &&
-                        oldData.get(oldItemPosition).getLandData().getSnapshot() == newData.get(newItemPosition).getLandData().getSnapshot();
+                return oldData.get(oldItemPosition).getLandData().getId() == newData.get(newItemPosition).getLandData().getId();
             }catch (Exception e){
                 return false;
             }
@@ -201,7 +200,7 @@ public class LandHistoryAdapter extends RecyclerView.Adapter<LandHistoryAdapter.
                     LandHistoryRecord newRecord = newHistory.getData().get(i);
                     if(oldRecord.getLandData().getId() != newRecord.getLandData().getId())
                         return false;
-                    if(oldRecord.getLandData().getSnapshot() != newRecord.getLandData().getSnapshot())
+                    if(oldRecord.getLandData().getLandYear() != newRecord.getLandData().getLandYear())
                         return false;
                     if(oldRecord.getLandData().getLandID() != newRecord.getLandData().getLandID())
                         return false;

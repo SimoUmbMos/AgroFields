@@ -12,38 +12,46 @@ import java.util.List;
 
 @Dao
 public interface LandZoneDao {
-    @Query("SELECT * FROM LandZoneData ")
+    @Query(
+            "SELECT * " +
+            "FROM LandZoneData "
+    )
     List<LandZoneData> getZones();
 
     @Query(
-            "SELECT * FROM LandZoneData " +
-            "WHERE LandZoneData.Snapshot = :snapshot "+
-            "ORDER BY ID"
+            "SELECT LandZoneData.* " +
+            "FROM LandZoneData INNER JOIN LandData " +
+            "ON LandZoneData.LandID = LandData.ID " +
+            "WHERE LandData.Year = :year "+
+            "ORDER BY ID "
     )
-    List<LandZoneData> getZones(long snapshot);
+    List<LandZoneData> getZones(long year);
 
     @Query(
             "SELECT EXISTS( " +
-                "SELECT * FROM LandZoneData " +
-                "WHERE ID = :id AND LandZoneData.Snapshot = :snapshot " +
-            ")"
+                "SELECT * " +
+                "FROM LandZoneData " +
+                "WHERE ID = :id " +
+            ") "
     )
-    boolean zoneExist(long id, long snapshot);
+    boolean zoneExist(long id);
 
     @Query(
-            "SELECT * FROM LandZoneData " +
-            "WHERE LandZoneData.LandID = :lid AND LandZoneData.Snapshot = :snapshot "+
-            "ORDER BY ID"
+            "SELECT * " +
+            "FROM LandZoneData " +
+            "WHERE LandZoneData.LandID = :lid "+
+            "ORDER BY ID "
     )
-    List<LandZoneData> getLandZonesByLandID(long lid, long snapshot);
+    List<LandZoneData> getLandZonesByLandID(long lid);
 
 
     @Query(
-            "SELECT * FROM LandZoneData " +
-                    "WHERE LandZoneData.ID = :id AND LandZoneData.Snapshot = :snapshot "+
-                    "LIMIT 1"
+            "SELECT * " +
+            "FROM LandZoneData " +
+            "WHERE LandZoneData.ID = :id "+
+            "LIMIT 1 "
     )
-    LandZoneData getLandZone(long id, long snapshot);
+    LandZoneData getLandZone(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(LandZoneData zone);

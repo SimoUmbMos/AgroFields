@@ -15,38 +15,26 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity(tableName = "CalendarNotification",
-        indices = {
-                @Index(
-                        value = {"LandID", "Snapshot"}
-                ),
-                @Index(
-                        value = {"ZoneID", "Snapshot"}
-                )
-        },
         foreignKeys = {
                 @ForeignKey(
                         entity = LandData.class,
-                        parentColumns = {
-                                "ID",
-                                "Snapshot"
-                        },
-                        childColumns = {
-                                "LandID",
-                                "Snapshot"
-                        },
+                        parentColumns = "ID",
+                        childColumns = "LandID",
                         onDelete = ForeignKey.CASCADE
                 ),
                 @ForeignKey(
                         entity = LandZoneData.class,
-                        parentColumns = {
-                                "ID",
-                                "Snapshot"
-                        },
-                        childColumns = {
-                                "ZoneID",
-                                "Snapshot"
-                        },
+                        parentColumns = "ID",
+                        childColumns = "ZoneID",
                         onDelete = ForeignKey.CASCADE
+                )
+        },
+        indices = {
+                @Index(
+                        value = "LandID"
+                ),
+                @Index(
+                        value = "ZoneID"
                 )
         }
 )
@@ -56,8 +44,8 @@ public class CalendarNotification implements Parcelable {
     private long id;
     @ColumnInfo(name = "CategoryID")
     private long categoryID;
-    @ColumnInfo(name = "Snapshot")
-    private long snapshot;
+    @ColumnInfo(name = "Year")
+    private long year;
     @ColumnInfo(name = "LandID")
     private Long lid;
     @ColumnInfo(name = "ZoneID")
@@ -73,7 +61,7 @@ public class CalendarNotification implements Parcelable {
     public CalendarNotification(Parcel in){
         id = in.readLong();
         categoryID = in.readLong();
-        snapshot = in.readLong();
+        year = in.readLong();
         lid = in.readLong();
         zid = in.readLong();
         title = in.readString();
@@ -87,17 +75,17 @@ public class CalendarNotification implements Parcelable {
     public CalendarNotification(CalendarNotification that) {
         this.id = that.id;
         this.categoryID = that.categoryID;
-        this.snapshot = that.snapshot;
+        this.year = that.year;
         this.lid = that.lid;
         this.zid = that.zid;
         this.title = that.title;
         this.message = that.message;
         this.date = that.date;
     }
-    public CalendarNotification(long id, long categoryID, long snapshot, Long lid, Long zid, String title, String message, Date date) {
+    public CalendarNotification(long id, long categoryID, long year, Long lid, Long zid, String title, String message, Date date) {
         setId(id);
         setCategoryID(categoryID);
-        setSnapshot(snapshot);
+        setYear(year);
         setLid(lid);
         setZid(zid);
         setTitle(title);
@@ -111,8 +99,8 @@ public class CalendarNotification implements Parcelable {
     public long getCategoryID() {
         return categoryID;
     }
-    public long getSnapshot() {
-        return snapshot;
+    public long getYear() {
+        return year;
     }
     public Long getLid() {
         return lid;
@@ -136,8 +124,8 @@ public class CalendarNotification implements Parcelable {
     public void setCategoryID(long categoryID) {
         this.categoryID = categoryID;
     }
-    public void setSnapshot(long snapshot) {
-        this.snapshot = snapshot;
+    public void setYear(long year) {
+        this.year = year;
     }
     public void setLid(Long lid) {
         this.lid = lid;
@@ -186,7 +174,7 @@ public class CalendarNotification implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeLong(id);
         out.writeLong(categoryID);
-        out.writeLong(snapshot);
+        out.writeLong(year);
         if(lid == null){
             out.writeLong(0);
         }else{
@@ -209,7 +197,7 @@ public class CalendarNotification implements Parcelable {
         CalendarNotification that = (CalendarNotification) o;
         return id == that.id &&
                 categoryID == that.categoryID &&
-                snapshot == that.snapshot &&
+                year == that.year &&
                 Objects.equals(lid, that.lid) &&
                 Objects.equals(zid, that.zid) &&
                 title.equals(that.title) &&
@@ -219,6 +207,6 @@ public class CalendarNotification implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, categoryID, snapshot, lid, zid, title, message, date);
+        return Objects.hash(id, categoryID, year, lid, zid, title, message, date);
     }
 }

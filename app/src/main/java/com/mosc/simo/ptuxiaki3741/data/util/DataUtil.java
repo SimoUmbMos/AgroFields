@@ -226,8 +226,7 @@ public final class DataUtil {
     public static boolean checkItemsTheSame(Land land1, Land land2){
         if(land1 != null && land2 != null) {
             if(land1.getData() != null && land2.getData() != null) {
-                return land1.getData().getId() == land2.getData().getId() &&
-                        land1.getData().getSnapshot() == land2.getData().getSnapshot();
+                return land1.getData().getId() == land2.getData().getId();
             }
         }
         return false;
@@ -235,8 +234,7 @@ public final class DataUtil {
     public static boolean checkItemsTheSame(LandZone zone1, LandZone zone2){
         if(zone1 != null && zone2 != null) {
             if(zone1.getData() != null && zone2.getData() != null) {
-                return zone1.getData().getId() == zone2.getData().getId() &&
-                        zone1.getData().getSnapshot() == zone2.getData().getSnapshot();
+                return zone1.getData().getId() == zone2.getData().getId();
             }
         }
         return false;
