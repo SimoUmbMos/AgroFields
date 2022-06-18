@@ -2,6 +2,7 @@ package com.mosc.simo.ptuxiaki3741.ui.fragments.land;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -47,8 +47,10 @@ import com.mosc.simo.ptuxiaki3741.data.util.UIUtil;
 import com.mosc.simo.ptuxiaki3741.data.values.AppValues;
 import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,29 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
 
     private List<LandZone> exportZones;
     private FileType exportAction;
+
+    private final ActivityResultLauncher<Intent> startActivityIntentFile = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if(binding == null || result.getResultCode() != Activity.RESULT_OK) {
+                    exportZones = null;
+                    exportAction = null;
+                    return;
+                }
+                Intent data = result.getData();
+                if(data == null) {
+                    exportZones = null;
+                    exportAction = null;
+                    return;
+                }
+                OutputStream fileOutputStream;
+                try{
+                    fileOutputStream = requireActivity().getContentResolver().openOutputStream(data.getData());
+                } catch (FileNotFoundException e) {
+                    fileOutputStream = null;
+                }
+                writeToFile(fileOutputStream);
+            });
 
     private final ActivityResultLauncher<String> permissionWriteChecker = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
@@ -429,57 +454,73 @@ public class ZoneMenuFragment extends Fragment implements FragmentBackPress {
         if(exportAction == null) return;
 
         if(exportZones.size()>0 && exportAction != FileType.NONE){
-            writeOnFile(exportZones, exportAction);
+            initWriteToFile();
+        }else{
+            exportZones = null;
+            exportAction = null;
         }
-        exportZones = null;
-        exportAction = null;
     }
-    private void writeOnFile(List<LandZone> zones, FileType action) {
-        if(zones.size()>0){
-            File path = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS
-            );
-            String landTitle = selectedLand.getData().getTitle();
-            landTitle = landTitle.replaceAll("\\s{2,}", " ").trim();
-            landTitle = landTitle.replaceAll(" ","_");
-            String fileName = landTitle+"_"+(System.currentTimeMillis()/1000)+"_"+zones.size();
+    private void initWriteToFile() {
+        if(exportZones != null && exportZones.size()>0){
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+            String fileName = "export-"+now.format(dateTimeFormatter);
+            String fileType = null;
+            switch(exportAction){
+                case KML:
+                    fileType = "application/vnd.google-earth.kml+xml";
+                    fileName = fileName+".kml";
+                    break;
+                case GEOJSON:
+                    fileType = "application/geo+json";
+                    fileName = fileName+".geojson";
+                    break;
+                case GML:
+                    fileType = "application/gml+xml";
+                    fileName = fileName+".gml";
+                    break;
+                default:
+                    fileName = null;
+            }
+            if(fileName != null) {
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType(fileType);
+                intent.putExtra(Intent.EXTRA_TITLE, fileName);
+                startActivityIntentFile.launch(intent);
+            }else{
+                exportZones = null;
+                exportAction = null;
+            }
+        }else{
+            exportZones = null;
+            exportAction = null;
+        }
+    }
+    private void writeToFile(OutputStream output){
+        if(output != null){
+            String content="";
+            switch(exportAction){
+                case KML:
+                    content = FileUtil.zonesToKmlString(exportZones);
+                    break;
+                case GEOJSON:
+                    content = FileUtil.zonesToGeoJsonString(exportZones);
+                    break;
+                case GML:
+                    content = FileUtil.zonesToGmlString(exportZones);
+                    break;
+            }
             String display;
-            try{
-                boolean isPathCreated = false, pathExist = path.exists();
-                if (!pathExist) {
-                    isPathCreated = path.mkdirs();
-                    pathExist = path.exists();
-                }
-                if( pathExist || isPathCreated ){
-                    String output="";
-                    switch(action){
-                        case KML:
-                            output = FileUtil.zonesToKmlString(zones,fileName);
-                            fileName = fileName+".kml";
-                            break;
-                        case GEOJSON:
-                            output = FileUtil.zonesToGeoJsonString(zones);
-                            fileName = fileName+".json";
-                            break;
-                        case GML:
-                            output = FileUtil.zonesToGmlString(zones);
-                            fileName = fileName+".gml";
-                            break;
-                    }
-                    if(FileUtil.createFile(output, fileName, path)){
-                        display = getString(R.string.zone_export);
-                    }else{
-                        display = getString(R.string.file_not_created);
-                    }
-                }else{
-                    display = getString(R.string.file_path_not_created);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "writeOnFile: ", e);
-                display = getString(R.string.file_something_did_not_run);
+            if(FileUtil.createFile(content, output)){
+                display = getString(R.string.land_export);
+            }else{
+                display = getString(R.string.file_not_created);
             }
             showSnackBar(display);
         }
+        exportZones = null;
+        exportAction = null;
     }
 
     //ui relative

@@ -15,8 +15,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public final class OpenXmlDataBaseOutput {
     private OpenXmlDataBaseOutput(){}
 
     public static boolean exportDBXLS(
-            FileOutputStream outputStream,
+            OutputStream outputStream,
             OpenXmlState state
     ) throws IOException {
         if(outputStream == null)
@@ -209,7 +209,7 @@ public final class OpenXmlDataBaseOutput {
     }
 
     public static boolean exportDBXLSX(
-            FileOutputStream outputStream,
+            OutputStream outputStream,
             OpenXmlState state
     ) throws IOException {
         if(outputStream == null)

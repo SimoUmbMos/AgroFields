@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
@@ -32,12 +31,21 @@ import org.jdom2.output.support.XMLOutputProcessor;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 public final class FileUtil {
     public static final String TAG = "FileUtil";
@@ -53,10 +61,20 @@ public final class FileUtil {
     };
     private FileUtil(){}
 
-    public static String landsToKmlString(List<Land> lands,String label) {
-        Document document = KmlExporter.kmlFileExporter(label, lands);
-        XMLOutputter xmOut = new XMLOutputter(Format.getPrettyFormat(), XMLOUTPUT);
-        return xmOut.outputString(document);
+    public static String landsToKmlString(List<Land> lands) {
+        try{
+            org.w3c.dom.Document document = KmlExporter.kmlFileExporter(lands);
+            StringWriter writer = new StringWriter();
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer trans = tf.newTransformer();
+            trans.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            trans.setOutputProperty(OutputKeys.INDENT, "yes");
+            trans.transform(new DOMSource(document), new StreamResult(writer));
+            return writer.toString();
+        } catch (ParserConfigurationException | TransformerException e) {
+            Log.e(TAG, "landsToKmlString: ", e);
+        }
+        return "";
     }
     public static String landsToGeoJsonString(List<Land> lands) {
         JSONObject export = GeoJsonExporter.geoJsonExport(lands);
@@ -74,12 +92,12 @@ public final class FileUtil {
         );
         return result;
     }
-    public static String zonesToKmlString(List<LandZone> zones, String label) {
+    public static String zonesToKmlString(List<LandZone> zones) {
         List<Land> lands = new ArrayList<>();
         for(LandZone zone:zones){
             lands.add(new Land(new LandData(zone.getData().getBorder())));
         }
-        return landsToKmlString(lands,label);
+        return landsToKmlString(lands);
     }
     public static String zonesToGeoJsonString(List<LandZone> zones) {
         List<Land> lands = new ArrayList<>();
@@ -263,41 +281,25 @@ public final class FileUtil {
             return "";
     }
 
-    public static boolean createFile(String output, String fileName, File path) throws IOException {
-        if(!output.isEmpty() && !fileName.isEmpty()){
-            File mFile = new File(path, fileName);
-            FileWriter writer = new FileWriter(mFile);
-            writer.append(output);
-            writer.flush();
-            writer.close();
+    public static boolean createFile(String content, OutputStream output){
+        if(!content.isEmpty() && output != null){
+            PrintWriter p = new PrintWriter(output);
+            p.print(content);
+            p.close();
             return true;
         }
         return false;
     }
 
-    public static boolean dbExportAFileFileXLS(OpenXmlState state) throws IOException {
+    public static boolean dbExportAFileFileXLS(OpenXmlState state, OutputStream output) throws IOException {
         if(state == null) return false;
-
-        File path = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS
-        );
-        String fileName = "export_"+(System.currentTimeMillis()/1000)+".xls";
-        File mFile = new File(path, fileName);
-
-        FileOutputStream outputStream = new FileOutputStream(mFile);
-        return OpenXmlDataBaseOutput.exportDBXLS(outputStream, state);
+        if(output == null) return false;
+        return OpenXmlDataBaseOutput.exportDBXLS(output, state);
     }
 
-    public static boolean dbExportAFileFileXLSX(OpenXmlState state) throws IOException {
+    public static boolean dbExportAFileFileXLSX(OpenXmlState state, OutputStream output) throws IOException {
         if(state == null) return false;
-
-        File path = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS
-        );
-        String fileName = "export_"+(System.currentTimeMillis()/1000)+".xlsx";
-        File mFile = new File(path, fileName);
-
-        FileOutputStream outputStream = new FileOutputStream(mFile);
-        return OpenXmlDataBaseOutput.exportDBXLSX(outputStream, state);
+        if(output == null) return false;
+        return OpenXmlDataBaseOutput.exportDBXLSX(output, state);
     }
 }

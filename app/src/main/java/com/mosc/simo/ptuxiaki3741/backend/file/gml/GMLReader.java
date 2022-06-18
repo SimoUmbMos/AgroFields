@@ -1,10 +1,12 @@
 package com.mosc.simo.ptuxiaki3741.backend.file.gml;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.helpers.CoordinatesHelper;
 import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
+import com.mosc.simo.ptuxiaki3741.data.models.ColorData;
 import com.mosc.simo.ptuxiaki3741.data.util.DataUtil;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -22,7 +24,6 @@ import java.util.List;
 
 public class GMLReader {
     public static String TAG = "GMLReader";
-    public static CoordinatesHelper converter;
 
     public static ArrayList<LandData> exec(Context context,InputStream is) throws Exception{
         ArrayList<LandData> border_fragment = new ArrayList<>();
@@ -35,7 +36,7 @@ public class GMLReader {
         String tagName, attributeValue;
         LandData temp;
 
-        converter = null;
+        CoordinatesHelper converter = null;
         String converterInitOn = "";
 
         int eventType = parser.getEventType();
@@ -46,13 +47,14 @@ public class GMLReader {
                     if(converter == null){
                         attributeValue = parser.getAttributeValue(null,"srsName");
                         if(attributeValue != null){
-                            if(initConverter(attributeValue)){
+                            converter = initConverter(attributeValue);
+                            if(converter != null){
                                 converterInitOn = tagName;
                             }
                         }
                     }
                     if (tagName.equalsIgnoreCase("Polygon")){
-                        temp = parsePolygon(context, parser);
+                        temp = parsePolygon(converter, DataUtil.getRandomLandColor(context), parser);
                         if(temp != null) {
                             border_fragment.add(temp);
                         }
@@ -70,19 +72,18 @@ public class GMLReader {
             }
             eventType = parser.next();
         }
-        converter = null;
         return border_fragment;
     }
 
-    private static boolean initConverter(String value){
+    private static CoordinatesHelper initConverter(String value){
         String code;
         String[] values = value.split("#");
         if(values.length>1){
             code = values[values.length-1];
             code = "EPSG:"+code;
             if(CoordinatesHelper.checkIfValid(code)){
-                converter = new CoordinatesHelper(code);
-                return true;
+                if(code.equals("EPSG:4326")) return null;
+                return new CoordinatesHelper(code);
             }
         }
         values = value.split(":");
@@ -90,14 +91,14 @@ public class GMLReader {
             code = values[values.length-1];
             code = "EPSG:"+code;
             if(CoordinatesHelper.checkIfValid(code)){
-                converter = new CoordinatesHelper(code);
-                return true;
+                if(code.equals("EPSG:4326")) return null;
+                return new CoordinatesHelper(code);
             }
         }
-        return false;
+        return null;
     }
 
-    private static LandData parsePolygon(Context context, XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static LandData parsePolygon(CoordinatesHelper converter, ColorData color, XmlPullParser parser) throws XmlPullParserException, IOException {
         String tagName;
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -105,9 +106,9 @@ public class GMLReader {
             switch (eventType){
                 case XmlPullParser.START_TAG:
                     if(tagName.equalsIgnoreCase("outerBoundaryIs")){
-                        return parserOuterBoundary(context, parser);
+                        return parserOuterBoundary(converter, color, parser);
                     }else if(tagName.equalsIgnoreCase("exterior")){
-                        return parserExterior(context, parser);
+                        return parserExterior(converter, color, parser);
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -122,7 +123,7 @@ public class GMLReader {
         return null;
     }
 
-    private static LandData parserOuterBoundary(Context context, XmlPullParser parser) throws XmlPullParserException, IOException{
+    private static LandData parserOuterBoundary(CoordinatesHelper converter, ColorData color, XmlPullParser parser) throws XmlPullParserException, IOException{
         String tagName;
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -130,7 +131,7 @@ public class GMLReader {
             switch (eventType){
                 case XmlPullParser.START_TAG:
                     if(tagName.equalsIgnoreCase("coordinates")){
-                        return parseCoordinates(context, parser);
+                        return parseCoordinates(converter, color, parser);
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -145,7 +146,7 @@ public class GMLReader {
         }
         return null;
     }
-    private static LandData parserExterior(Context context, XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static LandData parserExterior(CoordinatesHelper converter, ColorData color, XmlPullParser parser) throws XmlPullParserException, IOException {
         String tagName;
         String srsDimension="2";
         int eventType = parser.getEventType();
@@ -160,7 +161,7 @@ public class GMLReader {
                             }
                         }
                     }else if(tagName.equalsIgnoreCase("posList")){
-                        return parsePosList(context, parser,srsDimension);
+                        return parsePosList(converter, color, parser,srsDimension);
                     }
                     break;
                 case XmlPullParser.END_TAG:
@@ -176,7 +177,7 @@ public class GMLReader {
         return null;
     }
 
-    private static LandData parseCoordinates(Context context, XmlPullParser parser) throws XmlPullParserException, IOException{
+    private static LandData parseCoordinates(CoordinatesHelper converter, ColorData color, XmlPullParser parser) throws XmlPullParserException, IOException{
         List<LatLng> border = new ArrayList<>();
         String cs = ",";
         String ts = " ";
@@ -195,28 +196,32 @@ public class GMLReader {
                     }
                 }
             }else if(eventType == XmlPullParser.TEXT){
-                coordinates = parser.getText().trim()
+                coordinates = parser.getText()
                         .replace(decimal,".")
                         .replace(cs,",")
-                        .replace(ts," ");
-                border.addAll(getBorderFromCoordinates(coordinates));
+                        .replace(ts," ")
+                        .trim()
+                        .replaceAll("\n"," ")
+                        .replaceAll("\t"," ")
+                        .replaceAll(" +"," ");
+                border.addAll(getBorderFromCoordinates(converter, coordinates));
             }else{
                 if(border.size()>0)
-                    return new LandData(DataUtil.getRandomLandColor(context),border);
+                    return new LandData(color,border);
                 return null;
             }
             eventType = parser.next();
         }
         return null;}
-    private static LandData parsePosList(Context context, XmlPullParser parser, String dim) throws XmlPullParserException, IOException{
+    private static LandData parsePosList(CoordinatesHelper converter, ColorData color, XmlPullParser parser, String dim) throws XmlPullParserException, IOException{
         List<LatLng> border = new ArrayList<>();
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if(eventType == XmlPullParser.TEXT){
-                border.addAll(getBorderFromPosList(parser.getText(),dim));
+                border.addAll(getBorderFromPosList(converter, parser.getText(), dim));
             }else if(eventType == XmlPullParser.END_TAG){
                 if(border.size()>0)
-                    return new LandData(DataUtil.getRandomLandColor(context),border);
+                    return new LandData(color,border);
                 return null;
             }
             eventType = parser.next();
@@ -224,28 +229,35 @@ public class GMLReader {
         return null;
     }
 
-    private static List<LatLng> getBorderFromCoordinates(String s){
+    private static List<LatLng> getBorderFromCoordinates(CoordinatesHelper converter, String s){
         List<LatLng> result = new ArrayList<>();
         String[] coordinatePairs = s.split(" ");
         for (String coord : coordinatePairs) {
+            Log.d(TAG, "getBorderFromCoordinates: "+coord);
+            String[] parts = coord.split(",");
+            if(parts.length < 2) continue;
             if(converter != null){
                 result.add(converter.convertEPSG(
-                        Double.parseDouble(coord.split(",")[0]),
-                        Double.parseDouble(coord.split(",")[1])
+                        Double.parseDouble(parts[0]),
+                        Double.parseDouble(parts[1])
                 ));
             }else{
                 result.add(new LatLng(
-                        Double.parseDouble(coord.split(",")[1]),
-                        Double.parseDouble(coord.split(",")[0])
+                        Double.parseDouble(parts[1]),
+                        Double.parseDouble(parts[0])
                 ));
             }
         }
         return result;
     }
-    private static List<LatLng> getBorderFromPosList(String s,String dim){
+    private static List<LatLng> getBorderFromPosList(CoordinatesHelper converter, String s, String dim){
         List<LatLng> result = new ArrayList<>();
         int dimension = Integer.parseInt(dim);
-        String[] coord = s.trim().split(" ");
+        String[] coord = s.trim()
+                .replaceAll("\n"," ")
+                .replaceAll("\t"," ")
+                .replaceAll(" +"," ")
+                .split(" ");
         List<List<String>> coordPairs = new ArrayList<>();
         for(int i = dimension; i < coord.length; i = i+dimension){
             coordPairs.add(new ArrayList<>(Arrays.asList(coord).subList(i-dimension,i)));

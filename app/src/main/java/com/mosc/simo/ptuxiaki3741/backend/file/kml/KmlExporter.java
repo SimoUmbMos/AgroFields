@@ -2,144 +2,112 @@ package com.mosc.simo.ptuxiaki3741.backend.file.kml;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mosc.simo.ptuxiaki3741.data.models.Land;
-import com.mosc.simo.ptuxiaki3741.backend.room.entities.LandData;
 
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.Namespace;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 public class KmlExporter {
-    public static Document kmlFileExporter(String key,List<Land> lands){
-        Document doc = new Document();
-        try{
-            Element root = createElement("kml");
-            Element document = createElement("Document");
-            Element folder = createElement("Folder");
-            document.addContent(createSchemaHeader(key));
-            folder.addContent(createFolderHeader(key));
-            Element placeMark;
-            int i = 0;
-            for(Land land : lands){
-                placeMark = createPlaceMarkHeader(key, land, i+1);
-                placeMark.addContent(createGeometry(land.getData()));
-                folder.addContent(placeMark);
-                i++;
+    public static Document kmlFileExporter(List<Land> landList) throws ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.newDocument();
+        if(landList.size() == 0) return doc;
+        Element kmlTag = doc.createElement("kml");
+        kmlTag.setAttribute("xmlns","http://www.opengis.net/kml/2.2");
+        kmlTag.setAttribute("xmlns:kml","http://www.opengis.net/kml/2.2");
+        kmlTag.setAttribute("xmlns:gx","http://www.google.com/kml/ext/2.2");
+        kmlTag.setAttribute("xmlns:atom","http://www.w3.org/2005/Atom");
+
+        Element documentTag = doc.createElement("Document");
+
+        Element nameTag = doc.createElement("name");
+        nameTag.appendChild(doc.createTextNode("Lands"));
+        documentTag.appendChild(nameTag);
+
+        Element placemarkTag, placemarkNameTag;
+        Element polygonTag, extrudeTag, altitudeModeTag;
+
+        Element outerBoundaryIsTag, innerBoundaryIsTag;
+        Element LinearRingTag, coordinatesTag;
+        StringBuilder coordinatesValues = new StringBuilder();
+        LatLng temp;
+        for(Land land:landList){
+            if(land.getData() == null) continue;
+            if(land.getData().getBorder().size() == 0) continue;
+
+            placemarkTag = doc.createElement("Placemark");
+
+            placemarkNameTag = doc.createElement("name");
+            placemarkNameTag.appendChild(doc.createTextNode("Land"));
+            placemarkTag.appendChild(placemarkNameTag);
+
+            polygonTag = doc.createElement("Polygon");
+
+            extrudeTag = doc.createElement("extrude");
+            extrudeTag.appendChild(doc.createTextNode("1"));
+            polygonTag.appendChild(extrudeTag);
+
+            altitudeModeTag = doc.createElement("altitudeMode");
+            altitudeModeTag.appendChild(doc.createTextNode("relativeToGround"));
+            polygonTag.appendChild(altitudeModeTag);
+
+            outerBoundaryIsTag = doc.createElement("outerBoundaryIs");
+            LinearRingTag = doc.createElement("LinearRing");
+            coordinatesTag = doc.createElement("coordinates");
+            coordinatesValues.setLength(0);
+            for(int i = 0; i < land.getData().getBorder().size(); i++){
+                temp = land.getData().getBorder().get(i);
+                if(i != 0)
+                    coordinatesValues.append(" ");
+                coordinatesValues
+                        .append(temp.longitude)
+                        .append(",")
+                        .append(temp.latitude)
+                        .append(",")
+                        .append(0);
             }
-            document.addContent(folder);
-            root.addContent(document);
-            doc.addContent(root);
-        }catch (Exception e){
-            e.printStackTrace();
+            coordinatesTag.appendChild(doc.createTextNode(coordinatesValues.toString()));
+            LinearRingTag.appendChild(coordinatesTag);
+            outerBoundaryIsTag.appendChild(LinearRingTag);
+            polygonTag.appendChild(outerBoundaryIsTag);
+
+            if(land.getData().getHoles().size() != 0){
+                innerBoundaryIsTag = doc.createElement("innerBoundaryIs");
+                for(List<LatLng> hole : land.getData().getHoles()){
+                    LinearRingTag = doc.createElement("LinearRing");
+
+                    coordinatesTag = doc.createElement("coordinates");
+                    coordinatesValues.setLength(0);
+                    for(int i = 0; i < hole.size(); i++){
+                        temp = hole.get(i);
+                        if(i != 0)
+                            coordinatesValues.append(" ");
+                        coordinatesValues
+                                .append(temp.longitude)
+                                .append(",")
+                                .append(temp.latitude)
+                                .append(",")
+                                .append(0);
+                    }
+                    coordinatesTag.appendChild(doc.createTextNode(coordinatesValues.toString()));
+                    LinearRingTag.appendChild(coordinatesTag);
+                    innerBoundaryIsTag.appendChild(LinearRingTag);
+                }
+                polygonTag.appendChild(innerBoundaryIsTag);
+            }
+
+            placemarkTag.appendChild(polygonTag);
+            documentTag.appendChild(placemarkTag);
         }
+        kmlTag.appendChild(documentTag);
+        doc.appendChild(kmlTag);
         return doc;
-    }
-
-    private static Element createGeometry(LandData data) {
-        Element multiGeometry = createElement("MultiGeometry"),
-                polygon = createElement("Polygon"),
-                outerBoundaryIs, innerBoundaryIs, linearRing, coordinates;
-        StringBuilder coordinatesString = new StringBuilder();
-        int holesNumber = 0;
-
-        outerBoundaryIs = createElement("outerBoundaryIs");
-        linearRing = createElement("LinearRing");
-        coordinates = createElement("coordinates");
-        for(LatLng point : data.getBorder()){
-            coordinatesString
-                    .append(point.longitude)
-                    .append(",")
-                    .append(point.latitude)
-                    .append(" ");
-        }
-        if(data.getBorder().size()>0){
-            coordinatesString
-                    .append(data.getBorder().get(0).longitude)
-                    .append(",")
-                    .append(data.getBorder().get(0).latitude)
-                    .append(" ");
-        }
-        coordinates.addContent(coordinatesString.toString());
-        linearRing.addContent(coordinates);
-        outerBoundaryIs.addContent(linearRing);
-
-        innerBoundaryIs = createElement("innerBoundaryIs");
-        for(List<LatLng> hole : data.getHoles()){
-            linearRing = createElement("LinearRing");
-            coordinates = createElement("coordinates");
-            coordinatesString.setLength(0);
-            for(LatLng point : hole){
-                coordinatesString
-                        .append(point.longitude)
-                        .append(",")
-                        .append(point.latitude)
-                        .append(" ");
-            }
-            if(hole.size()>0){
-                coordinatesString
-                        .append(hole.get(0).longitude)
-                        .append(",")
-                        .append(hole.get(0).latitude)
-                        .append(" ");
-            }
-            coordinates.addContent(coordinatesString.toString());
-            linearRing.addContent(coordinates);
-            innerBoundaryIs.addContent(linearRing);
-            holesNumber++;
-        }
-
-        polygon.addContent(outerBoundaryIs);
-        if(holesNumber != 0)
-            polygon.addContent(innerBoundaryIs);
-        multiGeometry.addContent(polygon);
-        return multiGeometry;
-    }
-
-    private static Element createElement(String elementTag){
-        Element element = new Element(elementTag);
-        Namespace ns1 = Namespace.getNamespace("http://www.opengis.net/kml/2.2");
-        Namespace ns2 = Namespace.getNamespace("ns2", "http://www.google.com/kml/ext/2.2");
-        Namespace ns3 = Namespace.getNamespace("ns3", "http://www.w3.org/2005/Atom");
-        Namespace ns4 = Namespace.getNamespace("ns4", "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0");
-        element.setNamespace(ns1);
-        element.addNamespaceDeclaration(ns2);
-        element.addNamespaceDeclaration(ns3);
-        element.addNamespaceDeclaration(ns4);
-        return element;
-    }
-
-    private static Element createFolderHeader(String key) {
-        Element name = createElement("name");
-        name.addContent(key);
-        return name;
-    }
-    private static Element createSchemaHeader(String key) {
-        Element schema = createElement("Schema");
-        Element simpleField = createElement("SimpleField");
-        schema.setAttribute("name",key+"_1");
-        schema.setAttribute("id",key+"_1");
-        simpleField.setAttribute("type","string");
-        simpleField.setAttribute("name","PER");
-        schema.addContent(simpleField);
-        return schema;
-    }
-    private static Element createPlaceMarkHeader(String key, Land land, int i){
-        Element placeMark;
-        Element extendedData;
-        Element schemaData;
-        Element simpleData;
-        placeMark = createElement("Placemark");
-        placeMark.setAttribute("id",key+"."+i);
-        extendedData = createElement("ExtendedData");
-        schemaData = createElement("SchemaData");
-        schemaData.setAttribute("schemaUrl","#"+key+"_1");
-        simpleData = createElement("SimpleData");
-        simpleData.setAttribute("name","PER");
-        simpleData.addContent(land.getData().getTitle());
-        schemaData.addContent(simpleData);
-        extendedData.addContent(schemaData);
-        placeMark.addContent(extendedData);
-        return placeMark;
     }
 }

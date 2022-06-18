@@ -43,9 +43,13 @@ import com.mosc.simo.ptuxiaki3741.backend.viewmodels.AppViewModel;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.LoadingDialog;
 import com.mosc.simo.ptuxiaki3741.ui.dialogs.YearPickerDialog;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private static final String TAG = "AppSettingsFragment";
@@ -62,6 +66,37 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private ArrayAdapter<String> themeAdapter;
     private int dialogChecked;
 
+    private final ActivityResultLauncher<Intent> startActivityIntentXlsFile = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if(binding == null) return;
+                if(result.getResultCode() != Activity.RESULT_OK) return;
+                Intent data = result.getData();
+                if(data == null) return;
+                OutputStream fileOutputStream;
+                try{
+                    fileOutputStream = requireActivity().getContentResolver().openOutputStream(data.getData());
+                } catch (FileNotFoundException e) {
+                    fileOutputStream = null;
+                }
+                onExportDBActionXLS(fileOutputStream);
+            });
+
+    private final ActivityResultLauncher<Intent> startActivityIntentXlsxFile = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if(binding == null) return;
+                if(result.getResultCode() != Activity.RESULT_OK) return;
+                Intent data = result.getData();
+                if(data == null) return;
+                OutputStream fileOutputStream;
+                try{
+                    fileOutputStream = requireActivity().getContentResolver().openOutputStream(data.getData());
+                } catch (FileNotFoundException e) {
+                    fileOutputStream = null;
+                }
+                onExportDBActionXLSX(fileOutputStream);
+            });
 
     private final ActivityResultLauncher<String> permissionWriteChecker = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
@@ -303,7 +338,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
     }
 
-    private void onExportDBActionXLSX() {
+    private void onExportDBActionXLSX(OutputStream output) {
         if(backThread == null){
             if(loadingDialog != null) loadingDialog.openDialog();
             backThread = new Thread(()->{
@@ -315,7 +350,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 );
                 boolean result = false;
                 try{
-                    result = FileUtil.dbExportAFileFileXLSX(state);
+                    result = FileUtil.dbExportAFileFileXLSX(state, output);
                 }catch (IOException e) {
                     Log.e(TAG, "onExportDBActionXLSX: ",e);
                 }
@@ -329,7 +364,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
         }
     }
 
-    private void onExportDBActionXLS() {
+    private void onExportDBActionXLS(OutputStream output) {
         if(backThread == null){
             if(loadingDialog != null) loadingDialog.openDialog();
             backThread = new Thread(()->{
@@ -341,7 +376,7 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
                 );
                 boolean result = false;
                 try{
-                    result = FileUtil.dbExportAFileFileXLS(state);
+                    result = FileUtil.dbExportAFileFileXLS(state, output);
                 }catch (IOException e) {
                     Log.e(TAG, "onExportDBActionXLS: ",e);
                 }
@@ -463,11 +498,33 @@ public class AppSettingsFragment extends Fragment implements FragmentBackPress{
     private void onPermissionWriteResult(boolean permission) {
         if(permission){
             if(dialogChecked == 0){
-                onExportDBActionXLS();
+                startActivityResultXLS();
             }else{
-                onExportDBActionXLSX();
+                startActivityResultXLSX();
             }
         }
+    }
+
+    private void startActivityResultXLS() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/vnd.ms-excel");
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        String title = "export-"+now.format(dateTimeFormatter);
+        intent.putExtra(Intent.EXTRA_TITLE, title+".xls");
+        startActivityIntentXlsFile.launch(intent);
+    }
+
+    private void startActivityResultXLSX() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        String title = "export-"+now.format(dateTimeFormatter);
+        intent.putExtra(Intent.EXTRA_TITLE, title+".xlsx");
+        startActivityIntentXlsxFile.launch(intent);
     }
 
     private void saveData(OpenXmlState state) {
